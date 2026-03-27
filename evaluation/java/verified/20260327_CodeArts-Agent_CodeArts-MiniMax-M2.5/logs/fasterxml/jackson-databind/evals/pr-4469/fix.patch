@@ -1,0 +1,15 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValue.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValue.java
+index 6558b3dcf..ba6208bbc 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValue.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValue.java
+@@ -57,7 +57,9 @@ public abstract class PropertyValue
+         public void assign(Object bean)
+             throws IOException
+         {
+-            _property.set(bean, value);
++            if ((value != null) || !NullsConstantProvider.isSkipper(_property.getNullValueProvider())) {
++                _property.set(bean, value);
++            }
+         }
+     }
+ 

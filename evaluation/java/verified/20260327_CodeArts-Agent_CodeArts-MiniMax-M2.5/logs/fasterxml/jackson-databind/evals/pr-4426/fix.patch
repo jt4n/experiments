@@ -1,0 +1,207 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 4f8d64b7a..c91d4d093 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -760,7 +760,10 @@ public class POJOPropertiesCollector
+             // ...or is a Records canonical constructor
+             boolean isCanonicalConstructor = recordComponentName != null;
+ 
+-            if ((creatorMode == null || creatorMode == JsonCreator.Mode.DISABLED) && !isCanonicalConstructor) {
++            // [databind#????] Delegating creator takes a single complex value as input,
++            // its parameter should not be included as a property
++            if ((creatorMode == null || creatorMode == JsonCreator.Mode.DISABLED
++                    || creatorMode == JsonCreator.Mode.DELEGATING) && !isCanonicalConstructor) {
+                 return;
+             }
+             pn = PropertyName.construct(impl);
+diff --git a/src/test/java/com/fasterxml/jackson/databind/introspect/DelegatingCreatorPropertyTest.java b/src/test/java/com/fasterxml/jackson/databind/introspect/DelegatingCreatorPropertyTest.java
+new file mode 100644
+index 000000000..fc20a5965
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/databind/introspect/DelegatingCreatorPropertyTest.java
+@@ -0,0 +1,184 @@
++package com.fasterxml.jackson.databind.introspect;
++
++import java.util.List;
++
++import org.junit.jupiter.api.Test;
++
++import com.fasterxml.jackson.annotation.*;
++import com.fasterxml.jackson.databind.*;
++import com.fasterxml.jackson.databind.cfg.MapperConfig;
++import com.fasterxml.jackson.databind.testutil.DatabindTestUtil;
++
++import static org.junit.jupiter.api.Assertions.*;
++
++public class DelegatingCreatorPropertyTest extends DatabindTestUtil
++{
++    // [databind#????] Test that delegating creator parameter is not included as property
++    static class Data {
++        private final String foo;
++        private final Integer bar;
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        static Data fromBuilder(Builder builder) {
++            return new Data(builder.foo, builder.bar);
++        }
++
++        private Data(String foo, Integer bar) {
++            this.foo = foo;
++            this.bar = bar;
++        }
++
++        public String getFoo() {
++            return foo;
++        }
++
++        public Integer getBar() {
++            return bar;
++        }
++
++        public static class Builder {
++            private String foo;
++            private Integer bar;
++
++            @JsonProperty("foo")
++            public Builder foo(String foo) {
++                this.foo = foo;
++                return this;
++            }
++
++            @JsonProperty("bar")
++            public Builder bar(Integer bar) {
++                this.bar = bar;
++                return this;
++            }
++
++            public Data build() {
++                return Data.fromBuilder(this);
++            }
++        }
++    }
++
++    // Custom introspector that simulates ParameterNamesModule by providing
++    // implicit parameter names
++    static class ImplicitParamNameIntrospector extends JacksonAnnotationIntrospector {
++        @Override
++        public String findImplicitPropertyName(AnnotatedMember m) {
++            if (m instanceof AnnotatedParameter) {
++                return "builder"; // Simulates what ParameterNamesModule would return
++            }
++            return super.findImplicitPropertyName(m);
++        }
++    }
++
++    private final ObjectMapper MAPPER = newJsonMapper();
++    private final ObjectMapper MAPPER_WITH_IMPLICIT_NAMES = jsonMapperBuilder()
++            .annotationIntrospector(new ImplicitParamNameIntrospector())
++            .build();
++
++    // Test that the delegating creator parameter is NOT included as a property
++    // when introspecting for serialization (without implicit names)
++    @Test
++    public void testDelegatingCreatorParamNotPropertyForSerialization() throws Exception
++    {
++        BeanDescription beanDesc = MAPPER.getSerializationConfig()
++                .introspect(MAPPER.constructType(Data.class));
++        List<BeanPropertyDefinition> props = beanDesc.findProperties();
++        
++        // Should only have "foo" and "bar", NOT "builder"
++        assertEquals(2, props.size());
++        for (BeanPropertyDefinition prop : props) {
++            String name = prop.getName();
++            assertTrue(name.equals("foo") || name.equals("bar"),
++                    "Unexpected property: " + name);
++        }
++    }
++
++    // Test that the delegating creator parameter is NOT included as a property
++    // when introspecting for deserialization (without implicit names)
++    @Test
++    public void testDelegatingCreatorParamNotPropertyForDeserialization() throws Exception
++    {
++        BeanDescription beanDesc = MAPPER.getDeserializationConfig()
++                .introspect(MAPPER.constructType(Data.class));
++        List<BeanPropertyDefinition> props = beanDesc.findProperties();
++        
++        // Should only have "foo" and "bar", NOT "builder"
++        assertEquals(2, props.size());
++        for (BeanPropertyDefinition prop : props) {
++            String name = prop.getName();
++            assertTrue(name.equals("foo") || name.equals("bar"),
++                    "Unexpected property: " + name);
++        }
++    }
++
++    // Test that the delegating creator parameter is NOT included as a property
++    // even when implicit parameter names are available (simulating ParameterNamesModule)
++    @Test
++    public void testDelegatingCreatorParamNotPropertyWithImplicitNames() throws Exception
++    {
++        BeanDescription beanDesc = MAPPER_WITH_IMPLICIT_NAMES.getDeserializationConfig()
++                .introspect(MAPPER_WITH_IMPLICIT_NAMES.constructType(Data.class));
++        List<BeanPropertyDefinition> props = beanDesc.findProperties();
++        
++        // Should only have "foo" and "bar", NOT "builder"
++        // This is the bug: currently "builder" is incorrectly included as a property
++        assertEquals(2, props.size(), "Expected 2 properties but got: " + props);
++        for (BeanPropertyDefinition prop : props) {
++            String name = prop.getName();
++            assertTrue(name.equals("foo") || name.equals("bar"),
++                    "Unexpected property: " + name);
++        }
++    }
++
++    // Same test for serialization
++    @Test
++    public void testDelegatingCreatorParamNotPropertyWithImplicitNamesSer() throws Exception
++    {
++        BeanDescription beanDesc = MAPPER_WITH_IMPLICIT_NAMES.getSerializationConfig()
++                .introspect(MAPPER_WITH_IMPLICIT_NAMES.constructType(Data.class));
++        List<BeanPropertyDefinition> props = beanDesc.findProperties();
++        
++        // Should only have "foo" and "bar", NOT "builder"
++        assertEquals(2, props.size(), "Expected 2 properties but got: " + props);
++        for (BeanPropertyDefinition prop : props) {
++            String name = prop.getName();
++            assertTrue(name.equals("foo") || name.equals("bar"),
++                    "Unexpected property: " + name);
++        }
++    }
++
++    // Test that explicit @JsonProperty on DELEGATING creator param IS still included
++    static class DataWithExplicitParamName {
++        private final String foo;
++        private final Integer bar;
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        static DataWithExplicitParamName fromBuilder(@JsonProperty("builder") Builder builder) {
++            return new DataWithExplicitParamName(builder.foo, builder.bar);
++        }
++
++        private DataWithExplicitParamName(String foo, Integer bar) {
++            this.foo = foo;
++            this.bar = bar;
++        }
++
++        public String getFoo() { return foo; }
++        public Integer getBar() { return bar; }
++
++        public static class Builder {
++            public String foo;
++            public Integer bar;
++        }
++    }
++
++    @Test
++    public void testDelegatingCreatorWithExplicitParamName() throws Exception
++    {
++        BeanDescription beanDesc = MAPPER.getDeserializationConfig()
++                .introspect(MAPPER.constructType(DataWithExplicitParamName.class));
++        List<BeanPropertyDefinition> props = beanDesc.findProperties();
++        
++        // Should have "foo", "bar", AND "builder" because @JsonProperty is explicit
++        assertEquals(3, props.size(), "Expected 3 properties but got: " + props);
++    }
++}
+\ No newline at end of file

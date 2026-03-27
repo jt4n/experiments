@@ -1,0 +1,34 @@
+
+diff --git a/.gitignore b/.gitignore
+index 17410c4d4..15464c150 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -30,3 +30,8 @@ classes
+ 
+ # Used to check reproducibility of Mockito jars
+ checksums/
++target/
++out/
++*.class
++*.jar
++.gradle/
+diff --git a/src/main/java/org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java b/src/main/java/org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java
+index a62ee4053..08d6ba52b 100644
+--- a/src/main/java/org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java
++++ b/src/main/java/org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java
+@@ -158,7 +158,14 @@ public class TypeBasedCandidateFilter implements MockCandidateFilter {
+             final Field injectMocksField) {
+         List<Object> mockTypeMatches = new ArrayList<>();
+         for (Object mock : mocks) {
+-            if (candidateFieldToBeInjected.getType().isAssignableFrom(mock.getClass())) {
++            boolean typeMatch =
++                    candidateFieldToBeInjected.getType().isAssignableFrom(mock.getClass());
++            Type genericTypeToMock = MockUtil.getMockSettings(mock).getGenericTypeToMock();
++            if (genericTypeToMock != null) {
++                typeMatch |=
++                        candidateFieldToBeInjected.getType().isAssignableFrom(genericTypeToMock);
++            }
++            if (typeMatch) {
+                 Type mockType = MockUtil.getMockSettings(mock).getGenericTypeToMock();
+                 Type typeToMock = candidateFieldToBeInjected.getGenericType();
+                 boolean bothHaveTypeInfo = typeToMock != null && mockType != null;

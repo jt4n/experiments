@@ -1,0 +1,41 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java b/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+index e4310e92..08d27781 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+@@ -313,9 +313,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+ 
+         TokenFilter f = _filterContext.checkValue(_itemFilter);
+         if (f == null) {
++            _filterContext = _filterContext.createChildObjectContext(null, false);
+             return;
+         }
+-        
++
+         if (f != TokenFilter.INCLUDE_ALL) {
+             f = f.filterStartObject();
+         }
+@@ -347,6 +348,7 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+ 
+         TokenFilter f = _filterContext.checkValue(_itemFilter);
+         if (f == null) {
++            _filterContext = _filterContext.createChildObjectContext(null, false);
+             return;
+         }
+ 
+@@ -381,6 +383,7 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+ 
+         TokenFilter f = _filterContext.checkValue(_itemFilter);
+         if (f == null) {
++            _filterContext = _filterContext.createChildObjectContext(null, false);
+             return;
+         }
+ 
+@@ -391,7 +394,7 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath();
+             _filterContext = _filterContext.createChildObjectContext(f, true);
+             delegate.writeStartObject(forValue, size);
+-        } else {
++        } else { // filter out
+             _filterContext = _filterContext.createChildObjectContext(f, false);
+         }
+     }

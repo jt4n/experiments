@@ -1,0 +1,54 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+index deea44fab..5b27f21f6 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+@@ -715,6 +715,36 @@ public class ObjectMapper
+         return new ObjectMapper(this);
+     }
+ 
++    /**
++     * Method for creating a new {@link ObjectMapper} instance that
++     * has same initial configuration as this instance, but uses given
++     * {@link JsonFactory} for constructing necessary {@link JsonParser}s
++     * and/or {@link JsonGenerator}s.
++     *<p>
++     * This method is similar to {@link #copy()}, and result has same configuration
++     * as this instance, except for {@link JsonFactory} which is specified
++     * by caller.
++     *<p>
++     * Method is typically
++     * used when multiple, differently configured mappers are needed.
++     * Although configuration is shared, cached serializers and deserializers
++     * are NOT shared, which means that the new instance may be re-configured
++     * before use; meaning that it behaves the same way as if an instance
++     * was constructed from scratch.
++     * 
++     * @param factory {@link JsonFactory} to use for the new instance
++     * @return New {@link ObjectMapper} instance with specified {@link JsonFactory}
++     *   and configuration of this instance
++     * 
++     * @since 2.15
++     */
++    public ObjectMapper copyWith(JsonFactory factory) {
++        ObjectMapper copy = copy();
++        copy._jsonFactory = factory;
++        copy._jsonFactory.setCodec(copy);
++        return copy;
++    }
++
+     /**
+      * @since 2.1
+      */

@@ -1,0 +1,27 @@
+
+diff --git a/.gitignore b/.gitignore
+index 4c0c15eb7..682d481bf 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -61,4 +61,6 @@ lib/pluginmanager/plugin_aliases.yml
+ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+-qa/integration/fixtures/logs_rollover/log4j2.properties
+\ No newline at end of file
++qa/integration/fixtures/logs_rollover/log4j2.propertiestarget/
++out/
++.gradle/
+diff --git a/logstash-core/lib/logstash/util/substitution_variables.rb b/logstash-core/lib/logstash/util/substitution_variables.rb
+index baa47f331..50d4291cb 100644
+--- a/logstash-core/lib/logstash/util/substitution_variables.rb
++++ b/logstash-core/lib/logstash/util/substitution_variables.rb
+@@ -65,7 +65,7 @@ module ::LogStash::Util::SubstitutionVariables
+       # [1] http://ruby-doc.org/core-2.1.1/Regexp.html#method-c-last_match
+       name = Regexp.last_match(:name)
+       default = Regexp.last_match(:default)
+-      logger.debug("Replacing `#{placeholder}` with actual value")
++      logger.debug("Replacing `#{placeholder}`")
+ 
+       #check the secret store if it exists
+       secret_store = SECRET_STORE.instance

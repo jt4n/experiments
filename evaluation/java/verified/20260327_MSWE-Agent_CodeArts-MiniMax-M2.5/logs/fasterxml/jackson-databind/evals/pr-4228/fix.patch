@@ -1,0 +1,79 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
+index ff060f4f5..408691cd8 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
+@@ -513,9 +513,11 @@ index, owner, defs[index], propDef);
+                             candidate.parameter(0), injection);
+                     creators.addPropertyCreator(ctor, false, properties);
+                 } else {
++                    SettableBeanProperty prop = constructCreatorProperty(ctxt, beanDesc,
++                            propDef.getName(), 0, candidate.parameter(0), candidate.injection(0));
+                     /*boolean added = */ _handleSingleArgumentCreator(creators,
+                             ctor, false,
+-                            vchecker.isCreatorVisible(ctor));
++                            vchecker.isCreatorVisible(ctor), prop);
+                     // one more thing: sever link to creator property, to avoid possible later
+                     // problems with "unresolved" constructor property
+                     if (propDef != null) {
+@@ -706,7 +708,9 @@ nonAnnotatedParamIndex, ctor);
+             boolean useProps = _checkIfCreatorPropertyBased(beanDesc, intr, factory, argDef);
+             if (!useProps) { // not property based but delegating
+                 /*boolean added=*/ _handleSingleArgumentCreator(creators,
+-                        factory, false, vchecker.isCreatorVisible(factory));
++                        factory, false, vchecker.isCreatorVisible(factory),
++                        constructCreatorProperty(ctxt, beanDesc, argDef.getName(), 0,
++                                candidate.parameter(0), candidate.injection(0)));
+                 // 23-Sep-2016, tatu: [databind#1383]: Need to also sever link to avoid possible
+                 //    later problems with "unresolved" constructor property
+                 if (argDef != null) {
+@@ -837,7 +841,7 @@ nonAnnotatedParamIndex, ctor);
+         // 17-Jan-2018, tatu: as per [databind#1853] need to ensure we will distinguish
+         //   "well-known" single-arg variants (String, int/long, boolean) from "generic" delegating...
+         if (argCount == 1) {
+-            _handleSingleArgumentCreator(creators, candidate.creator(), true, true);
++            _handleSingleArgumentCreator(creators, candidate.creator(), true, true, properties[0]);
+             // one more thing: sever link to creator property, to avoid possible later
+             // problems with "unresolved" constructor property
+             BeanPropertyDefinition paramDef = candidate.propertyDef(0);
+@@ -996,7 +1000,8 @@ candidate.creator());
+             return;
+         }
+ 
+-        _handleSingleArgumentCreator(creators, candidate.creator(), true, true);
++        _handleSingleArgumentCreator(creators, candidate.creator(), true, true,
++                constructCreatorProperty(ctxt, beanDesc, paramName, 0, param, injectId));
+ 
+         // one more thing: sever link to creator property, to avoid possible later
+         // problems with "unresolved" constructor property
+@@ -1098,7 +1103,8 @@ candidate.creator());
+     }
+ 
+     protected boolean _handleSingleArgumentCreator(CreatorCollector creators,
+-            AnnotatedWithParams ctor, boolean isCreator, boolean isVisible)
++            AnnotatedWithParams ctor, boolean isCreator, boolean isVisible,
++            SettableBeanProperty property)
+     {
+         // otherwise either 'simple' number, String, or general delegate:
+         Class<?> type = ctor.getRawParameterType(0);
+@@ -1144,7 +1150,7 @@ candidate.creator());
+         }
+         // Delegating Creator ok iff it has @JsonCreator (etc)
+         if (isCreator) {
+-            creators.addDelegatingCreator(ctor, isCreator, null, 0);
++            creators.addDelegatingCreator(ctor, isCreator, property, 0);
+             return true;
+         }
+         return false;

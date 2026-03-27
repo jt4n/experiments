@@ -1,0 +1,28 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2fc591bd..8ea6cb9e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -20,3 +20,8 @@ build
+ .DS_Store
+ 
+ examples/android-proguard-example/gen
++target/
++out/
++*.class
++*.jar
++.gradle/
+diff --git a/gson/src/main/java/com/google/gson/internal/Streams.java b/gson/src/main/java/com/google/gson/internal/Streams.java
+index 0bb73aa1..42058531 100644
+--- a/gson/src/main/java/com/google/gson/internal/Streams.java
++++ b/gson/src/main/java/com/google/gson/internal/Streams.java
+@@ -114,6 +114,9 @@ public final class Streams {
+       @Override public CharSequence subSequence(int start, int end) {
+         return new String(chars, start, end - start);
+       }
++      @Override public String toString() {
++        return new String(chars);
++      }
+     }
+   }
+ 

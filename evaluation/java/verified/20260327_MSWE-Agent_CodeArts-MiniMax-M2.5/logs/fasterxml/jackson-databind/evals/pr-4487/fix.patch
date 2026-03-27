@@ -1,0 +1,27 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+index ce35d06ff..486fbc3de 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+@@ -1637,7 +1637,8 @@ ClassUtil.nameOf(rawClass), pc, (pc == 1) ? "" : "s", bindings));
+         //    detected, related to difficulties in propagating type upwards (Iterable, for
+         //    example, is a weak, tag-on type). They may be detectable in future.
+         // 23-May-2023, tatu: As of 2.16 we do, however, recognized certain `IterationType`s.
+-        if (rawType == Iterator.class || rawType == Stream.class) {
++        // 05-Jun-2024, tatu: [databind#xxx] Add `Iterable.class` as well.
++        if (rawType == Iterator.class || rawType == Stream.class || rawType == Iterable.class) {
+             return _iterationType(rawType, bindings, superClass, superInterfaces);
+         }
+         if (BaseStream.class.isAssignableFrom(rawType)) {

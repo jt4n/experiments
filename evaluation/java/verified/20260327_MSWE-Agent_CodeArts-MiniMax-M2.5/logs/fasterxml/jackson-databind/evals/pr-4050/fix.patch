@@ -1,0 +1,29 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+index 4610a58e5..f0c73f3fd 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+@@ -3519,9 +3519,8 @@ public class ObjectMapper
+             return (T) getNodeFactory().nullNode();
+         }
+ 
+-        // inlined 'writeValue' with minor changes:
+-        // first: disable wrapping when writing
+-        final SerializationConfig config = getSerializationConfig().without(SerializationFeature.WRAP_ROOT_VALUE);
++        // inlined 'writeValue' with minor changes
++        final SerializationConfig config = getSerializationConfig();
+         final DefaultSerializerProvider context = _serializerProvider(config);
+ 
+         // Then create TokenBuffer to use as JsonGenerator

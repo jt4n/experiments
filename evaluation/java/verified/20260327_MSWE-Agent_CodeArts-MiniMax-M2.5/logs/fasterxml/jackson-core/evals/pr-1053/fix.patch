@@ -1,0 +1,43 @@
+
+diff --git a/.gitignore b/.gitignore
+index 587b8bfb..70946ce8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.iws
+ /.idea/
+ dependency-reduced-pom.xml
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/Version.java b/src/main/java/com/fasterxml/jackson/core/Version.java
+index ed446afc..442c52f8 100644
+--- a/src/main/java/com/fasterxml/jackson/core/Version.java
++++ b/src/main/java/com/fasterxml/jackson/core/Version.java
+@@ -145,6 +145,25 @@ public class Version
+                     diff = _minorVersion - other._minorVersion;
+                     if (diff == 0) {
+                         diff = _patchLevel - other._patchLevel;
++                        if (diff == 0) {
++                            // Compare snapshotInfo: null/empty (release) > pre-release (alpha, beta, etc.)
++                            // For example: 1.0.0 > 1.0.0-alpha > 1.0.0-beta
++                            String thisSnapshot = (_snapshotInfo == null) ? "" : _snapshotInfo;
++                            String otherSnapshot = (other._snapshotInfo == null) ? "" : other._snapshotInfo;
++                            // If both are empty, they're equal
++                            // If only this is empty, it's greater (release > pre-release)
++                            // If only other is empty, it's less (pre-release < release)
++                            // Otherwise, compare lexicographically
++                            if (thisSnapshot.isEmpty() && otherSnapshot.isEmpty()) {
++                                diff = 0;
++                            } else if (thisSnapshot.isEmpty()) {
++                                diff = 1;  // release > pre-release
++                            } else if (otherSnapshot.isEmpty()) {
++                                diff = -1; // pre-release < release
++                            } else {
++                                diff = thisSnapshot.compareTo(otherSnapshot);
++                            }
++                        }
+                     }
+                 }
+             }

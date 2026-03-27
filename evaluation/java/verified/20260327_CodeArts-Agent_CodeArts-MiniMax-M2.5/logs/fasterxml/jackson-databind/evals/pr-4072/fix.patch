@@ -1,0 +1,16 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
+index 5fd52e46c..b41609691 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
+@@ -133,7 +133,10 @@ public class ThrowableDeserializer
+                     throwable = (Throwable) _valueInstantiator.createFromString(ctxt, p.getValueAsString());
+                     continue;
+                 }
+-                // fall through
++                // 23-Jan-2018, tatu: [databind#????] Need to also skip if there's no
++                //    String creator -- can not use it so must skip
++                p.skipChildren();
++                continue;
+             }
+ 
+             // Things marked as ignorable should not be passed to any setter

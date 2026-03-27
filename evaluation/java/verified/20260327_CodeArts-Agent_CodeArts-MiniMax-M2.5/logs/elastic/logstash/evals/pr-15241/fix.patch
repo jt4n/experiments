@@ -1,0 +1,29 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index e455a99dc..0e22e958b 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -531,10 +531,20 @@ public final class DeadLetterQueueWriter implements Closeable {
+     }
+ 
+     private void sealSegment(int segmentIndex, SealReason motivation) throws IOException {
+-        Files.move(queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex)),
+-                queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex)),
+-                StandardCopyOption.ATOMIC_MOVE);
+-        logger.debug("Sealed segment with index {} because {}", segmentIndex, motivation);
++        Path tempFilePath = queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex));
++        Path segmentFilePath = queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex));
++        try {
++            Files.move(tempFilePath, segmentFilePath, StandardCopyOption.ATOMIC_MOVE);
++            logger.debug("Sealed segment with index {} because {}", segmentIndex, motivation);
++        } catch (NoSuchFileException e) {
++            if (Files.exists(segmentFilePath)) {
++                logger.debug("Segment file {} already exists, segment with index {} was likely sealed by another process", segmentFilePath, segmentIndex);
++            } else {
++                throw e;
++            }
++        } catch (java.nio.file.FileAlreadyExistsException e) {
++            logger.debug("Segment file {} already exists, segment with index {} was likely sealed by another process", segmentFilePath, segmentIndex);
++        }
+     }
+ 
+     private void createFlushScheduler() {

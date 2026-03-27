@@ -1,0 +1,188 @@
+diff --git a/logstash-core/lib/logstash/config/grammar.rb b/logstash-core/lib/logstash/config/grammar.rb
+index e7de111e8..1e29b64c4 100644
+--- a/logstash-core/lib/logstash/config/grammar.rb
++++ b/logstash-core/lib/logstash/config/grammar.rb
+@@ -3635,9 +3635,11 @@ module LogStashConfig
+     r0
+   end
+ 
+-end
+ 
+-class LogStashConfigParser < Treetop::Runtime::CompiledParser
+-  include LogStashConfig
++  class Parser < Treetop::Runtime::CompiledParser
++    include LogStashConfig
++  end
+ end
+ 
++LogStashConfigParser = LogStashConfig::Parser
++
+diff --git a/logstash-core/src/test/java/org/logstash/common/BufferedTokenizerExtTest.java b/logstash-core/src/test/java/org/logstash/common/BufferedTokenizerExtTest.java
+new file mode 100644
+index 000000000..0c2355b89
+--- /dev/null
++++ b/logstash-core/src/test/java/org/logstash/common/BufferedTokenizerExtTest.java
+@@ -0,0 +1,162 @@
++/*
++ * Licensed to Elasticsearch B.V. under one or more contributor
++ * license agreements. See the NOTICE file distributed with
++ * this work for additional information regarding copyright
++ * ownership. Elasticsearch B.V. licenses this file to you under
++ * the Apache License, Version 2.0 (the "License"); you may
++ * not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *	http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing,
++ * software distributed under the License is distributed on an
++ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++ * KIND, either express or implied.  See the License for the
++ * specific language governing permissions and limitations
++ * under the License.
++ */
++
++package org.logstash.common;
++
++import org.jruby.RubyArray;
++import org.jruby.RubyString;
++import org.jruby.runtime.ThreadContext;
++import org.jruby.runtime.builtin.IRubyObject;
++import org.junit.Before;
++import org.junit.Test;
++import org.logstash.RubyTestBase;
++import org.logstash.RubyUtil;
++
++import static org.junit.Assert.assertEquals;
++
++@SuppressWarnings("rawtypes")
++public class BufferedTokenizerExtTest extends RubyTestBase {
++
++    private ThreadContext context;
++
++    private static RubyString NEW_LINE = (RubyString) RubyUtil.RUBY.newString("\n").
++            freeze(RubyUtil.RUBY.getCurrentContext());
++
++    @Before
++    public void setUp() {
++        context = RubyUtil.RUBY.getCurrentContext();
++    }
++
++    private static void assertEqualsBytes(byte[] expected, byte[] actual) {
++        assertEquals(expected.length, actual.length);
++        for (int i = 0; i < expected.length; i++) {
++            assertEquals(expected[i], actual[i]);
++        }
++    }
++
++    @Test
++    public void testEncodingIsPreservedAfterAppend() {
++        RubyString rubyString = RubyString.newString(RubyUtil.RUBY, new byte[]{(byte) 0xA3});
++        IRubyObject rubyInput = rubyString.force_encoding(context, RubyUtil.RUBY.newString("ISO8859-1"));
++
++        final RubyArray entities = rubyInput.convertToString().split(NEW_LINE, -1);
++
++        RubyArray input = RubyUtil.RUBY.newArray();
++        input.append(entities.shift(context));
++        RubyString head = (RubyString) input.shift(context);
++
++        assertEqualsBytes(new byte[]{(byte) 0xA3}, head.getBytes());
++    }
++
++    @Test
++    public void testEncodingIsPreservedAfterAddAll() {
++        RubyString rubyString = RubyString.newString(RubyUtil.RUBY, new byte[]{(byte) 0xA3});
++        IRubyObject rubyInput = rubyString.force_encoding(context, RubyUtil.RUBY.newString("ISO8859-1"));
++
++        final RubyArray entities = rubyInput.convertToString().split(NEW_LINE, -1);
++
++        RubyArray input = RubyUtil.RUBY.newArray();
++        input.addAll(entities);
++        RubyString head = (RubyString) input.shift(context);
++
++        assertEqualsBytes(new byte[]{(byte) 0xA3}, head.getBytes());
++    }
++
++    @Test
++    public void testEncodingIsPreservedAfterMultipleAppends() {
++        RubyString rubyString = RubyString.newString(RubyUtil.RUBY, new byte[]{(byte) 0xA3});
++        IRubyObject rubyInput = rubyString.force_encoding(context, RubyUtil.RUBY.newString("ISO8859-1"));
++
++        final RubyArray entities = rubyInput.convertToString().split(NEW_LINE, -1);
++
++        RubyArray input = RubyUtil.RUBY.newArray();
++        input.append(entities.shift(context));
++        input.append(entities.shift(context));
++        RubyString head = (RubyString) input.shift(context);
++
++        assertEqualsBytes(new byte[]{(byte) 0xA3}, head.getBytes());
++    }
++
++    @Test
++    public void testEncodingIsPreservedAfterAppendThenShift() {
++        RubyString rubyString = RubyString.newString(RubyUtil.RUBY, new byte[]{(byte) 0xA3});
++        IRubyObject rubyInput = rubyString.force_encoding(context, RubyUtil.RUBY.newString("ISO8859-1"));
++
++        final RubyArray entities = rubyInput.convertToString().split(NEW_LINE, -1);
++
++        RubyArray input = RubyUtil.RUBY.newArray();
++        input.append(entities.shift(context));
++        RubyString head = (RubyString) input.shift(context);
++
++        assertEqualsBytes(new byte[]{(byte) 0xA3}, head.getBytes());
++    }
++
++    @Test
++    public void testEncodingIsPreservedAfterJoinAndAppend() {
++        RubyString rubyString = RubyString.newString(RubyUtil.RUBY, new byte[]{(byte) 0xA3});
++        IRubyObject rubyInput = rubyString.force_encoding(context, RubyUtil.RUBY.newString("ISO8859-1"));
++
++        final RubyArray entities = rubyInput.convertToString().split(NEW_LINE, -1);
++
++        RubyArray input = RubyUtil.RUBY.newArray();
++        input.append(entities.shift(context));
++
++        IRubyObject joined = input.join(context);
++        entities.unshift(joined);
++
++        input.clear();
++        input.append(entities.pop(context));
++
++        RubyString head = (RubyString) input.first();
++        assertEqualsBytes(new byte[]{(byte) 0xA3}, head.getBytes());
++    }
++
++    @Test
++    public void testEncodingIsPreservedWithBufferedTokenizerExt() {
++        RubyString rubyString = RubyString.newString(RubyUtil.RUBY, new byte[]{(byte) 0xA3});
++        IRubyObject rubyInput = rubyString.force_encoding(context, RubyUtil.RUBY.newString("ISO8859-1"));
++
++        BufferedTokenizerExt tokenizer = new BufferedTokenizerExt(RubyUtil.RUBY, RubyUtil.BUFFERED_TOKENIZER);
++        tokenizer.init(context, new IRubyObject[]{});
++
++        tokenizer.extract(context, rubyInput);
++        IRubyObject result = tokenizer.flush(context);
++
++        RubyString flushed = (RubyString) result;
++        assertEqualsBytes(new byte[]{(byte) 0xA3}, flushed.getBytes());
++    }
++
++    @Test
++    public void testEncodingIsPreservedWithBufferedTokenizerExtMultipleExtracts() {
++        RubyString rubyString = RubyString.newString(RubyUtil.RUBY, new byte[]{(byte) 0xA3});
++        IRubyObject rubyInput = rubyString.force_encoding(context, RubyUtil.RUBY.newString("ISO8859-1"));
++
++        BufferedTokenizerExt tokenizer = new BufferedTokenizerExt(RubyUtil.RUBY, RubyUtil.BUFFERED_TOKENIZER);
++        tokenizer.init(context, new IRubyObject[]{});
++
++        RubyArray result1 = tokenizer.extract(context, rubyInput);
++        assertEquals(0, result1.size());
++
++        RubyArray result2 = tokenizer.extract(context, RubyUtil.RUBY.newString("\n"));
++        assertEquals(1, result2.size());
++
++        RubyString extracted = (RubyString) result2.first();
++        assertEqualsBytes(new byte[]{(byte) 0xA3}, extracted.getBytes());
++    }
++}
+\ No newline at end of file

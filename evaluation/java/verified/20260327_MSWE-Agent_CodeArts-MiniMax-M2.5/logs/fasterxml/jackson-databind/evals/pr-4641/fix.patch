@@ -1,0 +1,97 @@
+
+diff --git a/.gitignore b/.gitignore
+index e95cf389d..28348a1ed 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,3 +26,7 @@ syntax: glob
+ 
+ # Other/local
+ /gh-workflows
++target/
++out/
++*.jar
++.gradle/
+diff --git a/TestAnySetterIssue.java b/TestAnySetterIssue.java
+new file mode 100644
+index 000000000..b2f6ec4e8
+--- /dev/null
++++ b/TestAnySetterIssue.java
+@@ -0,0 +1,46 @@
++import com.fasterxml.jackson.annotation.JsonAnySetter;
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import java.util.HashMap;
++import java.util.Map;
++
++public class TestAnySetterIssue {
++    public static class POJO562WithAnnotationOnBothCtorParamAndField {
++        String a;
++        @JsonAnySetter
++        Map<String, Object> stuff;
++
++        @JsonCreator
++        public POJO562WithAnnotationOnBothCtorParamAndField(@JsonProperty("a") String a,
++                                                            @JsonAnySetter Map<String, Object> leftovers) {
++            this.a = a;
++            stuff = leftovers;
++        }
++    }
++
++    public static void main(String[] args) throws Exception {
++        ObjectMapper mapper = new ObjectMapper();
++        Map<String, Object> expected = new HashMap<>();
++        expected.put("b", Integer.valueOf(42));
++        expected.put("c", Integer.valueOf(111));
++
++        POJO562WithAnnotationOnBothCtorParamAndField pojo = mapper.readValue(
++            "{'a':'value', 'b':42, 'c': 111}",
++            POJO562WithAnnotationOnBothCtorParamAndField.class);
++
++        System.out.println("pojo.a = " + pojo.a);
++        System.out.println("pojo.stuff = " + pojo.stuff);
++        System.out.println("expected = " + expected);
++        
++        if (pojo.stuff == null) {
++            System.out.println("FAIL: pojo.stuff is null!");
++            System.exit(1);
++        } else if (pojo.stuff.equals(expected)) {
++            System.out.println("SUCCESS: pojo.stuff matches expected");
++        } else {
++            System.out.println("FAIL: pojo.stuff does not match expected");
++            System.exit(1);
++        }
++    }
++}
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+index 80d9d492c..efb419012 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+@@ -666,12 +666,9 @@ ClassUtil.name(propName)));
+               BeanDescription beanDesc, SettableBeanProperty[] creatorProps)
+             throws JsonMappingException
+     {
+-        // Find the regular method/field level any-setter
+-        AnnotatedMember anySetter = beanDesc.findAnySetterAccessor();
+-        if (anySetter != null) {
+-            return constructAnySetter(ctxt, beanDesc, anySetter);
+-        }
+-        // else look for any-setter via @JsonCreator
++        // [databind#562]: First look for any-setter via @JsonCreator (constructor parameter)
++        // before looking for method/field level any-setter, since creator parameter
++        // should take precedence
+         if (creatorProps != null) {
+             for (SettableBeanProperty prop : creatorProps) {
+                 AnnotatedMember member = prop.getMember();
+@@ -680,6 +677,11 @@ ClassUtil.name(propName)));
+                 }
+             }
+         }
++        // Also check method/field level any-setter
++        AnnotatedMember anySetter = beanDesc.findAnySetterAccessor();
++        if (anySetter != null) {
++            return constructAnySetter(ctxt, beanDesc, anySetter);
++        }
+         // not found, that's fine, too
+         return null;
+     }

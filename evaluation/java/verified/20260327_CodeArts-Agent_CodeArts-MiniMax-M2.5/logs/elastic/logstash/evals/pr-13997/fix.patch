@@ -1,0 +1,70 @@
+diff --git a/logstash-core/src/main/java/org/logstash/config/ir/expression/ExpressionSubstitution.java b/logstash-core/src/main/java/org/logstash/config/ir/expression/ExpressionSubstitution.java
+index adddd34e6..b6c19b75b 100644
+--- a/logstash-core/src/main/java/org/logstash/config/ir/expression/ExpressionSubstitution.java
++++ b/logstash-core/src/main/java/org/logstash/config/ir/expression/ExpressionSubstitution.java
+@@ -9,8 +9,12 @@ import org.logstash.plugins.ConfigVariableExpander;
+ import java.lang.reflect.Constructor;
+ import java.lang.reflect.InvocationTargetException;
+ import java.util.Map;
++import java.util.regex.Pattern;
+ 
+ public class ExpressionSubstitution {
++
++    private static final Pattern SUBSTITUTION_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{(?<name>[a-zA-Z_.][a-zA-Z0-9_.]*)(:(?<default>[^}]*))?}");
++
+     /**
+      * Replace ${VAR:defaultValue} in BinaryBooleanExpression, UnaryBooleanExpression and ValueExpression, excluding RegexValueExpression
+      * with the value in the following precedence: secret store, environment variable, default value
+@@ -37,9 +41,11 @@ public class ExpressionSubstitution {
+                 }
+             } else if (expression instanceof ValueExpression && !(expression instanceof RegexValueExpression) && (((ValueExpression) expression).get() != null)) {
+                 final String key = "placeholder";
+-                Map<String, Object> args = ImmutableMap.of(key, ((ValueExpression) expression).get());
++                Object originalValue = ((ValueExpression) expression).get();
++                Map<String, Object> args = ImmutableMap.of(key, originalValue);
+                 Map<String, Object> substitutedArgs = CompiledPipeline.expandConfigVariables(cve, args);
+-                return new ValueExpression(expression.getSourceWithMetadata(), substitutedArgs.get(key));
++                boolean isSecret = originalValue instanceof String && SUBSTITUTION_PLACEHOLDER_PATTERN.matcher((String) originalValue).matches();
++                return new ValueExpression(expression.getSourceWithMetadata(), substitutedArgs.get(key), isSecret);
+             }
+ 
+             return expression;
+diff --git a/logstash-core/src/main/java/org/logstash/config/ir/expression/ValueExpression.java b/logstash-core/src/main/java/org/logstash/config/ir/expression/ValueExpression.java
+index 2b0a6db33..ad72ee281 100644
+--- a/logstash-core/src/main/java/org/logstash/config/ir/expression/ValueExpression.java
++++ b/logstash-core/src/main/java/org/logstash/config/ir/expression/ValueExpression.java
+@@ -30,8 +30,13 @@ import org.logstash.config.ir.SourceComponent;
+ 
+ public class ValueExpression extends Expression {
+     protected final Object value;
++    protected final boolean secret;
+ 
+     public ValueExpression(SourceWithMetadata meta, Object value) throws InvalidIRException {
++        this(meta, value, false);
++    }
++
++    public ValueExpression(SourceWithMetadata meta, Object value, boolean secret) throws InvalidIRException {
+         super(meta);
+ 
+         if (!(value == null ||
+@@ -52,6 +57,7 @@ public class ValueExpression extends Expression {
+         }
+ 
+         this.value = value;
++        this.secret = secret;
+     }
+ 
+     public Object get() {
+@@ -79,7 +85,11 @@ public class ValueExpression extends Expression {
+             return "null";
+         }
+         if (value instanceof String) {
+-            return "'" + get() + "'";
++            String stringValue = (String) value;
++            if (secret) {
++                stringValue = "*****";
++            }
++            return "'" + stringValue + "'";
+         }
+ 
+         return get().toString();

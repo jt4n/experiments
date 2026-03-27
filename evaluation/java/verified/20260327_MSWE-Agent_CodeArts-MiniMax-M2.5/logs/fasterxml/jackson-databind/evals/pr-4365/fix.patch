@@ -1,0 +1,53 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java b/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java
+index d6e41dbbd..c6653a68a 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java
+@@ -586,6 +586,17 @@ public class AnnotationIntrospectorPair
+             if (n2 != null) {
+                 n = n2;
+             }
++        } else {
++            // If primary has empty simple name or namespace, merge with secondary
++            PropertyName n2 = _secondary.findNameForSerialization(a);
++            if (n2 != null) {
++                if (!n.hasSimpleName() && n2.hasSimpleName()) {
++                    n = n.withSimpleName(n2.simpleName());
++                }
++                if (!n.hasNamespace() && n2.hasNamespace()) {
++                    n = n.withNamespace(n2.namespace());
++                }
++            }
+         }
+         return n;
+     }
+@@ -773,6 +784,17 @@ public class AnnotationIntrospectorPair
+             if (n2 != null) {
+                 n = n2;
+             }
++        } else {
++            // If primary has empty simple name or namespace, merge with secondary
++            PropertyName n2 = _secondary.findNameForDeserialization(a);
++            if (n2 != null) {
++                if (!n.hasSimpleName() && n2.hasSimpleName()) {
++                    n = n.withSimpleName(n2.simpleName());
++                }
++                if (!n.hasNamespace() && n2.hasNamespace()) {
++                    n = n.withNamespace(n2.namespace());
++                }
++            }
+         }
+         return n;
+     }

@@ -1,0 +1,57 @@
+diff --git a/src/test/java/org/mockitousage/bugs/GenericSpyTest.java b/src/test/java/org/mockitousage/bugs/GenericSpyTest.java
+new file mode 100644
+index 000000000..7894d49aa
+--- /dev/null
++++ b/src/test/java/org/mockitousage/bugs/GenericSpyTest.java
+@@ -0,0 +1,50 @@
++/*
++ * Copyright (c) 2007 Mockito contributors
++ * This program is made available under the terms of the MIT License.
++ */
++package org.mockitousage.bugs;
++
++import static org.junit.Assert.assertNotNull;
++
++import java.util.ArrayList;
++import java.util.List;
++
++import org.junit.Test;
++import org.mockito.Mockito;
++import org.mockito.MockitoAnnotations;
++import org.mockito.Spy;
++import org.mockito.internal.util.MockUtil;
++
++public class GenericSpyTest {
++
++    @Spy
++    private ExampleRecord exampleRecord = new ExampleRecord("some value");
++
++    @Spy
++    private final List<String> genericSpy = new ArrayList<>();
++
++    @Test
++    public void exampleServiceUsesDependency() {
++        MockitoAnnotations.openMocks(this);
++        
++        System.out.println("genericSpy is mock: " + MockUtil.isMock(genericSpy));
++        System.out.println("genericSpy is spy: " + MockUtil.isSpy(genericSpy));
++        System.out.println("exampleRecord is mock: " + MockUtil.isMock(exampleRecord));
++        System.out.println("exampleRecord is spy: " + MockUtil.isSpy(exampleRecord));
++        System.out.println("exampleRecord.someParameter() = " + exampleRecord.someParameter());
++        
++        assertNotNull(exampleRecord.someParameter());
++    }
++
++    public static class ExampleRecord {
++        private final String someParameter;
++
++        public ExampleRecord(String someParameter) {
++            this.someParameter = someParameter;
++        }
++
++        public String someParameter() {
++            return someParameter;
++        }
++    }
++}
+\ No newline at end of file

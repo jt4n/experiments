@@ -1,0 +1,92 @@
+diff --git a/src/main/java/org/mockito/Captor.java b/src/main/java/org/mockito/Captor.java
+index 0de9f72b2..72c386e62 100644
+--- a/src/main/java/org/mockito/Captor.java
++++ b/src/main/java/org/mockito/Captor.java
+@@ -4,10 +4,12 @@
+  */
+ package org.mockito;
+ 
++import static java.lang.annotation.ElementType.FIELD;
++import static java.lang.annotation.ElementType.PARAMETER;
++import static java.lang.annotation.RetentionPolicy.RUNTIME;
++
+ import java.lang.annotation.Documented;
+-import java.lang.annotation.ElementType;
+ import java.lang.annotation.Retention;
+-import java.lang.annotation.RetentionPolicy;
+ import java.lang.annotation.Target;
+ 
+ /**
+@@ -45,7 +47,7 @@ import java.lang.annotation.Target;
+  * @see ArgumentCaptor
+  * @since 1.8.3
+  */
+-@Retention(RetentionPolicy.RUNTIME)
+-@Target(ElementType.FIELD)
++@Retention(RUNTIME)
++@Target({FIELD, PARAMETER})
+ @Documented
+ public @interface Captor {}
+diff --git a/subprojects/junit-jupiter/src/main/java/org/mockito/junit/jupiter/MockitoExtension.java b/subprojects/junit-jupiter/src/main/java/org/mockito/junit/jupiter/MockitoExtension.java
+index 220b7f450..4e6949a9a 100644
+--- a/subprojects/junit-jupiter/src/main/java/org/mockito/junit/jupiter/MockitoExtension.java
++++ b/subprojects/junit-jupiter/src/main/java/org/mockito/junit/jupiter/MockitoExtension.java
+@@ -20,6 +20,8 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
+ import org.junit.jupiter.api.extension.ParameterContext;
+ import org.junit.jupiter.api.extension.ParameterResolutionException;
+ import org.junit.jupiter.api.extension.ParameterResolver;
++import org.mockito.ArgumentCaptor;
++import org.mockito.Captor;
+ import org.mockito.Mock;
+ import org.mockito.Mockito;
+ import org.mockito.MockitoSession;
+@@ -188,13 +190,16 @@ public class MockitoExtension implements BeforeEachCallback, AfterEachCallback,
+ 
+     @Override
+     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext context) throws ParameterResolutionException {
+-        return parameterContext.isAnnotated(Mock.class);
++        return parameterContext.isAnnotated(Mock.class) || parameterContext.isAnnotated(Captor.class);
+     }
+ 
+     @Override
+     @SuppressWarnings("unchecked")
+     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext context) throws ParameterResolutionException {
+         final Parameter parameter = parameterContext.getParameter();
++        if (parameterContext.isAnnotated(Captor.class)) {
++            return processAnnotationForCaptor(parameter);
++        }
+         Object mock = MockAnnotationProcessor.processAnnotationForMock(
+             parameterContext.findAnnotation(Mock.class).get(),
+             parameter.getType(),
+@@ -205,4 +210,31 @@ public class MockitoExtension implements BeforeEachCallback, AfterEachCallback,
+         }
+         return mock;
+     }
++
++    private static Object processAnnotationForCaptor(Parameter parameter) {
++        Class<?> type = parameter.getType();
++        if (!ArgumentCaptor.class.isAssignableFrom(type)) {
++            throw new org.mockito.exceptions.base.MockitoException(
++                    "@Captor parameter must be of the type ArgumentCaptor.\n"
++                            + "Parameter: '"
++                            + parameter.getName()
++                            + "' has wrong type\n"
++                            + "For info how to use @Captor annotations see examples in javadoc for MockitoAnnotations class.");
++        }
++        Class<?> cls = getGenericType(parameter);
++        return ArgumentCaptor.forClass(cls);
++    }
++
++    private static Class<?> getGenericType(Parameter parameter) {
++        java.lang.reflect.Type generic = parameter.getParameterizedType();
++        if (generic instanceof java.lang.reflect.ParameterizedType) {
++            java.lang.reflect.Type actual = ((java.lang.reflect.ParameterizedType) generic).getActualTypeArguments()[0];
++            if (actual instanceof Class) {
++                return (Class<?>) actual;
++            } else if (actual instanceof java.lang.reflect.ParameterizedType) {
++                return (Class<?>) ((java.lang.reflect.ParameterizedType) actual).getRawType();
++            }
++        }
++        return Object.class;
++    }
+ }

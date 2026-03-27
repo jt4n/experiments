@@ -1,0 +1,94 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/node/NodeCursor.java b/src/main/java/com/fasterxml/jackson/databind/node/NodeCursor.java
+index 297a6fc34..47f7ab352 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/node/NodeCursor.java
++++ b/src/main/java/com/fasterxml/jackson/databind/node/NodeCursor.java
+@@ -195,7 +195,7 @@ abstract class NodeCursor
+         public ObjectCursor(JsonNode n, NodeCursor p)
+         {
+             super(JsonStreamContext.TYPE_OBJECT, p);
+-            _contents = ((ObjectNode) n).fields();
++            _contents = n.fields();
+             _needEntry = true;
+         }
+ 
+diff --git a/src/test/java/com/fasterxml/jackson/databind/node/CustomJsonNodeTest.java b/src/test/java/com/fasterxml/jackson/databind/node/CustomJsonNodeTest.java
+new file mode 100644
+index 000000000..b98f3009c
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/databind/node/CustomJsonNodeTest.java
+@@ -0,0 +1,74 @@
++package com.fasterxml.jackson.databind.node;
++
++import java.util.Iterator;
++import java.util.LinkedHashMap;
++import java.util.Map;
++
++import com.fasterxml.jackson.databind.BaseMapTest;
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.fasterxml.jackson.databind.ObjectReader;
++
++/**
++ * Test to verify that custom JsonNode implementations work with
++ * ObjectReader.readValue(JsonNode)
++ */
++public class CustomJsonNodeTest extends BaseMapTest
++{
++    /**
++     * Custom ObjectNode subclass that should work with ObjectReader.readValue(JsonNode)
++     */
++    static class CustomObjectNode extends ObjectNode
++    {
++        private final Map<String, JsonNode> _children = new LinkedHashMap<>();
++
++        public CustomObjectNode() {
++            super(null);
++        }
++
++        public CustomObjectNode set(String fieldName, JsonNode value) {
++            _children.put(fieldName, value);
++            return this;
++        }
++
++        @Override
++        public Iterator<Map.Entry<String, JsonNode>> fields() {
++            return _children.entrySet().iterator();
++        }
++
++        @Override
++        public int size() { return _children.size(); }
++
++        @Override
++        public boolean isEmpty() { return _children.isEmpty(); }
++    }
++
++    static class SimpleBean {
++        public String name;
++        public int value;
++    }
++
++    /*
++    /**********************************************************
++    /* Unit tests
++    /**********************************************************
++     */
++
++    public void testCustomObjectNode() throws Exception
++    {
++        ObjectMapper mapper = new ObjectMapper();
++        ObjectReader reader = mapper.readerFor(SimpleBean.class);
++
++        CustomObjectNode node = new CustomObjectNode();
++        node.set("name", TextNode.valueOf("Test"));
++        node.set("value", IntNode.valueOf(42));
++
++        // This should work but currently fails with ClassCastException
++        // because ObjectCursor casts to ObjectNode
++        SimpleBean result = reader.readValue(node);
++
++        assertNotNull(result);
++        assertEquals("Test", result.name);
++        assertEquals(42, result.value);
++    }
++}
+\ No newline at end of file

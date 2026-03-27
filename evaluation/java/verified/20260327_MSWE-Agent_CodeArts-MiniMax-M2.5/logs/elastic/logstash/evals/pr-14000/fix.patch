@@ -1,0 +1,40 @@
+
+diff --git a/.gitignore b/.gitignore
+index 4c0c15eb7..682d481bf 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -61,4 +61,6 @@ lib/pluginmanager/plugin_aliases.yml
+ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+-qa/integration/fixtures/logs_rollover/log4j2.properties
+\ No newline at end of file
++qa/integration/fixtures/logs_rollover/log4j2.propertiestarget/
++out/
++.gradle/
+diff --git a/logstash-core/lib/logstash/settings.rb b/logstash-core/lib/logstash/settings.rb
+index 1df5315ca..138d24b90 100644
+--- a/logstash-core/lib/logstash/settings.rb
++++ b/logstash-core/lib/logstash/settings.rb
+@@ -542,6 +542,21 @@ module LogStash
+       end
+     end
+ 
++    class ComplexPassword < Password
++      def initialize(name, default=nil, strict=true, min_length=6)
++        @min_length = min_length
++        super(name, default, strict)
++      end
++
++      def validate(value)
++        super(value)
++        if value && value.password.to_s.length < @min_length
++          raise ArgumentError.new("Password must be at least #{@min_length} characters")
++        end
++        true
++      end
++    end
++
+     # The CoercibleString allows user to enter any value which coerces to a String.
+     # For example for true/false booleans; if the possible_strings are ["foo", "true", "false"]
+     # then these options in the config file or command line will be all valid: "foo", true, false, "true", "false"

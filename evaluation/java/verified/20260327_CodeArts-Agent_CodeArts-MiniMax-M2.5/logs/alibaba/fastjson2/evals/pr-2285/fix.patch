@@ -1,0 +1,57 @@
+diff --git a/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java b/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java
+index b921de01f..19f628fac 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java
++++ b/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java
+@@ -363,6 +363,16 @@ public class ObjectWriterBaseModule
+             }
+ 
+             if (jsonField == null) {
++                if (fieldInfo.writeUsing == null) {
++                    Class fieldClass = field.getType();
++                    JSONType jsonType = BeanUtils.findAnnotation(fieldClass, JSONType.class);
++                    if (jsonType != null) {
++                        Class<?> serializer = jsonType.serializer();
++                        if (ObjectWriter.class.isAssignableFrom(serializer)) {
++                            fieldInfo.writeUsing = (Class<ObjectWriter>) serializer;
++                        }
++                    }
++                }
+                 return;
+             }
+ 
+@@ -388,6 +398,17 @@ public class ObjectWriterBaseModule
+             ) {
+                 fieldInfo.writeUsing = ObjectWriterImplToString.class;
+             }
++
++            if (fieldInfo.writeUsing == null) {
++                Class fieldClass = field.getType();
++                JSONType jsonType = BeanUtils.findAnnotation(fieldClass, JSONType.class);
++                if (jsonType != null) {
++                    Class<?> serializer = jsonType.serializer();
++                    if (ObjectWriter.class.isAssignableFrom(serializer)) {
++                        fieldInfo.writeUsing = (Class<ObjectWriter>) serializer;
++                    }
++                }
++            }
+         }
+ 
+         private void processJacksonJsonSubTypes(BeanInfo beanInfo, Annotation annotation) {
+@@ -787,6 +808,17 @@ public class ObjectWriterBaseModule
+                     }
+                 }
+             }
++
++            if (fieldInfo.writeUsing == null) {
++                Class fieldClass = method.getReturnType();
++                JSONType jsonType = BeanUtils.findAnnotation(fieldClass, JSONType.class);
++                if (jsonType != null) {
++                    Class<?> serializer = jsonType.serializer();
++                    if (ObjectWriter.class.isAssignableFrom(serializer)) {
++                        fieldInfo.writeUsing = (Class<ObjectWriter>) serializer;
++                    }
++                }
++            }
+         }
+ 
+         private void processAnnotations(FieldInfo fieldInfo, Annotation[] annotations) {

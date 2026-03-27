@@ -1,0 +1,226 @@
+
+diff --git a/.gitignore b/.gitignore
+index 682be0f1..027bf9dd 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /.idea/
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java b/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
+index 85b25684..2acfe40d 100644
+--- a/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
++++ b/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
+@@ -42,17 +42,27 @@ public class StreamReadConstraints
+      */
+     public static final int DEFAULT_MAX_STRING_LEN = 5_000_000;
+ 
++    /**
++     * Default setting for maximum BigDecimal scale: see {@link Builder#maxBigDecimalScale(int)} for details.
++     *
++     * @since 2.15
++     */
++    public static final int DEFAULT_MAX_BIGDECIMAL_SCALE = 1000;
++
+     protected final int _maxNestingDepth;
+     protected final int _maxNumLen;
+     protected final int _maxStringLen;
++    protected final int _maxBigDecimalScale;
+ 
+     private static final StreamReadConstraints DEFAULT =
+-        new StreamReadConstraints(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN);
++        new StreamReadConstraints(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN,
++                DEFAULT_MAX_BIGDECIMAL_SCALE);
+ 
+     public static final class Builder {
+         private int maxNestingDepth;
+         private int maxNumLen;
+         private int maxStringLen;
++        private int maxBigDecimalScale = DEFAULT_MAX_BIGDECIMAL_SCALE;
+ 
+         /**
+          * Sets the maximum nesting depth. The depth is a count of objects and arrays that have not
+@@ -111,37 +121,62 @@ public class StreamReadConstraints
+             return this;
+         }
+ 
++        /**
++         * Sets the maximum BigDecimal scale that can be converted to {@link BigInteger}.
++         * The default is 1000.
++         * <p>
++         * This limit is used to prevent performance issues when converting very large
++         * BigDecimal values to BigInteger. When a BigDecimal has a scale greater than
++         * this limit, an exception will be thrown.
++         * </p>
++         *
++         * @param maxBigDecimalScale the maximum BigDecimal scale
++         *
++         * @return this builder
++         * @throws IllegalArgumentException if the maxBigDecimalScale is set to a negative value
++         *
++         * @since 2.15
++         */
++        public Builder maxBigDecimalScale(final int maxBigDecimalScale) {
++            if (maxBigDecimalScale < 0) {
++                throw new IllegalArgumentException("Cannot set maxBigDecimalScale to a negative value");
++            }
++            this.maxBigDecimalScale = maxBigDecimalScale;
++            return this;
++        }
++
+         Builder() {
+-            this(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN);
++            this(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN,
++                    DEFAULT_MAX_BIGDECIMAL_SCALE);
+         }
+ 
+-        Builder(final int maxNestingDepth, final int maxNumLen, final int maxStringLen) {
++        Builder(final int maxNestingDepth, final int maxNumLen, final int maxStringLen,
++                final int maxBigDecimalScale) {
+             this.maxNestingDepth = maxNestingDepth;
+             this.maxNumLen = maxNumLen;
+             this.maxStringLen = maxStringLen;
++            this.maxBigDecimalScale = maxBigDecimalScale;
+         }
+ 
+         Builder(StreamReadConstraints src) {
+             maxNestingDepth = src._maxNestingDepth;
+             maxNumLen = src._maxNumLen;
+             maxStringLen = src._maxStringLen;
++            maxBigDecimalScale = src._maxBigDecimalScale;
+         }
+ 
+         public StreamReadConstraints build() {
+-            return new StreamReadConstraints(maxNestingDepth, maxNumLen, maxStringLen);
++            return new StreamReadConstraints(maxNestingDepth, maxNumLen, maxStringLen,
++                    maxBigDecimalScale);
+         }
+     }
+ 
+-    /*
+-    /**********************************************************************
+-    /* Life-cycle
+-    /**********************************************************************
+-     */
+-
+-    protected StreamReadConstraints(final int maxNestingDepth, final int maxNumLen, final int maxStringLen) {
++    protected StreamReadConstraints(final int maxNestingDepth, final int maxNumLen, final int maxStringLen,
++            final int maxBigDecimalScale) {
+         _maxNestingDepth = maxNestingDepth;
+         _maxNumLen = maxNumLen;
+         _maxStringLen = maxStringLen;
++        _maxBigDecimalScale = maxBigDecimalScale;
+     }
+ 
+     public static Builder builder() {
+@@ -196,6 +231,18 @@ public class StreamReadConstraints
+         return _maxStringLen;
+     }
+ 
++    /**
++     * Accessor for maximum BigDecimal scale.
++     * see {@link Builder#maxBigDecimalScale(int)} for details.
++     *
++     * @return Maximum allowed BigDecimal scale
++     *
++     * @since 2.15
++     */
++    public int getMaxBigDecimalScale() {
++        return _maxBigDecimalScale;
++    }
++
+     /*
+     /**********************************************************************
+     /* Convenience methods for validation, document limits
+diff --git a/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java b/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+index 023661e9..386e1d2f 100644
+--- a/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
++++ b/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+@@ -1217,6 +1217,15 @@ public abstract class ParserBase extends ParserMinimalBase
+     // @since 2.15
+     protected BigInteger _convertBigDecimalToBigInteger(BigDecimal bigDec) throws IOException {
+         // 04-Apr-2022, tatu: wrt [core#968] Need to limit max scale magnitude
++        // 05-May-2022, tatu: [core#1037] need to check for scale limit
++        final int scale = bigDec.scale();
++        if (scale > 0) {
++            final int maxScale = _streamReadConstraints.getMaxBigDecimalScale();
++            if (scale > maxScale) {
++                throw new IOException("Attempt to parse BigDecimal with scale (" + scale
++                        + ") exceeds maximum allowed scale (" + maxScale + ")");
++            }
++        }
+         return bigDec.toBigInteger();
+     }
+ 
+@@ -1236,7 +1245,7 @@ public abstract class ParserBase extends ParserMinimalBase
+             // NOTE! Length of number string has been validated earlier
+             _numberBigInt = NumberInput.parseBigInteger(
+                     _numberString,
+-                    isEnabled(StreamReadFeature.USE_FAST_BIG_NUMBER_PARSER));
++                    _streamReadConstraints);
+         } catch (NumberFormatException nex) {
+             _wrapError("Malformed numeric value ("+_longNumberDesc(_numberString)+")", nex);
+         }
+diff --git a/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java b/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java
+index 1ea1b6b2..a84e1eba 100644
+--- a/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java
++++ b/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java
+@@ -1,11 +1,9 @@
+ package com.fasterxml.jackson.core.io;
+ 
+-import ch.randelshofer.fastdoubleparser.JavaDoubleParser;
+-import ch.randelshofer.fastdoubleparser.JavaFloatParser;
+-
+ import java.math.BigDecimal;
+ import java.math.BigInteger;
+ 
++import com.fasterxml.jackson.core.StreamReadConstraints;
+ /**
+  * Helper class for efficient parsing of various JSON numbers.
+  *<p>
+@@ -517,6 +515,41 @@ public final class NumberInput
+         }
+     }
+ 
++    /**
++     * Method to parse a String as BigInteger, but only allow conversion from
++     * BigDecimal if its scale is not too large (that is, the number of digits
++     * after decimal point is not too large).
++     * This helps prevent problematic conversions from very large decimal numbers
++     * (with many decimal digits) that can cause performance issues.
++     *
++     * @param s a string representing a number to parse
++     * @param constraints constraints to use for validation
++     * @return a BigInteger
++     * @throws NumberFormatException if string cannot be represented by a BigInteger
++     *  or if scale exceeds maximum allowed
++     *
++     * @since 2.15
++     */
++    public static BigInteger parseBigInteger(final String s,
++            final StreamReadConstraints constraints)
++            throws NumberFormatException {
++        final int maxScale = constraints.getMaxBigDecimalScale();
++        // Fast path: if string is short, we can parse it directly
++        if (s.length() <= LARGE_INT_SIZE) {
++            return new BigInteger(s);
++        }
++        // For longer strings, we need to parse as BigDecimal first
++        // and check the scale
++        BigDecimal bd = BigDecimalParser.parse(s);
++        // Check scale if we have a limit
++        if (maxScale > 0 && bd.scale() > maxScale) {
++            throw new NumberFormatException(
++                    "Attempt to parse BigInteger with scale (" + bd.scale()
++                    + ") exceeds maximum allowed scale (" + maxScale + ")");
++        }
++        return bd.toBigInteger();
++    }
++
+     /**
+      * @param s a string representing a number to parse
+      * @param radix for parse

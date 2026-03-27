@@ -1,0 +1,151 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/TestEnumDeduction.java b/TestEnumDeduction.java
+new file mode 100644
+index 000000000..0237b9cdc
+--- /dev/null
++++ b/TestEnumDeduction.java
+@@ -0,0 +1,64 @@
++import com.fasterxml.jackson.annotation.JsonSubTypes;
++import com.fasterxml.jackson.annotation.JsonTypeInfo;
++import com.fasterxml.jackson.databind.ObjectMapper;
++
++public class TestEnumDeduction {
++
++    @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
++    @JsonSubTypes({@JsonSubTypes.Type(value = AnimalType.class)})
++    interface LivingBeingType {
++    }
++
++    enum AnimalType implements LivingBeingType {
++        FOURLEGGED, TWOLEGGED
++    }
++
++    static class Animal {
++        private LivingBeingType type;
++        private String name;
++
++        public LivingBeingType getType() {
++            return type;
++        }
++
++        public void setType(LivingBeingType type) {
++            this.type = type;
++        }
++
++        public String getName() {
++            return name;
++        }
++
++        public void setName(String name) {
++            this.name = name;
++        }
++
++        @Override
++        public String toString() {
++            return "Animal{" +
++                    "type=" + type +
++                    ", name='" + name + '\'' +
++                    '}';
++        }
++    }
++
++    public static void main(String[] args) throws Exception {
++        ObjectMapper objectMapper = new ObjectMapper();
++
++        // Serialization
++        Animal animal = new Animal();
++        animal.setName("Horse");
++        animal.setType(AnimalType.FOURLEGGED);
++        System.out.println("***Serialization***");
++        String json = objectMapper.writeValueAsString(animal);
++        System.out.println("Result: " + json);
++        System.out.println("Expected: {\"type\":\"FOURLEGGED\",\"name\":\"Horse\"}");
++
++        // Deserialization
++        String input = "{\"type\":\"FOURLEGGED\",\"name\":\"Horse\"}";
++        System.out.println("\n***Deserialization***");
++        System.out.println("Input: " + input);
++        Animal deserialized = objectMapper.readValue(input, Animal.class);
++        System.out.println("Result: " + deserialized);
++    }
++}
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java
+index 757992cf0..ab8897105 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java
+@@ -97,6 +97,12 @@ public class AsDeductionTypeDeserializer extends AsPropertyTypeDeserializer
+     public Object deserializeTypedFromObject(JsonParser p, DeserializationContext ctxt) throws IOException {
+ 
+         JsonToken t = p.currentToken();
++        
++        // Handle VALUE_STRING (enum value) case
++        if (t == JsonToken.VALUE_STRING) {
++            return deserializeEnumFromName(p, ctxt);
++        }
++        
+         if (t == JsonToken.START_OBJECT) {
+             t = p.nextToken();
+         } else if (/*t == JsonToken.START_ARRAY ||*/ t != JsonToken.FIELD_NAME) {
+@@ -146,6 +152,32 @@ public class AsDeductionTypeDeserializer extends AsPropertyTypeDeserializer
+         String msgToReportIfDefaultImplFailsToo = String.format("Cannot deduce unique subtype of %s (%d candidates match)", ClassUtil.getTypeDescription(_baseType), candidates.size());
+         return _deserializeTypedUsingDefaultImpl(p, ctxt, tb, msgToReportIfDefaultImplFailsToo);
+     }
++    // Method to handle enum deserialization from a simple string value
++    private Object deserializeEnumFromName(JsonParser p, DeserializationContext ctxt) throws IOException {
++        String enumValueName = p.getValueAsString();
++        if (enumValueName == null || enumValueName.isEmpty()) {
++            return _deserializeTypedUsingDefaultImpl(p, ctxt, null, "Empty enum value");
++        }
++        
++        // Try to find an enum subtype
++        for (Map.Entry<BitSet, String> entry : subtypeFingerprints.entrySet()) {
++            String subtypeName = entry.getValue();
++            try {
++                Class<?> subtypeClass = Class.forName(subtypeName);
++                if (subtypeClass.isEnum()) {
++                    @SuppressWarnings("unchecked")
++                    Class<Enum<?>> enumClass = (Class<Enum<?>>) subtypeClass;
++                    Enum<?> enumValue = Enum.valueOf(enumClass, enumValueName.toUpperCase());
++                    return enumValue;
++                }
++            } catch (ClassNotFoundException e) {
++                // Continue to next subtype
++            }
++        }
++        
++        // If no enum subtype found, try to use defaultImpl
++        return _deserializeTypedUsingDefaultImpl(p, ctxt, null, "Cannot find enum subtype for value: " + enumValueName);
++    }
+ 
+     // Keep only fingerprints containing this field
+     private static void prune(List<BitSet> candidates, int bit) {
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsPropertyTypeSerializer.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsPropertyTypeSerializer.java
+index 3b56f915f..6d5ebd66d 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsPropertyTypeSerializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsPropertyTypeSerializer.java
+@@ -34,4 +34,13 @@ public class AsPropertyTypeSerializer
+ 
+     @Override
+     public As getTypeInclusion() { return As.PROPERTY; }
++
++    @Override
++    protected String idFromValue(Object value) {
++        // For DEDUCTION mode (type property name is null), don't write type info for enums
++        if (_typePropertyName == null && value.getClass().isEnum()) {
++            return null;
++        }
++        return super.idFromValue(value);
++    }
+ }

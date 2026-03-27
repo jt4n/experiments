@@ -1,0 +1,129 @@
+
+diff --git a/.gitignore b/.gitignore
+index cdbf5d44..f55596e6 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ .idea
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+index 73c4e673..3e8fac18 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+@@ -1180,18 +1180,49 @@ public class ToXmlGenerator
+         }
+         try {
+             if (_nextIsAttribute) {
+-                _xmlWriter.writeDoubleAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), d);
++                // Use String.valueOf() for special values to match XML Schema
++                if (Double.isNaN(d)) {
++                    _xmlWriter.writeAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), "NaN");
++                } else if (Double.isInfinite(d)) {
++                    _xmlWriter.writeAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(),
++                            d == Double.POSITIVE_INFINITY ? "INF" : "-INF");
++                } else {
++                    _xmlWriter.writeDoubleAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), d);
++                }
+             } else if (checkNextIsUnwrapped()) {
+-                _xmlWriter.writeDouble(d);
++                // Use String.valueOf() for special values to match XML Schema
++                if (Double.isNaN(d)) {
++                    _xmlWriter.writeCharacters("NaN");
++                } else if (Double.isInfinite(d)) {
++                    _xmlWriter.writeCharacters(d == Double.POSITIVE_INFINITY ? "INF" : "-INF");
++                } else {
++                    _xmlWriter.writeDouble(d);
++                }
+             } else {
+                 if (_xmlPrettyPrinter != null) {
++                    // Use String.valueOf() for special values to match XML Schema
++                    String value;
++                    if (Double.isNaN(d)) {
++                        value = "NaN";
++                    } else if (Double.isInfinite(d)) {
++                        value = d == Double.POSITIVE_INFINITY ? "INF" : "-INF";
++                    } else {
++                        value = String.valueOf(d);
++                    }
+                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                 			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+-                			d);
++                			value);
+                 } else {
+-	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+-	                _xmlWriter.writeDouble(d);
+-	                _xmlWriter.writeEndElement();
++                	_xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
++                	// Use String.valueOf() for special values to match XML Schema
++                	if (Double.isNaN(d)) {
++                	    _xmlWriter.writeCharacters("NaN");
++                	} else if (Double.isInfinite(d)) {
++                	    _xmlWriter.writeCharacters(d == Double.POSITIVE_INFINITY ? "INF" : "-INF");
++                	} else {
++                	    _xmlWriter.writeDouble(d);
++                	}
++                	_xmlWriter.writeEndElement();
+                 }
+             }
+         } catch (XMLStreamException e) {
+@@ -1208,18 +1239,49 @@ public class ToXmlGenerator
+         }
+         try {
+             if (_nextIsAttribute) {
+-                _xmlWriter.writeFloatAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), f);
++                // Use String.valueOf() for special values to match XML Schema
++                if (Float.isNaN(f)) {
++                    _xmlWriter.writeAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(), "NaN");
++                } else if (Float.isInfinite(f)) {
++                    _xmlWriter.writeAttribute("", _nextName.getNamespaceURI(), _nextName.getLocalPart(),
++                            f == Float.POSITIVE_INFINITY ? "INF" : "-INF");
++                } else {
++                    _xmlWriter.writeFloatAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), f);
++                }
+             } else if (checkNextIsUnwrapped()) {
+-                _xmlWriter.writeFloat(f);
++                // Use String.valueOf() for special values to match XML Schema
++                if (Float.isNaN(f)) {
++                    _xmlWriter.writeCharacters("NaN");
++                } else if (Float.isInfinite(f)) {
++                    _xmlWriter.writeCharacters(f == Float.POSITIVE_INFINITY ? "INF" : "-INF");
++                } else {
++                    _xmlWriter.writeFloat(f);
++                }
+             } else {
+                 if (_xmlPrettyPrinter != null) {
++                    // Use String.valueOf() for special values to match XML Schema
++                    String value;
++                    if (Float.isNaN(f)) {
++                        value = "NaN";
++                    } else if (Float.isInfinite(f)) {
++                        value = f == Float.POSITIVE_INFINITY ? "INF" : "-INF";
++                    } else {
++                        value = String.valueOf(f);
++                    }
+                 	_xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                 			_nextName.getNamespaceURI(), _nextName.getLocalPart(),
+-                			f);
++                			value);
+                 } else {
+-	                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+-	                _xmlWriter.writeFloat(f);
+-	                _xmlWriter.writeEndElement();
++                	_xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
++                	// Use String.valueOf() for special values to match XML Schema
++                	if (Float.isNaN(f)) {
++                	    _xmlWriter.writeCharacters("NaN");
++                	} else if (Float.isInfinite(f)) {
++                	    _xmlWriter.writeCharacters(f == Float.POSITIVE_INFINITY ? "INF" : "-INF");
++                	} else {
++                	    _xmlWriter.writeFloat(f);
++                	}
++                	_xmlWriter.writeEndElement();
+                 }
+             }
+         } catch (XMLStreamException e) {

@@ -1,0 +1,102 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+index 34ddfa658..29a879fd8 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+@@ -271,6 +271,9 @@ public class BeanDeserializer
+             if (prop != null) { // normal case
+                 try {
+                     prop.deserializeAndSet(p, ctxt, bean);
++                    // [databind#1834]: restore current value after deserializing property
++                    // especially important for empty nested objects
++                    p.setCurrentValue(bean);
+                 } catch (Exception e) {
+                     wrapAndThrow(e, bean, propName, ctxt);
+                 }
+@@ -307,6 +310,9 @@ public class BeanDeserializer
+                 if (prop != null) { // normal case
+                     try {
+                         prop.deserializeAndSet(p, ctxt, bean);
++                        // [databind#1834]: restore current value after deserializing property
++                        // especially important for empty nested objects
++                        p.setCurrentValue(bean);
+                     } catch (Exception e) {
+                         wrapAndThrow(e, bean, propName, ctxt);
+                     }
+@@ -390,6 +396,9 @@ public class BeanDeserializer
+                 if (prop != null) { // normal case
+                     try {
+                         prop.deserializeAndSet(p, ctxt, bean);
++                        // [databind#1834]: restore current value after deserializing property
++                        // especially important for empty nested objects
++                        p.setCurrentValue(bean);
+                     } catch (Exception e) {
+                         wrapAndThrow(e, bean, propName, ctxt);
+                     }
+@@ -679,12 +688,14 @@ public class BeanDeserializer
+                     }
+                     try {
+                         prop.deserializeAndSet(p, ctxt, bean);
++                        // [databind#1834]: restore current value after deserializing property
++                        // especially important for empty nested objects
++                        p.setCurrentValue(bean);
+                     } catch (Exception e) {
+                         wrapAndThrow(e, bean, propName, ctxt);
+                     }
+                     continue;
+                 }
+-                handleUnknownVanilla(p, ctxt, bean, propName);
+             } while ((propName = p.nextFieldName()) != null);
+         }
+         return bean;
+@@ -733,10 +744,12 @@ public class BeanDeserializer
+                 }
+                 try {
+                     prop.deserializeAndSet(p, ctxt, bean);
++                    // [databind#1834]: restore current value after deserializing property
++                    // especially important for empty nested objects
++                    p.setCurrentValue(bean);
+                 } catch (Exception e) {
+                     wrapAndThrow(e, bean, propName, ctxt);
+                 }
+-                continue;
+             }
+             // Things marked as ignorable should not be passed to any setter
+             if (IgnorePropertiesUtil.shouldIgnore(propName, _ignorableProps, _includableProps)) {
+@@ -791,6 +804,9 @@ public class BeanDeserializer
+                 }
+                 try {
+                     prop.deserializeAndSet(p, ctxt, bean);
++                    // [databind#1834]: restore current value after deserializing property
++                    // especially important for empty nested objects
++                    p.setCurrentValue(bean);
+                 } catch (Exception e) {
+                     wrapAndThrow(e, bean, propName, ctxt);
+                 }
+@@ -987,11 +1003,13 @@ public class BeanDeserializer
+                 }
+                 try {
+                     prop.deserializeAndSet(p, ctxt, bean);
++                    // [databind#1834]: restore current value after deserializing property
++                    // especially important for empty nested objects
++                    p.setCurrentValue(bean);
+                 } catch (Exception e) {
+                     wrapAndThrow(e, bean, propName, ctxt);
+                 }
+                 continue;
+-            }
+             // ignorable things should be ignored
+             if (IgnorePropertiesUtil.shouldIgnore(propName, _ignorableProps, _includableProps)) {
+                 handleIgnoredProperty(p, ctxt, bean, propName);

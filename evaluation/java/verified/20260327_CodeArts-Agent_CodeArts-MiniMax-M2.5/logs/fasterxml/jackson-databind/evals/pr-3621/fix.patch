@@ -1,0 +1,128 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StackTraceElementDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StackTraceElementDeserializer.java
+index 55532feb9..70bedd2d6 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StackTraceElementDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StackTraceElementDeserializer.java
+@@ -63,6 +63,14 @@ public class StackTraceElementDeserializer
+                     moduleName, moduleVersion, classLoaderName);
+         } else if (t == JsonToken.START_ARRAY && ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+             p.nextToken();
++            // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++            //   arrays from being unwrapped recursively
++            if (p.currentToken() == JsonToken.START_ARRAY) {
++                return (StackTraceElement) ctxt.handleUnexpectedToken(_valueClass, JsonToken.START_ARRAY, p,
++                        "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                        "StackTraceElement",
++                        "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++            }
+             final StackTraceElement value = deserialize(p, ctxt);
+             if (p.nextToken() != JsonToken.END_ARRAY) {
+                 handleMissingEndArrayForSingle(p, ctxt);
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+index aa0c70874..52a336216 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+@@ -414,6 +414,14 @@ public abstract class StdDeserializer<T>
+             // 12-Jun-2020, tatu: For some reason calling `_deserializeFromArray()` won't work so:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++                //   arrays from being unwrapped recursively
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ((Boolean) ctxt.handleUnexpectedToken(Boolean.TYPE, JsonToken.START_ARRAY, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                            "boolean",
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS")).booleanValue();
++                }
+                 final boolean parsed = _parseBooleanPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -583,6 +591,14 @@ public abstract class StdDeserializer<T>
+             // 12-Jun-2020, tatu: For some reason calling `_deserializeFromArray()` won't work so:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++                //   arrays from being unwrapped recursively
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ((Byte) ctxt.handleUnexpectedToken(ctxt.constructType(Byte.TYPE), JsonToken.START_ARRAY, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                            "byte",
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS")).byteValue();
++                }
+                 final byte parsed = _parseBytePrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -653,6 +669,14 @@ public abstract class StdDeserializer<T>
+             // 12-Jun-2020, tatu: For some reason calling `_deserializeFromArray()` won't work so:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++                //   arrays from being unwrapped recursively
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ((Short) ctxt.handleUnexpectedToken(ctxt.constructType(Short.TYPE), JsonToken.START_ARRAY, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                            "short",
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS")).shortValue();
++                }
+                 final short parsed = _parseShortPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -720,6 +744,14 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++                //   arrays from being unwrapped recursively
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ((Number) ctxt.handleUnexpectedToken(Integer.TYPE, JsonToken.START_ARRAY, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                            "int",
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS")).intValue();
++                }
+                 final int parsed = _parseIntPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -871,6 +903,14 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++                //   arrays from being unwrapped recursively
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ((Number) ctxt.handleUnexpectedToken(Long.TYPE, JsonToken.START_ARRAY, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                            "long",
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS")).longValue();
++                }
+                 final long parsed = _parseLongPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -996,6 +1036,14 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++                //   arrays from being unwrapped recursively
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ((Number) ctxt.handleUnexpectedToken(Float.TYPE, JsonToken.START_ARRAY, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                            "float",
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS")).floatValue();
++                }
+                 final float parsed = _parseFloatPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -1103,6 +1151,14 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 12-Oct-2022, tatu: [CVE-2022-42003] Need to prevent deeply nested
++                //   arrays from being unwrapped recursively
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ((Number) ctxt.handleUnexpectedToken(Double.TYPE, JsonToken.START_ARRAY, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: only single wrapper allowed with `%s`",
++                            "double",
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS")).doubleValue();
++                }
+                 final double parsed = _parseDoublePrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;

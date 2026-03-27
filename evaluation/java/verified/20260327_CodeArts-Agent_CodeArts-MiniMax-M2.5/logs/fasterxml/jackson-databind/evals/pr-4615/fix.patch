@@ -1,0 +1,71 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java b/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java
+index 7bfaec4b9..940c14e54 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java
+@@ -1397,6 +1397,29 @@ public abstract class AnnotationIntrospector
+         return null;
+     }
+ 
++    /**
++     * Method for finding "primary" Creator (often a constructor) to use for given type,
++     * if no explicit annotations are found.
++     * This is typically the "canonical" constructor for types like Kotlin data classes
++     * or Java Records.
++     *<p>
++     * This is similar to what {@link com.fasterxml.jackson.databind.jdk14.JDK14Util#findCanonicalRecordConstructor}
++     * does for JDK 17+ Records, but is intended for other language modules (like Kotlin, Scala)
++     * to provide similar functionality.
++     *
++     * @param config Configuration settings in effect (for serialization or deserialization)
++     * @param ac Annotated class to introspect
++     * @param constructors List of potential constructors to consider
++     *
++     * @return Primary Creator to use if found; {@code null} if none
++     *
++     * @since 2.18
++     */
++    public PotentialCreator findPrimaryConstructor(MapperConfig<?> config, AnnotatedClass ac,
++            List<PotentialCreator> constructors) {
++        return null;
++    }
++
+     /**
+      * Method for checking whether given annotated item (method, constructor)
+      * has an annotation
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java b/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java
+index 9d16dd6e8..e60c048a7 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationIntrospectorPair.java
+@@ -735,6 +735,16 @@ public class AnnotationIntrospectorPair
+         return (mode == null) ? _secondary.findCreatorAnnotation(config, a) : mode;
+     }
+ 
++    @Override
++    public PotentialCreator findPrimaryConstructor(MapperConfig<?> config, AnnotatedClass ac,
++            List<PotentialCreator> constructors) {
++        PotentialCreator result = _primary.findPrimaryConstructor(config, ac, constructors);
++        if (result == null) {
++            result = _secondary.findPrimaryConstructor(config, ac, constructors);
++        }
++        return result;
++    }
++
+     /*
+     /**********************************************************************
+     /* Deserialization: other method annotations
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 3d316bb66..b82a11795 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -655,8 +655,9 @@ public class POJOPropertiesCollector
+         if (_isRecordType) {
+             canonical = JDK14Util.findCanonicalRecordConstructor(_config, _classDef, constructors);
+         } else {
+-            // !!! TODO: fetch Canonical for Kotlin, Scala, via AnnotationIntrospector?
+-            canonical = null;
++            // [databind#4515] Allow Kotlin, Scala and other language modules to
++            //   indicate "primary" constructor to use
++            canonical = _annotationIntrospector.findPrimaryConstructor(_config, _classDef, constructors);
+         }
+ 
+         // Next: remove creators marked as explicitly disabled

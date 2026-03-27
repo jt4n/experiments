@@ -1,0 +1,36 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+index 08700ff1..abb10684 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+@@ -276,7 +276,7 @@ public class JsonFactory
+      *
+      * @since 2.15
+      */
+-    final protected StreamReadConstraints _streamReadConstraints;
++    protected StreamReadConstraints _streamReadConstraints;
+ 
+     /**
+      * Optional helper object that may decorate input sources, to do
+@@ -778,6 +778,22 @@ public class JsonFactory
+         return _streamReadConstraints;
+     }
+ 
++    /**
++     * Method for defining constraints to use for parsing.
++     *<p>
++     * By default, {@link StreamReadConstraints#defaults()} are used.
++     *
++     * @param constraints Constraints to use
++     *
++     * @return This factory instance (to allow call chaining)
++     *
++     * @since 2.15
++     */
++    public JsonFactory setStreamReadConstraints(StreamReadConstraints constraints) {
++        _streamReadConstraints = (constraints == null) ? StreamReadConstraints.defaults() : constraints;
++        return this;
++    }
++
+     /*
+     /**********************************************************
+     /* Configuration, parser configuration

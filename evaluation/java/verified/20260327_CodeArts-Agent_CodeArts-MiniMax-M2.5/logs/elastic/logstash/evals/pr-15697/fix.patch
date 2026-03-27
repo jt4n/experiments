@@ -1,0 +1,98 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index b321005b4..b5f12b277 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -201,12 +201,16 @@ public final class DeadLetterQueueWriter implements Closeable {
+                 .mapToInt(Integer::parseInt)
+                 .max().orElse(0);
+         nextWriter();
+-        this.lastEntryTimestamp = Timestamp.now();
++        this.lastEntryTimestamp = getCurrentTimestamp();
+         if (startScheduledFlusher) {
+             createFlushScheduler();
+         }
+     }
+ 
++    private Timestamp getCurrentTimestamp() {
++        return new Timestamp(clock.instant());
++    }
++
+     public boolean isOpen() {
+         return open.get();
+     }
+@@ -268,7 +272,7 @@ public final class DeadLetterQueueWriter implements Closeable {
+     void writeEntry(DLQEntry entry) throws IOException {
+         lock.lock();
+         try {
+-            Timestamp entryTimestamp = Timestamp.now();
++            Timestamp entryTimestamp = getCurrentTimestamp();
+             if (entryTimestamp.compareTo(lastEntryTimestamp) < 0) {
+                 entryTimestamp = lastEntryTimestamp;
+             }
+@@ -299,7 +303,7 @@ public final class DeadLetterQueueWriter implements Closeable {
+         }
+         long writtenBytes = currentWriter.writeEvent(record);
+         currentQueueSize.getAndAdd(writtenBytes);
+-        lastWrite = Instant.now();
++        lastWrite = clock.instant();
+     }
+ 
+     private boolean exceedSegmentSize(int eventPayloadSize) throws IOException {
+@@ -585,7 +589,7 @@ public final class DeadLetterQueueWriter implements Closeable {
+ 
+     private void nextWriter() throws IOException {
+         Path nextSegmentPath = queuePath.resolve(String.format(TEMP_FILE_PATTERN, ++currentSegmentIndex));
+-        currentWriter = new RecordIOWriter(nextSegmentPath);
++        currentWriter = new RecordIOWriter(nextSegmentPath, clock);
+         currentQueueSize.incrementAndGet();
+         logger.debug("Created new head segment {}", nextSegmentPath);
+     }
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/RecordIOWriter.java b/logstash-core/src/main/java/org/logstash/common/io/RecordIOWriter.java
+index 34d3b5024..8827b1525 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/RecordIOWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/RecordIOWriter.java
+@@ -44,6 +44,7 @@ import java.nio.ByteBuffer;
+ import java.nio.channels.FileChannel;
+ import java.nio.file.Path;
+ import java.nio.file.StandardOpenOption;
++import java.time.Clock;
+ import java.time.Duration;
+ import java.time.Instant;
+ import java.util.OptionalInt;
+@@ -51,6 +52,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
+ import java.util.zip.CRC32;
+ import java.util.zip.Checksum;
+ 
++import com.google.common.annotations.VisibleForTesting;
++
+ import static org.logstash.common.io.RecordType.COMPLETE;
+ import static org.logstash.common.io.RecordType.END;
+ import static org.logstash.common.io.RecordType.MIDDLE;
+@@ -100,11 +103,18 @@ public final class RecordIOWriter implements Closeable {
+ 
+     private Path recordsFile;
+     private Instant lastWrite = null;
++    private final Clock clock;
+ 
+     public RecordIOWriter(Path recordsFile) throws IOException {
++        this(recordsFile, Clock.systemDefaultZone());
++    }
++
++    @VisibleForTesting
++    RecordIOWriter(Path recordsFile, Clock clock) throws IOException {
+         this.recordsFile = recordsFile;
+         this.posInBlock = 0;
+         this.currentBlockIdx = 0;
++        this.clock = clock;
+         recordsFile.toFile().createNewFile();
+         this.channel = FileChannel.open(recordsFile, StandardOpenOption.WRITE);
+         this.channel.write(ByteBuffer.wrap(new byte[] { VERSION }));
+@@ -140,7 +150,7 @@ public final class RecordIOWriter implements Closeable {
+     }
+ 
+     public long writeEvent(byte[] eventArray) throws IOException {
+-        lastWrite = Instant.now();
++        lastWrite = clock.instant();
+         ByteBuffer eventBuffer = ByteBuffer.wrap(eventArray);
+         RecordType nextType = null;
+         ByteBuffer slice = eventBuffer.slice();

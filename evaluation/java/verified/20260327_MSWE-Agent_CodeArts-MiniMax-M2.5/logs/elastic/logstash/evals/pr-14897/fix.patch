@@ -1,0 +1,37 @@
+
+diff --git a/.gitignore b/.gitignore
+index 1b0d8f000..c50d18240 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -62,4 +62,6 @@ lib/pluginmanager/plugin_aliases.yml
+ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+-qa/integration/fixtures/logs_rollover/log4j2.properties
+\ No newline at end of file
++qa/integration/fixtures/logs_rollover/log4j2.propertiestarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index 1aad80538..71ac061b0 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -464,13 +464,17 @@ public final class DeadLetterQueueWriter implements Closeable {
+             if (!isCurrentWriterStale() && finalizeWhen == FinalizeWhen.ONLY_IF_STALE)
+                 return;
+ 
++            // Execute age retention policy during shutdown, regardless of whether any events were written
++            if (finalizeWhen == FinalizeWhen.ALWAYS) {
++                executeAgeRetentionPolicy();
++            }
++
+             if (currentWriter != null && currentWriter.hasWritten()) {
+                 currentWriter.close();
+                 Files.move(queuePath.resolve(String.format(TEMP_FILE_PATTERN, currentSegmentIndex)),
+                         queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, currentSegmentIndex)),
+                         StandardCopyOption.ATOMIC_MOVE);
+                 updateOldestSegmentReference();
+-                executeAgeRetentionPolicy();
+                 if (isOpen()) {
+                     nextWriter();
+                 }

@@ -1,0 +1,78 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+index 34ddfa658..7d454a7b5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+@@ -29,12 +29,14 @@ public class BeanDeserializer
+      *
+      * @since 2.8
+      */
+-    protected transient Exception _nullFromCreator;
++    @Deprecated // since 2.14
++    public ThrowableDeserializer(BeanDeserializer baseDeserializer) {
++        super(baseDeserializer);
++        // need to disable this, since we do post-processing
++        _vanillaProcessing = false;
++    }
+ 
+     /**
+-     * State marker we need in order to avoid infinite recursion for some cases
+-     * (not very clean, alas, but has to do for now)
+-     *
+      * @since 2.9
+      */
+     private volatile transient NameTransformer _currentlyTransforming;
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
+index 5fd52e46c..b2c1d143b 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
+@@ -1,7 +1,8 @@
+ package com.fasterxml.jackson.databind.deser.std;
+ 
+ import java.io.IOException;
+-
++import java.util.HashSet;
++import java.util.Set;
+ import com.fasterxml.jackson.core.*;
+ 
+ import com.fasterxml.jackson.databind.*;
+@@ -36,6 +37,12 @@ public class ThrowableDeserializer
+         _vanillaProcessing = false;
+     }
+ 
++    public ThrowableDeserializer(BeanDeserializer src, Set<String> ignorableProps) {
++        super(src, ignorableProps);
++        // need to disable this, since we do post-processing
++        _vanillaProcessing = false;
++    }
++
+     public static ThrowableDeserializer construct(DeserializationContext ctxt,
+             BeanDeserializer baseDeserializer)
+     {
+@@ -47,7 +54,13 @@ public class ThrowableDeserializer
+         if (pts != null) {
+         }
+         */
+-        return new ThrowableDeserializer(baseDeserializer);
++        // 05-Jun-2023, tatu: [databind#3497] Need to add "suppressed" and "localizedMessage"
++        //    as ignorable properties since they are handled specially but not
++        //    necessarily part of the bean properties
++        HashSet<String> ignorableProps = new HashSet<>(baseDeserializer._ignorableProps);
++        ignorableProps.add(PROP_NAME_SUPPRESSED);
++        ignorableProps.add(PROP_NAME_LOCALIZED_MESSAGE);
++        return new ThrowableDeserializer(baseDeserializer, ignorableProps);
+     }
+ 
+ 

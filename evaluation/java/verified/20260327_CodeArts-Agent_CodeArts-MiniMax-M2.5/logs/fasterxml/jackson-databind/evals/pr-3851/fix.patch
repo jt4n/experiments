@@ -1,0 +1,299 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
+index c1d00eb61..bbdaad563 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
+@@ -1684,6 +1684,9 @@ paramIndex, candidate);
+             SettableBeanProperty[] creatorProps = (valueInstantiator == null) ? null
+                     : valueInstantiator.getFromObjectArguments(ctxt.getConfig());
+             // May have @JsonCreator for static factory method:
++            // [databind#3566]: Need to support both DELEGATING and PROPERTIES creators
++            AnnotatedMethod delegatingFactory = null;
++            AnnotatedMethod propertiesFactory = null;
+             for (AnnotatedMethod factory : beanDesc.getFactoryMethods()) {
+                 if (_hasCreatorAnnotation(ctxt, factory)) {
+                     if (factory.getParameterCount() == 0) { // [databind#960]
+@@ -1697,8 +1700,32 @@ paramIndex, candidate);
+ "Invalid `@JsonCreator` annotated Enum factory method [%s]: needs to return compatible type",
+ factory.toString()));
+                     }
+-                    deser = EnumDeserializer.deserializerForCreator(config, enumClass, factory, valueInstantiator, creatorProps);
+-                    break;
++                    // [databind#3566]: Collect both DELEGATING and PROPERTIES creators
++                    JsonCreator.Mode mode = _getCreatorMode(ctxt, factory);
++                    if (mode == JsonCreator.Mode.DELEGATING) {
++                        delegatingFactory = factory;
++                    } else if (mode == JsonCreator.Mode.PROPERTIES) {
++                        propertiesFactory = factory;
++                    } else {
++                        // For DEFAULT mode or null, prefer DELEGATING for scalar values
++                        if (delegatingFactory == null) {
++                            delegatingFactory = factory;
++                        }
++                    }
++                }
++            }
++            // [databind#3566]: Create deserializer with both creators if we have both
++            if (delegatingFactory != null || propertiesFactory != null) {
++                if (delegatingFactory != null && propertiesFactory != null) {
++                    deser = EnumDeserializer.deserializerForCreator(config, enumClass,
++                            delegatingFactory, propertiesFactory,
++                            valueInstantiator, creatorProps);
++                } else if (delegatingFactory != null) {
++                    deser = EnumDeserializer.deserializerForCreator(config, enumClass, delegatingFactory,
++                            valueInstantiator, creatorProps);
++                } else if (propertiesFactory != null) {
++                    deser = EnumDeserializer.deserializerForCreator(config, enumClass, propertiesFactory,
++                            valueInstantiator, creatorProps);
+                 }
+             }
+ 
+@@ -2454,6 +2481,19 @@ factory.toString()));
+         return false;
+     }
+ 
++    /**
++     * Helper method to get the creator mode for a method.
++     *
++     * @since 2.16
++     */
++    protected JsonCreator.Mode _getCreatorMode(DeserializationContext ctxt, Annotated ann) {
++        AnnotationIntrospector intr = ctxt.getAnnotationIntrospector();
++        if (intr != null) {
++            return intr.findCreatorAnnotation(ctxt.getConfig(), ann);
++        }
++        return null;
++    }
++
+     /*
+     /**********************************************************
+     /* Deprecated helper methods
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/EnumDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/EnumDeserializer.java
+index 005a8ffb8..5bcea99aa 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/EnumDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/EnumDeserializer.java
+@@ -161,6 +161,36 @@ public class EnumDeserializer
+                 valueInstantiator, creatorProps);
+     }
+ 
++    /**
++     * Factory method used when Enum instances are to be deserialized
++     * using both a delegating creator and a property-based creator.
++     *
++     * @return Deserializer based on given factory methods
++     *
++     * @since 2.16
++     */
++    public static JsonDeserializer<?> deserializerForCreator(DeserializationConfig config,
++            Class<?> enumClass, AnnotatedMethod delegateFactory, AnnotatedMethod propertyFactory,
++            ValueInstantiator valueInstantiator, SettableBeanProperty[] creatorProps)
++    {
++        if (config.canOverrideAccessModifiers()) {
++            if (delegateFactory != null) {
++                ClassUtil.checkAndFixAccess(delegateFactory.getMember(),
++                        config.isEnabled(MapperFeature.OVERRIDE_PUBLIC_ACCESS_MODIFIERS));
++            }
++            if (propertyFactory != null) {
++                ClassUtil.checkAndFixAccess(propertyFactory.getMember(),
++                        config.isEnabled(MapperFeature.OVERRIDE_PUBLIC_ACCESS_MODIFIERS));
++            }
++        }
++        JavaType delegateParamType = (delegateFactory != null)
++                ? delegateFactory.getParameterType(0) : null;
++        return new FactoryBasedEnumDeserializer(enumClass,
++                delegateFactory, propertyFactory,
++                delegateParamType,
++                valueInstantiator, creatorProps);
++    }
++
+     /**
+      * Factory method used when Enum instances are to be deserialized
+      * using a zero-/no-args factory method
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+index 1c65431e5..058fdcbb2 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+@@ -31,7 +31,19 @@ class FactoryBasedEnumDeserializer
+ 
+     // Marker type; null if String expected; otherwise usually numeric wrapper
+     protected final JavaType _inputType;
+-    protected final AnnotatedMethod _factory;
++
++    /**
++     * Delegating factory method, if available.
++     * @since 2.16
++     */
++    protected final AnnotatedMethod _delegateFactory;
++
++    /**
++     * Property-based factory method, if available.
++     * @since 2.16
++     */
++    protected final AnnotatedMethod _propertyFactory;
++
+     protected final JsonDeserializer<?> _deser;
+     protected final ValueInstantiator _valueInstantiator;
+     protected final SettableBeanProperty[] _creatorProps;
+@@ -49,7 +61,8 @@ class FactoryBasedEnumDeserializer
+             ValueInstantiator valueInstantiator, SettableBeanProperty[] creatorProps)
+     {
+         super(cls);
+-        _factory = f;
++        _delegateFactory = f;
++        _propertyFactory = null;
+         _hasArgs = true;
+         // We'll skip case of `String`, as well as no type (zero-args):
+         _inputType = (paramType.hasRawClass(String.class) || paramType.hasRawClass(CharSequence.class))
+@@ -59,13 +72,33 @@ class FactoryBasedEnumDeserializer
+         _creatorProps = creatorProps;
+     }
+ 
++    /**
++     * @since 2.16
++     */
++    public FactoryBasedEnumDeserializer(Class<?> cls,
++            AnnotatedMethod delegateFactory, AnnotatedMethod propertyFactory,
++            JavaType delegateParamType,
++            ValueInstantiator valueInstantiator, SettableBeanProperty[] creatorProps)
++    {
++        super(cls);
++        _delegateFactory = delegateFactory;
++        _propertyFactory = propertyFactory;
++        _hasArgs = true;
++        _inputType = (delegateParamType.hasRawClass(String.class) || delegateParamType.hasRawClass(CharSequence.class))
++                ? null : delegateParamType;
++        _deser = null;
++        _valueInstantiator = valueInstantiator;
++        _creatorProps = creatorProps;
++    }
++
+     /**
+      * @since 2.8
+      */
+     public FactoryBasedEnumDeserializer(Class<?> cls, AnnotatedMethod f)
+     {
+         super(cls);
+-        _factory = f;
++        _delegateFactory = f;
++        _propertyFactory = null;
+         _hasArgs = false;
+         _inputType = null;
+         _deser = null;
+@@ -77,7 +110,8 @@ class FactoryBasedEnumDeserializer
+             JsonDeserializer<?> deser) {
+         super(base._valueClass);
+         _inputType = base._inputType;
+-        _factory = base._factory;
++        _delegateFactory = base._delegateFactory;
++        _propertyFactory = base._propertyFactory;
+         _hasArgs = base._hasArgs;
+         _valueInstantiator = base._valueInstantiator;
+         _creatorProps = base._creatorProps;
+@@ -132,11 +166,16 @@ class FactoryBasedEnumDeserializer
+             // 30-Mar-2020, tatu: For properties-based one, MUST get JSON Object (before
+             //   2.11, was just assuming match)
+             if (_creatorProps != null) {
++                // [databind#3566]: Need to check if we have both delegating and properties creators
++                // If input is not a JSON object, try delegating creator first
++                if (!p.isExpectedStartObjectToken() && _delegateFactory != null) {
++                    return _deserializeUsingDelegate(p, ctxt);
++                }
+                 if (!p.isExpectedStartObjectToken()) {
+                     final JavaType targetType = getValueType(ctxt);
+                     ctxt.reportInputMismatch(targetType,
+ "Input mismatch reading Enum %s: properties-based `@JsonCreator` (%s) expects JSON Object (JsonToken.START_OBJECT), got JsonToken.%s",
+-ClassUtil.getTypeDescription(targetType), _factory, p.currentToken());
++ClassUtil.getTypeDescription(targetType), _propertyFactory, p.currentToken());
+                 }
+                 if (_propCreator == null) {
+                     _propCreator = PropertyBasedCreator.construct(ctxt, _valueInstantiator, _creatorProps,
+@@ -152,35 +191,20 @@ ClassUtil.getTypeDescription(targetType), _factory, p.currentToken());
+             //    value types (Object, Array) as well.
+             // 15-Nov-2022, tatu: Fix for [databind#3655] requires handling of possible
+             //    unwrapping, do it here
+-            JsonToken t = p.currentToken();
+-            boolean unwrapping = (t == JsonToken.START_ARRAY)
+-                    && ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
+-            if (unwrapping) {
+-                t = p.nextToken();
+-            }
+-            if ((t == null) || !t.isScalarValue()) {
+-                // Could argue we should throw an exception but...
+-                value = "";
+-                p.skipChildren();
+-            } else {
+-                value = p.getValueAsString();
+-            }
+-            if (unwrapping) {
+-                if (p.nextToken() != JsonToken.END_ARRAY) {
+-                    handleMissingEndArrayForSingle(p, ctxt);
+-                }
+-            }
++            return _deserializeUsingDelegate(p, ctxt);
+         } else { // zero-args; just skip whatever value there may be
+             p.skipChildren();
+             try {
+-                return _factory.call();
++                return _delegateFactory.call();
+             } catch (Exception e) {
+                 Throwable t = ClassUtil.throwRootCauseIfIOE(e);
+                 return ctxt.handleInstantiationProblem(_valueClass, null, t);
+             }
+         }
+         try {
+-            return _factory.callOnWith(_valueClass, value);
++            // Use property factory if available, otherwise delegate factory
++            AnnotatedMethod factory = (_propertyFactory != null) ? _propertyFactory : _delegateFactory;
++            return factory.callOnWith(_valueClass, value);
+         } catch (Exception e) {
+             Throwable t = ClassUtil.throwRootCauseIfIOE(e);
+             if (t instanceof IllegalArgumentException) {
+@@ -228,6 +252,49 @@ ClassUtil.getTypeDescription(targetType), _factory, p.currentToken());
+         return creator.build(ctxt, buffer);
+     }
+ 
++    // Method to deserialize the Enum using delegating methodology
++    protected Object _deserializeUsingDelegate(JsonParser p, DeserializationContext ctxt) throws IOException
++    {
++        Object value;
++
++        // 12-Oct-2021, tatu: We really should only get here if and when String
++        //    value is expected; otherwise Deserializer should have been used earlier
++        // 14-Jan-2022, tatu: as per [databind#3369] need to consider structured
++        //    value types (Object, Array) as well.
++        // 15-Nov-2022, tatu: Fix for [databind#3655] requires handling of possible
++        //    unwrapping, do it here
++        JsonToken t = p.currentToken();
++        boolean unwrapping = (t == JsonToken.START_ARRAY)
++                && ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
++        if (unwrapping) {
++            t = p.nextToken();
++        }
++        if ((t == null) || !t.isScalarValue()) {
++            // Could argue we should throw an exception but...
++            value = "";
++            p.skipChildren();
++        } else {
++            value = p.getValueAsString();
++        }
++        if (unwrapping) {
++            if (p.nextToken() != JsonToken.END_ARRAY) {
++                handleMissingEndArrayForSingle(p, ctxt);
++            }
++        }
++        try {
++            return _delegateFactory.callOnWith(_valueClass, value);
++        } catch (Exception e) {
++            Throwable t2 = ClassUtil.throwRootCauseIfIOE(e);
++            if (t2 instanceof IllegalArgumentException) {
++                // [databind#1642]:
++                if (ctxt.isEnabled(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)) {
++                    return null;
++                }
++            }
++            return ctxt.handleInstantiationProblem(_valueClass, value, t2);
++        }
++    }
++
+     // ************ Got the below methods from BeanDeserializer ********************//
+ 
+     protected final Object _deserializeWithErrorWrapping(JsonParser p, DeserializationContext ctxt,

@@ -1,0 +1,66 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
+index 8ca02f28e..42ad540a2 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
+@@ -363,6 +363,9 @@ _containerType,
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
+                 if (value == null) {
++                    if (_skipNullValues) {
++                        continue;
++                    }
+                     _tryToAddNull(p, ctxt, result);
+                     continue;
+                 }
+@@ -422,6 +425,11 @@ _containerType,
+             } else {
+                 value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+             }
++            if (value == null) {
++                if (_skipNullValues) {
++                    return result;
++                }
++            }
+         } catch (Exception e) {
+             boolean wrap = ctxt.isEnabled(DeserializationFeature.WRAP_EXCEPTIONS);
+             if (!wrap) {
+@@ -464,6 +472,11 @@ _containerType,
+                 } else {
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
++                if (value == null) {
++                    if (_skipNullValues) {
++                        continue;
++                    }
++                }
+                 referringAccumulator.add(value);
+             } catch (UnresolvedForwardReference reference) {
+                 Referring ref = referringAccumulator.handleUnresolvedReference(reference);
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StringCollectionDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StringCollectionDeserializer.java
+index 899726502..5e2949109 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StringCollectionDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StringCollectionDeserializer.java
+@@ -253,6 +253,11 @@ public final class StringCollectionDeserializer
+                 } else {
+                     value = deser.deserialize(p, ctxt);
+                 }
++                if (value == null) {
++                    if (_skipNullValues) {
++                        continue;
++                    }
++                }
+                 result.add(value);
+             }
+         } catch (Exception e) {
+@@ -326,6 +331,11 @@ public final class StringCollectionDeserializer
+             } catch (Exception e) {
+                 throw JsonMappingException.wrapWithPath(e, result, result.size());
+             }
++            if (value == null) {
++                if (_skipNullValues) {
++                    return result;
++                }
++            }
+         }
+         result.add(value);
+         return result;

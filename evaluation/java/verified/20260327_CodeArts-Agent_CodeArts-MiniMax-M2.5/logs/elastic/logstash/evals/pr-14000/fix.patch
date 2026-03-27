@@ -1,0 +1,66 @@
+diff --git a/logstash-core/lib/logstash/environment.rb b/logstash-core/lib/logstash/environment.rb
+index 0147a1cf6..408e2db25 100644
+--- a/logstash-core/lib/logstash/environment.rb
++++ b/logstash-core/lib/logstash/environment.rb
+@@ -75,7 +75,7 @@ module LogStash
+             Setting::String.new("api.environment", "production").with_deprecated_alias("http.environment"),
+             Setting::String.new("api.auth.type", "none", true, %w(none basic)),
+             Setting::String.new("api.auth.basic.username", nil, false).nullable,
+-          Setting::Password.new("api.auth.basic.password", nil, false).nullable,
++          Setting::PasswordWithComplexity.new("api.auth.basic.password", nil, false).nullable,
+            Setting::Boolean.new("api.ssl.enabled", false),
+   Setting::ExistingFilePath.new("api.ssl.keystore.path", nil, false).nullable,
+           Setting::Password.new("api.ssl.keystore.password", nil, false).nullable,
+diff --git a/logstash-core/lib/logstash/settings.rb b/logstash-core/lib/logstash/settings.rb
+index 1df5315ca..db420c4d2 100644
+--- a/logstash-core/lib/logstash/settings.rb
++++ b/logstash-core/lib/logstash/settings.rb
+@@ -542,6 +542,48 @@ module LogStash
+       end
+     end
+ 
++    class PasswordWithComplexity < Password
++      MINIMUM_LENGTH = 6
++      UPPERCASE_PATTERN = /[A-Z]/
++      LOWERCASE_PATTERN = /[a-z]/
++      DIGIT_PATTERN = /\d/
++      SPECIAL_CHAR_PATTERN = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/
++
++      def initialize(name, default=nil, strict=true)
++        super(name, default, strict)
++      end
++
++      def validate(value)
++        super(value)
++
++        password = value.value rescue value
++
++        return if password.nil? || password.empty?
++
++        if password.length < MINIMUM_LENGTH
++          raise ArgumentError.new("Setting \"#{@name}\" must be at least #{MINIMUM_LENGTH} characters long")
++        end
++
++        unless password.match?(UPPERCASE_PATTERN)
++          raise ArgumentError.new("Setting \"#{@name}\" must contain at least one uppercase letter")
++        end
++
++        unless password.match?(LOWERCASE_PATTERN)
++          raise ArgumentError.new("Setting \"#{@name}\" must contain at least one lowercase letter")
++        end
++
++        unless password.match?(DIGIT_PATTERN)
++          raise ArgumentError.new("Setting \"#{@name}\" must contain at least one digit")
++        end
++
++        unless password.match?(SPECIAL_CHAR_PATTERN)
++          raise ArgumentError.new("Setting \"#{@name}\" must contain at least one special character")
++        end
++
++        true
++      end
++    end
++
+     # The CoercibleString allows user to enter any value which coerces to a String.
+     # For example for true/false booleans; if the possible_strings are ["foo", "true", "false"]
+     # then these options in the config file or command line will be all valid: "foo", true, false, "true", "false"

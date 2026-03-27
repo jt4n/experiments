@@ -1,0 +1,59 @@
+diff --git a/src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java b/src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java
+index 365c350e9..0a2a0fd00 100644
+--- a/src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java
++++ b/src/main/java/org/mockito/internal/configuration/plugins/DefaultMockitoPlugins.java
+@@ -10,6 +10,7 @@ import java.util.Map;
+ import java.util.Set;
+ 
+ import org.mockito.MockMakers;
++import org.mockito.internal.util.MockUtil;
+ import org.mockito.plugins.AnnotationEngine;
+ import org.mockito.plugins.DoNotMockEnforcer;
+ import org.mockito.plugins.InstantiatorProvider2;
+@@ -114,4 +115,9 @@ public class DefaultMockitoPlugins implements MockitoPlugins {
+     public MockMaker getInlineMockMaker() {
+         return create(MockMaker.class, DEFAULT_PLUGINS.get(INLINE_ALIAS));
+     }
++
++    @Override
++    public MockMaker getMockMaker(String name) {
++        return MockUtil.getMockMaker(name);
++    }
+ }
+diff --git a/src/main/java/org/mockito/internal/util/MockUtil.java b/src/main/java/org/mockito/internal/util/MockUtil.java
+index 0d80f6e19..97b9b49cc 100644
+--- a/src/main/java/org/mockito/internal/util/MockUtil.java
++++ b/src/main/java/org/mockito/internal/util/MockUtil.java
+@@ -36,7 +36,7 @@ public class MockUtil {
+ 
+     private MockUtil() {}
+ 
+-    private static MockMaker getMockMaker(String mockMaker) {
++    public static MockMaker getMockMaker(String mockMaker) {
+         if (mockMaker == null) {
+             return defaultMockMaker;
+         }
+diff --git a/src/main/java/org/mockito/plugins/MockitoPlugins.java b/src/main/java/org/mockito/plugins/MockitoPlugins.java
+index d911077fd..0821027cb 100644
+--- a/src/main/java/org/mockito/plugins/MockitoPlugins.java
++++ b/src/main/java/org/mockito/plugins/MockitoPlugins.java
+@@ -41,4 +41,19 @@ public interface MockitoPlugins {
+      * @since 2.10.0
+      */
+     MockMaker getInlineMockMaker();
++
++    /**
++     * Returns mock maker instance for the given name.
++     * The name can be a mock maker alias (e.g. "mock-maker-inline", "mock-maker-proxy", "mock-maker-subclass")
++     * or a fully qualified class name of a {@link MockMaker} implementation.
++     * <p>
++     * Unlike {@link #getInlineMockMaker()}, this method returns cached instances.
++     * Each mock maker instance is created only once and reused for subsequent calls with the same name.
++     * This is useful for framework integrations that need to share a single MockMaker instance.
++     *
++     * @param name the name of the mock maker (alias or fully qualified class name)
++     * @return the mock maker instance
++     * @since 4.11.0
++     */
++    MockMaker getMockMaker(String name);
+ }

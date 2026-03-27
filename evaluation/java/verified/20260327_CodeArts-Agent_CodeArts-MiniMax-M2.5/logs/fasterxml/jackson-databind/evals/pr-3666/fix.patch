@@ -1,0 +1,17 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+index 27203dc69..b00b63a60 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+@@ -120,6 +120,12 @@ class FactoryBasedEnumDeserializer
+     @Override
+     public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException
+     {
++        // [databind#xxx]: Handle UNWRAP_SINGLE_VALUE_ARRAYS for Enums with @JsonCreator
++        if (p.hasToken(JsonToken.START_ARRAY)
++                && ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
++            return _deserializeFromArray(p, ctxt);
++        }
++
+         Object value;
+ 
+         // First: the case of having deserializer for non-String input for delegating

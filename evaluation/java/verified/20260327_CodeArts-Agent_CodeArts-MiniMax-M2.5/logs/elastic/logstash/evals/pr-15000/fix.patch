@@ -1,0 +1,27 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index 81b24b68a..d265de372 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -484,6 +484,8 @@ public final class DeadLetterQueueWriter implements Closeable {
+                 if (currentWriter.hasWritten()) {
+                     currentWriter.close();
+                     sealSegment(currentSegmentIndex);
++                } else if (finalizeWhen == FinalizeWhen.ALWAYS) {
++                    sealSegmentIfExists(currentSegmentIndex);
+                 }
+                 updateOldestSegmentReference();
+                 executeAgeRetentionPolicy();
+@@ -503,6 +505,13 @@ public final class DeadLetterQueueWriter implements Closeable {
+         logger.debug("Sealed segment with index {}", segmentIndex);
+     }
+ 
++    private void sealSegmentIfExists(int segmentIndex) throws IOException {
++        Path tempSegmentPath = queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex));
++        if (Files.exists(tempSegmentPath)) {
++            sealSegment(segmentIndex);
++        }
++    }
++
+     private void createFlushScheduler() {
+         flushScheduler = Executors.newScheduledThreadPool(1, r -> {
+             Thread t = new Thread(r);

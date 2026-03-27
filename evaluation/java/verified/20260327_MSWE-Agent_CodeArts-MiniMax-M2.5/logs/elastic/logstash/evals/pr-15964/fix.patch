@@ -1,0 +1,70 @@
+
+diff --git a/.gitignore b/.gitignore
+index cc0ab0db4..7e5ef4afe 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,4 +63,6 @@ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+ qa/integration/fixtures/logs_rollover/log4j2.properties
+-ci/serverless/config/*.log
+\ No newline at end of file
++ci/serverless/config/*.logtarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index 20ecb4841..f02254b44 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -134,6 +134,11 @@ public final class DeadLetterQueueWriter implements Closeable {
+          * Register the callback action to invoke on every clock tick.
+          * */
+         void repeatedAction(Runnable action);
++
++        /**
++         * Shutdown the scheduler service.
++         * */
++        void shutdown();
+     }
+ 
+     private static class FixedRateScheduler implements SchedulerService {
+@@ -155,6 +160,11 @@ public final class DeadLetterQueueWriter implements Closeable {
+         public void repeatedAction(Runnable action) {
+             scheduledExecutor.scheduleAtFixedRate(action, 1L, 1L, TimeUnit.SECONDS);
+         }
++
++        @Override
++        public void shutdown() {
++            scheduledExecutor.shutdown();
++        }
+     }
+ 
+     private static class NoopScheduler implements SchedulerService {
+@@ -162,6 +172,11 @@ public final class DeadLetterQueueWriter implements Closeable {
+         public void repeatedAction(Runnable action) {
+             // Noop
+         }
++
++        @Override
++        public void shutdown() {
++            // Noop
++        }
+     }
+ 
+     public static final class Builder {
+@@ -319,6 +334,15 @@ public final class DeadLetterQueueWriter implements Closeable {
+             } catch (Exception e) {
+                 logger.warn("Unable shutdown flush scheduler, ignoring", e);
+             }
++
++            try {
++                // flusherService is null only if it's not explicitly started, which happens only in tests.
++                if (flusherService != null) {
++                    flusherService.shutdown();
++                }
++            } catch (Exception e) {
++                logger.warn("Unable shutdown flusher service, ignoring", e);
++            }
+         }
+     }
+ 

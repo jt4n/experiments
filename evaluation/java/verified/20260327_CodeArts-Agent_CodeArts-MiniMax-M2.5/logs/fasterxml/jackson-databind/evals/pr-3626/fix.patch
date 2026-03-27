@@ -1,0 +1,103 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+index deea44fab..8cda1d089 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java
+@@ -592,8 +592,23 @@ public class ObjectMapper
+      */
+     protected ObjectMapper(ObjectMapper src)
+     {
+-        _jsonFactory = src._jsonFactory.copy();
+-        _jsonFactory.setCodec(this);
++        this(src, null);
++    }
++
++    /**
++     * Copy-constructor, used to support {@link #copyWith(JsonFactory)}.
++     * 
++     * @since 2.14
++     */
++    protected ObjectMapper(ObjectMapper src, JsonFactory jsonFactory)
++    {
++        if (jsonFactory == null) {
++            jsonFactory = src._jsonFactory.copy();
++        }
++        _jsonFactory = jsonFactory;
++        if (_jsonFactory.getCodec() == null) {
++            _jsonFactory.setCodec(this);
++        }
+         _subtypeResolver = src._subtypeResolver.copy();
+         _typeFactory = src._typeFactory;
+         _injectableValues = src._injectableValues;
+@@ -707,14 +722,41 @@ public class ObjectMapper
+      * are NOT shared, which means that the new instance may be re-configured
+      * before use; meaning that it behaves the same way as if an instance
+      * was constructed from scratch.
+-     * 
+-     * @since 2.1
++      * 
++      * @since 2.1
+      */
+     public ObjectMapper copy() {
+         _checkInvalidCopy(ObjectMapper.class);
+         return new ObjectMapper(this);
+     }
+ 
++    /**
++     * Method that can be used to create a new {@link ObjectMapper} instance
++     * that has same initial configuration as this instance, except for
++     * the {@link JsonFactory} to use.
++     *<p>
++     * This method is useful when you want to use the same configured
++     * {@link ObjectMapper} for different data formats (like JSON, CBOR, Smile,
++     * XML) while keeping the same configuration for serializers, deserializers,
++     * and other settings.
++     *<p>
++     * Note that the returned mapper will have a separate instance of
++     * {@link JsonFactory}, and the provided {@code jsonFactory} will be
++     * modified to have this mapper as its codec.
++     *
++     * @param jsonFactory the {@link JsonFactory} to use for the new mapper;
++     *                    if null, a copy of the current factory will be created
++     *
++     * @return new {@link ObjectMapper} instance with the specified factory
++     *         and the same configuration as this instance
++     *
++     * @since 2.14
++     */
++    public ObjectMapper copyWith(JsonFactory jsonFactory) {
++        _checkInvalidCopy(ObjectMapper.class);
++        return new ObjectMapper(this, jsonFactory);
++    }
++
+     /**
+      * @since 2.1
+      */
+diff --git a/src/main/java/com/fasterxml/jackson/databind/json/JsonMapper.java b/src/main/java/com/fasterxml/jackson/databind/json/JsonMapper.java
+index 2a7725201..cc881206b 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/json/JsonMapper.java
++++ b/src/main/java/com/fasterxml/jackson/databind/json/JsonMapper.java
+@@ -97,6 +97,10 @@ public class JsonMapper extends ObjectMapper
+         super(src);
+     }
+ 
++    protected JsonMapper(JsonMapper src, JsonFactory jsonFactory) {
++        super(src, jsonFactory);
++    }
++
+     @Override
+     public JsonMapper copy()
+     {
+@@ -104,6 +108,13 @@ public class JsonMapper extends ObjectMapper
+         return new JsonMapper(this);
+     }
+ 
++    @Override
++    public JsonMapper copyWith(JsonFactory jsonFactory)
++    {
++        _checkInvalidCopy(JsonMapper.class);
++        return new JsonMapper(this, jsonFactory);
++    }
++
+     /*
+     /**********************************************************
+     /* Life-cycle, builders

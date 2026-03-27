@@ -1,0 +1,135 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
+index 8ca02f28e..d05c98b36 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
+@@ -363,6 +363,9 @@ _containerType,
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
+                 if (value == null) {
++                    if (_skipNullValues) {
++                        continue;
++                    }
+                     _tryToAddNull(p, ctxt, result);
+                     continue;
+                 }
+@@ -430,6 +433,14 @@ _containerType,
+             // note: pass Object.class, not Object[].class, as we need element type for error info
+             throw JsonMappingException.wrapWithPath(e, Object.class, result.size());
+         }
++        // [databind#number] skip null values if configured to do so
++        if (value == null) {
++            if (_skipNullValues) {
++                return result;
++            }
++            _tryToAddNull(p, ctxt, result);
++            return result;
++        }
+         result.add(value);
+         return result;
+     }
+@@ -464,6 +475,12 @@ _containerType,
+                 } else {
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
++                // [databind#number] skip null values if configured to do so
++                if (value == null) {
++                    if (_skipNullValues) {
++                        continue;
++                    }
++                }
+                 referringAccumulator.add(value);
+             } catch (UnresolvedForwardReference reference) {
+                 Referring ref = referringAccumulator.handleUnresolvedReference(reference);
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/MapDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/MapDeserializer.java
+index 55ea967e0..94f1547c4 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/MapDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/MapDeserializer.java
+@@ -558,6 +558,12 @@ public class MapDeserializer
+                 } else {
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
++                // [databind#number] skip null values if configured to do so
++                if (value == null) {
++                    if (_skipNullValues) {
++                        continue;
++                    }
++                }
+                 if (useObjectId) {
+                     referringAccumulator.put(key, value);
+                 } else {
+@@ -624,6 +630,12 @@ public class MapDeserializer
+                 } else {
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
++                // [databind#number] skip null values if configured to do so
++                if (value == null) {
++                    if (_skipNullValues) {
++                        continue;
++                    }
++                }
+                 if (useObjectId) {
+                     referringAccumulator.put(key, value);
+                 } else {
+@@ -699,11 +711,20 @@ public class MapDeserializer
+                 } else {
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
++                // [databind#number] skip null values if configured to do so
++                if (value == null) {
++                    if (_skipNullValues) {
++                        // skip
++                    } else {
++                        buffer.bufferMapProperty(actualKey, value);
++                    }
++                    continue;
++                }
++                buffer.bufferMapProperty(actualKey, value);
+             } catch (Exception e) {
+                 wrapAndThrow(ctxt, e, _containerType.getRawClass(), key);
+                 return null;
+             }
+-            buffer.bufferMapProperty(actualKey, value);
+         }
+         // end of JSON object?
+         // if so, can just construct and leave...
+@@ -779,7 +800,12 @@ public class MapDeserializer
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
+                 if (value != old) {
+-                    result.put(key, value);
++                    // [databind#number] skip null values if configured to do so
++                    if (value == null && _skipNullValues) {
++                        result.remove(key);
++                    } else {
++                        result.put(key, value);
++                    }
+                 }
+             } catch (Exception e) {
+                 wrapAndThrow(ctxt, e, result, keyStr);
+@@ -846,7 +872,12 @@ public class MapDeserializer
+                     value = valueDes.deserializeWithType(p, ctxt, typeDeser);
+                 }
+                 if (value != old) {
+-                    result.put(key, value);
++                    // [databind#number] skip null values if configured to do so
++                    if (value == null && _skipNullValues) {
++                        result.remove(key);
++                    } else {
++                        result.put(key, value);
++                    }
+                 }
+             } catch (Exception e) {
+                 wrapAndThrow(ctxt, e, result, key);

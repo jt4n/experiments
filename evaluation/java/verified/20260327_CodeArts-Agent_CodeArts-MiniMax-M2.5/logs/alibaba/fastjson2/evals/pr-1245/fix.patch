@@ -1,0 +1,53 @@
+diff --git a/core/src/main/java/com/alibaba/fastjson2/filter/ContextAutoTypeBeforeHandler.java b/core/src/main/java/com/alibaba/fastjson2/filter/ContextAutoTypeBeforeHandler.java
+index e3d0d3a4e..bc671d3d2 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/filter/ContextAutoTypeBeforeHandler.java
++++ b/core/src/main/java/com/alibaba/fastjson2/filter/ContextAutoTypeBeforeHandler.java
+@@ -59,6 +59,7 @@ public class ContextAutoTypeBeforeHandler
+             Currency.class,
+             BitSet.class,
+             EnumSet.class,
++            EnumSet.noneOf(TimeUnit.class).getClass(),
+ 
+             Date.class,
+             Calendar.class,
+diff --git a/core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java b/core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java
+index f4808b2b7..3ed1645d4 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java
++++ b/core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java
+@@ -8,6 +8,7 @@ import com.alibaba.fastjson2.util.TypeUtils;
+ import java.lang.reflect.ParameterizedType;
+ import java.lang.reflect.Type;
+ import java.util.*;
++import java.util.concurrent.TimeUnit;
+ import java.util.function.Function;
+ 
+ import static com.alibaba.fastjson2.util.JDKUtils.JVM_VERSION;
+@@ -26,6 +27,8 @@ public final class ObjectReaderImplList
+     static final Class CLASS_UNMODIFIABLE_SORTED_SET = Collections.unmodifiableSortedSet(Collections.emptySortedSet()).getClass();
+     static final Class CLASS_UNMODIFIABLE_NAVIGABLE_SET = Collections.unmodifiableNavigableSet(Collections.emptyNavigableSet()).getClass();
+ 
++    static final Class CLASS_ENUM_SET = EnumSet.noneOf(TimeUnit.class).getClass();
++
+     public static ObjectReaderImplList INSTANCE = new ObjectReaderImplList(ArrayList.class, ArrayList.class, ArrayList.class, Object.class, null);
+ 
+     final Type listType;
+@@ -329,6 +332,9 @@ public final class ObjectReaderImplList
+             } else if (listType == CLASS_SINGLETON_LIST) {
+                 listType = ArrayList.class;
+                 builder = (Function<List, List>) ((List list) -> Collections.singletonList(list.get(0)));
++            } else if (listType == CLASS_ENUM_SET) {
++                listType = HashSet.class;
++                builder = (Function<Collection, Collection>) EnumSet::copyOf;
+             }
+         }
+ 
+@@ -384,6 +390,9 @@ public final class ObjectReaderImplList
+         } else if (listType == CLASS_UNMODIFIABLE_LIST) {
+             list = new ArrayList();
+             builder = (Function<List, List>) ((List items) -> Collections.unmodifiableList(items));
++        } else if (listType == CLASS_ENUM_SET) {
++            list = new HashSet();
++            builder = (Function<Collection, Collection>) EnumSet::copyOf;
+         } else if (listType != null && listType != this.listType) {
+             try {
+                 list = (Collection) listType.newInstance();

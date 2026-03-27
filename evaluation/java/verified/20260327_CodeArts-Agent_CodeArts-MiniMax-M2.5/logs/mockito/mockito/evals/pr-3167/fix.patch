@@ -1,0 +1,93 @@
+diff --git a/src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java b/src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
+index 27faed9d9..2f1c80938 100644
+--- a/src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
++++ b/src/main/java/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
+@@ -66,6 +66,13 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+             }
+         }
+ 
++        // Enums cannot be mocked. If the return type is an enum, we need to return the first
++        // enum constant instead of trying to create a deep stub mock. This allows users to
++        // call methods on the returned enum value.
++        if (rawType.isEnum()) {
++            return rawType.getEnumConstants()[0];
++        }
++
+         // When dealing with erased generics, we only receive the Object type as rawType. At this
+         // point, there is nothing to salvage for Mockito. Instead of trying to be smart and
+         // generate
+diff --git a/src/test/java/org/mockitousage/stubbing/DeepStubbingEnumTest.java b/src/test/java/org/mockitousage/stubbing/DeepStubbingEnumTest.java
+new file mode 100644
+index 000000000..2cfa3da78
+--- /dev/null
++++ b/src/test/java/org/mockitousage/stubbing/DeepStubbingEnumTest.java
+@@ -0,0 +1,68 @@
++/*
++ * Copyright (c) 2007 Mockito contributors
++ * This program is made available under the terms of the MIT License.
++ */
++package org.mockitousage.stubbing;
++
++import static org.assertj.core.api.Assertions.assertThat;
++import static org.mockito.Mockito.*;
++
++import org.junit.Test;
++
++public class DeepStubbingEnumTest {
++
++    interface PieceTypeWithCost {
++        double getCostPerPieceSpace();
++    }
++
++    enum PieceType implements PieceTypeWithCost {
++        SQUARE,
++        CIRCLE;
++
++        @Override
++        public double getCostPerPieceSpace() {
++            return 1.0d;
++        }
++    }
++
++    interface Piece {
++        PieceType getPiece();
++    }
++
++    interface Board {
++        double getCostPerSpace();
++    }
++
++    static class BoardImpl implements Board {
++        private final Piece piece;
++        private final int spaces;
++
++        BoardImpl(Piece piece, int spaces) {
++            this.piece = piece;
++            this.spaces = spaces;
++        }
++
++        @Override
++        public double getCostPerSpace() {
++            return piece.getPiece().getCostPerPieceSpace() / spaces;
++        }
++    }
++
++    @Test
++    public void deepStubsShouldWorkWithEnumReturnType() {
++        Piece piece = mock(Piece.class, RETURNS_DEEP_STUBS);
++        // With the fix, when getPiece() is called, it returns the first enum constant
++        // This allows calling methods on the enum without throwing an exception
++        // The enum's real method is called, returning 1.0d
++        BoardImpl board = new BoardImpl(piece, 10);
++        assertThat(board.getCostPerSpace()).isEqualTo(0.1d);
++    }
++
++    @Test
++    public void shouldBeAbleToStubEnumReturnValue() {
++        Piece piece = mock(Piece.class, RETURNS_DEEP_STUBS);
++        when(piece.getPiece()).thenReturn(PieceType.CIRCLE);
++        BoardImpl board = new BoardImpl(piece, 10);
++        assertThat(board.getCostPerSpace()).isEqualTo(0.1d);
++    }
++}
+\ No newline at end of file

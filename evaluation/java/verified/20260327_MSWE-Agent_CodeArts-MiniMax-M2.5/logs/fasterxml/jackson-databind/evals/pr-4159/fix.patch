@@ -1,0 +1,35 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+index a278b1dc2..7816eb5f4 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+@@ -122,12 +122,15 @@ class FactoryBasedEnumDeserializer
+     {
+         Object value;
+ 
++        // 05-Jun-2020, tatu: [databind#2353] Need to handle explicit array notation
++        if (p.hasToken(JsonToken.START_ARRAY)) {
++            return _deserializeFromArray(p, ctxt);
++        }
++
+         // First: the case of having deserializer for non-String input for delegating
+         // Creator method
+         if (_deser != null) {
+             value = _deser.deserialize(p, ctxt);
+-
+-        // Second: property- and delegating-creators
+         } else if (_hasArgs) {
+             // 30-Mar-2020, tatu: For properties-based one, MUST get JSON Object (before
+             //   2.11, was just assuming match)

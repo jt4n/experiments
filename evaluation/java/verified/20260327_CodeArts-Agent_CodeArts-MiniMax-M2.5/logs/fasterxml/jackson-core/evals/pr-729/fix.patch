@@ -1,0 +1,132 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java b/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+index e4310e92..da687e24 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+@@ -191,6 +191,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath(false /* isMatch */);
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray();
++        } else if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++            _checkParentPath(false /* isMatch */);
++            _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++            delegate.writeStartArray();
+         } else {
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
+         }
+@@ -225,6 +229,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath(false /* isMatch */);
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray(size);
++        } else if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++            _checkParentPath(false /* isMatch */);
++            _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++            delegate.writeStartArray(size);
+         } else {
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
+         }
+@@ -254,6 +262,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath();
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray(forValue);
++        } else if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++            _checkParentPath(false /* isMatch */);
++            _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++            delegate.writeStartArray(forValue);
+         } else {
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
+         }
+@@ -283,6 +295,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath();
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray(forValue, size);
++        } else if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++            _checkParentPath(false /* isMatch */);
++            _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++            delegate.writeStartArray(forValue, size);
+         } else {
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
+         }
+@@ -327,6 +343,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath(false /* isMatch */);
+             _filterContext = _filterContext.createChildObjectContext(f, true);
+             delegate.writeStartObject();
++        } else if (f != null && f.includeEmptyObject()) {
++            _checkParentPath(false /* isMatch */);
++            _filterContext = _filterContext.createChildObjectContext(f, true);
++            delegate.writeStartObject();
+         } else { // filter out
+             _filterContext = _filterContext.createChildObjectContext(f, false);
+         }
+@@ -361,6 +381,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath(false /* isMatch */);
+             _filterContext = _filterContext.createChildObjectContext(f, true);
+             delegate.writeStartObject(forValue);
++        } else if (f != null && f.includeEmptyObject()) {
++            _checkParentPath(false /* isMatch */);
++            _filterContext = _filterContext.createChildObjectContext(f, true);
++            delegate.writeStartObject(forValue);
+         } else { // filter out
+             _filterContext = _filterContext.createChildObjectContext(f, false);
+         }
+@@ -391,6 +415,10 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _checkParentPath();
+             _filterContext = _filterContext.createChildObjectContext(f, true);
+             delegate.writeStartObject(forValue, size);
++        } else if (f != null && f.includeEmptyObject()) {
++            _checkParentPath(false /* isMatch */);
++            _filterContext = _filterContext.createChildObjectContext(f, true);
++            delegate.writeStartObject(forValue, size);
+         } else {
+             _filterContext = _filterContext.createChildObjectContext(f, false);
+         }
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java b/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
+index 3e747491..830cb3c9 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
+@@ -133,6 +133,46 @@ public class TokenFilter
+      */
+     public void filterFinishArray() { }
+ 
++    /**
++     * Method called to check whether an empty Array (one that would otherwise
++     * not be included because its contents were filtered out) should be
++     * included in output.
++     *<p>
++     * This method is called when an Array would not be included because
++     * its contents were all filtered out, giving the filter a chance to
++     * include the empty array.
++     *<p>
++     * Default implementation returns <code>false</code>, which means empty
++     * arrays are not included.
++     *
++     * @return True if empty Array should be included in output; false if not
++     *
++     * @since 2.14
++     */
++    public boolean includeEmptyArray() {
++        return false;
++    }
++
++    /**
++     * Method called to check whether an empty Object (one that would otherwise
++     * not be included because its contents were filtered out) should be
++     * included in output.
++     *<p>
++     * This method is called when an Object would not be included because
++     * its contents were all filtered out, giving the filter a chance to
++     * include the empty object.
++     *<p>
++     * Default implementation returns <code>false</code>, which means empty
++     * objects are not included.
++     *
++     * @return True if empty Object should be included in output; false if not
++     *
++     * @since 2.14
++     */
++    public boolean includeEmptyObject() {
++        return false;
++    }
++
+     /*
+     /**********************************************************
+     /* API, properties/elements

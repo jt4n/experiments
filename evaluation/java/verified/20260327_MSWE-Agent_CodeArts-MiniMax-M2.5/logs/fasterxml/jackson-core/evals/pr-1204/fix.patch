@@ -1,0 +1,92 @@
+
+diff --git a/.gitignore b/.gitignore
+index 587b8bfb..70946ce8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.iws
+ /.idea/
+ dependency-reduced-pom.xml
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java b/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
+index 2a6c1e0f..8abb48b9 100644
+--- a/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
++++ b/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
+@@ -97,6 +97,23 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+      */
+     void releasePooled(P pooled);
+ 
++    /**
++     * Method that can be called to release all currently pooled objects,
++     * effectively clearing the pool. This is useful for pools that hold
++     * unbounded numbers of objects (like {@link ConcurrentDequePoolBase}
++     * or {@link LockFreePoolBase}).
++     *<p>
++     * For pools that don't actually recycle objects (like {@link NonRecyclingPoolBase}),
++     * this method is a no-op.
++     * For {@link ThreadLocalPoolBase}, this method has no effect since
++     * those are thread-local and not shared.
++     *
++     * @since 2.16
++     */
++    default void clear() {
++        // Default implementation does nothing; subclasses can override
++    }
++
+     /*
+     /**********************************************************************
+     /* Partial/base RecyclerPool implementations
+@@ -231,6 +248,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+         public void releasePooled(P pooled) {
+             pool.offerLast(pooled);
+         }
++
++        @Override
++        public void clear() {
++            pool.clear();
++        }
+     }
+ 
+     /**
+@@ -286,23 +308,12 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+             }
+         }
+ 
+-        protected static class Node<P> {
+-            final P value;
+-            Node<P> next;
+-
+-            Node(P value) {
+-                this.value = value;
+-            }
++        @Override
++        public void clear() {
++            head.set(null);
+         }
+     }
+ 
+-    /**
+-     * {@link RecyclerPool} implementation that uses
+-     * a bounded queue ({@link ArrayBlockingQueue} for recycling instances.
+-     * This is "bounded" pool since it will never hold on to more
+-     * pooled instances than its size configuration:
+-     * the default size is {@link BoundedPoolBase#DEFAULT_CAPACITY}.
+-     */
+     abstract class BoundedPoolBase<P extends WithPool<P>>
+         extends StatefulImplBase<P>
+     {
+@@ -342,6 +353,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+             pool.offer(pooled);
+         }
+ 
++        @Override
++        public void clear() {
++            pool.clear();
++        }
++
+         // // // Other methods
+ 
+         public int capacity() {

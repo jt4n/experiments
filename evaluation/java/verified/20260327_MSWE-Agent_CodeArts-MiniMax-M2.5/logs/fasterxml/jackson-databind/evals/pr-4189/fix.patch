@@ -1,0 +1,100 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/ExternalTypeIdWithJsonIgnorePropertiesTest.java b/ExternalTypeIdWithJsonIgnorePropertiesTest.java
+new file mode 100644
+index 000000000..2374ac10b
+--- /dev/null
++++ b/ExternalTypeIdWithJsonIgnorePropertiesTest.java
+@@ -0,0 +1,59 @@
++package com.fasterxml.jackson.databind.jsontype.ext;
++
++import com.fasterxml.jackson.annotation.*;
++import com.fasterxml.jackson.databind.*;
++
++/**
++ * Test for verifying that @JsonIgnoreProperties works with 
++ * @JsonTypeInfo(include = JsonTypeInfo.As.EXTERNAL_PROPERTY)
++ */
++public class ExternalTypeIdWithJsonIgnorePropertiesTest extends BaseMapTest
++{
++    // [databind#xxxx]: @JsonIgnoreProperties with @JsonTypeInfo(include = As.EXTERNAL_PROPERTY)
++    @JsonIgnoreProperties("parent")
++    static class Child {
++        public Parent parent;
++        public String childType;
++
++        @JsonTypeInfo(
++            use = JsonTypeInfo.Id.NAME,
++            include = JsonTypeInfo.As.EXTERNAL_PROPERTY,
++            property = "childType"
++        )
++        @JsonSubTypes({
++            @JsonSubTypes.Type(name = "A", value = SubChildA.class),
++            @JsonSubTypes.Type(name = "B", value = SubChildB.class),
++        })
++        public SubChild subChild;
++    }
++
++    static class Parent {
++        @JsonIgnoreProperties("parent")
++        public Child child;
++    }
++
++    interface SubChild {
++    }
++
++    static class SubChildA implements SubChild {
++    }
++
++    static class SubChildB implements SubChild {
++    }
++
++    private final ObjectMapper MAPPER = newJsonMapper();
++
++    // [databind#xxxx]: Test that @JsonIgnoreProperties doesn't interfere with
++    // @JsonTypeInfo(include = As.EXTERNAL_PROPERTY)
++    public void testExternalTypeWithJsonIgnoreProperties() throws Exception
++    {
++        final String json = "{\"child\":{\"childType\":\"A\", \"subChild\": {} }}";
++        Parent p = MAPPER.readValue(json, Parent.class);
++        
++        assertNotNull(p);
++        assertNotNull(p.child);
++        assertNotNull(p.child.subChild);
++        assertTrue("Expected SubChildA, got " + p.child.subChild.getClass().getName(),
++                p.child.subChild instanceof SubChildA);
++    }
++}
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+index cb36d2dc8..490da1661 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+@@ -398,6 +398,8 @@ public abstract class BeanDeserializerBase
+         _unwrappedPropertyHandler = src._unwrappedPropertyHandler;
+         _needViewProcesing = src._needViewProcesing;
+         _serializationShape = src._serializationShape;
++        
++        _externalTypeIdHandler = src._externalTypeIdHandler;
+ 
+         _vanillaProcessing = src._vanillaProcessing;
+         _objectIdReader = src._objectIdReader;
+@@ -434,6 +436,8 @@ public abstract class BeanDeserializerBase
+         _needViewProcesing = src._needViewProcesing;
+         _serializationShape = src._serializationShape;
+ 
++        _externalTypeIdHandler = src._externalTypeIdHandler;
++
+         _vanillaProcessing = src._vanillaProcessing;
+     }
+ 

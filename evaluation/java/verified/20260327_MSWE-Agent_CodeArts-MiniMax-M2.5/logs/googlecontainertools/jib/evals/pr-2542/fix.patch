@@ -1,0 +1,56 @@
+
+diff --git a/.gitignore b/.gitignore
+index a414d36d..942beea0 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -13,3 +13,6 @@ bin/
+ .classpath
+ .project
+ .DS_Store
++out/
++*.class
++*.jar
+diff --git a/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java b/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java
+index 7967f0bc..2c3829a0 100644
+--- a/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java
++++ b/jib-core/src/main/java/com/google/cloud/tools/jib/json/JsonTemplateMapper.java
+@@ -101,6 +101,9 @@ public class JsonTemplateMapper {
+    */
+   public static <T extends JsonTemplate> T readJson(InputStream jsonStream, Class<T> templateClass)
+       throws IOException {
++    if (jsonStream == null) {
++      throw new IOException("Cannot read JSON from null InputStream");
++    }
+     return objectMapper.readValue(jsonStream, templateClass);
+   }
+ 
+@@ -115,6 +118,9 @@ public class JsonTemplateMapper {
+    */
+   public static <T extends JsonTemplate> T readJson(String jsonString, Class<T> templateClass)
+       throws IOException {
++    if (jsonString == null) {
++      throw new IOException("Cannot read JSON from null string");
++    }
+     return objectMapper.readValue(jsonString, templateClass);
+   }
+ 
+@@ -129,6 +135,9 @@ public class JsonTemplateMapper {
+    */
+   public static <T extends JsonTemplate> T readJson(byte[] jsonBytes, Class<T> templateClass)
+       throws IOException {
++    if (jsonBytes == null) {
++      throw new IOException("Cannot read JSON from null byte array");
++    }
+     return objectMapper.readValue(jsonBytes, templateClass);
+   }
+ 
+@@ -143,6 +152,9 @@ public class JsonTemplateMapper {
+    */
+   public static <T extends JsonTemplate> List<T> readListOfJson(
+       String jsonString, Class<T> templateClass) throws IOException {
++    if (jsonString == null) {
++      throw new IOException("Cannot read JSON from null string");
++    }
+     CollectionType listType =
+         objectMapper.getTypeFactory().constructCollectionType(List.class, templateClass);
+     return objectMapper.readValue(jsonString, listType);

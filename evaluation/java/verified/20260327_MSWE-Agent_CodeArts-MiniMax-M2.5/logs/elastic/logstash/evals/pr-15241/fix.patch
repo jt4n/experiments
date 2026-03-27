@@ -1,0 +1,41 @@
+
+diff --git a/.gitignore b/.gitignore
+index 1b0d8f000..c50d18240 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -62,4 +62,6 @@ lib/pluginmanager/plugin_aliases.yml
+ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+-qa/integration/fixtures/logs_rollover/log4j2.properties
+\ No newline at end of file
++qa/integration/fixtures/logs_rollover/log4j2.propertiestarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index e455a99dc..48da81fda 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -531,10 +531,18 @@ public final class DeadLetterQueueWriter implements Closeable {
+     }
+ 
+     private void sealSegment(int segmentIndex, SealReason motivation) throws IOException {
+-        Files.move(queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex)),
+-                queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex)),
+-                StandardCopyOption.ATOMIC_MOVE);
+-        logger.debug("Sealed segment with index {} because {}", segmentIndex, motivation);
++        Path tempFile = queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex));
++        Path segmentFile = queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex));
++        if (Files.exists(tempFile)) {
++            Files.move(tempFile, segmentFile, StandardCopyOption.ATOMIC_MOVE);
++            logger.debug("Sealed segment with index {} because {}", segmentIndex, motivation);
++        } else if (Files.exists(segmentFile)) {
++            // segment file already exists, this is not an error condition
++            logger.debug("Segment with index {} already sealed", segmentIndex);
++        } else {
++            // neither temp nor segment file exists - this is an error condition
++            throw new IOException("Unable to seal segment with index " + segmentIndex + ": neither " + tempFile + " nor " + segmentFile + " exists");
++        }
+     }
+ 
+     private void createFlushScheduler() {

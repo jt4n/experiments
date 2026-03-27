@@ -1,0 +1,14 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index c60648423..f737d48f7 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -409,6 +409,9 @@ public final class DeadLetterQueueWriter implements Closeable {
+      * */
+     private static Optional<Timestamp> readTimestampOfLastEventInSegment(Path segmentPath) throws IOException {
+         final int lastBlockId = (int) Math.ceil(((Files.size(segmentPath) - VERSION_SIZE) / (double) BLOCK_SIZE)) - 1;
++        if (lastBlockId < 0) {
++            return Optional.empty();
++        }
+         byte[] eventBytes;
+         try (RecordIOReader recordReader = new RecordIOReader(segmentPath)) {
+             int blockId = lastBlockId;

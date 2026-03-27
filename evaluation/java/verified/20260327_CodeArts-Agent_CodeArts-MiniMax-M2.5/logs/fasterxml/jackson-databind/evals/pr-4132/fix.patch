@@ -1,0 +1,138 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/JsonNode.java b/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
+index 516d67bb6..8143d7410 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
++++ b/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
+@@ -1144,15 +1144,32 @@ public abstract class JsonNode
+      *   withObject(JsonPointer.compile(expr);
+      *</pre>
+      * see {@link #withObject(JsonPointer)} for full explanation.
++     *<p>
++     * Method that works in one of possible ways, depending on whether
++     * {@code exprOrProperty} is a valid {@link JsonPointer} expression or
++     * not (valid expression is either empty String {@code ""} or starts
++     * with leading slash {@code /} character).
++     * If it is, works as a short-cut to:
++     *<pre>
++     *  withObject(JsonPointer.compile(exprOrProperty));
++     *</pre>
++     * If it is NOT a valid {@link JsonPointer} expression, value is taken
++     * as a literal Object property name and traversed like a single-segment
++     * {@link JsonPointer}.
+      *
+-     * @param expr {@link JsonPointer} expression to use
++     * @param exprOrProperty Either {@link JsonPointer} expression for full access (if valid
++     *   pointer expression), or the name of property for the {@link ObjectNode}.
+      *
+      * @return {@link ObjectNode} found or created
+      *
+      * @since 2.14
+      */
+-    public final ObjectNode withObject(String expr) {
+-        return withObject(JsonPointer.compile(expr));
++    public final ObjectNode withObject(String exprOrProperty) {
++        JsonPointer ptr = _jsonPointerIfValid(exprOrProperty);
++        if (ptr != null) {
++            return withObject(ptr);
++        }
++        return withObjectProperty(exprOrProperty);
+     }
+ 
+     /**
+@@ -1160,12 +1177,35 @@ public abstract class JsonNode
+      *<pre>
+      *  withObject(JsonPointer.compile(expr), overwriteMode, preferIndex);
+      *</pre>
++     *<p>
++     * Method that works in one of possible ways, depending on whether
++     * {@code exprOrProperty} is a valid {@link JsonPointer} expression or
++     * not (valid expression is either empty String {@code ""} or starts
++     * with leading slash {@code /} character).
++     * If it is, works as a short-cut to:
++     *<pre>
++     *  withObject(JsonPointer.compile(exprOrProperty), overwriteMode, preferIndex);
++     *</pre>
++     * If it is NOT a valid {@link JsonPointer} expression, value is taken
++     * as a literal Object property name and traversed like a single-segment
++     * {@link JsonPointer}.
++     *
++     * @param exprOrProperty Either {@link JsonPointer} expression for full access (if valid
++     *   pointer expression), or the name of property for the {@link ObjectNode}.
++     * @param overwriteMode Mode to use for overwriting incompatible nodes
++     * @param preferIndex Whether to prefer index or property name
++     *
++     * @return {@link ObjectNode} found or created
+      *
+      * @since 2.14
+      */
+-    public final ObjectNode withObject(String expr,
++    public final ObjectNode withObject(String exprOrProperty,
+             OverwriteMode overwriteMode, boolean preferIndex) {
+-        return withObject(JsonPointer.compile(expr), overwriteMode, preferIndex);
++        JsonPointer ptr = _jsonPointerIfValid(exprOrProperty);
++        if (ptr != null) {
++            return withObject(ptr, overwriteMode, preferIndex);
++        }
++        return withObjectProperty(exprOrProperty);
+     }
+ 
+     /**
+@@ -1346,12 +1386,35 @@ public abstract class JsonNode
+      *<pre>
+      *  withArray(JsonPointer.compile(expr), overwriteMode, preferIndex);
+      *</pre>
++     *<p>
++     * Method that works in one of possible ways, depending on whether
++     * {@code exprOrProperty} is a valid {@link JsonPointer} expression or
++     * not (valid expression is either empty String {@code ""} or starts
++     * with leading slash {@code /} character).
++     * If it is, works as a short-cut to:
++     *<pre>
++     *  withArray(JsonPointer.compile(exprOrProperty), overwriteMode, preferIndex);
++     *</pre>
++     * If it is NOT a valid {@link JsonPointer} expression, value is taken
++     * as a literal Object property name and traversed like a single-segment
++     * {@link JsonPointer}.
++     *
++     * @param exprOrProperty Either {@link JsonPointer} expression for full access (if valid
++     *   pointer expression), or the name of property for the {@link ArrayNode}.
++     * @param overwriteMode Mode to use for overwriting incompatible nodes
++     * @param preferIndex Whether to prefer index or property name
++     *
++     * @return {@link ArrayNode} found or created
+      *
+      * @since 2.14
+      */
+-    public ArrayNode withArray(String expr,
++    public ArrayNode withArray(String exprOrProperty,
+             OverwriteMode overwriteMode, boolean preferIndex) {
+-        return withArray(JsonPointer.compile(expr), overwriteMode, preferIndex);
++        JsonPointer ptr = _jsonPointerIfValid(exprOrProperty);
++        if (ptr != null) {
++            return withArray(ptr, overwriteMode, preferIndex);
++        }
++        return withArrayProperty(exprOrProperty);
+     }
+ 
+     /**
+@@ -1563,4 +1626,21 @@ public abstract class JsonNode
+     protected <T> T _reportRequiredViolation(String msgTemplate, Object...args) {
+         throw new IllegalArgumentException(String.format(msgTemplate, args));
+     }
++
++    /**
++     * Helper method for checking if given String is a valid {@link JsonPointer}
++     * expression: that is, either empty or starting with {@code '/'}.
++     *
++     * @param exprOrProperty String to check
++     *
++     * @return {@link JsonPointer} if valid expression; {@code null} if not
++     *
++     * @since 2.16
++     */
++    protected JsonPointer _jsonPointerIfValid(String exprOrProperty) {
++        if (exprOrProperty.isEmpty() || exprOrProperty.charAt(0) == '/') {
++            return JsonPointer.compile(exprOrProperty);
++        }
++        return null;
++    }
+ }

@@ -1,0 +1,30 @@
+diff --git a/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java b/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java
+index 61b37db84b..8c62188827 100644
+--- a/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java
++++ b/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java
+@@ -270,6 +270,7 @@ public final class URLStrParser {
+             return false;
+         }
+ 
++        boolean hasEqualSign = valueStart > nameStart;
+         if (valueStart <= nameStart) {
+             valueStart = valueEnd + 1;
+         }
+@@ -278,7 +279,7 @@ public final class URLStrParser {
+             String name = decodeComponent(str, nameStart, valueStart - 3, false, tempBuf);
+             String value;
+             if (valueStart >= valueEnd) {
+-                value = name;
++                value = hasEqualSign ? EMPTY_STRING : name;
+             } else {
+                 value = decodeComponent(str, valueStart, valueEnd, false, tempBuf);
+             }
+@@ -291,7 +292,7 @@ public final class URLStrParser {
+             String name = str.substring(nameStart, valueStart - 1);
+             String value;
+             if (valueStart >= valueEnd) {
+-                value = name;
++                value = hasEqualSign ? EMPTY_STRING : name;
+             } else {
+                 value = str.substring(valueStart, valueEnd);
+             }

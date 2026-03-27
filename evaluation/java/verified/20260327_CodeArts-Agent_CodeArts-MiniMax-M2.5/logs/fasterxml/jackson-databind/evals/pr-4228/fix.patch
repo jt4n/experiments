@@ -1,0 +1,207 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+index 21dc18108..eab0e12ca 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+@@ -697,10 +697,30 @@ ClassUtil.getTypeDescription(_beanType), ClassUtil.classNameOf(_valueInstantiato
+     private JsonDeserializer<Object> _findDelegateDeserializer(DeserializationContext ctxt,
+             JavaType delegateType, AnnotatedWithParams delegateCreator) throws JsonMappingException
+     {
++        // 05-Mar-2024, tatu: [databind#4074] Need to get metadata from parameter, if available
++        PropertyMetadata metadata = PropertyMetadata.STD_OPTIONAL;
++        if (delegateCreator != null) {
++            final int paramCount = delegateCreator.getParameterCount();
++            if (paramCount == 1) {
++                AnnotatedParameter param = delegateCreator.getParameter(0);
++                AnnotationIntrospector intr = ctxt.getAnnotationIntrospector();
++                if (intr != null) {
++                    JsonSetter.Value setterInfo = intr.findSetterInfo(param);
++                    if (setterInfo != null) {
++                        Nulls valueNulls = setterInfo.nonDefaultValueNulls();
++                        Nulls contentNulls = setterInfo.nonDefaultContentNulls();
++                        if ((valueNulls != null) || (contentNulls != null)) {
++                            metadata = metadata.withNulls(valueNulls, contentNulls);
++                        }
++                    }
++                }
++            }
++        }
++
+         // Need to create a temporary property to allow contextual deserializers:
+         BeanProperty.Std property = new BeanProperty.Std(TEMP_PROPERTY_NAME,
+                 delegateType, null, delegateCreator,
+-                PropertyMetadata.STD_OPTIONAL);
++                metadata);
+         TypeDeserializer td = delegateType.getTypeHandler();
+         if (td == null) {
+             td = ctxt.getConfig().findTypeDeserializer(delegateType);
+diff --git a/src/test/java/com/fasterxml/jackson/databind/deser/creators/DelegatingCreatorNullsTest.java b/src/test/java/com/fasterxml/jackson/databind/deser/creators/DelegatingCreatorNullsTest.java
+new file mode 100644
+index 000000000..7ee4d4f21
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/databind/deser/creators/DelegatingCreatorNullsTest.java
+@@ -0,0 +1,164 @@
++package com.fasterxml.jackson.databind.deser.creators;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import com.fasterxml.jackson.annotation.JsonSetter;
++import com.fasterxml.jackson.annotation.Nulls;
++import com.fasterxml.jackson.databind.BaseMapTest;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.fasterxml.jackson.databind.exc.InvalidNullException;
++
++import java.util.List;
++import java.util.Map;
++
++public class DelegatingCreatorNullsTest extends BaseMapTest
++{
++    static class DelegatingWrapper {
++        private final Map<String, String> value;
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        DelegatingWrapper(@JsonSetter(contentNulls = Nulls.FAIL) Map<String, String> value) {
++            this.value = value;
++        }
++
++        public Map<String, String> getValue() {
++            return value;
++        }
++    }
++
++    static class SetterWrapper {
++        private Map<String, String> value;
++
++        public Map<String, String> getValue() {
++            return value;
++        }
++
++        @JsonSetter(contentNulls = Nulls.FAIL)
++        public void setValue(Map<String, String> value) {
++            this.value = value;
++        }
++    }
++
++    static class PropertiesWrapper {
++        private final Map<String, String> value;
++
++        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
++        PropertiesWrapper(
++                @JsonSetter(contentNulls = Nulls.FAIL)
++                @JsonProperty("value")
++                Map<String, String> value
++        ) {
++            this.value = value;
++        }
++
++        public Map<String, String> getValue() {
++            return value;
++        }
++    }
++
++    static class DefaultWrapper {
++        private final Map<String, String> value;
++
++        @JsonCreator(mode = JsonCreator.Mode.DEFAULT)
++        DefaultWrapper(
++                @JsonSetter(contentNulls = Nulls.FAIL)
++                @JsonProperty("value")
++                Map<String, String> value
++        ) {
++            this.value = value;
++        }
++
++        public Map<String, String> getValue() {
++            return value;
++        }
++    }
++
++    static class DelegatingWrapperSkip {
++        private final Map<String, String> value;
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        DelegatingWrapperSkip(@JsonSetter(contentNulls = Nulls.SKIP) Map<String, String> value) {
++            this.value = value;
++        }
++
++        public Map<String, String> getValue() {
++            return value;
++        }
++    }
++
++    private final ObjectMapper mapper = newJsonMapper();
++
++    public void testDelegatingWrapperWithNullContent() {
++        try {
++            mapper.readValue("{\"foo\":null}", DelegatingWrapper.class);
++            fail("Should have thrown InvalidNullException");
++        } catch (InvalidNullException e) {
++            // expected
++        } catch (Exception e) {
++            fail("Expected InvalidNullException, got: " + e);
++        }
++    }
++
++    public void testSetterWrapperWithNullContent() {
++        try {
++            mapper.readValue("{\"value\":{\"foo\":null}}", SetterWrapper.class);
++            fail("Should have thrown InvalidNullException");
++        } catch (InvalidNullException e) {
++            // expected
++        } catch (Exception e) {
++            fail("Expected InvalidNullException, got: " + e);
++        }
++    }
++
++    public void testPropertiesWrapperWithNullContent() {
++        try {
++            mapper.readValue("{\"value\":{\"foo\":null}}", PropertiesWrapper.class);
++            fail("Should have thrown InvalidNullException");
++        } catch (InvalidNullException e) {
++            // expected
++        } catch (Exception e) {
++            fail("Expected InvalidNullException, got: " + e);
++        }
++    }
++
++    public void testDefaultWrapperWithNullContent() {
++        try {
++            mapper.readValue("{\"value\":{\"foo\":null}}", DefaultWrapper.class);
++            fail("Should have thrown InvalidNullException");
++        } catch (InvalidNullException e) {
++            // expected
++        } catch (Exception e) {
++            fail("Expected InvalidNullException, got: " + e);
++        }
++    }
++
++    public void testDelegatingWrapperSkipNullContent() throws Exception {
++        DelegatingWrapperSkip result = mapper.readValue("{\"foo\":null}", DelegatingWrapperSkip.class);
++        assertNotNull(result.getValue());
++        assertEquals(0, result.getValue().size());
++    }
++
++    static class ArrayDelegatingWrapper {
++        private final List<String> value;
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        ArrayDelegatingWrapper(@JsonSetter(contentNulls = Nulls.FAIL) List<String> value) {
++            this.value = value;
++        }
++
++        public List<String> getValue() {
++            return value;
++        }
++    }
++
++    public void testArrayDelegatingWrapperWithNullContent() {
++        try {
++            mapper.readValue("[\"a\",null,\"b\"]", ArrayDelegatingWrapper.class);
++            fail("Should have thrown InvalidNullException");
++        } catch (InvalidNullException e) {
++            // expected
++        } catch (Exception e) {
++            fail("Expected InvalidNullException, got: " + e);
++        }
++    }
++}
+\ No newline at end of file

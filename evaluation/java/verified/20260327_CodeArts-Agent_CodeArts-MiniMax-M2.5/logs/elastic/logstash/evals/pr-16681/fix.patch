@@ -1,0 +1,68 @@
+diff --git a/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBusV2.java b/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBusV2.java
+index 6626641a1..2c9af0943 100644
+--- a/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBusV2.java
++++ b/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBusV2.java
+@@ -48,11 +48,13 @@ class PipelineBusV2 extends AbstractPipelineBus implements PipelineBus {
+                                final Iterable<String> addresses) {
+         Objects.requireNonNull(sender, "sender must not be null");
+         Objects.requireNonNull(addresses, "addresses must not be null");
+-        addressStatesBySender.compute(sender, (po, existing) -> {
+-            return StreamSupport.stream(addresses.spliterator(), false)
+-                                .map((addr) -> addressStates.mutate(addr, (as) -> as.addOutput(po)))
+-                                .collect(Collectors.toUnmodifiableSet());
+-        });
++        synchronized (sender) {
++            addressStatesBySender.compute(sender, (po, existing) -> {
++                return StreamSupport.stream(addresses.spliterator(), false)
++                                    .map((addr) -> addressStates.mutate(addr, (as) -> as.addOutput(po)))
++                                    .collect(Collectors.toUnmodifiableSet());
++            });
++        }
+     }
+ 
+     @Override
+@@ -60,10 +62,12 @@ class PipelineBusV2 extends AbstractPipelineBus implements PipelineBus {
+                                  final Iterable<String> addresses) {
+         Objects.requireNonNull(sender, "sender must not be null");
+         Objects.requireNonNull(addresses, "addresses must not be null");
+-        addressStatesBySender.compute(sender, (po, existing) -> {
+-            addresses.forEach((addr) -> addressStates.mutate(addr, (as) -> as.removeOutput(po)));
+-            return null;
+-        });
++        synchronized (sender) {
++            addressStatesBySender.compute(sender, (po, existing) -> {
++                addresses.forEach((addr) -> addressStates.mutate(addr, (as) -> as.removeOutput(po)));
++                return null;
++            });
++        }
+     }
+ 
+     @Override
+@@ -71,10 +75,12 @@ class PipelineBusV2 extends AbstractPipelineBus implements PipelineBus {
+                           final String address) {
+         Objects.requireNonNull(listener, "listener must not be null");
+         Objects.requireNonNull(address, "address must not be null");
+-        final AddressState.ReadOnly result = addressStates.mutate(address, (addressState) -> {
+-            addressState.assignInputIfMissing(listener);
+-        });
+-        return (result != null && result.getInput() == listener);
++        synchronized (listener) {
++            final AddressState.ReadOnly result = addressStates.mutate(address, (addressState) -> {
++                addressState.assignInputIfMissing(listener);
++            });
++            return (result != null && result.getInput() == listener);
++        }
+     }
+ 
+     @Override
+@@ -91,7 +97,9 @@ class PipelineBusV2 extends AbstractPipelineBus implements PipelineBus {
+ 
+     private void unlistenNonblock(final PipelineInput listener,
+                                    final String address) {
+-        addressStates.mutate(address, (addressState) -> addressState.unassignInput(listener));
++        synchronized (listener) {
++            addressStates.mutate(address, (addressState) -> addressState.unassignInput(listener));
++        }
+     }
+ 
+     private void unlistenBlocking(final PipelineInput listener,

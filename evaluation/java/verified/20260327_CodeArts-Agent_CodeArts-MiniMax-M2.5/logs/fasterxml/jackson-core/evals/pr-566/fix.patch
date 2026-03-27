@@ -1,0 +1,45 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java b/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
+index ea4ab8a8..bbb16dfa 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
+@@ -1235,6 +1235,19 @@ public abstract class JsonGenerator
+         writeNumber(value);
+     }
+ 
++    /**
++     * Convenience method for outputting a field entry ("member")
++     * that has the specified numeric value. Equivalent to:
++     *<pre>
++     *  writeFieldName(fieldName);
++     *  writeNumber(value);
++     *</pre>
++     */
++    public void writeNumberField(String fieldName, short value) throws IOException {
++        writeFieldName(fieldName);
++        writeNumber(value);
++    }
++
+     /**
+      * Convenience method for outputting a field entry ("member")
+      * that has the specified numeric value. Equivalent to:
+@@ -1288,6 +1301,20 @@ public abstract class JsonGenerator
+         writeNumber(value);
+     }
+ 
++    /**
++     * Convenience method for outputting a field entry ("member")
++     * that has the specified numeric value.
++     * Equivalent to:
++     *<pre>
++     *  writeFieldName(fieldName);
++     *  writeNumber(value);
++     *</pre>
++     */
++    public void writeNumberField(String fieldName, BigInteger value) throws IOException {
++        writeFieldName(fieldName);
++        writeNumber(value);
++    }
++
+     /**
+      * Convenience method for outputting a field entry ("member")
+      * that contains specified data in base64-encoded form.

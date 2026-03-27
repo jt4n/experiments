@@ -1,0 +1,80 @@
+diff --git a/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java b/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java
+index 906defd8e..b6cf77c8e 100644
+--- a/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java
++++ b/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java
+@@ -61,7 +61,14 @@ public class PipelineBus {
+                 final Stream<JrubyEventExtLibrary.RubyEvent> clones = events.stream().map(e -> e.rubyClone(RubyUtil.RUBY));
+ 
+                 PipelineInput input = addressState.getInput(); // Save on calls to getInput since it's volatile
+-                boolean sendWasSuccess = input != null && input.internalReceive(clones);
++                boolean sendWasSuccess = false;
++                if (input != null) {
++                    try {
++                        sendWasSuccess = input.internalReceive(clones);
++                    } catch (Exception e) {
++                        logger.warn("Failed to send events to pipeline input, address: " + address, e);
++                    }
++                }
+ 
+                 // Retry send if the initial one failed
+                 while (ensureDelivery && !sendWasSuccess) {
+@@ -70,7 +77,14 @@ public class PipelineBus {
+                             "Maybe the destination pipeline is down or stopping? Will Retry.", address);
+                     logger.warn(message);
+                     input = addressState.getInput();
+-                    sendWasSuccess = input != null && input.internalReceive(clones);
++                    if (input != null) {
++                        try {
++                            sendWasSuccess = input.internalReceive(clones);
++                        } catch (Exception e) {
++                            logger.warn("Failed to send events to pipeline input, address: " + address, e);
++                            break;
++                        }
++                    }
+                     try {
+                         Thread.sleep(1000);
+                     } catch (InterruptedException e) {
+diff --git a/logstash-core/src/test/java/org/logstash/plugins/pipeline/PipelineBusTest.java b/logstash-core/src/test/java/org/logstash/plugins/pipeline/PipelineBusTest.java
+index 5de0b264b..46330bea4 100644
+--- a/logstash-core/src/test/java/org/logstash/plugins/pipeline/PipelineBusTest.java
++++ b/logstash-core/src/test/java/org/logstash/plugins/pipeline/PipelineBusTest.java
+@@ -227,4 +227,38 @@ public class PipelineBusTest {
+ 
+     static class TestPipelineOutput implements PipelineOutput {
+     }
++
++    @Test
++    public void testSendEventsHandlesExceptionsFromInput() {
++        TestPipelineInput throwingInput = new TestPipelineInput() {
++            @Override
++            public boolean internalReceive(Stream<JrubyEventExtLibrary.RubyEvent> events) {
++                throw new RuntimeException("Simulated PQ exception");
++            }
++        };
++
++        bus.registerSender(output, addresses);
++        bus.listen(throwingInput, address);
++
++        bus.sendEvents(output, Collections.singleton(rubyEvent()), false);
++
++        assertThat(throwingInput.eventCount.longValue()).isEqualTo(0L);
++    }
++
++    @Test
++    public void testSendEventsWithEnsureDeliveryHandlesExceptionsFromInput() {
++        TestPipelineInput throwingInput = new TestPipelineInput() {
++            @Override
++            public boolean internalReceive(Stream<JrubyEventExtLibrary.RubyEvent> events) {
++                throw new RuntimeException("Simulated PQ exception");
++            }
++        };
++
++        bus.registerSender(output, addresses);
++        bus.listen(throwingInput, address);
++
++        bus.sendEvents(output, Collections.singleton(rubyEvent()), true);
++
++        assertThat(throwingInput.eventCount.longValue()).isEqualTo(0L);
++    }
+ }
+\ No newline at end of file

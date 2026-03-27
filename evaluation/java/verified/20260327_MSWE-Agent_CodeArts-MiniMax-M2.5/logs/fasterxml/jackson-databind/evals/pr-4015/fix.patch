@@ -1,0 +1,55 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/TestLocale.java b/TestLocale.java
+new file mode 100644
+index 000000000..1112bdda0
+--- /dev/null
++++ b/TestLocale.java
+@@ -0,0 +1,19 @@
++import com.fasterxml.jackson.databind.DeserializationFeature;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import java.util.Locale;
++
++public class TestLocale {
++    public static void main(String[] args) throws Exception {
++        ObjectMapper objectMapper = new ObjectMapper();
++        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
++
++        Locale result = objectMapper.readValue("\"\"", Locale.class);
++        
++        if (result.equals(Locale.ROOT)) {
++            System.out.println("SUCCESS: Empty string correctly deserialized to Locale.ROOT");
++        } else {
++            System.out.println("FAILURE: Expected Locale.ROOT but got: " + result);
++            System.exit(1);
++        }
++    }
++}
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
+index 8859209bd..230b0c215 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
+@@ -250,6 +250,12 @@ public abstract class FromStringDeserializer<T> extends StdScalarDeserializer<T>
+ _coercedTypeDesc());
+         }
+         if (act == CoercionAction.AsNull) {
++            // 05-Dec-2023, tatu: [databind#429] Allow types with special handling
++            //    for empty strings (like Locale, URI) to override null behavior
++            Object emptyValue = _deserializeFromEmptyStringDefault(ctxt);
++            if (emptyValue != null) {
++                return emptyValue;
++            }
+             return getNullValue(ctxt);
+         }
+         if (act == CoercionAction.AsEmpty) {

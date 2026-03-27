@@ -1,0 +1,54 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/EnumResolver.java b/src/main/java/com/fasterxml/jackson/databind/util/EnumResolver.java
+index 62429ea4d..1c1998b41 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/EnumResolver.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/EnumResolver.java
+@@ -191,6 +191,9 @@ public class EnumResolver implements java.io.Serializable
+             String name = names[i];
+             if (name == null) {
+                 name = enumValue.toString();
++                if (name == null) {
++                    name = enumValue.name();
++                }
+             }
+             map.put(name, enumValue);
+             String[] aliases = allAliases[i];
+@@ -230,7 +233,11 @@ public class EnumResolver implements java.io.Serializable
+         // from last to first, so that in case of duplicate values, first wins
+         for (int i = enumConstants.length; --i >= 0; ) {
+             Enum<?> enumValue = enumConstants[i];
+-            map.put(enumValue.toString(), enumValue);
++            String name = enumValue.toString();
++            if (name == null) {
++                name = enumValue.name();
++            }
++            map.put(name, enumValue);
+             String[] aliases = allAliases[i];
+             if (aliases != null) {
+                 for (String alias : aliases) {
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/EnumValues.java b/src/main/java/com/fasterxml/jackson/databind/util/EnumValues.java
+index ba605b922..6a1340ae1 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/EnumValues.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/EnumValues.java
+@@ -129,6 +129,9 @@ public final class EnumValues
+             if (name == null) {
+                 Enum<?> en = enumConstants[i];
+                 name = en.toString();
++                if (name == null) {
++                    name = en.name();
++                }
+             }
+             if (useLowerCase) {
+                 name = name.toLowerCase();
+@@ -151,7 +154,11 @@ public final class EnumValues
+         }
+         ArrayList<String> external = new ArrayList<>(values.length);
+         for (Enum<?> en : values) {
+-            external.add(en.toString());
++            String name = en.toString();
++            if (name == null) {
++                name = en.name();
++            }
++            external.add(name);
+         }
+         return construct(config, enumClass, external);
+     }

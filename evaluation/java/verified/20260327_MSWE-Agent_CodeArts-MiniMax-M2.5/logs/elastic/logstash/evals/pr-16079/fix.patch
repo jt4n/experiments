@@ -1,0 +1,56 @@
+
+diff --git a/.gitignore b/.gitignore
+index cc0ab0db4..7e5ef4afe 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,4 +63,6 @@ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+ qa/integration/fixtures/logs_rollover/log4j2.properties
+-ci/serverless/config/*.log
+\ No newline at end of file
++ci/serverless/config/*.logtarget/
++out/
++.gradle/
+diff --git a/tools/jvm-options-parser/src/main/java/org/logstash/launchers/JvmOptionsParser.java b/tools/jvm-options-parser/src/main/java/org/logstash/launchers/JvmOptionsParser.java
+index 042f81d45..c3daa7ce6 100644
+--- a/tools/jvm-options-parser/src/main/java/org/logstash/launchers/JvmOptionsParser.java
++++ b/tools/jvm-options-parser/src/main/java/org/logstash/launchers/JvmOptionsParser.java
+@@ -130,7 +130,8 @@ public class JvmOptionsParser {
+         final String jvmOpts = args.length == 2 ? args[1] : null;
+         try {
+             Optional<Path> jvmOptions = parser.lookupJvmOptionsFile(jvmOpts);
+-            parser.handleJvmOptions(jvmOptions, lsJavaOpts);
++            Set<String> jvmFinalOptions = parser.handleJvmOptions(jvmOptions, lsJavaOpts);
++            System.out.println(String.join(" ", jvmFinalOptions));
+         } catch (JvmOptionsFileParserException pex) {
+             System.err.printf(Locale.ROOT,
+                     "encountered [%d] error%s parsing [%s]",
+@@ -165,7 +166,7 @@ public class JvmOptionsParser {
+                 .findFirst();
+     }
+ 
+-    private void handleJvmOptions(Optional<Path> jvmOptionsFile, String lsJavaOpts) throws IOException, JvmOptionsFileParserException {
++    private Set<String> handleJvmOptions(Optional<Path> jvmOptionsFile, String lsJavaOpts) throws IOException, JvmOptionsFileParserException {
+         int javaMajorVersion = javaMajorVersion();
+ 
+         // Add JVM Options from config/jvm.options
+@@ -182,8 +183,7 @@ public class JvmOptionsParser {
+         jvmOptionsContent.addAll(getMandatoryJvmOptions(javaMajorVersion));
+ 
+         final Set<String> jvmFinalOptions = nettyMaxOrderDefaultTo11(jvmOptionsContent);
+-
+-        System.out.println(String.join(" ", jvmFinalOptions));
++        return jvmFinalOptions;
+     }
+ 
+     /**
+@@ -194,7 +194,7 @@ public class JvmOptionsParser {
+      * @return the collection of input option eventually with Netty maxOrder added.
+      * */
+     private Set<String> nettyMaxOrderDefaultTo11(Set<String> options) {
+-        boolean maxOrderAlreadyContained = options.stream().anyMatch(s -> s.startsWith("-Dio.netty.allocator.maxOrder"));
++        boolean maxOrderAlreadyContained = options.stream().anyMatch(s -> s.contains("-Dio.netty.allocator.maxOrder"));
+         if (maxOrderAlreadyContained) {
+             return options;
+         }

@@ -1,0 +1,74 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index e455a99dc..3063eb857 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -531,10 +531,17 @@ public final class DeadLetterQueueWriter implements Closeable {
+     }
+ 
+     private void sealSegment(int segmentIndex, SealReason motivation) throws IOException {
+-        Files.move(queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex)),
+-                queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex)),
+-                StandardCopyOption.ATOMIC_MOVE);
+-        logger.debug("Sealed segment with index {} because {}", segmentIndex, motivation);
++        Path tempFile = queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex));
++        Path segmentFile = queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex));
++
++        if (Files.exists(tempFile)) {
++            Files.move(tempFile, segmentFile, StandardCopyOption.ATOMIC_MOVE);
++            logger.debug("Sealed segment with index {} because {}", segmentIndex, motivation);
++        } else if (Files.exists(segmentFile)) {
++            logger.debug("Segment with index {} already sealed, skipping", segmentIndex);
++        } else {
++            logger.warn("Unable to seal segment with index {}: neither temp file nor segment file exists", segmentIndex);
++        }
+     }
+ 
+     private void createFlushScheduler() {
+diff --git a/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java b/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java
+index abeac640f..d102d4279 100644
+--- a/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java
++++ b/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java
+@@ -408,4 +408,43 @@ public class DeadLetterQueueWriterTest {
+                 .build();
+         writer.close();
+     }
++
++    @Test
++    public void testSealSegmentWhenTempFileAlreadyDeleted() throws Exception {
++        DeadLetterQueueWriter writer = DeadLetterQueueWriter
++                .newBuilder(dir, 1_000, 100_000, Duration.ofHours(1))
++                .build();
++        DLQEntry entry = new DLQEntry(new Event(), "type", "id", "reason");
++        writer.writeEntry(entry);
++
++        Path tempFile = dir.resolve("1.log.tmp");
++        assertTrue("Temp file should exist after write", Files.exists(tempFile));
++
++        Files.delete(tempFile);
++
++        writer.close();
++
++        assertFalse("Temp file should not exist after close", Files.exists(tempFile));
++    }
++
++    @Test
++    public void testSealSegmentWhenSegmentAlreadyExists() throws Exception {
++        try (DeadLetterQueueWriter writer = DeadLetterQueueWriter
++                .newBuilder(dir, 1_000, 100_000, Duration.ofHours(1))
++                .build()) {
++            DLQEntry entry = new DLQEntry(new Event(), "type", "id", "reason");
++            writer.writeEntry(entry);
++        }
++
++        assertTrue("Log file should exist after close", Files.exists(dir.resolve("1.log")));
++
++        try (DeadLetterQueueWriter writer = DeadLetterQueueWriter
++                .newBuilder(dir, 1_000, 100_000, Duration.ofHours(1))
++                .build()) {
++            DLQEntry entry = new DLQEntry(new Event(), "type", "id", "reason2");
++            writer.writeEntry(entry);
++        }
++
++        assertTrue("Log file should exist after second close", Files.exists(dir.resolve("1.log")));
++    }
+ }

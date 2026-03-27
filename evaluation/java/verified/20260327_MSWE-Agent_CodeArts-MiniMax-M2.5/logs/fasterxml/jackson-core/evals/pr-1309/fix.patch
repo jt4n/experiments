@@ -1,0 +1,26 @@
+
+diff --git a/.gitignore b/.gitignore
+index 587b8bfb..70946ce8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.iws
+ /.idea/
+ dependency-reduced-pom.xml
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java b/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java
+index bde9e32a..dc6b1107 100644
+--- a/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java
++++ b/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java
+@@ -39,7 +39,7 @@ public final class NumberInput
+      * @since 2.17
+      */
+     private final static Pattern PATTERN_FLOAT = Pattern.compile(
+-          "[+-]?[0-9]*[\\.]?[0-9]+([eE][+-]?[0-9]+)?");
++          "([+-]?[0-9]+\\.?|[+-]?[0-9]*\\.[0-9]+)([eE][+-]?[0-9]+)?");
+ 
+     /**
+      * Fast method for parsing unsigned integers that are known to fit into

@@ -1,0 +1,13 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java b/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
+index 1e31bdfee..9f86a9ce2 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
+@@ -216,6 +216,8 @@ public abstract class ReferenceTypeSerializer<T>
+                 ser = provider.handlePrimaryContextualization(ser, property);
+             }
+         }
++        // 05-Sep-2013, tatu: may have a content converter
++        ser = findContextualConvertingSerializer(provider, property, ser);
+         // First, resolve wrt property, resolved serializers
+         ReferenceTypeSerializer<?> refSer;
+         if ((_property == property)

@@ -1,0 +1,20 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java b/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java
+index be1c64d23..e738cbc2c 100644
+--- a/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java
++++ b/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java
+@@ -88,13 +88,13 @@ public class BufferedTokenizerExt extends RubyObject {
+             }
+             this.inputSize = inputSize + entitiesSize;
+         }
+-        input.append(entities.shift(context));
++        input.store(input.size(), entities.shift(context));
+         if (entities.isEmpty()) {
+             return RubyUtil.RUBY.newArray();
+         }
+         entities.unshift(input.join(context));
+         input.clear();
+-        input.append(entities.pop(context));
++        input.store(input.size(), entities.pop(context));
+         inputSize = ((RubyString) input.first()).size();
+         return entities;
+     }

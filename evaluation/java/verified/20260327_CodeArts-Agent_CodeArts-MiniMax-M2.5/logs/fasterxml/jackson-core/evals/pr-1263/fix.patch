@@ -1,0 +1,130 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java b/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
+index fb374bee..89abd146 100644
+--- a/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
++++ b/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
+@@ -5,6 +5,7 @@ import java.util.Deque;
+ import java.util.Optional;
+ import java.util.concurrent.ArrayBlockingQueue;
+ import java.util.concurrent.ConcurrentLinkedDeque;
++import java.util.concurrent.atomic.AtomicInteger;
+ import java.util.concurrent.atomic.AtomicReference;
+ 
+ /**
+@@ -111,6 +112,22 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+         return false;
+     }
+ 
++    /**
++     * Optional method that may return an estimate of the number of recyclable
++     * objects currently held in the pool.
++     *<p>
++     * Default implementation returns {@code -1} indicating that the count is not
++     * available. Subclasses that can provide a count should override this method.
++     *
++     * @since 2.18
++     *
++     * @return Estimated number of objects in the pool, or {@code -1} if count
++     *    is not available
++     */
++    default int pooledCount() {
++        return -1;
++    }
++
+     /*
+     /**********************************************************************
+     /* Partial/base RecyclerPool implementations
+@@ -155,6 +172,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+         public boolean clear() {
+             return false;
+         }
++
++        @Override
++        public int pooledCount() {
++            return -1;
++        }
+     }
+ 
+     /**
+@@ -191,6 +213,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+         public boolean clear() {
+             return true;
+         }
++
++        @Override
++        public int pooledCount() {
++            return 0;
++        }
+     }
+ 
+     /**
+@@ -267,6 +294,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+             pool.clear();
+             return true;
+         }
++
++        @Override
++        public int pooledCount() {
++            return pool.size();
++        }
+     }
+ 
+     /**
+@@ -283,11 +315,15 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+         // Needs to be transient to avoid JDK serialization from writing it out
+         private final transient AtomicReference<Node<P>> head;
+ 
++        // Needs to be transient to avoid JDK serialization from writing it out
++        private final transient AtomicInteger count;
++
+         // // // Life-cycle (constructors, factory methods)
+ 
+         protected LockFreePoolBase(int serialization) {
+             super(serialization);
+             head = new AtomicReference<>();
++            count = new AtomicInteger();
+         }
+ 
+         // // // Actual API implementation
+@@ -305,6 +341,7 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+                 }
+                 if (head.compareAndSet(currentHead, currentHead.next)) {
+                     currentHead.next = null;
++                    count.decrementAndGet();
+                     return currentHead.value;
+                 }
+             }
+@@ -317,6 +354,7 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+             for (int i = 0; i < 3; i++) {
+                 newHead.next = head.get();
+                 if (head.compareAndSet(newHead.next, newHead)) {
++                    count.incrementAndGet();
+                     return;
+                 }
+             }
+@@ -335,8 +373,14 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+         @Override
+         public boolean clear() {
+             head.set(null);
++            count.set(0);
+             return true;
+         }
++
++        @Override
++        public int pooledCount() {
++            return count.get();
++        }
+     }
+ 
+     /**
+@@ -391,6 +435,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+             return true;
+         }
+ 
++        @Override
++        public int pooledCount() {
++            return pool.size();
++        }
++
+         // // // Other methods
+ 
+         public int capacity() {

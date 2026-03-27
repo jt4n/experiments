@@ -1,0 +1,175 @@
+
+diff --git a/.gitignore b/.gitignore
+index 17410c4d4..15464c150 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -30,3 +30,8 @@ classes
+ 
+ # Used to check reproducibility of Mockito jars
+ checksums/
++target/
++out/
++*.class
++*.jar
++.gradle/
+diff --git a/src/main/java/org/mockito/MockitoFramework.java b/src/main/java/org/mockito/MockitoFramework.java
+index 020186f05..242cc9a6e 100644
+--- a/src/main/java/org/mockito/MockitoFramework.java
++++ b/src/main/java/org/mockito/MockitoFramework.java
+@@ -137,4 +137,47 @@ public interface MockitoFramework {
+      * @see #clearInlineMocks()
+      */
+     void clearInlineMock(Object mock);
++
++    /**
++     * Disables inline mocks and clears up internal state of all inline mocks.
++     * When a disabled mock is accessed, a {@link org.mockito.exceptions.base.DisabledMockException}
++     * will be thrown with the provided message.
++     * <p>
++     * This method is only meaningful if inline mock maker is in use.
++     * For all other intents and purposes, this method is a no-op and need not be used.
++     * <p>
++     * This method is useful to tackle subtle memory leaks that are possible due to the nature of inline mocking
++     * (issue <a href="https://github.com/mockito/mockito/pull/1619">#1619</a>).
++     * Additionally, it provides a more helpful error message when a mock is used after being cleared,
++     * as opposed to a generic NullPointerException.
++     * <p>
++     * If you are facing those problems, call this method at the end of the test (or in "@After" method).
++     * See examples of using "disableInlineMocks" in Mockito test code.
++     * To find out why inline mock maker keeps track of the mock objects see {@link org.mockito.plugins.InlineMockMaker}.
++     * <p>
++     * Mockito's "inline mocking" enables mocking final types, enums and final methods
++     * (read more in section 39 of {@link Mockito} javadoc).
++     * This method is only meaningful when {@link org.mockito.plugins.InlineMockMaker} is in use.
++     * If you're using a different {@link org.mockito.plugins.MockMaker} then this method is a no-op.
++     *
++     * <pre class="code"><code class="java">
++     * public class ExampleTest {
++     *
++     *     &#064;After
++     *     public void clearMocks() {
++     *         Mockito.framework().disableInlineMocks("Test class cleanup");
++     *     }
++     *
++     *     &#064;Test
++     *     public void someTest() {
++     *         ...
++     *     }
++     * }
++     * </pre>
++     *
++     * @param message the message to include in the exception when a disabled mock is accessed
++     * @since 2.25.0
++     * @see #clearInlineMocks()
++     */
++    void disableInlineMocks(String message);
+ }
+diff --git a/src/main/java/org/mockito/exceptions/base/DisabledMockException.java b/src/main/java/org/mockito/exceptions/base/DisabledMockException.java
+new file mode 100644
+index 000000000..81338a3e6
+--- /dev/null
++++ b/src/main/java/org/mockito/exceptions/base/DisabledMockException.java
+@@ -0,0 +1,17 @@
++/*
++ * Copyright (c) 2007 Mockito contributors
++ * This program is made available under the terms of the MIT License.
++ */
++package org.mockito.exceptions.base;
++
++/**
++ * Exception thrown when attempting to use a mock that has been disabled via {@link org.mockito.MockitoFramework#disableInlineMocks(String)}.
++ */
++public class DisabledMockException extends MockitoException {
++
++    private static final long serialVersionUID = 1L;
++
++    public DisabledMockException(String message) {
++        super(message);
++    }
++}
+diff --git a/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java b/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java
+index e03d11b9e..b4a697a62 100644
+--- a/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java
++++ b/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java
+@@ -8,9 +8,9 @@ import net.bytebuddy.agent.ByteBuddyAgent;
+ import org.mockito.MockedConstruction;
+ import org.mockito.creation.instance.InstantiationException;
+ import org.mockito.creation.instance.Instantiator;
++import org.mockito.exceptions.base.DisabledMockException;
+ import org.mockito.exceptions.base.MockitoException;
+ import org.mockito.exceptions.base.MockitoInitializationException;
+-import org.mockito.exceptions.misusing.MockitoConfigurationException;
+ import org.mockito.internal.SuppressSignatureCheck;
+ import org.mockito.internal.configuration.plugins.Plugins;
+ import org.mockito.internal.creation.instance.ConstructorInstantiator;
+@@ -212,6 +212,8 @@ class InlineDelegateByteBuddyMockMaker
+     private final WeakConcurrentMap<Object, MockMethodInterceptor> mocks =
+             new WeakConcurrentMap<>(false);
+ 
++    private String disabledMessage = "";
++
+     private final DetachedThreadLocal<Map<Class<?>, MockMethodInterceptor>> mockedStatics =
+             new DetachedThreadLocal<>(DetachedThreadLocal.Cleaner.MANUAL);
+ 
+@@ -485,6 +487,9 @@ class InlineDelegateByteBuddyMockMaker
+ 
+     @Override
+     public MockHandler getHandler(Object mock) {
++        if (!disabledMessage.isEmpty()) {
++            throw new DisabledMockException(disabledMessage);
++        }
+         MockMethodInterceptor interceptor;
+         if (mock instanceof Class<?>) {
+             Map<Class<?>, MockMethodInterceptor> interceptors = mockedStatics.get();
+@@ -548,6 +553,12 @@ class InlineDelegateByteBuddyMockMaker
+         mocks.clear();
+     }
+ 
++    @Override
++    public void disableInlineMocks(String message) {
++        disabledMessage = message;
++        clearAllMocks();
++    }
++
+     @Override
+     public TypeMockability isTypeMockable(final Class<?> type) {
+         return new TypeMockability() {
+diff --git a/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java b/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java
+index f4a988231..522e4886a 100644
+--- a/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java
++++ b/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java
+@@ -62,4 +62,12 @@ public class DefaultMockitoFramework implements MockitoFramework {
+             mockMaker.clearMock(mock);
+         }
+     }
++
++    @Override
++    public void disableInlineMocks(String message) {
++        InlineMockMaker mockMaker = getInlineMockMaker();
++        if (mockMaker != null) {
++            mockMaker.disableInlineMocks(message);
++        }
++    }
+ }
+diff --git a/src/main/java/org/mockito/plugins/InlineMockMaker.java b/src/main/java/org/mockito/plugins/InlineMockMaker.java
+index 08fab59ae..d95950ef0 100644
+--- a/src/main/java/org/mockito/plugins/InlineMockMaker.java
++++ b/src/main/java/org/mockito/plugins/InlineMockMaker.java
+@@ -43,4 +43,17 @@ public interface InlineMockMaker extends MockMaker {
+      * @since 2.25.0
+      */
+     void clearAllMocks();
++
++    /**
++     * Disables inline mocks and clears up internal state of all inline mocks.
++     * When a disabled mock is accessed, a {@link org.mockito.exceptions.base.DisabledMockException}
++     * will be thrown with the provided message.
++     * <p>
++     * This method is only meaningful if inline mock maker is in use.
++     * For all other intents and purposes, this method is a no-op and need not be used.
++     *
++     * @param message the message to include in the exception when a disabled mock is accessed
++     * @since 2.25.0
++     */
++    void disableInlineMocks(String message);
+ }

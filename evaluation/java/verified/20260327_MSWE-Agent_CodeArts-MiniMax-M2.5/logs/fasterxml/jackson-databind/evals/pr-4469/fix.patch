@@ -1,0 +1,51 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/TestFix.java b/TestFix.java
+new file mode 100644
+index 000000000..8b1378917
+--- /dev/null
++++ b/TestFix.java
+@@ -0,0 +1 @@
++
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java b/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java
+index 5e7ce8c98..c87fc8801 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java
+@@ -4,6 +4,7 @@ import java.io.IOException;
+ import java.lang.annotation.Annotation;
+ 
+ import com.fasterxml.jackson.annotation.JacksonInject;
++import com.fasterxml.jackson.annotation.Nulls;
+ import com.fasterxml.jackson.core.JsonParser;
+ 
+ import com.fasterxml.jackson.databind.*;
+@@ -13,7 +14,6 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedParameter;
+ import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+ import com.fasterxml.jackson.databind.util.Annotations;
+ import com.fasterxml.jackson.databind.util.ClassUtil;
+-
+ /**
+  * This concrete sub-class implements property that is passed
+  * via Creator (constructor or static factory method).
+@@ -268,6 +268,10 @@ public class CreatorProperty
+             Object instance) throws IOException
+     {
+         _verifySetter();
++        // 05-Dec-2023, tatu: [databind#3897] Need to check for nulls-skip setting
++        if (p.isScalarNull() && Nulls.SKIP == _metadata.getValueNulls()) {
++            return;
++        }
+         _fallbackSetter.set(instance, deserialize(p, ctxt));
+     }
+ 

@@ -1,0 +1,71 @@
+
+diff --git a/.gitignore b/.gitignore
+index cc0ab0db4..7e5ef4afe 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,4 +63,6 @@ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+ qa/integration/fixtures/logs_rollover/log4j2.properties
+-ci/serverless/config/*.log
+\ No newline at end of file
++ci/serverless/config/*.logtarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index b321005b4..75454ca20 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -490,7 +490,7 @@ public final class DeadLetterQueueWriter implements Closeable {
+         return event.includes(DEAD_LETTER_QUEUE_METADATA_KEY);
+     }
+ 
+-    private void scheduledFlushCheck() {
++    void scheduledFlushCheck() {
+         logger.trace("Running scheduled check");
+         lock.lock();
+         try {
+diff --git a/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java b/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java
+index 754c463c3..7e191abaa 100644
+--- a/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java
++++ b/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueWriterTest.java
+@@ -164,11 +164,11 @@ public class DeadLetterQueueWriterTest {
+             for (int i = 0; i < MESSAGE_COUNT; i++)
+                 writer.writeEntry(entry);
+ 
+-            // Sleep to allow flush to happen
+-            sleep(3000);
++            // Call scheduled flush check directly instead of waiting for physical time
++            writer.scheduledFlushCheck();
+             assertThat(dlqLength(), is(MAX_QUEUE_LENGTH));
+             writer.writeEntry(entry);
+-            sleep(2000);
++            writer.scheduledFlushCheck();
+             assertThat(dlqLength(), is(MAX_QUEUE_LENGTH));
+         }
+     }
+@@ -181,10 +181,10 @@ public class DeadLetterQueueWriterTest {
+             DLQEntry entry = new DLQEntry(new Event(), "type", "id", "1");
+             writer.writeEntry(entry);
+             entry = new DLQEntry(new Event(), "type", "id", "2");
+-            // Sleep to allow flush to happen\
+-            sleep(3000);
++            // Call scheduled flush check directly instead of waiting for physical time
++            writer.scheduledFlushCheck();
+             writer.writeEntry(entry);
+-            sleep(2000);
++            writer.scheduledFlushCheck();
+             // Do not close here - make sure that the slow write is processed
+ 
+             try (DeadLetterQueueReader reader = new DeadLetterQueueReader(dir)) {
+@@ -205,8 +205,8 @@ public class DeadLetterQueueWriterTest {
+                 writeManager.writeEntry(entry);
+             }
+ 
+-            // Allow for time for scheduled flush check
+-            Thread.sleep(1000);
++            // Call scheduled flush check directly instead of waiting for physical time
++            writeManager.scheduledFlushCheck();
+ 
+             try (DeadLetterQueueReader readManager = new DeadLetterQueueReader(dir)) {
+                 for (int i = 0; i < 4; i++) {

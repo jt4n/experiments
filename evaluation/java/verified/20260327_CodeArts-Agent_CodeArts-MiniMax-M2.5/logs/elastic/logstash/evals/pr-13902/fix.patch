@@ -1,0 +1,372 @@
+diff --git a/logstash-core/lib/logstash/environment.rb b/logstash-core/lib/logstash/environment.rb
+index cb9730841..6aea631de 100644
+--- a/logstash-core/lib/logstash/environment.rb
++++ b/logstash-core/lib/logstash/environment.rb
+@@ -88,6 +88,7 @@ module LogStash
+             Setting::Numeric.new("queue.checkpoint.writes", 1024), # 0 is unlimited
+             Setting::Numeric.new("queue.checkpoint.interval", 1000), # 0 is no time-based checkpointing
+             Setting::Boolean.new("queue.checkpoint.retry", false),
++            Setting::Numeric.new("queue.checkpoint.max_retries", 8),
+             Setting::Boolean.new("dead_letter_queue.enable", false),
+             Setting::Bytes.new("dead_letter_queue.max_bytes", "1024mb"),
+             Setting::Numeric.new("dead_letter_queue.flush_interval", 5000),
+diff --git a/logstash-core/lib/logstash/settings.rb b/logstash-core/lib/logstash/settings.rb
+index 1df5315ca..8b276ec42 100644
+--- a/logstash-core/lib/logstash/settings.rb
++++ b/logstash-core/lib/logstash/settings.rb
+@@ -66,6 +66,7 @@ module LogStash
+       "queue.checkpoint.interval",
+       "queue.checkpoint.writes",
+       "queue.checkpoint.retry",
++      "queue.checkpoint.max_retries",
+       "queue.drain",
+       "queue.max_bytes",
+       "queue.max_events",
+diff --git a/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java b/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java
+index aba5b273b..d5f43318a 100644
+--- a/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java
++++ b/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java
+@@ -100,7 +100,7 @@ public final class Queue implements Closeable {
+         }
+         this.pageCapacity = settings.getCapacity();
+         this.maxBytes = settings.getQueueMaxBytes();
+-        this.checkpointIO = new FileCheckpointIO(dirPath, settings.getCheckpointRetry());
++        this.checkpointIO = new FileCheckpointIO(dirPath, settings.getCheckpointRetry(), settings.getCheckpointMaxRetries());
+         this.elementClass = settings.getElementClass();
+         this.tailPages = new ArrayList<>();
+         this.unreadTailPages = new ArrayList<>();
+diff --git a/logstash-core/src/main/java/org/logstash/ackedqueue/QueueFactoryExt.java b/logstash-core/src/main/java/org/logstash/ackedqueue/QueueFactoryExt.java
+index 15b572d7d..e04e13e08 100644
+--- a/logstash-core/src/main/java/org/logstash/ackedqueue/QueueFactoryExt.java
++++ b/logstash-core/src/main/java/org/logstash/ackedqueue/QueueFactoryExt.java
+@@ -68,7 +68,8 @@ public final class QueueFactoryExt extends RubyBasicObject {
+                         getSetting(context, settings, "queue.checkpoint.acks"),
+                         getSetting(context, settings, "queue.checkpoint.interval"),
+                         getSetting(context, settings, "queue.checkpoint.retry"),
+-                        getSetting(context, settings, "queue.max_bytes")
++                        getSetting(context, settings, "queue.max_bytes"),
++                        getSetting(context, settings, "queue.checkpoint.max_retries")
+                     }
+                 );
+         } else if ("memory".equals(type)) {
+diff --git a/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java b/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java
+index 45b34fe0f..33e6b9d8c 100644
+--- a/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java
++++ b/logstash-core/src/main/java/org/logstash/ackedqueue/Settings.java
+@@ -41,6 +41,8 @@ public interface Settings {
+ 
+     boolean getCheckpointRetry();
+ 
++    int getCheckpointMaxRetries();
++
+     /**
+      * Persistent queue Setting's fluent builder definition
+      * */
+@@ -60,6 +62,8 @@ public interface Settings {
+ 
+         Builder checkpointRetry(boolean checkpointRetry);
+ 
++        Builder checkpointMaxRetries(int checkpointMaxRetries);
++
+         Settings build();
+ 
+     }
+diff --git a/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java b/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java
+index 417bc81a8..6aea5d9fe 100644
+--- a/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java
++++ b/logstash-core/src/main/java/org/logstash/ackedqueue/SettingsImpl.java
+@@ -32,11 +32,12 @@ public class SettingsImpl implements Settings {
+     private int checkpointMaxAcks;
+     private int checkpointMaxWrites;
+     private boolean checkpointRetry;
++    private int checkpointMaxRetries;
+ 
+     public static Builder builder(final Settings settings) {
+         return new BuilderImpl(settings.getDirPath(), settings.getElementClass(), settings.getCapacity(),
+             settings.getQueueMaxBytes(), settings.getMaxUnread(), settings.getCheckpointMaxAcks(),
+-            settings.getCheckpointMaxWrites(), settings.getCheckpointRetry()
++            settings.getCheckpointMaxWrites(), settings.getCheckpointRetry(), settings.getCheckpointMaxRetries()
+         );
+     }
+ 
+@@ -46,7 +47,8 @@ public class SettingsImpl implements Settings {
+ 
+     private SettingsImpl(final String dirForFiles, final Class<? extends Queueable> elementClass,
+         final int capacity, final long queueMaxBytes, final int maxUnread,
+-        final int checkpointMaxAcks, final int checkpointMaxWrites, boolean checkpointRetry) {
++        final int checkpointMaxAcks, final int checkpointMaxWrites, boolean checkpointRetry,
++        int checkpointMaxRetries) {
+         this.dirForFiles = dirForFiles;
+         this.elementClass = elementClass;
+         this.capacity = capacity;
+@@ -55,6 +57,7 @@ public class SettingsImpl implements Settings {
+         this.checkpointMaxAcks = checkpointMaxAcks;
+         this.checkpointMaxWrites = checkpointMaxWrites;
+         this.checkpointRetry = checkpointRetry;
++        this.checkpointMaxRetries = checkpointMaxRetries;
+     }
+ 
+     @Override
+@@ -97,6 +100,11 @@ public class SettingsImpl implements Settings {
+         return this.checkpointRetry;
+     }
+ 
++    @Override
++    public int getCheckpointMaxRetries() {
++        return this.checkpointMaxRetries;
++    }
++
+     /**
+      * Default implementation for Setting's Builder
+      * */
+@@ -130,6 +138,11 @@ public class SettingsImpl implements Settings {
+          */
+         private static final int DEFAULT_CHECKPOINT_MAX_WRITES = 1024;
+ 
++        /**
++         * Default max number of retries for checkpoint write operations.
++         */
++        private static final int DEFAULT_CHECKPOINT_MAX_RETRIES = 8;
++
+         private final String dirForFiles;
+ 
+         private final Class<? extends Queueable> elementClass;
+@@ -146,15 +159,19 @@ public class SettingsImpl implements Settings {
+ 
+         private final boolean checkpointRetry;
+ 
++        private final int checkpointMaxRetries;
++
+         private BuilderImpl(final String dirForFiles) {
+             this(dirForFiles, null, DEFAULT_CAPACITY, DEFAULT_MAX_QUEUE_BYTES,
+-                DEFAULT_MAX_UNREAD, DEFAULT_CHECKPOINT_MAX_ACKS, DEFAULT_CHECKPOINT_MAX_WRITES, false
++                DEFAULT_MAX_UNREAD, DEFAULT_CHECKPOINT_MAX_ACKS, DEFAULT_CHECKPOINT_MAX_WRITES, false,
++                DEFAULT_CHECKPOINT_MAX_RETRIES
+             );
+         }
+ 
+         private BuilderImpl(final String dirForFiles, final Class<? extends Queueable> elementClass,
+             final int capacity, final long queueMaxBytes, final int maxUnread,
+-            final int checkpointMaxAcks, final int checkpointMaxWrites, final boolean checkpointRetry) {
++            final int checkpointMaxAcks, final int checkpointMaxWrites, final boolean checkpointRetry,
++            final int checkpointMaxRetries) {
+             this.dirForFiles = dirForFiles;
+             this.elementClass = elementClass;
+             this.capacity = capacity;
+@@ -163,13 +180,14 @@ public class SettingsImpl implements Settings {
+             this.checkpointMaxAcks = checkpointMaxAcks;
+             this.checkpointMaxWrites = checkpointMaxWrites;
+             this.checkpointRetry = checkpointRetry;
++            this.checkpointMaxRetries = checkpointMaxRetries;
+         }
+ 
+         @Override
+         public Builder elementClass(final Class<? extends Queueable> elementClass) {
+             return new BuilderImpl(
+                 this.dirForFiles, elementClass, this.capacity, this.queueMaxBytes, this.maxUnread,
+-                this.checkpointMaxAcks, this.checkpointMaxWrites, false
++                this.checkpointMaxAcks, this.checkpointMaxWrites, false, this.checkpointMaxRetries
+             );
+         }
+ 
+@@ -177,7 +195,7 @@ public class SettingsImpl implements Settings {
+         public Builder capacity(final int capacity) {
+             return new BuilderImpl(
+                 this.dirForFiles, this.elementClass, capacity, this.queueMaxBytes, this.maxUnread,
+-                this.checkpointMaxAcks, this.checkpointMaxWrites, false
++                this.checkpointMaxAcks, this.checkpointMaxWrites, false, this.checkpointMaxRetries
+             );
+         }
+ 
+@@ -185,7 +203,7 @@ public class SettingsImpl implements Settings {
+         public Builder queueMaxBytes(final long size) {
+             return new BuilderImpl(
+                 this.dirForFiles, this.elementClass, this.capacity, size, this.maxUnread,
+-                this.checkpointMaxAcks, this.checkpointMaxWrites, false
++                this.checkpointMaxAcks, this.checkpointMaxWrites, false, this.checkpointMaxRetries
+             );
+         }
+ 
+@@ -194,7 +212,7 @@ public class SettingsImpl implements Settings {
+             return new BuilderImpl(
+                 this.dirForFiles, this.elementClass,
+                 this.capacity, this.queueMaxBytes, maxUnread, this.checkpointMaxAcks,
+-                this.checkpointMaxWrites, false
++                this.checkpointMaxWrites, false, this.checkpointMaxRetries
+             );
+         }
+ 
+@@ -203,7 +221,7 @@ public class SettingsImpl implements Settings {
+             return new BuilderImpl(
+                 this.dirForFiles, this.elementClass,
+                 this.capacity, this.queueMaxBytes, this.maxUnread, checkpointMaxAcks,
+-                this.checkpointMaxWrites, false
++                this.checkpointMaxWrites, false, this.checkpointMaxRetries
+             );
+         }
+ 
+@@ -211,7 +229,7 @@ public class SettingsImpl implements Settings {
+         public Builder checkpointMaxWrites(final int checkpointMaxWrites) {
+             return new BuilderImpl(
+                 this.dirForFiles, this.elementClass, this.capacity, this.queueMaxBytes,
+-                this.maxUnread, this.checkpointMaxAcks, checkpointMaxWrites, false
++                this.maxUnread, this.checkpointMaxAcks, checkpointMaxWrites, false, this.checkpointMaxRetries
+             );
+         }
+ 
+@@ -219,7 +237,17 @@ public class SettingsImpl implements Settings {
+         public Builder checkpointRetry(final boolean checkpointRetry) {
+             return new BuilderImpl(
+                     this.dirForFiles, this.elementClass, this.capacity, this.queueMaxBytes,
+-                    this.maxUnread, this.checkpointMaxAcks, checkpointMaxWrites, checkpointRetry
++                    this.maxUnread, this.checkpointMaxAcks, checkpointMaxWrites, checkpointRetry,
++                    this.checkpointMaxRetries
++            );
++        }
++
++        @Override
++        public Builder checkpointMaxRetries(final int checkpointMaxRetries) {
++            return new BuilderImpl(
++                    this.dirForFiles, this.elementClass, this.capacity, this.queueMaxBytes,
++                    this.maxUnread, this.checkpointMaxAcks, this.checkpointMaxWrites, this.checkpointRetry,
++                    checkpointMaxRetries
+             );
+         }
+ 
+@@ -227,7 +255,8 @@ public class SettingsImpl implements Settings {
+         public Settings build() {
+             return new SettingsImpl(
+                 this.dirForFiles, this.elementClass, this.capacity, this.queueMaxBytes,
+-                this.maxUnread, this.checkpointMaxAcks, this.checkpointMaxWrites, this.checkpointRetry
++                this.maxUnread, this.checkpointMaxAcks, this.checkpointMaxWrites, this.checkpointRetry,
++                this.checkpointMaxRetries
+             );
+         }
+     }
+diff --git a/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyAckedQueueExt.java b/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyAckedQueueExt.java
+index c320c116b..b87b38495 100644
+--- a/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyAckedQueueExt.java
++++ b/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyAckedQueueExt.java
+@@ -57,15 +57,16 @@ public final class JRubyAckedQueueExt extends RubyObject {
+     }
+ 
+     public static JRubyAckedQueueExt create(String path, int capacity, int maxEvents, int checkpointMaxWrites,
+-                                            int checkpointMaxAcks, boolean checkpointRetry, long maxBytes) {
++                                            int checkpointMaxAcks, boolean checkpointRetry, long maxBytes,
++                                            int checkpointMaxRetries) {
+         JRubyAckedQueueExt queueExt = new JRubyAckedQueueExt(RubyUtil.RUBY, RubyUtil.ACKED_QUEUE_CLASS);
+         queueExt.initializeQueue(path, capacity, maxEvents, checkpointMaxWrites, checkpointMaxAcks, checkpointRetry,
+-                maxBytes);
++                maxBytes, checkpointMaxRetries);
+         return queueExt;
+     }
+ 
+     private void initializeQueue(String path, int capacity, int maxEvents, int checkpointMaxWrites,
+-                                 int checkpointMaxAcks, boolean checkpointRetry, long maxBytes) {
++                                 int checkpointMaxAcks, boolean checkpointRetry, long maxBytes, int checkpointMaxRetries) {
+         this.queue = new Queue(
+             SettingsImpl.fileSettingsBuilder(path)
+                 .capacity(capacity)
+@@ -74,6 +75,7 @@ public final class JRubyAckedQueueExt extends RubyObject {
+                 .checkpointMaxAcks(checkpointMaxAcks)
+                 .checkpointMaxWrites(checkpointMaxWrites)
+                 .checkpointRetry(checkpointRetry)
++                .checkpointMaxRetries(checkpointMaxRetries)
+                 .elementClass(Event.class)
+                 .build()
+         );
+diff --git a/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyWrappedAckedQueueExt.java b/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyWrappedAckedQueueExt.java
+index bfa077b70..5d4435304 100644
+--- a/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyWrappedAckedQueueExt.java
++++ b/logstash-core/src/main/java/org/logstash/ackedqueue/ext/JRubyWrappedAckedQueueExt.java
+@@ -50,18 +50,19 @@ public final class JRubyWrappedAckedQueueExt extends AbstractWrappedQueueExt {
+     private JRubyAckedQueueExt queue;
+     private final AtomicBoolean isClosed = new AtomicBoolean();
+ 
+-    @JRubyMethod(optional = 8)
++    @JRubyMethod(optional = 9)
+     public JRubyWrappedAckedQueueExt initialize(ThreadContext context, IRubyObject[] args) throws IOException {
+-        args = Arity.scanArgs(context.runtime, args, 8, 0);
++        args = Arity.scanArgs(context.runtime, args, 9, 0);
+         int capacity = RubyFixnum.num2int(args[1]);
+         int maxEvents = RubyFixnum.num2int(args[2]);
+         int checkpointMaxWrites = RubyFixnum.num2int(args[3]);
+         int checkpointMaxAcks = RubyFixnum.num2int(args[4]);
+         boolean checkpointRetry = !((RubyBoolean)args[6]).isFalse();
+         long queueMaxBytes = RubyFixnum.num2long(args[7]);
++        int checkpointMaxRetries = RubyFixnum.num2int(args[8]);
+ 
+         this.queue = JRubyAckedQueueExt.create(args[0].asJavaString(), capacity, maxEvents,
+-                checkpointMaxWrites, checkpointMaxAcks, checkpointRetry, queueMaxBytes);
++                checkpointMaxWrites, checkpointMaxAcks, checkpointRetry, queueMaxBytes, checkpointMaxRetries);
+         this.queue.open();
+ 
+         return this;
+diff --git a/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java b/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java
+index 4e0f8866d..8bfdc3938 100644
+--- a/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java
++++ b/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java
+@@ -67,17 +67,28 @@ public class FileCheckpointIO implements CheckpointIO {
+ 
+     private final boolean retry;
+ 
++    private final int maxRetries;
++
+     private static final String HEAD_CHECKPOINT = "checkpoint.head";
+     private static final String TAIL_CHECKPOINT = "checkpoint.";
+     private final Path dirPath;
+ 
++    private static final long INITIAL_SLEEP_MILLIS = 10;
++    private static final long MAX_SLEEP_MILLIS = 500;
++    private static final double SLEEP_MULTIPLIER = 2.0;
++
+     public FileCheckpointIO(Path dirPath) {
+-        this(dirPath, false);
++        this(dirPath, false, 0);
+     }
+ 
+     public FileCheckpointIO(Path dirPath, boolean retry) {
++        this(dirPath, retry, 8);
++    }
++
++    public FileCheckpointIO(Path dirPath, boolean retry, int maxRetries) {
+         this.dirPath = dirPath;
+         this.retry = retry;
++        this.maxRetries = maxRetries;
+     }
+ 
+     @Override
+@@ -108,13 +119,26 @@ public class FileCheckpointIO implements CheckpointIO {
+             Files.move(tmpPath, dirPath.resolve(fileName), StandardCopyOption.ATOMIC_MOVE);
+         } catch (IOException ex) {
+             if (retry) {
+-                try {
+-                    logger.error("Retrying after exception writing checkpoint: " + ex);
+-                    Thread.sleep(500);
+-                    Files.move(tmpPath, dirPath.resolve(fileName), StandardCopyOption.ATOMIC_MOVE);
+-                } catch (IOException | InterruptedException ex2) {
+-                    logger.error("Aborting after second exception writing checkpoint: " + ex2);
+-                    throw ex;
++                int retryCount = 0;
++                long sleepMillis = INITIAL_SLEEP_MILLIS;
++                while (retryCount < maxRetries) {
++                    try {
++                        retryCount++;
++                        logger.error("Retrying after exception writing checkpoint (attempt " + retryCount + " of " + maxRetries + "): " + ex);
++                        Thread.sleep(sleepMillis);
++                        Files.move(tmpPath, dirPath.resolve(fileName), StandardCopyOption.ATOMIC_MOVE);
++                        return;
++                    } catch (IOException | InterruptedException ex2) {
++                        if (retryCount >= maxRetries) {
++                            logger.error("Aborting after " + retryCount + " exceptions writing checkpoint: " + ex2);
++                            throw ex;
++                        }
++                        sleepMillis = (long) Math.min(sleepMillis * SLEEP_MULTIPLIER, MAX_SLEEP_MILLIS);
++                        if (ex2 instanceof InterruptedException) {
++                            Thread.currentThread().interrupt();
++                            throw new IOException(ex2);
++                        }
++                    }
+                 }
+             } else {
+                 logger.error("Error writing checkpoint: " + ex);

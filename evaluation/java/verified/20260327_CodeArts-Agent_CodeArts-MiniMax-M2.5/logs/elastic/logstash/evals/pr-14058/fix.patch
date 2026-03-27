@@ -1,0 +1,184 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/AbstractDeadLetterQueueWriterExt.java b/logstash-core/src/main/java/org/logstash/common/AbstractDeadLetterQueueWriterExt.java
+index 53a881e95..41d2e339c 100644
+--- a/logstash-core/src/main/java/org/logstash/common/AbstractDeadLetterQueueWriterExt.java
++++ b/logstash-core/src/main/java/org/logstash/common/AbstractDeadLetterQueueWriterExt.java
+@@ -72,6 +72,16 @@ public abstract class AbstractDeadLetterQueueWriterExt extends RubyObject {
+         return doClose(context);
+     }
+ 
++    @JRubyMethod(name = "get_dropped_events")
++    public final IRubyObject getDroppedEvents(final ThreadContext context) {
++        return getDroppedEventsImpl(context);
++    }
++
++    @JRubyMethod(name = "get_last_error")
++    public final IRubyObject getLastError(final ThreadContext context) {
++        return getLastErrorImpl(context);
++    }
++
+     protected abstract RubyBoolean open(ThreadContext context);
+ 
+     protected abstract IRubyObject getPluginId(ThreadContext context);
+@@ -85,6 +95,10 @@ public abstract class AbstractDeadLetterQueueWriterExt extends RubyObject {
+ 
+     protected abstract IRubyObject doClose(ThreadContext context);
+ 
++    protected abstract IRubyObject getDroppedEventsImpl(ThreadContext context);
++
++    protected abstract IRubyObject getLastErrorImpl(ThreadContext context);
++
+     @JRubyClass(name = "DummyDeadLetterQueueWriter")
+     public static final class DummyDeadLetterQueueWriterExt
+         extends AbstractDeadLetterQueueWriterExt {
+@@ -131,6 +145,16 @@ public abstract class AbstractDeadLetterQueueWriterExt extends RubyObject {
+         protected RubyBoolean open(final ThreadContext context) {
+             return context.fals;
+         }
++
++        @Override
++        protected IRubyObject getDroppedEventsImpl(final ThreadContext context) {
++            return context.runtime.newFixnum(0);
++        }
++
++        @Override
++        protected IRubyObject getLastErrorImpl(final ThreadContext context) {
++            return context.nil;
++        }
+     }
+ 
+     @JRubyClass(name = "PluginDeadLetterQueueWriter")
+@@ -223,5 +247,24 @@ public abstract class AbstractDeadLetterQueueWriterExt extends RubyObject {
+         private boolean hasOpenWriter() {
+             return innerWriter != null && innerWriter.isOpen();
+         }
++
++        @Override
++        protected IRubyObject getDroppedEventsImpl(final ThreadContext context) {
++            if (innerWriter != null) {
++                return context.runtime.newFixnum(innerWriter.getDroppedEvents());
++            }
++            return context.runtime.newFixnum(0);
++        }
++
++        @Override
++        protected IRubyObject getLastErrorImpl(final ThreadContext context) {
++            if (innerWriter != null) {
++                String lastError = innerWriter.getLastError();
++                if (lastError != null) {
++                    return context.runtime.newString(lastError);
++                }
++            }
++            return context.nil;
++        }
+     }
+ }
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index 90082ef49..cb33e955b 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -85,6 +85,8 @@ public final class DeadLetterQueueWriter implements Closeable {
+     private final long maxQueueSize;
+     private final QueueStorageType storageType;
+     private LongAdder currentQueueSize;
++    private LongAdder droppedEvents;
++    private String lastError;
+     private final Path queuePath;
+     private final FileLock fileLock;
+     private volatile RecordIOWriter currentWriter;
+@@ -110,6 +112,7 @@ public final class DeadLetterQueueWriter implements Closeable {
+         this.flushInterval = flushInterval;
+         this.currentQueueSize = new LongAdder();
+         this.currentQueueSize.add(getStartupQueueSize());
++        this.droppedEvents = new LongAdder();
+ 
+         cleanupTempFiles();
+         currentSegmentIndex = getSegmentPaths(queuePath)
+@@ -137,6 +140,14 @@ public final class DeadLetterQueueWriter implements Closeable {
+         return storageType.name().toLowerCase(Locale.ROOT);
+     }
+ 
++    public long getDroppedEvents() {
++        return droppedEvents.longValue();
++    }
++
++    public String getLastError() {
++        return lastError;
++    }
++
+     public void writeEntry(Event event, String pluginName, String pluginId, String reason) throws IOException {
+         writeEntry(new DLQEntry(event, pluginName, pluginId, reason));
+     }
+@@ -193,7 +204,10 @@ public final class DeadLetterQueueWriter implements Closeable {
+         int eventPayloadSize = RECORD_HEADER_SIZE + record.length;
+         if (currentQueueSize.longValue() + eventPayloadSize > maxQueueSize) {
+             if (storageType == QueueStorageType.DROP_NEWER) {
+-                logger.error("cannot write event to DLQ(path: " + this.queuePath + "): reached maxQueueSize of " + maxQueueSize);
++                String errorMessage = "cannot write event to DLQ(path: " + this.queuePath + "): reached maxQueueSize of " + maxQueueSize;
++                logger.error(errorMessage);
++                droppedEvents.increment();
++                lastError = errorMessage;
+                 return;
+             } else {
+                 do {
+@@ -218,11 +232,29 @@ public final class DeadLetterQueueWriter implements Closeable {
+         }
+         final Path beheadedSegment = oldestSegment.get();
+         final long segmentSize = Files.size(beheadedSegment);
++        int droppedCount = countEventsInSegment(beheadedSegment);
++        droppedEvents.add(droppedCount);
++        String errorMessage = "Dropped " + droppedCount + " events from oldest segment due to max_queue_size limit";
++        lastError = errorMessage;
++        logger.debug(errorMessage);
+         currentQueueSize.add(-segmentSize);
+         Files.delete(beheadedSegment);
+         logger.debug("Deleted exceeded retained size segment file {}", beheadedSegment);
+     }
+ 
++    private int countEventsInSegment(Path segmentPath) throws IOException {
++        int count = 0;
++        try (RecordIOReader reader = new RecordIOReader(segmentPath)) {
++            byte[] record;
++            while ((record = reader.readEvent()) != null) {
++                count++;
++            }
++        } catch (IllegalStateException e) {
++            logger.debug("Could not read segment file {} to count events: {}", segmentPath, e.getMessage());
++        }
++        return count;
++    }
++
+     /**
+      * Method to determine whether the event has already been processed by the DLQ - currently this
+      * just checks the metadata to see if metadata has been added to the event that indicates that
+diff --git a/logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java b/logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java
+index be91d3dd1..f11e73fbd 100644
+--- a/logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java
++++ b/logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java
+@@ -112,6 +112,12 @@ public class AbstractPipelineExt extends RubyBasicObject {
+     private static final RubySymbol STORAGE_POLICY =
+             RubyUtil.RUBY.newSymbol("storage_policy");
+ 
++    private static final RubySymbol DROPPED_EVENTS =
++            RubyUtil.RUBY.newSymbol("dropped_events");
++
++    private static final RubySymbol LAST_ERROR =
++            RubyUtil.RUBY.newSymbol("last_error");
++
+     private static final @SuppressWarnings("rawtypes") RubyArray EVENTS_METRIC_NAMESPACE = RubyArray.newArray(
+         RubyUtil.RUBY, new IRubyObject[]{MetricKeys.STATS_KEY, MetricKeys.EVENTS_KEY}
+     );
+@@ -330,6 +336,14 @@ public class AbstractPipelineExt extends RubyBasicObject {
+                     context, STORAGE_POLICY,
+                     dlqWriter(context).callMethod(context, "get_storage_policy")
+             );
++            getDlqMetric(context).gauge(
++                    context, DROPPED_EVENTS,
++                    dlqWriter(context).callMethod(context, "get_dropped_events")
++            );
++            getDlqMetric(context).gauge(
++                    context, LAST_ERROR,
++                    dlqWriter(context).callMethod(context, "get_last_error")
++            );
+         }
+         return context.nil;
+     }

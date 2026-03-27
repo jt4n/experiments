@@ -1,0 +1,55 @@
+
+diff --git a/.gitignore b/.gitignore
+index c3bde803..741679f7 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -20,3 +20,7 @@ target
+ *.ipr
+ *.iws
+ .idea
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+index 00f051d6..c8cb7f12 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+@@ -718,6 +718,7 @@ public class ToXmlGenerator
+     /**********************************************************
+      */
+ 
++
+     @Override
+     public void writeRawValue(String text) throws IOException {
+         // [dataformat-xml#39]
+@@ -732,6 +733,9 @@ public class ToXmlGenerator
+ 
+             if (_nextIsAttribute) {
+                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
++            } else if (checkNextIsUnwrapped()) {
++                // [dataformat-xml#xxx]: @JacksonXmlText with @JsonRawValue
++                _xmlWriter.writeRaw(text);
+             } else {
+                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                 _xmlWriter.writeRaw(text);
+@@ -756,6 +760,9 @@ public class ToXmlGenerator
+ 
+             if (_nextIsAttribute) {
+                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text.substring(offset, offset + len));
++            } else if (checkNextIsUnwrapped()) {
++                // [dataformat-xml#xxx]: @JacksonXmlText with @JsonRawValue
++                _xmlWriter.writeRaw(text, offset, len);
+             } else {
+                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                 _xmlWriter.writeRaw(text, offset, len);
+@@ -779,6 +786,9 @@ public class ToXmlGenerator
+         try {
+             if (_nextIsAttribute) {
+                 _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), new String(text, offset, len));
++            } else if (checkNextIsUnwrapped()) {
++                // [dataformat-xml#xxx]: @JacksonXmlText with @JsonRawValue
++                _xmlWriter.writeRaw(text, offset, len);
+             } else {
+                 _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                 _xmlWriter.writeRaw(text, offset, len);

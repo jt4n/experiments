@@ -1,0 +1,58 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java
+index 0bdb8afe8..86c7fcb50 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java
+@@ -61,6 +61,27 @@ public abstract class StdNodeBasedDeserializer<T>
+ 
+     public abstract T convert(JsonNode root, DeserializationContext ctxt) throws IOException;
+ 
++    /**
++     * Method that can be used to convert given {@link JsonNode} into a value,
++     * optionally modifying or populating the intoValue (if it is not null).
++     *<p>
++     * Default implementation simply calls {@link #convert(JsonNode, DeserializationContext)}
++     * after calling {@link DeserializationContext#handleBadMerge(Object)} to indicate
++     * that no actual merging happened.
++     *
++     * @param root JSON node to convert
++     * @param ctxt Context for deserialization
++     * @param intoValue Value to update; if null, a new instance is created
++     *
++     * @return Converted value
++     *
++     * @since 2.18
++     */
++    public T convert(JsonNode root, DeserializationContext ctxt, T intoValue) throws IOException {
++        ctxt.handleBadMerge(this);
++        return convert(root, ctxt);
++    }
++
+     /*
+     /**********************************************************
+     /* JsonDeserializer impl
+@@ -73,6 +94,12 @@ public abstract class StdNodeBasedDeserializer<T>
+         return convert(n, ctxt);
+     }
+ 
++    @Override
++    public T deserialize(JsonParser jp, DeserializationContext ctxt, T intoValue) throws IOException {
++        JsonNode n = (JsonNode) _treeDeserializer.deserialize(jp, ctxt);
++        return convert(n, ctxt, intoValue);
++    }
++
+     @Override
+     public Object deserializeWithType(JsonParser jp, DeserializationContext ctxt,
+             TypeDeserializer td)

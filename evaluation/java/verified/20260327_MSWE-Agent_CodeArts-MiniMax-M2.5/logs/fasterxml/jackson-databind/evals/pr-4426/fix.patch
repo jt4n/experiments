@@ -1,0 +1,27 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 4f8d64b7a..c3c201850 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -760,7 +760,8 @@ public class POJOPropertiesCollector
+             // ...or is a Records canonical constructor
+             boolean isCanonicalConstructor = recordComponentName != null;
+ 
+-            if ((creatorMode == null || creatorMode == JsonCreator.Mode.DISABLED) && !isCanonicalConstructor) {
++            if ((creatorMode == null || creatorMode == JsonCreator.Mode.DISABLED
++                    || creatorMode == JsonCreator.Mode.DELEGATING) && !isCanonicalConstructor) {
+                 return;
+             }
+             pn = PropertyName.construct(impl);

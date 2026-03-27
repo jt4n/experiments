@@ -1,0 +1,110 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/TestEnumPropertyNamingStrategy.java b/TestEnumPropertyNamingStrategy.java
+new file mode 100644
+index 000000000..4b0d2b06e
+--- /dev/null
++++ b/TestEnumPropertyNamingStrategy.java
+@@ -0,0 +1,31 @@
++import com.fasterxml.jackson.databind.*;
++import com.fasterxml.jackson.annotation.*;
++
++public class TestEnumPropertyNamingStrategy {
++    public static void main(String[] args) throws Exception {
++        var objectMapper = JsonMapper.builder()
++            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
++            .build();
++        
++        System.out.println("Testing enum deserialization with PropertyNamingStrategy...");
++        SomeEnum result = objectMapper.readValue("\"FOO\"", SomeEnum.class);
++        System.out.println("Result: " + result);
++        
++        if (result == SomeEnum.FOO) {
++            System.out.println("SUCCESS: Enum deserialization works correctly!");
++        } else {
++            System.out.println("FAILURE: Expected FOO but got " + result);
++            System.exit(1);
++        }
++    }
++    
++    enum SomeEnum {
++        FOO(0);
++
++        public final int foo;
++
++        SomeEnum(int foo) {
++            this.foo = foo;
++        }
++    }
++}
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 61961db4d..cefd7f670 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -1134,7 +1134,10 @@ public class POJOPropertiesCollector
+                 if (_forSerialization) {
+                     if (prop.hasGetter()) {
+                         rename = naming.nameForGetterMethod(_config, prop.getGetter(), fullName.getSimpleName());
+-                    } else if (prop.hasField()) {
++                    } else if (prop.hasField()
++                            // 5-Dec-2023, [databind#428] Need to skip renaming if field is part of
++                            // enum constant
++                            && !_isEnumConstant(prop.getField())) {
+                         rename = naming.nameForField(_config, prop.getField(), fullName.getSimpleName());
+                     }
+                 } else {
+@@ -1142,7 +1145,10 @@ public class POJOPropertiesCollector
+                         rename = naming.nameForSetterMethod(_config, prop.getSetterUnchecked(), fullName.getSimpleName());
+                     } else if (prop.hasConstructorParameter()) {
+                         rename = naming.nameForConstructorParameter(_config, prop.getConstructorParameter(), fullName.getSimpleName());
+-                    } else if (prop.hasField()) {
++                    } else if (prop.hasField()
++                            // 5-Dec-2023, [databind#428] Need to skip renaming if field is part of
++                            // enum constant
++                            && !_isEnumConstant(prop.getField())) {
+                         rename = naming.nameForField(_config, prop.getFieldUnchecked(), fullName.getSimpleName());
+                     } else if (prop.hasGetter()) {
+                         // Plus, when getter-as-setter is used, need to convert that too..
+@@ -1151,7 +1157,6 @@ public class POJOPropertiesCollector
+                     }
+                 }
+             }
+-            final String simpleName;
+             if ((rename != null) && !fullName.hasSimpleName(rename)) {
+                 prop = prop.withSimpleName(rename);
+                 simpleName = rename;
+@@ -1471,4 +1476,23 @@ public class POJOPropertiesCollector
+         }
+         return false;
+     }
++
++    
++    /**
++     * Helper method to check if a field is part of an enum constant.
++     * 
++     * @since 2.16.2
++     */
++    private boolean _isEnumConstant(AnnotatedField field) {
++        if (field == null) {
++            return false;
++        }
++        Member member = field.getMember();
++        if (member == null) {
++            return false;
++        }
++        // [databind#428] Check if the field is part of an enum constant
++        // by checking if the declaring class is an enum
++        return member.getDeclaringClass().isEnum();
++    }
+ }

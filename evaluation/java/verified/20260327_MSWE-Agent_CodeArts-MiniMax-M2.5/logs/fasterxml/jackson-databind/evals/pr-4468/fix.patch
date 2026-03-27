@@ -1,0 +1,36 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java b/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java
+index 6c756979e..5f54434e5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java
+@@ -125,6 +125,18 @@ public class CoreXMLDeserializers extends Deserializers.Base
+             throw new IllegalStateException();
+         }
+ 
++        @Override
++        protected Object _deserializeFromEmptyString(DeserializationContext ctxt)
++            throws IOException
++        {
++            // [jackson-databind#4017]: QName.valueOf("") should return a valid QName
++            // with empty local part, not null
++            if (_kind == TYPE_QNAME) {
++                return QName.valueOf("");
++            }
++            return super._deserializeFromEmptyString(ctxt);
++        }
++
+         protected XMLGregorianCalendar _gregorianFromDate(DeserializationContext ctxt,
+                 Date d)
+         {

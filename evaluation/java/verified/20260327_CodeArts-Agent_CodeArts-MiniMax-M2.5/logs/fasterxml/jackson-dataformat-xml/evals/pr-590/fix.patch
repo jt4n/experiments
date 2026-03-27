@@ -1,0 +1,43 @@
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
+index f2b37555..c8b4942e 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
+@@ -1,12 +1,14 @@
+ package com.fasterxml.jackson.dataformat.xml;
+ 
+ import java.lang.annotation.Annotation;
++import java.util.List;
+ 
+ import com.fasterxml.jackson.annotation.JsonProperty;
+ import com.fasterxml.jackson.databind.PropertyName;
+ import com.fasterxml.jackson.databind.cfg.MapperConfig;
+ import com.fasterxml.jackson.databind.introspect.*;
+ import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
++import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
+ import com.fasterxml.jackson.dataformat.xml.annotation.*;
+ 
+ /**
+@@ -194,7 +196,22 @@ public class JacksonXmlAnnotationIntrospector
+         }
+         return name;
+     }
+-    
++
++    /**
++     * Since 2.15: overriding this method to do nothing since
++     * base class {@link JacksonAnnotationIntrospector} is called separately
++     * when there is annotation introspector chain (with {@link AnnotationIntrospectorPair}),
++     * and we do not want to have virtual properties added twice.
++     *
++     * @since 2.15
++     */
++    @Override
++    public void findAndAddVirtualProperties(MapperConfig<?> config, AnnotatedClass ac,
++            List<BeanPropertyWriter> properties) {
++        // Do nothing - let the base JacksonAnnotationIntrospector handle this
++        // to avoid duplication when there's an annotation introspector chain
++    }
++
+     /*
+     /**********************************************************************
+     /* Overrides for non-public helper methods

@@ -1,0 +1,52 @@
+
+diff --git a/.gitignore b/.gitignore
+index 79b52d6b..ca3b9d9c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /.idea/
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java b/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
+index ea4ab8a8..3467dd72 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonGenerator.java
+@@ -1288,6 +1288,34 @@ public abstract class JsonGenerator
+         writeNumber(value);
+     }
+ 
++    
++    /**
++     * Convenience method for outputting a field entry ("member")
++     * that has the specified numeric value. Equivalent to:
++     *<pre>
++     *  writeFieldName(fieldName);
++     *  writeNumber(value);
++     *</pre>
++     */
++    public void writeNumberField(String fieldName, short value) throws IOException {
++        writeFieldName(fieldName);
++        writeNumber(value);
++    }
++
++    /**
++     * Convenience method for outputting a field entry ("member")
++     * that has the specified numeric value. Equivalent to:
++     *<pre>
++     *  writeFieldName(fieldName);
++     *  writeNumber(value);
++     *</pre>
++     */
++    public void writeNumberField(String fieldName, BigInteger value) throws IOException {
++        writeFieldName(fieldName);
++        writeNumber(value);
++    }
++
++    
+     /**
+      * Convenience method for outputting a field entry ("member")
+      * that contains specified data in base64-encoded form.

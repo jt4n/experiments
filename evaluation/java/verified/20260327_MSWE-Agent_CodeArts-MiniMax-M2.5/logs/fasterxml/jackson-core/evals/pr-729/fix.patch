@@ -1,0 +1,165 @@
+
+diff --git a/.gitignore b/.gitignore
+index 79b52d6b..ca3b9d9c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /.idea/
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java b/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+index e4310e92..1ee5804e 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/FilteringGeneratorDelegate.java
+@@ -192,7 +192,13 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray();
+         } else {
+-            _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            // [jackson-core#2.14]: check if filter wants to include empty arrays
++            if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++                delegate.writeStartArray();
++            } else {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            }
+         }
+     }
+ 
+@@ -226,7 +232,13 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray(size);
+         } else {
+-            _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            // [jackson-core#2.14]: check if filter wants to include empty arrays
++            if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++                delegate.writeStartArray(size);
++            } else {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            }
+         }
+     }
+ 
+@@ -255,7 +267,13 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray(forValue);
+         } else {
+-            _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            // [jackson-core#2.14]: check if filter wants to include empty arrays
++            if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++                delegate.writeStartArray(forValue);
++            } else {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            }
+         }
+     }
+ 
+@@ -284,7 +302,13 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
+             delegate.writeStartArray(forValue, size);
+         } else {
+-            _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            // [jackson-core#2.14]: check if filter wants to include empty arrays
++            if (_itemFilter != null && _itemFilter.includeEmptyArray()) {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, true);
++                delegate.writeStartArray(forValue, size);
++            } else {
++                _filterContext = _filterContext.createChildArrayContext(_itemFilter, false);
++            }
+         }
+     }
+     
+@@ -328,7 +352,13 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _filterContext = _filterContext.createChildObjectContext(f, true);
+             delegate.writeStartObject();
+         } else { // filter out
+-            _filterContext = _filterContext.createChildObjectContext(f, false);
++            // [jackson-core#2.14]: check if filter wants to include empty objects
++            if (f != null && f.includeEmptyObject()) {
++                _filterContext = _filterContext.createChildObjectContext(f, true);
++                delegate.writeStartObject();
++            } else {
++                _filterContext = _filterContext.createChildObjectContext(f, false);
++            }
+         }
+     }
+ 
+@@ -362,7 +392,13 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _filterContext = _filterContext.createChildObjectContext(f, true);
+             delegate.writeStartObject(forValue);
+         } else { // filter out
+-            _filterContext = _filterContext.createChildObjectContext(f, false);
++            // [jackson-core#2.14]: check if filter wants to include empty objects
++            if (f != null && f.includeEmptyObject()) {
++                _filterContext = _filterContext.createChildObjectContext(f, true);
++                delegate.writeStartObject(forValue);
++            } else {
++                _filterContext = _filterContext.createChildObjectContext(f, false);
++            }
+         }
+     }
+ 
+@@ -392,7 +428,13 @@ public class FilteringGeneratorDelegate extends JsonGeneratorDelegate
+             _filterContext = _filterContext.createChildObjectContext(f, true);
+             delegate.writeStartObject(forValue, size);
+         } else {
+-            _filterContext = _filterContext.createChildObjectContext(f, false);
++            // [jackson-core#2.14]: check if filter wants to include empty objects
++            if (f != null && f.includeEmptyObject()) {
++                _filterContext = _filterContext.createChildObjectContext(f, true);
++                delegate.writeStartObject(forValue, size);
++            } else {
++                _filterContext = _filterContext.createChildObjectContext(f, false);
++            }
+         }
+     }
+ 
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java b/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
+index 3e747491..daf50cc8 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/TokenFilter.java
+@@ -133,6 +133,38 @@ public class TokenFilter
+      */
+     public void filterFinishArray() { }
+ 
++    /**
++     * Method called to check whether an empty Array should be included in output.
++     * This is called during {@link JsonGenerator#writeStartArray()} when the
++     * array has no elements yet, to determine if the empty array should be written.
++     *<p>
++     * Default implementation returns <code>false</code>, meaning empty arrays
++     * are not included by default.
++     *
++     * @return <code>true</code> if empty arrays should be included; <code>false</code> otherwise
++     *
++     * @since 2.14
++     */
++    public boolean includeEmptyArray() {
++        return false;
++    }
++
++    /**
++     * Method called to check whether an empty Object should be included in output.
++     * This is called during {@link JsonGenerator#writeStartObject()} when the
++     * object has no properties yet, to determine if the empty object should be written.
++     *<p>
++     * Default implementation returns <code>false</code>, meaning empty objects
++     * are not included by default.
++     *
++     * @return <code>true</code> if empty objects should be included; <code>false</code> otherwise
++     *
++     * @since 2.14
++     */
++    public boolean includeEmptyObject() {
++        return false;
++    }
++
+     /*
+     /**********************************************************
+     /* API, properties/elements

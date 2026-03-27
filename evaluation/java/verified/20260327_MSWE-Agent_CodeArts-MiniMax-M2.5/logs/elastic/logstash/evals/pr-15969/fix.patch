@@ -1,0 +1,29 @@
+
+diff --git a/.gitignore b/.gitignore
+index cc0ab0db4..7e5ef4afe 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,4 +63,6 @@ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+ qa/integration/fixtures/logs_rollover/log4j2.properties
+-ci/serverless/config/*.log
+\ No newline at end of file
++ci/serverless/config/*.logtarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java b/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
+index b52c14a6f..b107f54e4 100644
+--- a/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
++++ b/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
+@@ -70,6 +70,10 @@ public class CustomLogEventSerializer extends JsonSerializer<CustomLogEvent> {
+ 
+         for (final Map.Entry<Object, Object> entry : message.getParams().entrySet()) {
+             final String paramName = entry.getKey().toString();
++            // Skip duplicate keys that match the message field name
++            if ("message".equals(paramName)) {
++                continue;
++            }
+             final Object paramValue = entry.getValue();
+ 
+             try {

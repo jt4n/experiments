@@ -1,0 +1,45 @@
+
+diff --git a/.gitignore b/.gitignore
+index cc0ab0db4..7e5ef4afe 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,4 +63,6 @@ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+ qa/integration/fixtures/logs_rollover/log4j2.properties
+-ci/serverless/config/*.log
+\ No newline at end of file
++ci/serverless/config/*.logtarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index e455a99dc..03ea83b7f 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -531,9 +531,23 @@ public final class DeadLetterQueueWriter implements Closeable {
+     }
+ 
+     private void sealSegment(int segmentIndex, SealReason motivation) throws IOException {
+-        Files.move(queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex)),
+-                queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex)),
+-                StandardCopyOption.ATOMIC_MOVE);
++        Path tempFile = queuePath.resolve(String.format(TEMP_FILE_PATTERN, segmentIndex));
++        Path segmentFile = queuePath.resolve(String.format(SEGMENT_FILE_PATTERN, segmentIndex));
++
++        // Check if the temp file already doesn't exist (perhaps already sealed in a previous run)
++        if (!Files.exists(tempFile)) {
++            logger.debug("Temp file {} does not exist, likely already sealed", tempFile);
++            return;
++        }
++
++        // Check if the target file already exists (perhaps from a previous run)
++        if (Files.exists(segmentFile)) {
++            logger.debug("Segment file {} already exists, deleting temp file", segmentFile);
++            Files.delete(tempFile);
++            return;
++        }
++
++        Files.move(tempFile, segmentFile, StandardCopyOption.ATOMIC_MOVE);
+         logger.debug("Sealed segment with index {} because {}", segmentIndex, motivation);
+     }
+ 

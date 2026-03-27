@@ -1,0 +1,194 @@
+
+diff --git a/.gitignore b/.gitignore
+index 1b0d8f000..c50d18240 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -62,4 +62,6 @@ lib/pluginmanager/plugin_aliases.yml
+ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+-qa/integration/fixtures/logs_rollover/log4j2.properties
+\ No newline at end of file
++qa/integration/fixtures/logs_rollover/log4j2.propertiestarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java b/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java
+index b7621a790..e11226c80 100644
+--- a/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java
++++ b/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java
+@@ -27,6 +27,7 @@ import java.util.Map;
+ import java.util.Objects;
+ import java.util.Optional;
+ import java.util.OptionalDouble;
++import java.util.concurrent.ConcurrentLinkedQueue;
+ import java.util.concurrent.atomic.AtomicReference;
+ import java.util.function.LongSupplier;
+ import java.util.function.Supplier;
+@@ -43,10 +44,41 @@ public class FlowMetric extends AbstractMetric<Map<String,Double>> {
+     private final AtomicReference<Capture> head;
+     private final AtomicReference<Capture> instant = new AtomicReference<>();
+ 
++    // Extended flow metrics - captures for different time windows
++    // Each entry is a list of captures for a specific time window
++    private final ConcurrentLinkedQueue<Capture> current10s;
++    private final ConcurrentLinkedQueue<Capture> last1Minute;
++    private final ConcurrentLinkedQueue<Capture> last5Minutes;
++    private final ConcurrentLinkedQueue<Capture> last15Minutes;
++    private final ConcurrentLinkedQueue<Capture> last1Hour;
++    private final ConcurrentLinkedQueue<Capture> last24Hours;
++
+     private final LongSupplier nanoTimeSupplier;
+ 
+     static final String LIFETIME_KEY = "lifetime";
+     static final String CURRENT_KEY = "current";
++    // Extended flow metric keys
++    static final String LAST_1_MINUTE_KEY = "last_1_minute";
++    static final String LAST_5_MINUTES_KEY = "last_5_minutes";
++    static final String LAST_15_MINUTES_KEY = "last_15_minutes";
++    static final String LAST_1_HOUR_KEY = "last_1_hour";
++    static final String LAST_24_HOURS_KEY = "last_24_hours";
++
++    // Time windows in nanoseconds
++    static final long WINDOW_CURRENT = Duration.ofSeconds(10).toNanos();
++    static final long WINDOW_1_MINUTE = Duration.ofMinutes(1).toNanos();
++    static final long WINDOW_5_MINUTES = Duration.ofMinutes(5).toNanos();
++    static final long WINDOW_15_MINUTES = Duration.ofMinutes(15).toNanos();
++    static final long WINDOW_1_HOUR = Duration.ofHours(1).toNanos();
++    static final long WINDOW_24_HOURS = Duration.ofHours(24).toNanos();
++
++    // Granularity windows in nanoseconds (minimum time between captures to retain)
++    static final long GRANULARITY_CURRENT = Duration.ofSeconds(1).toNanos();
++    static final long GRANULARITY_1_MINUTE = Duration.ofSeconds(3).toNanos();
++    static final long GRANULARITY_5_MINUTES = Duration.ofSeconds(15).toNanos();
++    static final long GRANULARITY_15_MINUTES = Duration.ofSeconds(30).toNanos();
++    static final long GRANULARITY_1_HOUR = Duration.ofSeconds(60).toNanos();
++    static final long GRANULARITY_24_HOURS = Duration.ofMinutes(15).toNanos();
+ 
+     public FlowMetric(final String name,
+                       final Metric<? extends Number> numeratorMetric,
+@@ -65,6 +97,14 @@ public class FlowMetric extends AbstractMetric<Map<String,Double>> {
+ 
+         this.baseline = doCapture();
+         this.head = new AtomicReference<>(this.baseline);
++        
++        // Initialize extended flow metric capture queues
++        this.current10s = new ConcurrentLinkedQueue<>();
++        this.last1Minute = new ConcurrentLinkedQueue<>();
++        this.last5Minutes = new ConcurrentLinkedQueue<>();
++        this.last15Minutes = new ConcurrentLinkedQueue<>();
++        this.last1Hour = new ConcurrentLinkedQueue<>();
++        this.last24Hours = new ConcurrentLinkedQueue<>();
+     }
+ 
+     public void capture() {
+@@ -77,6 +117,58 @@ public class FlowMetric extends AbstractMetric<Map<String,Double>> {
+             // and shouldn't hit this edge-case in practice.
+             return (newestHead.calculateCapturePeriod(given).toMillis() > 100) ? given : current;
+         });
++        
++        // Update extended flow metric captures
++        updateExtendedMetric(this.current10s, newestHead, WINDOW_CURRENT, GRANULARITY_CURRENT);
++        updateExtendedMetric(this.last1Minute, newestHead, WINDOW_1_MINUTE, GRANULARITY_1_MINUTE);
++        updateExtendedMetric(this.last5Minutes, newestHead, WINDOW_5_MINUTES, GRANULARITY_5_MINUTES);
++        updateExtendedMetric(this.last15Minutes, newestHead, WINDOW_15_MINUTES, GRANULARITY_15_MINUTES);
++        updateExtendedMetric(this.last1Hour, newestHead, WINDOW_1_HOUR, GRANULARITY_1_HOUR);
++        updateExtendedMetric(this.last24Hours, newestHead, WINDOW_24_HOURS, GRANULARITY_24_HOURS);
++    }
++
++    /**
++     * Update an extended metric queue with a new capture, maintaining the required granularity.
++     * 
++     * @param queue the queue to update
++     * @param newCapture the new capture to add
++     * @param windowSize the window size in nanoseconds
++     * @param granularity the granularity in nanoseconds (minimum time between retained captures)
++     */
++    private void updateExtendedMetric(ConcurrentLinkedQueue<Capture> queue, Capture newCapture, 
++                                       long windowSize, long granularity) {
++        // Add the new capture
++        queue.offer(newCapture);
++        
++        // Remove captures outside the window
++        while (!queue.isEmpty()) {
++            Capture oldest = queue.peek();
++            if (oldest != null && newCapture.calculateCapturePeriod(oldest).toNanos() > windowSize) {
++                queue.poll();
++            } else {
++                break;
++            }
++        }
++        
++        // Compact captures to maintain granularity
++        // Keep at least one capture, then keep captures that are at least granularity apart
++        if (queue.size() > 2) {
++            Capture previous = queue.peek();
++            ConcurrentLinkedQueue<Capture> compacted = new ConcurrentLinkedQueue<>();
++            compacted.add(previous);
++            
++            for (Capture c : queue) {
++                if (c == previous) continue;
++                if (c.calculateCapturePeriod(previous).toNanos() >= granularity) {
++                    compacted.add(c);
++                    previous = c;
++                }
++            }
++            
++            // Replace queue contents with compacted version
++            queue.clear();
++            queue.addAll(compacted);
++        }
+     }
+ 
+     /**
+@@ -91,11 +183,50 @@ public class FlowMetric extends AbstractMetric<Map<String,Double>> {
+         final Map<String, Double> rates = new HashMap<>();
+ 
+         headCapture.calculateRate(baseline).ifPresent((rate) -> rates.put(LIFETIME_KEY, rate));
+-        headCapture.calculateRate(instant::get).ifPresent((rate) -> rates.put(CURRENT_KEY,  rate));
++
++        // current is now an alias for 10s@1s
++        calculateExtendedRate(headCapture, this.current10s, WINDOW_CURRENT).ifPresent((rate) -> rates.put(CURRENT_KEY, rate));
++
++        // Add extended flow metrics
++        calculateExtendedRate(headCapture, this.last1Minute, WINDOW_1_MINUTE).ifPresent((rate) -> rates.put(LAST_1_MINUTE_KEY, rate));
++        calculateExtendedRate(headCapture, this.last5Minutes, WINDOW_5_MINUTES).ifPresent((rate) -> rates.put(LAST_5_MINUTES_KEY, rate));
++        calculateExtendedRate(headCapture, this.last15Minutes, WINDOW_15_MINUTES).ifPresent((rate) -> rates.put(LAST_15_MINUTES_KEY, rate));
++        calculateExtendedRate(headCapture, this.last1Hour, WINDOW_1_HOUR).ifPresent((rate) -> rates.put(LAST_1_HOUR_KEY, rate));
++        calculateExtendedRate(headCapture, this.last24Hours, WINDOW_24_HOURS).ifPresent((rate) -> rates.put(LAST_24_HOURS_KEY, rate));
+ 
+         return Map.copyOf(rates);
+     }
+ 
++    /**
++     * Calculate an extended rate from the captures in the queue.
++     * 
++     * @param headCapture the most recent capture
++     * @param queue the queue of captures
++     * @param windowSize the window size in nanoseconds
++     * @return an optional containing the rate if it can be calculated
++     */
++    private OptionalDouble calculateExtendedRate(Capture headCapture, ConcurrentLinkedQueue<Capture> queue, long windowSize) {
++        if (queue.isEmpty()) {
++            return OptionalDouble.empty();
++        }
++        
++        // Find the oldest capture within the window
++        Capture oldestInWindow = null;
++        for (Capture c : queue) {
++            if (headCapture.calculateCapturePeriod(c).toNanos() <= windowSize) {
++                oldestInWindow = c;
++            } else {
++                break; // queue is ordered by time, so no need to continue
++            }
++        }
++        
++        if (oldestInWindow == null || oldestInWindow == headCapture) {
++            return OptionalDouble.empty();
++        }
++        
++        return headCapture.calculateRate(oldestInWindow);
++    }
++
+     Capture doCapture() {
+         return new Capture(numeratorMetric.getValue(), denominatorMetric.getValue(), nanoTimeSupplier.getAsLong());
+     }

@@ -1,0 +1,43 @@
+diff --git a/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java b/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java
+index eb010f00..4c87af52 100644
+--- a/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java
++++ b/jib-core/src/main/java/com/google/cloud/tools/jib/registry/RegistryEndpointCaller.java
+@@ -189,19 +189,28 @@ class RegistryEndpointCaller<T> {
+         new RegistryErrorExceptionBuilder(
+             registryEndpointProvider.getActionDescription(), responseException);
+ 
+-    try {
+-      ErrorResponseTemplate errorResponse =
+-          JsonTemplateMapper.readJson(responseException.getContent(), ErrorResponseTemplate.class);
+-      for (ErrorEntryTemplate errorEntry : errorResponse.getErrors()) {
+-        registryErrorExceptionBuilder.addReason(errorEntry);
+-      }
+-    } catch (IOException ex) {
++    String responseContent = responseException.getContent();
++    if (responseContent == null) {
+       registryErrorExceptionBuilder.addReason(
+           "registry returned error code "
+               + responseException.getStatusCode()
+-              + "; possible causes include invalid or wrong reference. Actual error output follows:\n"
+-              + responseException.getContent()
+-              + "\n");
++              + "; possible causes include invalid or wrong reference. "
++              + "The registry did not provide any error details.");
++    } else {
++      try {
++        ErrorResponseTemplate errorResponse =
++            JsonTemplateMapper.readJson(responseContent, ErrorResponseTemplate.class);
++        for (ErrorEntryTemplate errorEntry : errorResponse.getErrors()) {
++          registryErrorExceptionBuilder.addReason(errorEntry);
++        }
++      } catch (IOException ex) {
++        registryErrorExceptionBuilder.addReason(
++            "registry returned error code "
++                + responseException.getStatusCode()
++                + "; possible causes include invalid or wrong reference. Actual error output follows:\n"
++                + responseContent
++                + "\n");
++      }
+     }
+ 
+     return registryErrorExceptionBuilder.build();

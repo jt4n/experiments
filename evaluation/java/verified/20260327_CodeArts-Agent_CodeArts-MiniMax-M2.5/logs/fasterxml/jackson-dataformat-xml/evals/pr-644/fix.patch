@@ -1,0 +1,87 @@
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+index 73c4e673..7d7b5d4c 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+@@ -1179,6 +1179,10 @@ public class ToXmlGenerator
+             handleMissingName();
+         }
+         try {
++            if (Double.isInfinite(d) || Double.isNaN(d)) {
++                writeXmlSchemaDouble(d);
++                return;
++            }
+             if (_nextIsAttribute) {
+                 _xmlWriter.writeDoubleAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), d);
+             } else if (checkNextIsUnwrapped()) {
+@@ -1207,6 +1211,10 @@ public class ToXmlGenerator
+             handleMissingName();
+         }
+         try {
++            if (Float.isInfinite(f) || Float.isNaN(f)) {
++                writeXmlSchemaFloat(f);
++                return;
++            }
+             if (_nextIsAttribute) {
+                 _xmlWriter.writeFloatAttribute(null, _nextName.getNamespaceURI(), _nextName.getLocalPart(), f);
+             } else if (checkNextIsUnwrapped()) {
+@@ -1435,4 +1443,60 @@ public class ToXmlGenerator
+                 +"You need to upgrade to using compliant Stax implementation like Woodstox or Aalto",
+                 this);
+     }
++
++    private void writeXmlSchemaDouble(double value) throws IOException {
++        String text;
++        if (Double.isNaN(value)) {
++            text = "NaN";
++        } else if (Double.isInfinite(value)) {
++            text = (value > 0) ? "INF" : "-INF";
++        } else {
++            text = String.valueOf(value);
++        }
++        try {
++            if (_nextIsAttribute) {
++                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
++            } else if (checkNextIsUnwrapped()) {
++                _xmlWriter.writeCharacters(text);
++            } else if (_xmlPrettyPrinter != null) {
++                _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
++                        _nextName.getNamespaceURI(), _nextName.getLocalPart(),
++                        text, _nextIsCData);
++            } else {
++                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
++                _xmlWriter.writeCharacters(text);
++                _xmlWriter.writeEndElement();
++            }
++        } catch (XMLStreamException e) {
++            StaxUtil.throwAsGenerationException(e, this);
++        }
++    }
++
++    private void writeXmlSchemaFloat(float value) throws IOException {
++        String text;
++        if (Float.isNaN(value)) {
++            text = "NaN";
++        } else if (Float.isInfinite(value)) {
++            text = (value > 0) ? "INF" : "-INF";
++        } else {
++            text = String.valueOf(value);
++        }
++        try {
++            if (_nextIsAttribute) {
++                _xmlWriter.writeAttribute(_nextName.getNamespaceURI(), _nextName.getLocalPart(), text);
++            } else if (checkNextIsUnwrapped()) {
++                _xmlWriter.writeCharacters(text);
++            } else if (_xmlPrettyPrinter != null) {
++                _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
++                        _nextName.getNamespaceURI(), _nextName.getLocalPart(),
++                        text, _nextIsCData);
++            } else {
++                _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
++                _xmlWriter.writeCharacters(text);
++                _xmlWriter.writeEndElement();
++            }
++        } catch (XMLStreamException e) {
++            StaxUtil.throwAsGenerationException(e, this);
++        }
++    }
+ }

@@ -1,0 +1,22 @@
+
+diff --git a/.gitignore b/.gitignore
+index e09139a19..502e2970f 100644
+Binary files a/.gitignore and b/.gitignore differ
+diff --git a/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java b/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java
+index d37ae571b..6c3d97a23 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java
++++ b/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java
+@@ -1536,6 +1536,13 @@ public class TypeUtils {
+             }
+         }
+ 
++        // Handle Decimal128 to Double conversion
++        String objClassName = obj.getClass().getName();
++        if (obj instanceof Number && objClassName.equals("org.bson.types.Decimal128") && targetClass == Double.class) {
++            Number number = (Number) obj;
++            return (T) Double.valueOf(number.doubleValue());
++        }
++
+         throw new JSONException("can not cast to " + className + ", from " + obj.getClass());
+     }
+ 

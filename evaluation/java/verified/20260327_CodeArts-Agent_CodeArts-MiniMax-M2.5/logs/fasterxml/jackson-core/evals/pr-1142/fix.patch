@@ -1,0 +1,13 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/Version.java b/src/main/java/com/fasterxml/jackson/core/Version.java
+index d70e5e19..06465ef1 100644
+--- a/src/main/java/com/fasterxml/jackson/core/Version.java
++++ b/src/main/java/com/fasterxml/jackson/core/Version.java
+@@ -57,7 +57,7 @@ public class Version
+         _majorVersion = major;
+         _minorVersion = minor;
+         _patchLevel = patchLevel;
+-        _snapshotInfo = snapshotInfo;
++        _snapshotInfo = (snapshotInfo == null) ? "" : snapshotInfo;
+         _groupId = (groupId == null) ? "" : groupId;
+         _artifactId = (artifactId == null) ? "" : artifactId;
+     }

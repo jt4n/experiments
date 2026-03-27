@@ -1,0 +1,28 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 40df20e69..427d7bbb0 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -612,7 +612,9 @@ public class POJOPropertiesCollector
+                     //     only retain if also have ignoral annotations (for name or ignoral)
+                     if (transientAsIgnoral) {
+                         ignored = true;
+-                    } else {
++                    } else if (!ignored) {
++                        // 05-Jun-2023, tatu: [databind#3897] Must still check for explicit
++                        //    @JsonIgnore marker, do not just skip
+                         continue;
+                     }
+                 }

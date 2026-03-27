@@ -1,0 +1,15 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/ClassUtil.java b/src/main/java/com/fasterxml/jackson/databind/util/ClassUtil.java
+index 4677fd262..0812870ed 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/ClassUtil.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/ClassUtil.java
+@@ -990,7 +990,9 @@ public final class ClassUtil
+             final Class<?> declaringClass = member.getDeclaringClass();
+             boolean isPublic = Modifier.isPublic(member.getModifiers())
+                     && Modifier.isPublic(declaringClass.getModifiers());
+-            if (!isPublic || (evenIfAlreadyPublic && !isJDKClass(declaringClass))) {
++            // [databind#3642] Need to skip trying to setAccessible for JDK classes
++            //    since that will fail with JDK 16+ (with module encapsulation)
++            if (!isJDKClass(declaringClass) && (!isPublic || evenIfAlreadyPublic)) {
+                 ao.setAccessible(true);
+             }
+         } catch (SecurityException se) {

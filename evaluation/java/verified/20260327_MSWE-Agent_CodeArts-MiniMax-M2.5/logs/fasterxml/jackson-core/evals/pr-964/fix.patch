@@ -1,0 +1,47 @@
+
+diff --git a/.gitignore b/.gitignore
+index 682be0f1..027bf9dd 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /.idea/
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+index 08700ff1..c9018eca 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+@@ -276,7 +276,7 @@ public class JsonFactory
+      *
+      * @since 2.15
+      */
+-    final protected StreamReadConstraints _streamReadConstraints;
++    protected StreamReadConstraints _streamReadConstraints;
+ 
+     /**
+      * Optional helper object that may decorate input sources, to do
+@@ -778,6 +778,20 @@ public class JsonFactory
+         return _streamReadConstraints;
+     }
+ 
++    /**
++     * Method for overriding currently configured {@link StreamReadConstraints}.
++     *
++     * @param constraints Constraints to configure for this factory
++     *
++     * @return This factory instance (to allow call chaining)
++     *
++     * @since 2.15
++     */
++    public JsonFactory setStreamReadConstraints(StreamReadConstraints constraints) {
++        _streamReadConstraints = constraints;
++        return this;
++    }
++
+     /*
+     /**********************************************************
+     /* Configuration, parser configuration

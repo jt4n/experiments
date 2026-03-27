@@ -1,0 +1,26 @@
+
+diff --git a/.gitignore b/.gitignore
+index 587b8bfb..70946ce8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.iws
+ /.idea/
+ dependency-reduced-pom.xml
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonPointer.java b/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
+index 6dbcad02..f4bb73e9 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
+@@ -379,7 +379,7 @@ public class JsonPointer implements Serializable
+             //removes final slash
+             currentJsonPointer = currentJsonPointer.substring(0, currentJsonPointer.length()-1);
+         }
+-        return compile(currentJsonPointer + tail._asString);
++        return compile(currentJsonPointer + tail.toString());
+     }
+ 
+     /**

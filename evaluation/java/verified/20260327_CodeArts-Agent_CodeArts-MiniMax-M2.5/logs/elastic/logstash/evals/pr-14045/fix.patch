@@ -1,0 +1,69 @@
+diff --git a/logstash-core/lib/logstash/environment.rb b/logstash-core/lib/logstash/environment.rb
+index c94ddfa5d..39f7a0b46 100644
+--- a/logstash-core/lib/logstash/environment.rb
++++ b/logstash-core/lib/logstash/environment.rb
+@@ -76,7 +76,7 @@ module LogStash
+             Setting::String.new("api.environment", "production").with_deprecated_alias("http.environment"),
+             Setting::String.new("api.auth.type", "none", true, %w(none basic)),
+             Setting::String.new("api.auth.basic.username", nil, false).nullable,
+-          Setting::Password.new("api.auth.basic.password", nil, false).nullable,
++          Setting::PasswordWithComplexity.new("api.auth.basic.password", nil, false).nullable,
+            Setting::Boolean.new("api.ssl.enabled", false),
+   Setting::ExistingFilePath.new("api.ssl.keystore.path", nil, false).nullable,
+           Setting::Password.new("api.ssl.keystore.password", nil, false).nullable,
+diff --git a/logstash-core/lib/logstash/settings.rb b/logstash-core/lib/logstash/settings.rb
+index 7d4b2b606..6720b66bb 100644
+--- a/logstash-core/lib/logstash/settings.rb
++++ b/logstash-core/lib/logstash/settings.rb
+@@ -543,6 +543,51 @@ module LogStash
+       end
+     end
+ 
++    class PasswordWithComplexity < Password
++      def initialize(name, default=nil, strict=true)
++        super(name, default, strict)
++      end
++
++      def validate(value)
++        super(value)
++        return if value.nil? || value.value.nil?
++
++        password = value.value
++        validate_complexity(password)
++      end
++
++      private
++      def validate_complexity(password)
++        unless meet_minimum_length?(password) &&
++               has_uppercase?(password) &&
++               has_lowercase?(password) &&
++               has_digit?(password) &&
++               has_special_char?(password)
++          raise ArgumentError.new("Password is not complex enough. It must be at least 8 characters long and contain uppercase, lowercase, digit, and special characters.")
++        end
++      end
++
++      def meet_minimum_length?(password)
++        password.length >= 8
++      end
++
++      def has_uppercase?(password)
++        password =~ /[A-Z]/
++      end
++
++      def has_lowercase?(password)
++        password =~ /[a-z]/
++      end
++
++      def has_digit?(password)
++        password =~ /\d/
++      end
++
++      def has_special_char?(password)
++        password =~ /[^A-Za-z0-9]/
++      end
++    end
++
+     # The CoercibleString allows user to enter any value which coerces to a String.
+     # For example for true/false booleans; if the possible_strings are ["foo", "true", "false"]
+     # then these options in the config file or command line will be all valid: "foo", true, false, "true", "false"

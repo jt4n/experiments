@@ -1,0 +1,3716 @@
+leikai addded: 脚本开始时间: 2026-03-22 07:37:33, logstash-pr-16482
+[add_certificate] start
+[add_certificate] CERT_DIR=/home/ca-certificates
+[add_certificate] JAVA_HOME=<empty>
+[add_certificate] detected JHOME=/usr/lib/jvm/zulu11-ca-amd64
+[add_certificate] keystore=/usr/lib/jvm/zulu11-ca-amd64/lib/security/cacerts
+[add_certificate] importing /home/ca-certificates/github.com.crt (alias=github.com)
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Warning: use -cacerts option to access cacerts keystore
+Certificate was added to keystore
+[add_certificate] importing /home/ca-certificates/HuaweiBPITRootCA.crt (alias=HuaweiBPITRootCA)
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Warning: use -cacerts option to access cacerts keystore
+Certificate was added to keystore
+[add_certificate] importing /home/ca-certificates/HuaweiITRootCA.crt (alias=HuaweiITRootCA)
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Warning: use -cacerts option to access cacerts keystore
+Certificate was added to keystore
+[add_certificate] importing /home/ca-certificates/HuaweiWebSecureInternetGatewayCA.crt (alias=HuaweiWebSecureInternetGatewayCA)
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Warning: use -cacerts option to access cacerts keystore
+Certificate was added to keystore
+[add_certificate] importing /home/ca-certificates/HWBPITEnterpriseCA1.crt (alias=HWBPITEnterpriseCA1)
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Warning: use -cacerts option to access cacerts keystore
+Certificate was added to keystore
+[add_certificate] importing /home/ca-certificates/HWITEnterpriseCA1.crt (alias=HWITEnterpriseCA1)
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Warning: use -cacerts option to access cacerts keystore
+Certificate was added to keystore
+actalisauthenticationrootca [jdk], Sep 22, 2011, trustedCertEntry, 
+amazonrootca1 [jdk], May 26, 2015, trustedCertEntry, 
+amazonrootca2 [jdk], May 26, 2015, trustedCertEntry, 
+amazonrootca3 [jdk], May 26, 2015, trustedCertEntry, 
+amazonrootca4 [jdk], May 26, 2015, trustedCertEntry, 
+certignarootca [jdk], Oct 1, 2013, trustedCertEntry, 
+chunghwaepkirootca [jdk], Dec 20, 2004, trustedCertEntry, 
+digicertassuredidrootca [jdk], Nov 10, 2006, trustedCertEntry, 
+digicertglobalrootca [jdk], Nov 10, 2006, trustedCertEntry, 
+digicerthighassuranceevrootca [jdk], Nov 10, 2006, trustedCertEntry, 
+emsigneccrootcag3 [jdk], Feb 19, 2018, trustedCertEntry, 
+emsignrootcag1 [jdk], Feb 19, 2018, trustedCertEntry, 
+emsignrootcag2 [jdk], Feb 19, 2018, trustedCertEntry, 
+entrustrootcaec1 [jdk], Dec 18, 2012, trustedCertEntry, 
+entrustrootcag2 [jdk], Jul 8, 2009, trustedCertEntry, 
+entrustrootcag4 [jdk], May 27, 2015, trustedCertEntry, 
+globalsigneccrootcar4 [jdk], Nov 13, 2012, trustedCertEntry, 
+globalsigneccrootcar5 [jdk], Nov 13, 2012, trustedCertEntry, 
+globalsignrootcar6 [jdk], Dec 10, 2014, trustedCertEntry, 
+gtsrootcar1 [jdk], Jun 22, 2016, trustedCertEntry, 
+gtsrootcar2 [jdk], Jun 22, 2016, trustedCertEntry, 
+haricaeccrootca2015 [jdk], Jul 7, 2015, trustedCertEntry, 
+haricarootca2015 [jdk], Jul 7, 2015, trustedCertEntry, 
+huaweibpitrootca, Mar 22, 2026, trustedCertEntry, 
+huaweiitrootca, Mar 22, 2026, trustedCertEntry, 
+huaweiwebsecureinternetgatewayca, Mar 22, 2026, trustedCertEntry, 
+hwbpitenterpriseca1, Mar 22, 2026, trustedCertEntry, 
+hwitenterpriseca1, Mar 22, 2026, trustedCertEntry, 
+luxtrustglobalrootca [jdk], Mar 17, 2011, trustedCertEntry, 
+quovadisrootca [jdk], Mar 20, 2001, trustedCertEntry, 
+quovadisrootca1g3 [jdk], Jan 13, 2012, trustedCertEntry, 
+quovadisrootca2 [jdk], Nov 25, 2006, trustedCertEntry, 
+quovadisrootca2g3 [jdk], Jan 13, 2012, trustedCertEntry, 
+quovadisrootca3 [jdk], Nov 25, 2006, trustedCertEntry, 
+quovadisrootca3g3 [jdk], Jan 13, 2012, trustedCertEntry, 
+secomscrootca2 [jdk], May 29, 2009, trustedCertEntry, 
+teliarootcav2 [jdk], Nov 29, 2018, trustedCertEntry, 
+teliasonerarootcav1 [jdk], Oct 18, 2007, trustedCertEntry, 
+thawteprimaryrootca [jdk], Nov 17, 2006, trustedCertEntry, 
+thawteprimaryrootcag2 [jdk], Nov 5, 2007, trustedCertEntry, 
+thawteprimaryrootcag3 [jdk], Apr 2, 2008, trustedCertEntry, 
+twcaglobalrootca [jdk], Jun 27, 2012, trustedCertEntry, 
+verisignuniversalrootca [jdk], Apr 2, 2008, trustedCertEntry, 
+[add_certificate] done, continue fix-run...
+Ign:1 https://repos.azul.com/zulu/deb stable InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+Get:3 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Ign:1 https://repos.azul.com/zulu/deb stable InRelease
+Get:5 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [3414 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [3585 kB]
+Get:8 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1946 kB]
+Get:9 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2030 kB]
+Get:10 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1262 kB]
+Get:11 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [38.1 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2327 kB]
+Ign:1 https://repos.azul.com/zulu/deb stable InRelease
+Get:13 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [34.8 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.5 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [695 B]
+Get:16 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [36.1 kB]
+Err:1 https://repos.azul.com/zulu/deb stable InRelease
+  Certificate verification failed: The certificate is NOT trusted. The certificate issuer is unknown.  Could not handshake: Error in the certificate verification. [IP: 172.18.100.90 8080]
+Fetched 15.1 MB in 7s (2106 kB/s)
+Reading package lists...
+W: Failed to fetch https://repos.azul.com/zulu/deb/dists/stable/InRelease  Certificate verification failed: The certificate is NOT trusted. The certificate issuer is unknown.  Could not handshake: Error in the certificate verification. [IP: 172.18.100.90 8080]
+W: Some index files failed to download. They have been ignored, or old ones used instead.
+Reading package lists...
+Building dependency tree...
+Reading state information...
+patch is already the newest version (2.7.6-7build3).
+patch set to manually installed.
+The following additional packages will be installed:
+  binutils binutils-common binutils-x86-64-linux-gnu bzip2 cpp cpp-13
+  cpp-13-x86-64-linux-gnu cpp-x86-64-linux-gnu dpkg dpkg-dev fakeroot g++
+  g++-13 g++-13-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-13 gcc-13-base
+  gcc-13-x86-64-linux-gnu gcc-14-base gcc-x86-64-linux-gnu
+  libalgorithm-diff-perl libalgorithm-diff-xs-perl libalgorithm-merge-perl
+  libaom3 libasan8 libatomic1 libbinutils libc-bin libc-dev-bin libc-devtools
+  libc6 libc6-dev libcc1-0 libcrypt-dev libctf-nobfd0 libctf0 libde265-0
+  libdeflate0 libdpkg-perl libfakeroot libfile-fcntllock-perl libgcc-13-dev
+  libgcc-s1 libgd3 libgomp1 libgprofng0 libheif-plugin-aomdec
+  libheif-plugin-aomenc libheif-plugin-libde265 libheif1 libhwasan0 libisl23
+  libitm1 libjansson4 libjbig0 libjpeg-turbo8 libjpeg8 liblerc4
+  liblocale-gettext-perl liblsan0 liblzma5 libmpc3 libmpfr6 libquadmath0
+  libsframe1 libsharpyuv0 libstdc++-13-dev libstdc++6 libtiff6 libtsan2
+  libubsan1 libwebp7 libxpm4 linux-libc-dev lto-disabled-list make manpages
+  manpages-dev rpcsvc-proto xz-utils
+Suggested packages:
+  binutils-doc gprofng-gui bzip2-doc cpp-doc gcc-13-locales cpp-13-doc
+  debsig-verify debian-keyring g++-multilib g++-13-multilib gcc-13-doc
+  gcc-multilib autoconf automake libtool flex bison gdb gcc-doc
+  gcc-13-multilib gdb-x86-64-linux-gnu glibc-doc locales libnss-nis
+  libnss-nisplus bzr libgd-tools libheif-plugin-x265 libheif-plugin-ffmpegdec
+  libheif-plugin-jpegdec libheif-plugin-jpegenc libheif-plugin-j2kdec
+  libheif-plugin-j2kenc libheif-plugin-rav1e libheif-plugin-svtenc
+  libstdc++-13-doc make-doc man-browser
+The following NEW packages will be installed:
+  binutils binutils-common binutils-x86-64-linux-gnu build-essential bzip2 cpp
+  cpp-13 cpp-13-x86-64-linux-gnu cpp-x86-64-linux-gnu dpkg-dev fakeroot g++
+  g++-13 g++-13-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-13 gcc-13-base
+  gcc-13-x86-64-linux-gnu gcc-x86-64-linux-gnu libalgorithm-diff-perl
+  libalgorithm-diff-xs-perl libalgorithm-merge-perl libaom3 libasan8
+  libatomic1 libbinutils libc-dev-bin libc-devtools libc6-dev libcc1-0
+  libcrypt-dev libctf-nobfd0 libctf0 libde265-0 libdeflate0 libdpkg-perl
+  libfakeroot libfile-fcntllock-perl libgcc-13-dev libgd3 libgomp1 libgprofng0
+  libheif-plugin-aomdec libheif-plugin-aomenc libheif-plugin-libde265 libheif1
+  libhwasan0 libisl23 libitm1 libjansson4 libjbig0 libjpeg-turbo8 libjpeg8
+  liblerc4 liblocale-gettext-perl liblsan0 libmpc3 libmpfr6 libquadmath0
+  libsframe1 libsharpyuv0 libstdc++-13-dev libtiff6 libtsan2 libubsan1
+  libwebp7 libxpm4 linux-libc-dev lto-disabled-list make manpages manpages-dev
+  rpcsvc-proto xz-utils
+The following packages will be upgraded:
+  dpkg gcc-14-base libc-bin libc6 libgcc-s1 liblzma5 libstdc++6
+7 upgraded, 75 newly installed, 0 to remove and 67 not upgraded.
+Need to get 85.1 MB of archives.
+After this operation, 268 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 dpkg amd64 1.22.6ubuntu6.5 [1282 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-14-base amd64 14.2.0-4ubuntu2~24.04.1 [51.0 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgcc-s1 amd64 14.2.0-4ubuntu2~24.04.1 [78.4 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libstdc++6 amd64 14.2.0-4ubuntu2~24.04.1 [792 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc6 amd64 2.39-0ubuntu8.7 [3263 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc-bin amd64 2.39-0ubuntu8.7 [682 kB]
+Get:7 http://archive.ubuntu.com/ubuntu noble/main amd64 liblocale-gettext-perl amd64 1.07-6ubuntu5 [15.8 kB]
+Get:8 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 liblzma5 amd64 5.6.1+really5.4.5-1ubuntu0.2 [127 kB]
+Get:9 http://archive.ubuntu.com/ubuntu noble/main amd64 libjansson4 amd64 2.14-2build2 [32.8 kB]
+Get:10 http://archive.ubuntu.com/ubuntu noble/main amd64 manpages all 6.7-2 [1384 kB]
+Get:11 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 xz-utils amd64 5.6.1+really5.4.5-1ubuntu0.2 [267 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 binutils-common amd64 2.42-4ubuntu2.10 [240 kB]
+Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libsframe1 amd64 2.42-4ubuntu2.10 [15.7 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libbinutils amd64 2.42-4ubuntu2.10 [577 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libctf-nobfd0 amd64 2.42-4ubuntu2.10 [98.0 kB]
+Get:16 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libctf0 amd64 2.42-4ubuntu2.10 [94.5 kB]
+Get:17 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgprofng0 amd64 2.42-4ubuntu2.10 [849 kB]
+Get:18 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 binutils-x86-64-linux-gnu amd64 2.42-4ubuntu2.10 [2463 kB]
+Get:19 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 binutils amd64 2.42-4ubuntu2.10 [18.2 kB]
+Get:20 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc-dev-bin amd64 2.39-0ubuntu8.7 [20.4 kB]
+Get:21 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 linux-libc-dev amd64 6.8.0-106.106 [2095 kB]
+Get:22 http://archive.ubuntu.com/ubuntu noble/main amd64 libcrypt-dev amd64 1:4.4.36-4build1 [112 kB]
+Get:23 http://archive.ubuntu.com/ubuntu noble/main amd64 rpcsvc-proto amd64 1.4.2-0ubuntu7 [67.4 kB]
+Get:24 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc6-dev amd64 2.39-0ubuntu8.7 [2124 kB]
+Get:25 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13-base amd64 13.3.0-6ubuntu2~24.04.1 [51.6 kB]
+Get:26 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libisl23 amd64 0.26-3build1.1 [680 kB]
+Get:27 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpfr6 amd64 4.2.1-1build1.1 [353 kB]
+Get:28 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpc3 amd64 1.3.1-1build1.1 [54.6 kB]
+Get:29 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 cpp-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [10.7 MB]
+Get:30 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 cpp-13 amd64 13.3.0-6ubuntu2~24.04.1 [1042 B]
+Get:31 http://archive.ubuntu.com/ubuntu noble/main amd64 cpp-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [5326 B]
+Get:32 http://archive.ubuntu.com/ubuntu noble/main amd64 cpp amd64 4:13.2.0-7ubuntu1 [22.4 kB]
+Get:33 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libcc1-0 amd64 14.2.0-4ubuntu2~24.04.1 [48.0 kB]
+Get:34 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgomp1 amd64 14.2.0-4ubuntu2~24.04.1 [148 kB]
+Get:35 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libitm1 amd64 14.2.0-4ubuntu2~24.04.1 [29.7 kB]
+Get:36 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libatomic1 amd64 14.2.0-4ubuntu2~24.04.1 [10.5 kB]
+Get:37 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libasan8 amd64 14.2.0-4ubuntu2~24.04.1 [3027 kB]
+Get:38 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 liblsan0 amd64 14.2.0-4ubuntu2~24.04.1 [1322 kB]
+Get:39 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libtsan2 amd64 14.2.0-4ubuntu2~24.04.1 [2772 kB]
+Get:40 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libubsan1 amd64 14.2.0-4ubuntu2~24.04.1 [1184 kB]
+Get:41 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libhwasan0 amd64 14.2.0-4ubuntu2~24.04.1 [1641 kB]
+Get:42 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libquadmath0 amd64 14.2.0-4ubuntu2~24.04.1 [153 kB]
+Get:43 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgcc-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [2681 kB]
+Get:44 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [21.1 MB]
+Get:45 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13 amd64 13.3.0-6ubuntu2~24.04.1 [494 kB]
+Get:46 http://archive.ubuntu.com/ubuntu noble/main amd64 gcc-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [1212 B]
+Get:47 http://archive.ubuntu.com/ubuntu noble/main amd64 gcc amd64 4:13.2.0-7ubuntu1 [5018 B]
+Get:48 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libstdc++-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [2420 kB]
+Get:49 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [12.2 MB]
+Get:50 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13 amd64 13.3.0-6ubuntu2~24.04.1 [16.0 kB]
+Get:51 http://archive.ubuntu.com/ubuntu noble/main amd64 g++-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [964 B]
+Get:52 http://archive.ubuntu.com/ubuntu noble/main amd64 g++ amd64 4:13.2.0-7ubuntu1 [1100 B]
+Get:53 http://archive.ubuntu.com/ubuntu noble/main amd64 make amd64 4.3-4.1build2 [180 kB]
+Get:54 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libdpkg-perl all 1.22.6ubuntu6.5 [269 kB]
+Get:55 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 bzip2 amd64 1.0.8-5.1build0.1 [34.5 kB]
+Get:56 http://archive.ubuntu.com/ubuntu noble/main amd64 lto-disabled-list all 47 [12.4 kB]
+Get:57 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 dpkg-dev all 1.22.6ubuntu6.5 [1074 kB]
+Get:58 http://archive.ubuntu.com/ubuntu noble/main amd64 build-essential amd64 12.10ubuntu1 [4928 B]
+Get:59 http://archive.ubuntu.com/ubuntu noble/main amd64 libfakeroot amd64 1.33-1 [32.4 kB]
+Get:60 http://archive.ubuntu.com/ubuntu noble/main amd64 fakeroot amd64 1.33-1 [67.2 kB]
+Get:61 http://archive.ubuntu.com/ubuntu noble/main amd64 libalgorithm-diff-perl all 1.201-1 [41.8 kB]
+Get:62 http://archive.ubuntu.com/ubuntu noble/main amd64 libalgorithm-diff-xs-perl amd64 0.04-8build3 [11.2 kB]
+Get:63 http://archive.ubuntu.com/ubuntu noble/main amd64 libalgorithm-merge-perl all 0.08-5 [11.4 kB]
+Get:64 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libaom3 amd64 3.8.2-2ubuntu0.1 [1941 kB]
+Get:65 http://archive.ubuntu.com/ubuntu noble/main amd64 libsharpyuv0 amd64 1.3.2-0.4build3 [15.8 kB]
+Get:66 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libheif-plugin-aomdec amd64 1.17.6-1ubuntu4.2 [10.6 kB]
+Get:67 http://archive.ubuntu.com/ubuntu noble/main amd64 libde265-0 amd64 1.0.15-1build3 [166 kB]
+Get:68 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libheif-plugin-libde265 amd64 1.17.6-1ubuntu4.2 [8174 B]
+Get:69 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libheif1 amd64 1.17.6-1ubuntu4.2 [276 kB]
+Get:70 http://archive.ubuntu.com/ubuntu noble/main amd64 libjpeg-turbo8 amd64 2.1.5-2ubuntu2 [150 kB]
+Get:71 http://archive.ubuntu.com/ubuntu noble/main amd64 libjpeg8 amd64 8c-2ubuntu11 [2148 B]
+Get:72 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libdeflate0 amd64 1.19-1build1.1 [43.9 kB]
+Get:73 http://archive.ubuntu.com/ubuntu noble/main amd64 libjbig0 amd64 2.1-6.1ubuntu2 [29.7 kB]
+Get:74 http://archive.ubuntu.com/ubuntu noble/main amd64 liblerc4 amd64 4.0.0+ds-4ubuntu2 [179 kB]
+Get:75 http://archive.ubuntu.com/ubuntu noble/main amd64 libwebp7 amd64 1.3.2-0.4build3 [230 kB]
+Get:76 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libtiff6 amd64 4.5.1+git230720-4ubuntu2.4 [199 kB]
+Get:77 http://archive.ubuntu.com/ubuntu noble/main amd64 libxpm4 amd64 1:3.5.17-1build2 [36.5 kB]
+Get:78 http://archive.ubuntu.com/ubuntu noble/main amd64 libgd3 amd64 2.3.3-9ubuntu5 [128 kB]
+Get:79 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc-devtools amd64 2.39-0ubuntu8.7 [29.3 kB]
+Get:80 http://archive.ubuntu.com/ubuntu noble/main amd64 libfile-fcntllock-perl amd64 0.22-4ubuntu5 [30.7 kB]
+Get:81 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libheif-plugin-aomenc amd64 1.17.6-1ubuntu4.2 [14.7 kB]
+Get:82 http://archive.ubuntu.com/ubuntu noble/main amd64 manpages-dev all 6.7-2 [2013 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 85.1 MB in 17s (5001 kB/s)
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10401 files and directories currently installed.)
+Preparing to unpack .../dpkg_1.22.6ubuntu6.5_amd64.deb ...
+Unpacking dpkg (1.22.6ubuntu6.5) over (1.22.6ubuntu6.1) ...
+Setting up dpkg (1.22.6ubuntu6.5) ...
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10401 files and directories currently installed.)
+Preparing to unpack .../gcc-14-base_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking gcc-14-base:amd64 (14.2.0-4ubuntu2~24.04.1) over (14.2.0-4ubuntu2~24.04) ...
+Setting up gcc-14-base:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10401 files and directories currently installed.)
+Preparing to unpack .../libgcc-s1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libgcc-s1:amd64 (14.2.0-4ubuntu2~24.04.1) over (14.2.0-4ubuntu2~24.04) ...
+Setting up libgcc-s1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10401 files and directories currently installed.)
+Preparing to unpack .../libstdc++6_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libstdc++6:amd64 (14.2.0-4ubuntu2~24.04.1) over (14.2.0-4ubuntu2~24.04) ...
+Setting up libstdc++6:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10401 files and directories currently installed.)
+Preparing to unpack .../libc6_2.39-0ubuntu8.7_amd64.deb ...
+Unpacking libc6:amd64 (2.39-0ubuntu8.7) over (2.39-0ubuntu8.3) ...
+Setting up libc6:amd64 (2.39-0ubuntu8.7) ...
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10400 files and directories currently installed.)
+Preparing to unpack .../libc-bin_2.39-0ubuntu8.7_amd64.deb ...
+Unpacking libc-bin (2.39-0ubuntu8.7) over (2.39-0ubuntu8.3) ...
+Setting up libc-bin (2.39-0ubuntu8.7) ...
+Selecting previously unselected package liblocale-gettext-perl.
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10399 files and directories currently installed.)
+Preparing to unpack .../liblocale-gettext-perl_1.07-6ubuntu5_amd64.deb ...
+Unpacking liblocale-gettext-perl (1.07-6ubuntu5) ...
+Preparing to unpack .../liblzma5_5.6.1+really5.4.5-1ubuntu0.2_amd64.deb ...
+Unpacking liblzma5:amd64 (5.6.1+really5.4.5-1ubuntu0.2) over (5.6.1+really5.4.5-1build0.1) ...
+Setting up liblzma5:amd64 (5.6.1+really5.4.5-1ubuntu0.2) ...
+Selecting previously unselected package libjansson4:amd64.
+(Reading database ... 
+(Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+(Reading database ... 75%
+(Reading database ... 80%
+(Reading database ... 85%
+(Reading database ... 90%
+(Reading database ... 95%
+(Reading database ... 100%
+(Reading database ... 10413 files and directories currently installed.)
+Preparing to unpack .../00-libjansson4_2.14-2build2_amd64.deb ...
+Unpacking libjansson4:amd64 (2.14-2build2) ...
+Selecting previously unselected package manpages.
+Preparing to unpack .../01-manpages_6.7-2_all.deb ...
+Unpacking manpages (6.7-2) ...
+Selecting previously unselected package xz-utils.
+Preparing to unpack .../02-xz-utils_5.6.1+really5.4.5-1ubuntu0.2_amd64.deb ...
+Unpacking xz-utils (5.6.1+really5.4.5-1ubuntu0.2) ...
+Selecting previously unselected package binutils-common:amd64.
+Preparing to unpack .../03-binutils-common_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking binutils-common:amd64 (2.42-4ubuntu2.10) ...
+Selecting previously unselected package libsframe1:amd64.
+Preparing to unpack .../04-libsframe1_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking libsframe1:amd64 (2.42-4ubuntu2.10) ...
+Selecting previously unselected package libbinutils:amd64.
+Preparing to unpack .../05-libbinutils_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking libbinutils:amd64 (2.42-4ubuntu2.10) ...
+Selecting previously unselected package libctf-nobfd0:amd64.
+Preparing to unpack .../06-libctf-nobfd0_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking libctf-nobfd0:amd64 (2.42-4ubuntu2.10) ...
+Selecting previously unselected package libctf0:amd64.
+Preparing to unpack .../07-libctf0_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking libctf0:amd64 (2.42-4ubuntu2.10) ...
+Selecting previously unselected package libgprofng0:amd64.
+Preparing to unpack .../08-libgprofng0_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking libgprofng0:amd64 (2.42-4ubuntu2.10) ...
+Selecting previously unselected package binutils-x86-64-linux-gnu.
+Preparing to unpack .../09-binutils-x86-64-linux-gnu_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking binutils-x86-64-linux-gnu (2.42-4ubuntu2.10) ...
+Selecting previously unselected package binutils.
+Preparing to unpack .../10-binutils_2.42-4ubuntu2.10_amd64.deb ...
+Unpacking binutils (2.42-4ubuntu2.10) ...
+Selecting previously unselected package libc-dev-bin.
+Preparing to unpack .../11-libc-dev-bin_2.39-0ubuntu8.7_amd64.deb ...
+Unpacking libc-dev-bin (2.39-0ubuntu8.7) ...
+Selecting previously unselected package linux-libc-dev:amd64.
+Preparing to unpack .../12-linux-libc-dev_6.8.0-106.106_amd64.deb ...
+Unpacking linux-libc-dev:amd64 (6.8.0-106.106) ...
+Selecting previously unselected package libcrypt-dev:amd64.
+Preparing to unpack .../13-libcrypt-dev_1%3a4.4.36-4build1_amd64.deb ...
+Unpacking libcrypt-dev:amd64 (1:4.4.36-4build1) ...
+Selecting previously unselected package rpcsvc-proto.
+Preparing to unpack .../14-rpcsvc-proto_1.4.2-0ubuntu7_amd64.deb ...
+Unpacking rpcsvc-proto (1.4.2-0ubuntu7) ...
+Selecting previously unselected package libc6-dev:amd64.
+Preparing to unpack .../15-libc6-dev_2.39-0ubuntu8.7_amd64.deb ...
+Unpacking libc6-dev:amd64 (2.39-0ubuntu8.7) ...
+Selecting previously unselected package gcc-13-base:amd64.
+Preparing to unpack .../16-gcc-13-base_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking gcc-13-base:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package libisl23:amd64.
+Preparing to unpack .../17-libisl23_0.26-3build1.1_amd64.deb ...
+Unpacking libisl23:amd64 (0.26-3build1.1) ...
+Selecting previously unselected package libmpfr6:amd64.
+Preparing to unpack .../18-libmpfr6_4.2.1-1build1.1_amd64.deb ...
+Unpacking libmpfr6:amd64 (4.2.1-1build1.1) ...
+Selecting previously unselected package libmpc3:amd64.
+Preparing to unpack .../19-libmpc3_1.3.1-1build1.1_amd64.deb ...
+Unpacking libmpc3:amd64 (1.3.1-1build1.1) ...
+Selecting previously unselected package cpp-13-x86-64-linux-gnu.
+Preparing to unpack .../20-cpp-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking cpp-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package cpp-13.
+Preparing to unpack .../21-cpp-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking cpp-13 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package cpp-x86-64-linux-gnu.
+Preparing to unpack .../22-cpp-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking cpp-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package cpp.
+Preparing to unpack .../23-cpp_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking cpp (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package libcc1-0:amd64.
+Preparing to unpack .../24-libcc1-0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libcc1-0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libgomp1:amd64.
+Preparing to unpack .../25-libgomp1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libgomp1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libitm1:amd64.
+Preparing to unpack .../26-libitm1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libitm1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libatomic1:amd64.
+Preparing to unpack .../27-libatomic1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libatomic1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libasan8:amd64.
+Preparing to unpack .../28-libasan8_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libasan8:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package liblsan0:amd64.
+Preparing to unpack .../29-liblsan0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking liblsan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libtsan2:amd64.
+Preparing to unpack .../30-libtsan2_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libtsan2:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libubsan1:amd64.
+Preparing to unpack .../31-libubsan1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libubsan1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libhwasan0:amd64.
+Preparing to unpack .../32-libhwasan0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libhwasan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libquadmath0:amd64.
+Preparing to unpack .../33-libquadmath0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+Unpacking libquadmath0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Selecting previously unselected package libgcc-13-dev:amd64.
+Preparing to unpack .../34-libgcc-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking libgcc-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package gcc-13-x86-64-linux-gnu.
+Preparing to unpack .../35-gcc-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking gcc-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package gcc-13.
+Preparing to unpack .../36-gcc-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking gcc-13 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package gcc-x86-64-linux-gnu.
+Preparing to unpack .../37-gcc-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking gcc-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package gcc.
+Preparing to unpack .../38-gcc_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking gcc (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package libstdc++-13-dev:amd64.
+Preparing to unpack .../39-libstdc++-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-13-x86-64-linux-gnu.
+Preparing to unpack .../40-g++-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-13.
+Preparing to unpack .../41-g++-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+Unpacking g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+Selecting previously unselected package g++-x86-64-linux-gnu.
+Preparing to unpack .../42-g++-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package g++.
+Preparing to unpack .../43-g++_4%3a13.2.0-7ubuntu1_amd64.deb ...
+Unpacking g++ (4:13.2.0-7ubuntu1) ...
+Selecting previously unselected package make.
+Preparing to unpack .../44-make_4.3-4.1build2_amd64.deb ...
+Unpacking make (4.3-4.1build2) ...
+Selecting previously unselected package libdpkg-perl.
+Preparing to unpack .../45-libdpkg-perl_1.22.6ubuntu6.5_all.deb ...
+Unpacking libdpkg-perl (1.22.6ubuntu6.5) ...
+Selecting previously unselected package bzip2.
+Preparing to unpack .../46-bzip2_1.0.8-5.1build0.1_amd64.deb ...
+Unpacking bzip2 (1.0.8-5.1build0.1) ...
+Selecting previously unselected package lto-disabled-list.
+Preparing to unpack .../47-lto-disabled-list_47_all.deb ...
+Unpacking lto-disabled-list (47) ...
+Selecting previously unselected package dpkg-dev.
+Preparing to unpack .../48-dpkg-dev_1.22.6ubuntu6.5_all.deb ...
+Unpacking dpkg-dev (1.22.6ubuntu6.5) ...
+Selecting previously unselected package build-essential.
+Preparing to unpack .../49-build-essential_12.10ubuntu1_amd64.deb ...
+Unpacking build-essential (12.10ubuntu1) ...
+Selecting previously unselected package libfakeroot:amd64.
+Preparing to unpack .../50-libfakeroot_1.33-1_amd64.deb ...
+Unpacking libfakeroot:amd64 (1.33-1) ...
+Selecting previously unselected package fakeroot.
+Preparing to unpack .../51-fakeroot_1.33-1_amd64.deb ...
+Unpacking fakeroot (1.33-1) ...
+Selecting previously unselected package libalgorithm-diff-perl.
+Preparing to unpack .../52-libalgorithm-diff-perl_1.201-1_all.deb ...
+Unpacking libalgorithm-diff-perl (1.201-1) ...
+Selecting previously unselected package libalgorithm-diff-xs-perl:amd64.
+Preparing to unpack .../53-libalgorithm-diff-xs-perl_0.04-8build3_amd64.deb ...
+Unpacking libalgorithm-diff-xs-perl:amd64 (0.04-8build3) ...
+Selecting previously unselected package libalgorithm-merge-perl.
+Preparing to unpack .../54-libalgorithm-merge-perl_0.08-5_all.deb ...
+Unpacking libalgorithm-merge-perl (0.08-5) ...
+Selecting previously unselected package libaom3:amd64.
+Preparing to unpack .../55-libaom3_3.8.2-2ubuntu0.1_amd64.deb ...
+Unpacking libaom3:amd64 (3.8.2-2ubuntu0.1) ...
+Selecting previously unselected package libsharpyuv0:amd64.
+Preparing to unpack .../56-libsharpyuv0_1.3.2-0.4build3_amd64.deb ...
+Unpacking libsharpyuv0:amd64 (1.3.2-0.4build3) ...
+Selecting previously unselected package libheif-plugin-aomdec:amd64.
+Preparing to unpack .../57-libheif-plugin-aomdec_1.17.6-1ubuntu4.2_amd64.deb ...
+Unpacking libheif-plugin-aomdec:amd64 (1.17.6-1ubuntu4.2) ...
+Selecting previously unselected package libde265-0:amd64.
+Preparing to unpack .../58-libde265-0_1.0.15-1build3_amd64.deb ...
+Unpacking libde265-0:amd64 (1.0.15-1build3) ...
+Selecting previously unselected package libheif-plugin-libde265:amd64.
+Preparing to unpack .../59-libheif-plugin-libde265_1.17.6-1ubuntu4.2_amd64.deb ...
+Unpacking libheif-plugin-libde265:amd64 (1.17.6-1ubuntu4.2) ...
+Selecting previously unselected package libheif1:amd64.
+Preparing to unpack .../60-libheif1_1.17.6-1ubuntu4.2_amd64.deb ...
+Unpacking libheif1:amd64 (1.17.6-1ubuntu4.2) ...
+Selecting previously unselected package libjpeg-turbo8:amd64.
+Preparing to unpack .../61-libjpeg-turbo8_2.1.5-2ubuntu2_amd64.deb ...
+Unpacking libjpeg-turbo8:amd64 (2.1.5-2ubuntu2) ...
+Selecting previously unselected package libjpeg8:amd64.
+Preparing to unpack .../62-libjpeg8_8c-2ubuntu11_amd64.deb ...
+Unpacking libjpeg8:amd64 (8c-2ubuntu11) ...
+Selecting previously unselected package libdeflate0:amd64.
+Preparing to unpack .../63-libdeflate0_1.19-1build1.1_amd64.deb ...
+Unpacking libdeflate0:amd64 (1.19-1build1.1) ...
+Selecting previously unselected package libjbig0:amd64.
+Preparing to unpack .../64-libjbig0_2.1-6.1ubuntu2_amd64.deb ...
+Unpacking libjbig0:amd64 (2.1-6.1ubuntu2) ...
+Selecting previously unselected package liblerc4:amd64.
+Preparing to unpack .../65-liblerc4_4.0.0+ds-4ubuntu2_amd64.deb ...
+Unpacking liblerc4:amd64 (4.0.0+ds-4ubuntu2) ...
+Selecting previously unselected package libwebp7:amd64.
+Preparing to unpack .../66-libwebp7_1.3.2-0.4build3_amd64.deb ...
+Unpacking libwebp7:amd64 (1.3.2-0.4build3) ...
+Selecting previously unselected package libtiff6:amd64.
+Preparing to unpack .../67-libtiff6_4.5.1+git230720-4ubuntu2.4_amd64.deb ...
+Unpacking libtiff6:amd64 (4.5.1+git230720-4ubuntu2.4) ...
+Selecting previously unselected package libxpm4:amd64.
+Preparing to unpack .../68-libxpm4_1%3a3.5.17-1build2_amd64.deb ...
+Unpacking libxpm4:amd64 (1:3.5.17-1build2) ...
+Selecting previously unselected package libgd3:amd64.
+Preparing to unpack .../69-libgd3_2.3.3-9ubuntu5_amd64.deb ...
+Unpacking libgd3:amd64 (2.3.3-9ubuntu5) ...
+Selecting previously unselected package libc-devtools.
+Preparing to unpack .../70-libc-devtools_2.39-0ubuntu8.7_amd64.deb ...
+Unpacking libc-devtools (2.39-0ubuntu8.7) ...
+Selecting previously unselected package libfile-fcntllock-perl.
+Preparing to unpack .../71-libfile-fcntllock-perl_0.22-4ubuntu5_amd64.deb ...
+Unpacking libfile-fcntllock-perl (0.22-4ubuntu5) ...
+Selecting previously unselected package libheif-plugin-aomenc:amd64.
+Preparing to unpack .../72-libheif-plugin-aomenc_1.17.6-1ubuntu4.2_amd64.deb ...
+Unpacking libheif-plugin-aomenc:amd64 (1.17.6-1ubuntu4.2) ...
+Selecting previously unselected package manpages-dev.
+Preparing to unpack .../73-manpages-dev_6.7-2_all.deb ...
+Unpacking manpages-dev (6.7-2) ...
+Setting up libsharpyuv0:amd64 (1.3.2-0.4build3) ...
+Setting up libaom3:amd64 (3.8.2-2ubuntu0.1) ...
+Setting up lto-disabled-list (47) ...
+Setting up liblerc4:amd64 (4.0.0+ds-4ubuntu2) ...
+Setting up libxpm4:amd64 (1:3.5.17-1build2) ...
+Setting up libfile-fcntllock-perl (0.22-4ubuntu5) ...
+Setting up libalgorithm-diff-perl (1.201-1) ...
+Setting up manpages (6.7-2) ...
+Setting up binutils-common:amd64 (2.42-4ubuntu2.10) ...
+Setting up libdeflate0:amd64 (1.19-1build1.1) ...
+Setting up linux-libc-dev:amd64 (6.8.0-106.106) ...
+Setting up libctf-nobfd0:amd64 (2.42-4ubuntu2.10) ...
+Setting up libgomp1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up bzip2 (1.0.8-5.1build0.1) ...
+Setting up libjbig0:amd64 (2.1-6.1ubuntu2) ...
+Setting up libsframe1:amd64 (2.42-4ubuntu2.10) ...
+Setting up libfakeroot:amd64 (1.33-1) ...
+Setting up libjansson4:amd64 (2.14-2build2) ...
+Setting up fakeroot (1.33-1) ...
+update-alternatives: using /usr/bin/fakeroot-sysv to provide /usr/bin/fakeroot (fakeroot) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/fakeroot.1.gz because associated file /usr/share/man/man1/fakeroot-sysv.1.gz (of link group fakeroot) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/faked.1.gz because associated file /usr/share/man/man1/faked-sysv.1.gz (of link group fakeroot) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/es/man1/fakeroot.1.gz because associated file /usr/share/man/es/man1/fakeroot-sysv.1.gz (of link group fakeroot) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/es/man1/faked.1.gz because associated file /usr/share/man/es/man1/faked-sysv.1.gz (of link group fakeroot) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/fakeroot.1.gz because associated file /usr/share/man/fr/man1/fakeroot-sysv.1.gz (of link group fakeroot) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/faked.1.gz because associated file /usr/share/man/fr/man1/faked-sysv.1.gz (of link group fakeroot) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/sv/man1/fakeroot.1.gz because associated file /usr/share/man/sv/man1/fakeroot-sysv.1.gz (of link group fakeroot) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/sv/man1/faked.1.gz because associated file /usr/share/man/sv/man1/faked-sysv.1.gz (of link group fakeroot) doesn't exist
+Setting up rpcsvc-proto (1.4.2-0ubuntu7) ...
+Setting up gcc-13-base:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up make (4.3-4.1build2) ...
+Setting up libmpfr6:amd64 (4.2.1-1build1.1) ...
+Setting up xz-utils (5.6.1+really5.4.5-1ubuntu0.2) ...
+update-alternatives: using /usr/bin/xz to provide /usr/bin/lzma (lzma) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzma.1.gz because associated file /usr/share/man/man1/xz.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/unlzma.1.gz because associated file /usr/share/man/man1/unxz.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzcat.1.gz because associated file /usr/share/man/man1/xzcat.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzmore.1.gz because associated file /usr/share/man/man1/xzmore.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzless.1.gz because associated file /usr/share/man/man1/xzless.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzdiff.1.gz because associated file /usr/share/man/man1/xzdiff.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzcmp.1.gz because associated file /usr/share/man/man1/xzcmp.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzgrep.1.gz because associated file /usr/share/man/man1/xzgrep.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzegrep.1.gz because associated file /usr/share/man/man1/xzegrep.1.gz (of link group lzma) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/lzfgrep.1.gz because associated file /usr/share/man/man1/xzfgrep.1.gz (of link group lzma) doesn't exist
+Setting up libquadmath0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libmpc3:amd64 (1.3.1-1build1.1) ...
+Setting up libatomic1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libjpeg-turbo8:amd64 (2.1.5-2ubuntu2) ...
+Setting up libdpkg-perl (1.22.6ubuntu6.5) ...
+Setting up libwebp7:amd64 (1.3.2-0.4build3) ...
+Setting up libubsan1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libhwasan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libcrypt-dev:amd64 (1:4.4.36-4build1) ...
+Setting up libasan8:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libtsan2:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libbinutils:amd64 (2.42-4ubuntu2.10) ...
+Setting up libisl23:amd64 (0.26-3build1.1) ...
+Setting up libde265-0:amd64 (1.0.15-1build3) ...
+Setting up libc-dev-bin (2.39-0ubuntu8.7) ...
+Setting up libalgorithm-diff-xs-perl:amd64 (0.04-8build3) ...
+Setting up libcc1-0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up liblocale-gettext-perl (1.07-6ubuntu5) ...
+Setting up liblsan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libitm1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+Setting up libalgorithm-merge-perl (0.08-5) ...
+Setting up libctf0:amd64 (2.42-4ubuntu2.10) ...
+Setting up libjpeg8:amd64 (8c-2ubuntu11) ...
+Setting up manpages-dev (6.7-2) ...
+Setting up cpp-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Setting up libgprofng0:amd64 (2.42-4ubuntu2.10) ...
+Setting up libgcc-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up libtiff6:amd64 (4.5.1+git230720-4ubuntu2.4) ...
+Setting up libc6-dev:amd64 (2.39-0ubuntu8.7) ...
+Setting up libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up binutils-x86-64-linux-gnu (2.42-4ubuntu2.10) ...
+Setting up cpp-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Setting up cpp-13 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up gcc-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Setting up binutils (2.42-4ubuntu2.10) ...
+Setting up dpkg-dev (1.22.6ubuntu6.5) ...
+Setting up gcc-13 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up cpp (4:13.2.0-7ubuntu1) ...
+Setting up g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+Setting up gcc-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Setting up gcc (4:13.2.0-7ubuntu1) ...
+Setting up g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+Setting up g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+Setting up g++ (4:13.2.0-7ubuntu1) ...
+update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/c++.1.gz because associated file /usr/share/man/man1/g++.1.gz (of link group c++) doesn't exist
+Setting up build-essential (12.10ubuntu1) ...
+Setting up libheif1:amd64 (1.17.6-1ubuntu4.2) ...
+Setting up libgd3:amd64 (2.3.3-9ubuntu5) ...
+Setting up libc-devtools (2.39-0ubuntu8.7) ...
+Setting up libheif-plugin-aomdec:amd64 (1.17.6-1ubuntu4.2) ...
+Setting up libheif-plugin-libde265:amd64 (1.17.6-1ubuntu4.2) ...
+Setting up libheif-plugin-aomenc:amd64 (1.17.6-1ubuntu4.2) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.7) ...
+=== BOOTSTRAP: installDevelopmentGems ===
+JRuby linked: /tmp/bin/jruby -> /home/logstash/vendor/jruby/bin/jruby
+JRUBY_AVAILABLE=1
+Detected Ruby 3.1.4, using Bundler 2.5.22
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :buildSrc:compileJava NO-SOURCE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:processResources NO-SOURCE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :assemble UP-TO-DATE
+> Task :buildCustomJRuby SKIPPED
+> Task :installCustomJRuby SKIPPED
+
+> Task :downloadJRuby UP-TO-DATE
+Download https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.4.8.0/jruby-dist-9.4.8.0-bin.tar.gz
+
+> Task :verifyFile UP-TO-DATE
+> Task :downloadAndInstallJRuby UP-TO-DATE
+> Task :benchmark-cli:compileJava UP-TO-DATE
+> Task :benchmark-cli:processResources UP-TO-DATE
+> Task :benchmark-cli:classes UP-TO-DATE
+> Task :benchmark-cli:jar UP-TO-DATE
+> Task :benchmark-cli:shadowJar UP-TO-DATE
+> Task :benchmark-cli:assemble UP-TO-DATE
+> Task :dependencies-report:compileJava UP-TO-DATE
+> Task :dependencies-report:processResources UP-TO-DATE
+> Task :dependencies-report:classes UP-TO-DATE
+> Task :dependencies-report:jar UP-TO-DATE
+> Task :dependencies-report:shadowJar UP-TO-DATE
+> Task :dependencies-report:assemble UP-TO-DATE
+> Task :jvm-options-parser:compileJava UP-TO-DATE
+> Task :jvm-options-parser:processResources NO-SOURCE
+> Task :jvm-options-parser:classes UP-TO-DATE
+> Task :jvm-options-parser:jar UP-TO-DATE
+> Task :jvm-options-parser:assemble UP-TO-DATE
+> Task :logstash-core:compileJava UP-TO-DATE
+> Task :markAliasDefinitions UP-TO-DATE
+> Task :copyPluginAlias_java UP-TO-DATE
+> Task :copyPluginAlias_ruby UP-TO-DATE
+> Task :copyPluginAlias NO-SOURCE
+> Task :logstash-core:processResources UP-TO-DATE
+> Task :logstash-core:classes UP-TO-DATE
+> Task :logstash-core:jar UP-TO-DATE
+> Task :logstash-core:copyRuntimeLibs
+> Task :logstash-core:sourcesJar UP-TO-DATE
+> Task :logstash-core:copyGemjar
+> Task :logstash-core:javadoc UP-TO-DATE
+> Task :logstash-core:javadocJar UP-TO-DATE
+> Task :logstash-core:assemble
+> Task :logstash-core-benchmarks:compileJava UP-TO-DATE
+> Task :logstash-core-benchmarks:processResources UP-TO-DATE
+> Task :logstash-core-benchmarks:classes UP-TO-DATE
+> Task :logstash-core-benchmarks:jar UP-TO-DATE
+> Task :logstash-core-benchmarks:assemble UP-TO-DATE
+> Task :logstash-integration-tests:compileJava NO-SOURCE
+> Task :logstash-integration-tests:processResources NO-SOURCE
+> Task :logstash-integration-tests:classes UP-TO-DATE
+> Task :logstash-integration-tests:jar UP-TO-DATE
+> Task :logstash-integration-tests:assemble UP-TO-DATE
+> Task :logstash-xpack:compileJava NO-SOURCE
+> Task :logstash-xpack:processResources NO-SOURCE
+> Task :logstash-xpack:classes UP-TO-DATE
+> Task :logstash-xpack:jar UP-TO-DATE
+> Task :logstash-xpack:assemble UP-TO-DATE
+> Task :bootstrap
+
+> Task :installDevelopmentGems
+Skipping bundler install...
+Building logstash-core using gradle
+./gradlew assemble
+[plugin:install-development-dependencies] Installing development dependencies
+WARNING: A maven settings file already exist at /root/.m2/settings.xml, please review the content to make sure it includes your proxies configuration.
+Installing logstash-codec-plain, logstash-devutils, flores, cabin, webrick, webmock, rspec-collection_matchers, elasticsearch
+Preserving Gemfile gem options for plugin logstash-devutils
+Preserving Gemfile gem options for plugin flores
+Preserving Gemfile gem options for plugin webmock
+Installation successful
+ERROR: Something went wrong when installing logstash-codec-plain, logstash-filter-clone, logstash-filter-date, logstash-filter-drop, logstash-filter-geoip, logstash-filter-json, logstash-filter-mutate, logstash-filter-ruby, logstash-filter-xml, logstash-input-beats, logstash-input-generator, logstash-input-stdin, logstash-input-tcp, logstash-output-elasticsearch, logstash-output-file, logstash-output-null, logstash-output-stdout, message: certificate verify failed
+
+BUILD SUCCESSFUL in 1m 24s
+34 actionable tasks: 4 executed, 30 up-to-date
+installDevelopmentGems exit code: 0
+=== END BOOTSTRAP ===
+=== DEBUG: check ruby dev gems before tests ===
+drwxr-xr-x 10 root root 4096 Mar 22 07:39 prism-1.4.0
+drwxr-xr-x  6 root root  120 Mar 22 07:39 rubocop-1.75.1
+drwxr-xr-x  3 root root   69 Mar 22 07:39 rubocop-ast-1.43.0
+=== END DEBUG ===
+RUN /home/fix-run.sh: 2026-03-22 07:39:38
+patching file logstash-core/src/test/java/org/logstash/common/BufferedTokenizerExtTest.java
+patching file logstash-core/src/test/java/org/logstash/common/BufferedTokenizerExtWithDelimiterTest.java
+patching file logstash-core/src/test/java/org/logstash/common/BufferedTokenizerExtWithSizeLimitTest.java
+patching file .gitignore
+patching file logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :buildSrc:compileJava NO-SOURCE
+> Task :buildSrc:compileGroovy UP-TO-DATE
+> Task :buildSrc:processResources NO-SOURCE
+> Task :buildSrc:classes UP-TO-DATE
+> Task :buildSrc:jar UP-TO-DATE
+> Task :clean
+> Task :benchmark-cli:clean
+> Task :dependencies-report:clean
+> Task :jvm-options-parser:clean
+> Task :logstash-core:cleanGemjar UP-TO-DATE
+> Task :logstash-core:clean
+> Task :logstash-core-benchmarks:clean
+> Task :logstash-integration-tests:clean
+> Task :logstash-xpack:clean
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar
+> Task :compileTestJava NO-SOURCE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test NO-SOURCE
+> Task :benchmark-cli:compileJava
+> Task :benchmark-cli:processResources
+> Task :benchmark-cli:classes
+> Task :benchmark-cli:jar
+> Task :benchmark-cli:shadowJar
+> Task :benchmark-cli:compileTestJava
+> Task :benchmark-cli:processTestResources
+> Task :benchmark-cli:testClasses
+
+> Task :benchmark-cli:test
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+
+org.logstash.benchmark.cli.LsMetricsMonitorTest > parsesCpuUsage PASSED
+
+org.logstash.benchmark.cli.LsMetricsMonitorTest > parsesFilteredCount PASSED
+
+--------------------------------------------------------------------
+|  Results: SUCCESS (2 tests, 2 successes, 0 failures, 0 skipped)  |
+--------------------------------------------------------------------
+
+> Task :dependencies-report:compileJava
+> Task :dependencies-report:processResources
+> Task :dependencies-report:classes
+> Task :dependencies-report:jar
+> Task :dependencies-report:shadowJar
+> Task :dependencies-report:compileTestJava
+> Task :dependencies-report:processTestResources
+> Task :dependencies-report:testClasses
+
+> Task :dependencies-report:test
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithConflictingLicenses PASSED
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithUnacceptableLicenses STANDARD_OUT
+    Generated report with 16 dependencies (2 unknown or unacceptable licenses, 0 unknown or missing notices).
+
+    Add complying licenses (using the SPDX license ID from https://spdx.org/licenses) with URLs for the libraries listed below to tools/dependencies-report/src/main/resources/licenseMapping.csv:
+    "bundler:1.16.1"
+    "com.fasterxml.jackson.core:jackson-core:2.7.3"
+    The following 43 license mappings were specified but unused:
+    UNKNOWNgzip
+    UNKNOWNjls-grok
+    avl_tree
+    bundler
+    com.fasterxml.jackson.core:jackson-core
+    com.fasterxml.jackson.dataformat:jackson-dataformat-cbor
+    com.google.googlejavaformat:google-java-format
+    com.google.guava:guava
+    filewatch
+    gelfd
+    gmetric
+    jls-lumberjack
+    march_hare
+    method_source
+    metriks
+    numerizer
+    org.apache.logging.log4j:log4j-api
+    org.apache.logging.log4j:log4j-core
+    org.apache.logging.log4j:log4j-slf4j-impl
+    org.codehaus.janino:janino
+    org.eclipse.core:org.eclipse.core.commands
+    org.eclipse.core:org.eclipse.core.contenttype
+    org.eclipse.core:org.eclipse.core.expressions
+    org.eclipse.core:org.eclipse.core.filesystem
+    org.eclipse.core:org.eclipse.core.jobs
+    org.eclipse.core:org.eclipse.core.resources
+    org.eclipse.core:org.eclipse.core.runtime
+    org.eclipse.equinox:org.eclipse.equinox.app
+    org.eclipse.equinox:org.eclipse.equinox.common
+    org.eclipse.equinox:org.eclipse.equinox.preferences
+    org.eclipse.equinox:org.eclipse.equinox.registry
+    org.eclipse.jdt:org.eclipse.jdt.core
+    org.eclipse.osgi:org.eclipse.osgi
+    org.eclipse.text:org.eclipse.text
+    org.jruby:jruby-complete
+    org.slf4j:slf4j-api
+    rspec-sequencing
+    rubyzip
+    snappy-jars
+    snmp
+    stud
+    webhdfs
+    webrick
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithUnacceptableLicenses PASSED
+
+org.logstash.dependencies.ReportGeneratorTest > testSuccessfulReport STANDARD_OUT
+    Generated report with 16 dependencies (0 unknown or unacceptable licenses, 0 unknown or missing notices).
+
+    The following 41 license mappings were specified but unused:
+    UNKNOWNgzip
+    UNKNOWNjls-grok
+    avl_tree
+    com.fasterxml.jackson.dataformat:jackson-dataformat-cbor
+    com.google.googlejavaformat:google-java-format
+    com.google.guava:guava
+    filewatch
+    gelfd
+    gmetric
+    jls-lumberjack
+    march_hare
+    method_source
+    metriks
+    numerizer
+    org.apache.logging.log4j:log4j-api
+    org.apache.logging.log4j:log4j-core
+    org.apache.logging.log4j:log4j-slf4j-impl
+    org.codehaus.janino:janino
+    org.eclipse.core:org.eclipse.core.commands
+    org.eclipse.core:org.eclipse.core.contenttype
+    org.eclipse.core:org.eclipse.core.expressions
+    org.eclipse.core:org.eclipse.core.filesystem
+    org.eclipse.core:org.eclipse.core.jobs
+    org.eclipse.core:org.eclipse.core.resources
+    org.eclipse.core:org.eclipse.core.runtime
+    org.eclipse.equinox:org.eclipse.equinox.app
+    org.eclipse.equinox:org.eclipse.equinox.common
+    org.eclipse.equinox:org.eclipse.equinox.preferences
+    org.eclipse.equinox:org.eclipse.equinox.registry
+    org.eclipse.jdt:org.eclipse.jdt.core
+    org.eclipse.osgi:org.eclipse.osgi
+    org.eclipse.text:org.eclipse.text
+    org.jruby:jruby-complete
+    org.slf4j:slf4j-api
+    rspec-sequencing
+    rubyzip
+    snappy-jars
+    snmp
+    stud
+    webhdfs
+    webrick
+
+org.logstash.dependencies.ReportGeneratorTest > testSuccessfulReport PASSED
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithUnusedLicenses STANDARD_OUT
+    Generated report with 16 dependencies (0 unknown or unacceptable licenses, 0 unknown or missing notices).
+
+    The following 42 license mappings were specified but unused:
+    UNKNOWNgzip
+    UNKNOWNjls-grok
+    avl_tree
+    co.elastic:noNoticeDep
+    com.fasterxml.jackson.dataformat:jackson-dataformat-cbor
+    com.google.googlejavaformat:google-java-format
+    com.google.guava:guava
+    filewatch
+    gelfd
+    gmetric
+    jls-lumberjack
+    march_hare
+    method_source
+    metriks
+    numerizer
+    org.apache.logging.log4j:log4j-api
+    org.apache.logging.log4j:log4j-core
+    org.apache.logging.log4j:log4j-slf4j-impl
+    org.codehaus.janino:janino
+    org.eclipse.core:org.eclipse.core.commands
+    org.eclipse.core:org.eclipse.core.contenttype
+    org.eclipse.core:org.eclipse.core.expressions
+    org.eclipse.core:org.eclipse.core.filesystem
+    org.eclipse.core:org.eclipse.core.jobs
+    org.eclipse.core:org.eclipse.core.resources
+    org.eclipse.core:org.eclipse.core.runtime
+    org.eclipse.equinox:org.eclipse.equinox.app
+    org.eclipse.equinox:org.eclipse.equinox.common
+    org.eclipse.equinox:org.eclipse.equinox.preferences
+    org.eclipse.equinox:org.eclipse.equinox.registry
+    org.eclipse.jdt:org.eclipse.jdt.core
+    org.eclipse.osgi:org.eclipse.osgi
+    org.eclipse.text:org.eclipse.text
+    org.jruby:jruby-complete
+    org.slf4j:slf4j-api
+    rspec-sequencing
+    rubyzip
+    snappy-jars
+    snmp
+    stud
+    webhdfs
+    webrick
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithUnusedLicenses PASSED
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithMissingLicenses STANDARD_OUT
+    Generated report with 16 dependencies (2 unknown or unacceptable licenses, 0 unknown or missing notices).
+
+    Add complying licenses (using the SPDX license ID from https://spdx.org/licenses) with URLs for the libraries listed below to tools/dependencies-report/src/main/resources/licenseMapping.csv:
+    "commons-io:commons-io:2.5"
+    "filesize:0.0.4"
+    The following 43 license mappings were specified but unused:
+    UNKNOWNgzip
+    UNKNOWNjls-grok
+    avl_tree
+    com.fasterxml.jackson.dataformat:jackson-dataformat-cbor
+    com.google.googlejavaformat:google-java-format
+    com.google.guava:guava
+    commons-io:commons-io
+    filesize
+    filewatch
+    gelfd
+    gmetric
+    jls-lumberjack
+    march_hare
+    method_source
+    metriks
+    numerizer
+    org.apache.logging.log4j:log4j-api
+    org.apache.logging.log4j:log4j-core
+    org.apache.logging.log4j:log4j-slf4j-impl
+    org.codehaus.janino:janino
+    org.eclipse.core:org.eclipse.core.commands
+    org.eclipse.core:org.eclipse.core.contenttype
+    org.eclipse.core:org.eclipse.core.expressions
+    org.eclipse.core:org.eclipse.core.filesystem
+    org.eclipse.core:org.eclipse.core.jobs
+    org.eclipse.core:org.eclipse.core.resources
+    org.eclipse.core:org.eclipse.core.runtime
+    org.eclipse.equinox:org.eclipse.equinox.app
+    org.eclipse.equinox:org.eclipse.equinox.common
+    org.eclipse.equinox:org.eclipse.equinox.preferences
+    org.eclipse.equinox:org.eclipse.equinox.registry
+    org.eclipse.jdt:org.eclipse.jdt.core
+    org.eclipse.osgi:org.eclipse.osgi
+    org.eclipse.text:org.eclipse.text
+    org.jruby:jruby-complete
+    org.slf4j:slf4j-api
+    rspec-sequencing
+    rubyzip
+    snappy-jars
+    snmp
+    stud
+    webhdfs
+    webrick
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithMissingLicenses PASSED
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithMissingNotices STANDARD_OUT
+    Generated report with 13 dependencies (1 unknown or unacceptable licenses, 1 unknown or missing notices).
+
+    Add complying licenses (using the SPDX license ID from https://spdx.org/licenses) with URLs for the libraries listed below to tools/dependencies-report/src/main/resources/licenseMapping.csv:
+    "co.elastic:noNoticeDep:0.0.1"
+    The following NOTICE.txt entries are missing, please add them:
+    LS_HOME/tools/dependencies-report/src/main/resources/notices/co.elastic!noNoticeDep-NOTICE.txt
+    The following 45 license mappings were specified but unused:
+    UNKNOWNgzip
+    UNKNOWNjls-grok
+    avl_tree
+    com.fasterxml.jackson.dataformat:jackson-dataformat-cbor
+    com.google.errorprone:javac-shaded
+    com.google.googlejavaformat:google-java-format
+    com.google.guava:guava
+    commons-io:commons-io
+    filewatch
+    gelfd
+    gmetric
+    jls-lumberjack
+    junit:junit
+    march_hare
+    method_source
+    metriks
+    numerizer
+    org.apache.logging.log4j:log4j-api
+    org.apache.logging.log4j:log4j-core
+    org.apache.logging.log4j:log4j-slf4j-impl
+    org.codehaus.janino:commons-compiler
+    org.codehaus.janino:janino
+    org.eclipse.core:org.eclipse.core.commands
+    org.eclipse.core:org.eclipse.core.contenttype
+    org.eclipse.core:org.eclipse.core.expressions
+    org.eclipse.core:org.eclipse.core.filesystem
+    org.eclipse.core:org.eclipse.core.jobs
+    org.eclipse.core:org.eclipse.core.resources
+    org.eclipse.core:org.eclipse.core.runtime
+    org.eclipse.equinox:org.eclipse.equinox.app
+    org.eclipse.equinox:org.eclipse.equinox.common
+    org.eclipse.equinox:org.eclipse.equinox.preferences
+    org.eclipse.equinox:org.eclipse.equinox.registry
+    org.eclipse.jdt:org.eclipse.jdt.core
+    org.eclipse.osgi:org.eclipse.osgi
+    org.eclipse.text:org.eclipse.text
+    org.jruby:jruby-complete
+    org.slf4j:slf4j-api
+    rspec-sequencing
+    rubyzip
+    snappy-jars
+    snmp
+    stud
+    webhdfs
+    webrick
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithMissingNotices PASSED
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithMissingUrls STANDARD_OUT
+    Generated report with 16 dependencies (2 unknown or unacceptable licenses, 0 unknown or missing notices).
+
+    Add complying licenses (using the SPDX license ID from https://spdx.org/licenses) with URLs for the libraries listed below to tools/dependencies-report/src/main/resources/licenseMapping.csv:
+    "json-parser:"
+    "org.codehaus.janino:commons-compiler:3.0.8"
+    The following 43 license mappings were specified but unused:
+    UNKNOWNgzip
+    UNKNOWNjls-grok
+    avl_tree
+    com.fasterxml.jackson.dataformat:jackson-dataformat-cbor
+    com.google.googlejavaformat:google-java-format
+    com.google.guava:guava
+    filewatch
+    gelfd
+    gmetric
+    jls-lumberjack
+    json-parser
+    march_hare
+    method_source
+    metriks
+    numerizer
+    org.apache.logging.log4j:log4j-api
+    org.apache.logging.log4j:log4j-core
+    org.apache.logging.log4j:log4j-slf4j-impl
+    org.codehaus.janino:commons-compiler
+    org.codehaus.janino:janino
+    org.eclipse.core:org.eclipse.core.commands
+    org.eclipse.core:org.eclipse.core.contenttype
+    org.eclipse.core:org.eclipse.core.expressions
+    org.eclipse.core:org.eclipse.core.filesystem
+    org.eclipse.core:org.eclipse.core.jobs
+    org.eclipse.core:org.eclipse.core.resources
+    org.eclipse.core:org.eclipse.core.runtime
+    org.eclipse.equinox:org.eclipse.equinox.app
+    org.eclipse.equinox:org.eclipse.equinox.common
+    org.eclipse.equinox:org.eclipse.equinox.preferences
+    org.eclipse.equinox:org.eclipse.equinox.registry
+    org.eclipse.jdt:org.eclipse.jdt.core
+    org.eclipse.osgi:org.eclipse.osgi
+    org.eclipse.text:org.eclipse.text
+    org.jruby:jruby-complete
+    org.slf4j:slf4j-api
+    rspec-sequencing
+    rubyzip
+    snappy-jars
+    snmp
+    stud
+    webhdfs
+    webrick
+
+org.logstash.dependencies.ReportGeneratorTest > testReportWithMissingUrls PASSED
+
+--------------------------------------------------------------------
+|  Results: SUCCESS (7 tests, 7 successes, 0 failures, 0 skipped)  |
+--------------------------------------------------------------------
+
+> Task :jvm-options-parser:compileJava
+> Task :jvm-options-parser:processResources NO-SOURCE
+> Task :jvm-options-parser:classes
+> Task :jvm-options-parser:jar
+> Task :jvm-options-parser:compileTestJava
+> Task :jvm-options-parser:processTestResources NO-SOURCE
+> Task :jvm-options-parser:testClasses
+
+> Task :jvm-options-parser:test
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+
+org.logstash.launchers.JvmOptionsParserTest > testParseOptionWithFixedVersion PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testParseOptionVersionRange PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testEnvironmentOPTSVariableTakesPrecedenceOverOptionsFile PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testErrorLinesAreReportedCorrectly PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testNettyMaxOrderRuleAppliesIfNotAlreadyDefinedExplicitlyByUser PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testMandatoryJvmOptionNonApplicableJvmNotPresent PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > test_LS_JAVA_OPTS_isUsedWhenNoJvmOptionsIsAvailable PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testAlwaysMandatoryJvmPresent PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testParseOptionGreaterThanVersion PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testParseCommentLine PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testNettyMaxOrderRuleDoNotAppliesIfAlreadyDefinedExplicitlyByUser PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > testMandatoryJvmOptionApplicableJvmPresent PASSED
+
+org.logstash.launchers.JvmOptionsParserTest > givenLS_JAVA_OPTS_containingMultipleDefinitionsWithAlsoMaxOrderThenNoDuplicationOfMaxOrderOptionShouldHappen PASSED
+
+----------------------------------------------------------------------
+|  Results: SUCCESS (13 tests, 13 successes, 0 failures, 0 skipped)  |
+----------------------------------------------------------------------
+
+> Task :buildCustomJRuby SKIPPED
+> Task :installCustomJRuby SKIPPED
+
+> Task :downloadJRuby
+Download https://repo1.maven.org/maven2/org/jruby/jruby-dist/9.4.8.0/jruby-dist-9.4.8.0-bin.tar.gz
+
+> Task :verifyFile UP-TO-DATE
+> Task :downloadAndInstallJRuby
+
+> Task :logstash-core:compileJava
+Note: Processing Log4j annotations
+Note: Annotations processed
+Note: Processing Log4j annotations
+Note: No elements to process
+
+> Task :markAliasDefinitions
+> Task :copyPluginAlias_java
+> Task :copyPluginAlias_ruby
+> Task :copyPluginAlias NO-SOURCE
+> Task :logstash-core:processResources
+> Task :logstash-core:classes
+> Task :logstash-core:jar
+> Task :logstash-core:copyRuntimeLibs
+> Task :logstash-core:sourcesJar
+> Task :logstash-core:copyGemjar
+
+> Task :logstash-core:javadoc
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+
+> Task :logstash-core:javadocJar
+> Task :markTestAliasDefinitions
+> Task :copyPluginTestAlias_java
+> Task :copyPluginTestAlias_ruby
+> Task :copyPluginTestAlias
+> Task :assemble
+> Task :benchmark-cli:assemble
+> Task :dependencies-report:assemble
+> Task :jvm-options-parser:assemble
+> Task :logstash-core:assemble
+> Task :logstash-core-benchmarks:compileJava
+> Task :logstash-core-benchmarks:processResources
+> Task :logstash-core-benchmarks:classes
+> Task :logstash-core-benchmarks:jar
+> Task :logstash-core-benchmarks:assemble
+> Task :logstash-integration-tests:compileJava NO-SOURCE
+> Task :logstash-integration-tests:processResources NO-SOURCE
+> Task :logstash-integration-tests:classes UP-TO-DATE
+> Task :logstash-integration-tests:jar
+> Task :logstash-integration-tests:assemble
+> Task :logstash-xpack:compileJava NO-SOURCE
+> Task :logstash-xpack:processResources NO-SOURCE
+> Task :logstash-xpack:classes UP-TO-DATE
+> Task :logstash-xpack:jar
+> Task :logstash-xpack:assemble
+> Task :bootstrap
+
+> Task :installDevelopmentGems
+Skipping bundler install...
+Building logstash-core using gradle
+./gradlew assemble
+[plugin:install-development-dependencies] Installing development dependencies
+WARNING: A maven settings file already exist at /root/.m2/settings.xml, please review the content to make sure it includes your proxies configuration.
+Installing logstash-codec-plain, logstash-devutils, flores, cabin, webrick, webmock, rspec-collection_matchers, elasticsearch
+Preserving Gemfile gem options for plugin logstash-devutils
+Preserving Gemfile gem options for plugin flores
+Preserving Gemfile gem options for plugin webmock
+Installation successful
+ERROR: Something went wrong when installing logstash-codec-plain, logstash-filter-clone, logstash-filter-date, logstash-filter-drop, logstash-filter-geoip, logstash-filter-json, logstash-filter-mutate, logstash-filter-ruby, logstash-filter-xml, logstash-input-beats, logstash-input-generator, logstash-input-stdin, logstash-input-tcp, logstash-output-elasticsearch, logstash-output-file, logstash-output-null, logstash-output-stdout, message: certificate verify failed
+
+> Task :logstash-core:compileTestJava
+> Task :logstash-core:processTestResources
+> Task :logstash-core:testClasses
+
+> Task :logstash-core:javaTests
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+
+org.logstash.AccessorsTest > testBareBracketsGet PASSED
+
+org.logstash.AccessorsTest > testBareBracketsPut PASSED
+
+org.logstash.AccessorsTest > testInvalidPath PASSED
+
+org.logstash.AccessorsTest > testDel PASSED
+
+org.logstash.AccessorsTest > testDeepListGet PASSED
+
+org.logstash.AccessorsTest > testListIndexOutOfBounds PASSED
+
+org.logstash.AccessorsTest > testBareGet PASSED
+
+org.logstash.AccessorsTest > testBarePut PASSED
+
+org.logstash.AccessorsTest > testStaleTargetCache PASSED
+
+org.logstash.AccessorsTest > testAbsentDeepMapGet PASSED
+
+org.logstash.AccessorsTest > testInvalidIdList PASSED
+
+org.logstash.AccessorsTest > testAbsentBareGet PASSED
+
+org.logstash.AccessorsTest > testSetOnNonMapOrList PASSED
+
+org.logstash.AccessorsTest > testAbsentDeepListGet PASSED
+
+org.logstash.AccessorsTest > testNilInclude PASSED
+
+org.logstash.AccessorsTest > testDeepMapGet PASSED
+
+org.logstash.AccessorsTest > testDeepMapSet PASSED
+
+org.logstash.ClonerTest > testRubyStringCloning PASSED
+
+org.logstash.ClonerTest > testRubyStringCloningAndAppend PASSED
+
+org.logstash.ClonerTest > testRubyStringCloningMemoryOptimization PASSED
+
+org.logstash.ClonerTest > testRubyStringCloningAndChangeOriginal PASSED
+
+org.logstash.DLQEntryTest > testSerDe PASSED
+
+org.logstash.DLQEntryTest > testConstruct PASSED
+
+org.logstash.EventTest > testSimpleIntegerFieldToJson PASSED
+
+org.logstash.EventTest > testTimestampFieldToJson PASSED
+
+org.logstash.EventTest > removeMetadata PASSED
+
+org.logstash.EventTest > testGetFieldList PASSED
+
+org.logstash.EventTest > testFromJsonWithBlankString PASSED
+
+org.logstash.EventTest > removeMetadataField PASSED
+
+org.logstash.EventTest > unwrapsJavaProxyValues PASSED
+
+org.logstash.EventTest > testSimpleStringFieldToJson PASSED
+
+org.logstash.EventTest > testFromJsonWithValidJsonMap PASSED
+
+org.logstash.EventTest > testSimpleDecimalFieldToJson PASSED
+
+org.logstash.EventTest > testFromJsonWithInvalidJsonArray1 PASSED
+
+org.logstash.EventTest > testFromJsonWithInvalidJsonArray2 PASSED
+
+org.logstash.EventTest > testDeepMapFieldToJson PASSED
+
+org.logstash.EventTest > testFromJsonWithNull PASSED
+
+org.logstash.EventTest > testDeepGetField PASSED
+
+org.logstash.EventTest > testClone PASSED
+
+org.logstash.EventTest > testToMap PASSED
+
+org.logstash.EventTest > queueableInterfaceRoundTrip PASSED
+
+org.logstash.EventTest > testTagOnEmptyTagsField PASSED
+
+org.logstash.EventTest > testFromJsonWithValidJsonArrayOfMap PASSED
+
+org.logstash.EventTest > testFromJsonWithInvalidJsonString PASSED
+
+org.logstash.EventTest > toBinaryRoundtrip PASSED
+
+org.logstash.EventTest > testBooleanFieldToJson PASSED
+
+org.logstash.EventTest > testFieldThatIsNotAValidNestedFieldReference PASSED
+
+org.logstash.EventTest > allowCreatingEventWithTopLevelTagsWithMap PASSED
+
+org.logstash.EventTest > testSimpleLongFieldToJson PASSED
+
+org.logstash.EventTest > allowTopLevelTagsWithMap PASSED
+
+org.logstash.EventTest > testFieldThatLooksLikeAValidNestedFieldReference PASSED
+
+org.logstash.EventTest > allowTopLevelTagsListOfStrings PASSED
+
+org.logstash.EventTest > metadataFieldsShouldBeValuefied PASSED
+
+org.logstash.EventTest > testFromJsonWithPartialInvalidJsonArray PASSED
+
+org.logstash.EventTest > toStringWithTimestamp PASSED
+
+org.logstash.EventTest > testTagOnExistingTagsField PASSED
+
+org.logstash.EventTest > testBareToJson PASSED
+
+org.logstash.EventTest > testFromJsonWithEmptyString PASSED
+
+org.logstash.EventTest > toBinaryRoundtripNonAscii PASSED
+
+org.logstash.EventTest > testAppend PASSED
+
+org.logstash.EventTest > setTagsWithNumberShouldThrow PASSED
+
+org.logstash.EventTest > metadataRootShouldBeValuefied PASSED
+
+org.logstash.EventTest > createEventWithTagsWithMapShouldRename PASSED
+
+org.logstash.EventTest > toBinaryRoundtripSubstring PASSED
+
+org.logstash.EventTest > testAppendLists PASSED
+
+org.logstash.EventTest > toStringWithoutTimestamp PASSED
+
+org.logstash.EventTest > testSimpleMultipleFieldToJson PASSED
+
+org.logstash.EventTest > allowTopLevelTagsString PASSED
+
+org.logstash.EventTest > createEventWithoutTagShouldHaveEmptyTags PASSED
+
+org.logstash.EventTest > bigNumsBinaryRoundtrip PASSED
+
+org.logstash.EventTest > setTagsWithMapShouldThrow PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testReadFieldWithSquareBracketLiteralsInKey PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testReadFieldWithAmpersandLiteralInKey PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testReadFieldWithSquareBracketLiteralsInPath PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidDoubleCloseBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParse3FieldsPath PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseLiteralSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testEmbeddedSingleReference PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidLotsOfOpenBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testRubyCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseMetadataChild PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseEmptyString PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParse2FieldsPath PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > deduplicatesTimestamp PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseMetadataParent PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseSingleFieldPath PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidOnlyCloseBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidMissingMiddleBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseSingleBareField PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidNoCloseBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidEmbeddedDeepReference2 PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidNoInitialOpenBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseInvalidOnlyOpenBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testParseChainedNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest$EscapeAmpersand > testEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidDoubleCloseBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParse3FieldsPath PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseLiteralSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testEmbeddedSingleReference PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidLotsOfOpenBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testRubyCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseMetadataChild PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseEmptyString PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParse2FieldsPath PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > deduplicatesTimestamp PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseMetadataParent PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseSingleFieldPath PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidOnlyCloseBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidMissingMiddleBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseSingleBareField PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidNoCloseBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidEmbeddedDeepReference2 PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidNoInitialOpenBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseInvalidOnlyOpenBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testParseChainedNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest$EscapeNone > testEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testReadFieldWithSquareBracketLiteralsInKey PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testReadFieldWithPercentLiteralInKey PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testReadFieldWithSquareBracketLiteralsInPath PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidDoubleCloseBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParse3FieldsPath PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseLiteralSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testEmbeddedSingleReference PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidLotsOfOpenBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testRubyCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseMetadataChild PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseEmptyString PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParse2FieldsPath PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > deduplicatesTimestamp PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseMetadataParent PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseSingleFieldPath PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidOnlyCloseBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidMissingMiddleBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseSingleBareField PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidNoCloseBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidEmbeddedDeepReference2 PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidNoInitialOpenBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseInvalidOnlyOpenBracket PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testParseChainedNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest$EscapePercent > testEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidDoubleCloseBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParse3FieldsPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseLiteralSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testEmbeddedSingleReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidLotsOfOpenBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testRubyCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseMetadataChild PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseEmptyString PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParse2FieldsPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.deduplicatesTimestamp PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseMetadataParent PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseSingleFieldPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidOnlyCloseBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidMissingMiddleBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseSingleBareField PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidNoCloseBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidEmbeddedDeepReference2 PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidNoInitialOpenBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseInvalidOnlyOpenBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testParseChainedNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeNone.testEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testReadFieldWithSquareBracketLiteralsInKey PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testReadFieldWithPercentLiteralInKey PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testReadFieldWithSquareBracketLiteralsInPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidDoubleCloseBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParse3FieldsPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseLiteralSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testEmbeddedSingleReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidLotsOfOpenBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testRubyCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseMetadataChild PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseEmptyString PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParse2FieldsPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.deduplicatesTimestamp PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseMetadataParent PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseSingleFieldPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidOnlyCloseBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidMissingMiddleBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseSingleBareField PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidNoCloseBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidEmbeddedDeepReference2 PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidNoInitialOpenBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseInvalidOnlyOpenBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testParseChainedNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapePercent.testEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testReadFieldWithSquareBracketLiteralsInKey PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testReadFieldWithAmpersandLiteralInKey PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testReadFieldWithSquareBracketLiteralsInPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidDoubleCloseBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParse3FieldsPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseLiteralSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testEmbeddedSingleReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidLotsOfOpenBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testRubyCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseMetadataChild PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidEmbeddedDeepReference PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseEmptyString PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParse2FieldsPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.deduplicatesTimestamp PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseMetadataParent PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseSingleFieldPath PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidOnlyCloseBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidMissingMiddleBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseSingleBareField PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidNoCloseBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidEmbeddedDeepReference2 PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidNoInitialOpenBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseInvalidOnlyOpenBracket PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testParseChainedNestingSquareBrackets PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testCacheUpperBound PASSED
+
+org.logstash.FieldReferenceTest > org.logstash.FieldReferenceTest$EscapeAmpersand.testEmbeddedDeepReference PASSED
+
+org.logstash.FileLockFactoryTest > LockReleaseLock PASSED
+
+org.logstash.FileLockFactoryTest > ObtainLockOnLocked PASSED
+
+org.logstash.FileLockFactoryTest > LockReleaseLockObtainLockRelease PASSED
+
+org.logstash.FileLockFactoryTest > ObtainLockOnNonLocked PASSED
+
+org.logstash.FileLockFactoryTest > ReleaseNullLock PASSED
+
+org.logstash.FileLockFactoryTest > ReleaseUnobtainedLock PASSED
+
+org.logstash.FileLockFactoryTest > crossJvmObtainLockOnLocked PASSED
+
+org.logstash.FileLockFactoryTest > LockReleaseLockObtainLock PASSED
+
+org.logstash.FileLockFactoryTest > ObtainLockOnOtherLocked PASSED
+
+org.logstash.JavafierTest > testRubyBignum PASSED
+
+org.logstash.KeyNodeTest > testOneNullElementJoin PASSED
+
+org.logstash.KeyNodeTest > testTwoElementWithTailingNullJoin PASSED
+
+org.logstash.KeyNodeTest > testTwoElementWithLeadingNullJoin PASSED
+
+org.logstash.KeyNodeTest > testOneElementJoin PASSED
+
+org.logstash.KeyNodeTest > testTwoElementJoin PASSED
+
+org.logstash.KeyNodeTest > testNoElementJoin PASSED
+
+org.logstash.KeyNodeTest > testListInListJoin PASSED
+
+org.logstash.ObjectMappersTest > testLog4jOMRegisterRubyBasicObjectSerializersModule PASSED
+
+org.logstash.ObjectMappersTest > testLog4jOMRegisterRubySerializersModule PASSED
+
+org.logstash.ObjectMappersTest > testLog4jOMRegisterRubyBasicObjectSerializersFirst PASSED
+
+org.logstash.RubyfierTest > testDeepWithBigInteger PASSED
+
+org.logstash.RubyfierTest > testDeepWithInteger PASSED
+
+org.logstash.RubyfierTest > testDeepMapWithDouble PASSED
+
+org.logstash.RubyfierTest > testDeepWithFloat PASSED
+
+org.logstash.RubyfierTest > testDeepListWithInteger PASSED
+
+org.logstash.RubyfierTest > testDeepMapWithString PASSED
+
+org.logstash.RubyfierTest > testDeepMapWithFloat PASSED
+
+org.logstash.RubyfierTest > testDeepWithDouble PASSED
+
+org.logstash.RubyfierTest > testDeepWithString PASSED
+
+org.logstash.RubyfierTest > testDeepListWithDouble PASSED
+
+org.logstash.RubyfierTest > testDeepMapWithInteger PASSED
+
+org.logstash.RubyfierTest > testDeepListWithBigDecimal PASSED
+
+org.logstash.RubyfierTest > testDeepListWithString PASSED
+
+org.logstash.RubyfierTest > testDeepWithBigDecimal PASSED
+
+org.logstash.RubyfierTest > testDeepMapWithBigDecimal PASSED
+
+org.logstash.RubyfierTest > testDeepListWithFloat PASSED
+
+org.logstash.StringInterpolationTest > testMultipleLevelField PASSED
+
+org.logstash.StringInterpolationTest > TestEpochSeconds PASSED
+
+org.logstash.StringInterpolationTest > TestValueIsArray PASSED
+
+org.logstash.StringInterpolationTest > testCompletelyStaticTemplate PASSED
+
+org.logstash.StringInterpolationTest > testUnclosedTag PASSED
+
+org.logstash.StringInterpolationTest > testMissingKey PASSED
+
+org.logstash.StringInterpolationTest > TestStringIsOneDateTag PASSED
+
+org.logstash.StringInterpolationTest > TestFieldRef PASSED
+
+org.logstash.StringInterpolationTest > TestMixDateAndFieldsJavaSyntax PASSED
+
+org.logstash.StringInterpolationTest > TestMixDateAndFields PASSED
+
+org.logstash.StringInterpolationTest > TestEpoch PASSED
+
+org.logstash.StringInterpolationTest > TestStringIsJavaDateTag PASSED
+
+org.logstash.StringInterpolationTest > TestValueIsHash PASSED
+
+org.logstash.StringInterpolationTest > testDateFormatter PASSED
+
+org.logstash.StringInterpolationTest > testOneLevelField PASSED
+
+org.logstash.TimestampTest > testMicroseconds PASSED
+
+org.logstash.TimestampTest > testParsingDateTimeWithCommaDecimalStyleLocale PASSED
+
+org.logstash.TimestampTest > testUTC PASSED
+
+org.logstash.TimestampTest > testToString PASSED
+
+org.logstash.TimestampTest > testNanoPrecision PASSED
+
+org.logstash.TimestampTest > testParsingDateWithOffset PASSED
+
+org.logstash.TimestampTest > testEpochMillis PASSED
+
+org.logstash.TimestampTest > testCircularIso8601 PASSED
+
+org.logstash.TimestampTest > testParsingDateNoOffset PASSED
+
+org.logstash.TimestampTest > testParsingDateTimeNoOffset PASSED
+
+org.logstash.TimestampTest > testToStringNoNanos PASSED
+
+org.logstash.TimestampTest > testParsingDateTimeWithZOffset PASSED
+
+org.logstash.ValuefierTest > testLocalDateTime PASSED
+
+org.logstash.ValuefierTest > testConcreteJavaProxy PASSED
+
+org.logstash.ValuefierTest > testLocalDate PASSED
+
+org.logstash.ValuefierTest > testJodaDateTIme PASSED
+
+org.logstash.ValuefierTest > testUnhandledObject PASSED
+
+org.logstash.ValuefierTest > testMapJavaProxy PASSED
+
+org.logstash.ValuefierTest > testArrayJavaProxy PASSED
+
+org.logstash.ValuefierTest > testZonedDateTime PASSED
+
+org.logstash.ValuefierTest > testRubyTime PASSED
+
+org.logstash.ValuefierTest > scratch PASSED
+
+org.logstash.ackedqueue.CheckpointTest > newInstance PASSED
+
+org.logstash.ackedqueue.HeadPageTest > newHeadPage STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.192 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.HeadPageTest > newHeadPage PASSED
+
+org.logstash.ackedqueue.HeadPageTest > pageWrite STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.231 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.HeadPageTest > pageWrite PASSED
+
+org.logstash.ackedqueue.HeadPageTest > pageWriteAndReadMulti STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.235 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.HeadPageTest > pageWriteAndReadMulti PASSED
+
+org.logstash.ackedqueue.HeadPageTest > pageWriteAndReadSingle STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.244 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.HeadPageTest > pageWriteAndReadSingle PASSED
+
+org.logstash.ackedqueue.HeadPageTest > inEmpty STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.248 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.HeadPageTest > inEmpty PASSED
+
+org.logstash.ackedqueue.PqRepairTest > testRecreateCorruptCheckPoint STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.259 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+    [INFO ] 2026-03-22 15:41:57.272 [Test worker] PqRepair - Start repairing queue dir: /tmp/junit14341064165296589264/data
+    [INFO ] 2026-03-22 15:41:57.276 [Test worker] PqRepair - Recreating missing checkpoint for page /tmp/junit14341064165296589264/data/page.1
+    [INFO ] 2026-03-22 15:41:57.277 [Test worker] PqRepair - Repair is done
+
+org.logstash.ackedqueue.PqRepairTest > testRecreateCorruptCheckPoint PASSED
+
+org.logstash.ackedqueue.PqRepairTest > testRemoveUselessCheckpoint STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.483 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+    [INFO ] 2026-03-22 15:41:57.496 [Test worker] PqRepair - Start repairing queue dir: /tmp/junit13824679942926692743/data
+    [INFO ] 2026-03-22 15:41:57.497 [Test worker] PqRepair - Deleting checkpoint /tmp/junit13824679942926692743/data/checkpoint.1 because it has no associated page
+    [INFO ] 2026-03-22 15:41:57.497 [Test worker] PqRepair - Repair is done
+
+org.logstash.ackedqueue.PqRepairTest > testRemoveUselessCheckpoint PASSED
+
+org.logstash.ackedqueue.PqRepairTest > testRemoveTempCheckPoint STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.606 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+    [INFO ] 2026-03-22 15:41:57.614 [Test worker] PqRepair - Start repairing queue dir: /tmp/junit14772399812395267778/data
+    [INFO ] 2026-03-22 15:41:57.615 [Test worker] PqRepair - Deleting temp checkpoint /tmp/junit14772399812395267778/data/checkpoint.head.tmp
+    [INFO ] 2026-03-22 15:41:57.615 [Test worker] PqRepair - Deleting temp checkpoint /tmp/junit14772399812395267778/data/checkpoint.1.tmp
+    [INFO ] 2026-03-22 15:41:57.616 [Test worker] PqRepair - Repair is done
+
+org.logstash.ackedqueue.PqRepairTest > testRemoveTempCheckPoint PASSED
+
+org.logstash.ackedqueue.PqRepairTest > testRecreateMissingCheckPoint STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.724 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+    [INFO ] 2026-03-22 15:41:57.732 [Test worker] PqRepair - Start repairing queue dir: /tmp/junit105504591380927965/data
+    [INFO ] 2026-03-22 15:41:57.733 [Test worker] PqRepair - Recreating missing checkpoint for page /tmp/junit105504591380927965/data/page.1
+    [INFO ] 2026-03-22 15:41:57.734 [Test worker] PqRepair - Repair is done
+
+org.logstash.ackedqueue.PqRepairTest > testRecreateMissingCheckPoint PASSED
+
+org.logstash.ackedqueue.PqRepairTest > testRemoveBrokenPage STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.842 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+    [INFO ] 2026-03-22 15:41:57.851 [Test worker] PqRepair - Start repairing queue dir: /tmp/junit12342962911282049806/data
+    [INFO ] 2026-03-22 15:41:57.852 [Test worker] PqRepair - Deleting empty page found at /tmp/junit12342962911282049806/data/page.1
+    [INFO ] 2026-03-22 15:41:57.852 [Test worker] PqRepair - Deleting checkpoint /tmp/junit12342962911282049806/data/checkpoint.1 because it has no associated page
+    [INFO ] 2026-03-22 15:41:57.852 [Test worker] PqRepair - Repair is done
+
+org.logstash.ackedqueue.PqRepairTest > testRemoveBrokenPage PASSED
+
+org.logstash.ackedqueue.QueueTest > writeWhenPageEqualsQueueSize STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.971 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > writeWhenPageEqualsQueueSize PASSED
+
+org.logstash.ackedqueue.QueueTest > ackingMakesQueueNotFullAgainTest STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:57.982 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > ackingMakesQueueNotFullAgainTest PASSED
+
+org.logstash.ackedqueue.QueueTest > fullyAckedHeadPageBeheadingTest STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:58.034 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > fullyAckedHeadPageBeheadingTest PASSED
+
+org.logstash.ackedqueue.QueueTest > getsPersistedByteSizeCorrectly STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:58.041 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > getsPersistedByteSizeCorrectly PASSED
+
+org.logstash.ackedqueue.QueueTest > reachMaxUnreadWithAcking STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:58.081 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > reachMaxUnreadWithAcking PASSED
+
+org.logstash.ackedqueue.QueueTest > testAckedCount STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:59.312 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > testAckedCount PASSED
+
+org.logstash.ackedqueue.QueueTest > randomAcking STANDARD_OUT
+    [INFO ] 2026-03-22 15:41:59.327 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > randomAcking PASSED
+
+org.logstash.ackedqueue.QueueTest > reachMaxUnread STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:00.319 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > reachMaxUnread PASSED
+
+org.logstash.ackedqueue.QueueTest > lockIsReleasedUponOpenException STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:01.996 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > lockIsReleasedUponOpenException PASSED
+
+org.logstash.ackedqueue.QueueTest > pageCapacityChangeOnExistingQueue STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.006 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > pageCapacityChangeOnExistingQueue PASSED
+
+org.logstash.ackedqueue.QueueTest > canReadBatchZeroSize STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.014 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > canReadBatchZeroSize PASSED
+
+org.logstash.ackedqueue.QueueTest > queueStillFullAfterPartialPageAckTest STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.016 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > queueStillFullAfterPartialPageAckTest PASSED
+
+org.logstash.ackedqueue.QueueTest > reachMaxSizeTest STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.045 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > reachMaxSizeTest PASSED
+
+org.logstash.ackedqueue.QueueTest > singleWriteRead STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.076 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > singleWriteRead PASSED
+
+org.logstash.ackedqueue.QueueTest > queueStableUnderStressLowCapacity SKIPPED
+
+org.logstash.ackedqueue.QueueTest > preciselyMaxSizeTest STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.081 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > preciselyMaxSizeTest PASSED
+
+org.logstash.ackedqueue.QueueTest > resumeWriteOnNoLongerFullQueueTest STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.110 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > resumeWriteOnNoLongerFullQueueTest PASSED
+
+org.logstash.ackedqueue.QueueTest > testZeroByteFullyAckedPageOnOpen STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.138 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > testZeroByteFullyAckedPageOnOpen PASSED
+
+org.logstash.ackedqueue.QueueTest > testZeroByteFullyAckedHeadPageOnOpen STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.145 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > testZeroByteFullyAckedHeadPageOnOpen PASSED
+
+org.logstash.ackedqueue.QueueTest > maximizeBatch STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:02.155 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > maximizeBatch PASSED
+
+org.logstash.ackedqueue.QueueTest > singleWriteMultiRead STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:03.681 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > singleWriteMultiRead PASSED
+
+org.logstash.ackedqueue.QueueTest > getsPersistedByteSizeCorrectlyForFullyAckedDeletedTailPages STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:03.784 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > getsPersistedByteSizeCorrectlyForFullyAckedDeletedTailPages PASSED
+
+org.logstash.ackedqueue.QueueTest > writeMultiPageWithInOrderAcking STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:07.803 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > writeMultiPageWithInOrderAcking PASSED
+
+org.logstash.ackedqueue.QueueTest > throwsWhenNotEnoughDiskFree STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:07.810 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > throwsWhenNotEnoughDiskFree PASSED
+
+org.logstash.ackedqueue.QueueTest > writeMultiPageWithInOrderAckingCheckpoints STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:07.812 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > writeMultiPageWithInOrderAckingCheckpoints PASSED
+
+org.logstash.ackedqueue.QueueTest > concurrentWritesTest STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:07.822 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > concurrentWritesTest PASSED
+
+org.logstash.ackedqueue.QueueTest > queueStableUnderStressHugeCapacity SKIPPED
+
+org.logstash.ackedqueue.QueueTest > multiWriteSamePage STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:12.262 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > multiWriteSamePage PASSED
+
+org.logstash.ackedqueue.QueueTest > getsPersistedByteSizeCorrectlyForUnopened PASSED
+
+org.logstash.ackedqueue.QueueTest > newQueue STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:12.267 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > newQueue PASSED
+
+org.logstash.ackedqueue.QueueTest > firstUnackedPagePointToFullyAckedPurgedPage STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:12.269 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > firstUnackedPagePointToFullyAckedPurgedPage PASSED
+
+org.logstash.ackedqueue.QueueTest > writeMultiPage STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:12.276 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > writeMultiPage PASSED
+
+org.logstash.ackedqueue.QueueTest > inEmpty STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:12.281 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > inEmpty PASSED
+
+org.logstash.ackedqueue.QueueTest > writeToClosedQueueException STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:12.284 [Test worker] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > writeToClosedQueueException PASSED
+
+org.logstash.ackedqueue.QueueTest > writeToFullyAckedHeadpage STANDARD_OUT
+    [INFO ] 2026-03-22 15:42:12.289 [Time-limited test] QueueUpgrade - No PQ version file found, upgrading to PQ v2.
+
+org.logstash.ackedqueue.QueueTest > writeToFullyAckedHeadpage PASSED
+
+org.logstash.ackedqueue.SettingsImplTest > verifyConfiguredValues PASSED
+
+org.logstash.ackedqueue.io.FileCheckpointIOTest > read PASSED
+
+org.logstash.ackedqueue.io.FileCheckpointIOTest > write PASSED
+
+org.logstash.ackedqueue.io.FileMmapIOTest > roundTrip PASSED
+
+org.logstash.ackedqueue.io.IntVectorTest > storesAndResizes PASSED
+
+org.logstash.ackedqueue.io.LongVectorTest > storesAndResizes PASSED
+
+org.logstash.ackedqueue.io.LongVectorTest > storesVectorAndResizes PASSED
+
+org.logstash.ackedqueue.io.MmapPageIOTest > adjustToExistingCapacity PASSED
+
+org.logstash.common.AbstractDeadLetterQueueWriterExtTest > testDLQWriterDoesntInvertPluginIdAndPluginTypeAttributes PASSED
+
+org.logstash.common.BufferedTokenizerExtTest > shouldTokenizeEmptyPayloadWithNewline PASSED
+
+org.logstash.common.BufferedTokenizerExtTest > shouldTokenizeASingleToken PASSED
+
+org.logstash.common.BufferedTokenizerExtTest > shouldTokenizeMultipleToken PASSED
+
+org.logstash.common.BufferedTokenizerExtTest > shouldMergeMultipleToken PASSED
+
+org.logstash.common.BufferedTokenizerExtTest > shouldIgnoreEmptyPayload PASSED
+
+org.logstash.common.BufferedTokenizerExtWithDelimiterTest > shouldTokenizeMultipleToken PASSED
+
+org.logstash.common.BufferedTokenizerExtWithDelimiterTest > shouldIgnoreEmptyPayload PASSED
+
+org.logstash.common.BufferedTokenizerExtWithSizeLimitTest > givenExtractInvokedWithDifferentFramingAfterBufferFullErrorTWhenFeedFreshDataThenReturnTokenStartingFromEndOfOffendingToken FAILED
+    java.lang.AssertionError: expected:<[bbbb]> but was:<["aa", "bbbb"]>
+        at org.junit.Assert.fail(Assert.java:89)
+        at org.junit.Assert.failNotEquals(Assert.java:835)
+        at org.junit.Assert.assertEquals(Assert.java:120)
+        at org.junit.Assert.assertEquals(Assert.java:146)
+        at org.logstash.common.BufferedTokenizerExtWithSizeLimitTest.givenExtractInvokedWithDifferentFramingAfterBufferFullErrorTWhenFeedFreshDataThenReturnTokenStartingFromEndOfOffendingToken(BufferedTokenizerExtWithSizeLimitTest.java:87)
+
+org.logstash.common.BufferedTokenizerExtWithSizeLimitTest > giveMultipleSegmentsThatGeneratesMultipleBufferFullErrorsThenIsAbleToRecoverTokenization FAILED
+    java.lang.AssertionError: expected java.lang.IllegalStateException to be thrown, but nothing was thrown
+        at org.junit.Assert.assertThrows(Assert.java:1028)
+        at org.junit.Assert.assertThrows(Assert.java:981)
+        at org.logstash.common.BufferedTokenizerExtWithSizeLimitTest.giveMultipleSegmentsThatGeneratesMultipleBufferFullErrorsThenIsAbleToRecoverTokenization(BufferedTokenizerExtWithSizeLimitTest.java:101)
+
+org.logstash.common.BufferedTokenizerExtWithSizeLimitTest > givenExtractedThrownLimitErrorWhenFeedFreshDataThenReturnTokenStartingFromEndOfOffendingToken FAILED
+    java.lang.AssertionError: After buffer full error should resume from the end of line expected:<[kaboom]> but was:<[""]>
+        at org.junit.Assert.fail(Assert.java:89)
+        at org.junit.Assert.failNotEquals(Assert.java:835)
+        at org.junit.Assert.assertEquals(Assert.java:120)
+        at org.logstash.common.BufferedTokenizerExtWithSizeLimitTest.givenExtractedThrownLimitErrorWhenFeedFreshDataThenReturnTokenStartingFromEndOfOffendingToken(BufferedTokenizerExtWithSizeLimitTest.java:74)
+
+org.logstash.common.BufferedTokenizerExtWithSizeLimitTest > givenTokenExceedingSizeLimitWhenExtractedThenThrowsAnError PASSED
+
+org.logstash.common.BufferedTokenizerExtWithSizeLimitTest > givenTokenWithinSizeLimitWhenExtractedThenReturnTokens PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testSimpleExpansion PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testExpansionWithoutVariable PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testPrecedenceOfEnvironmentVariableValue PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testExpansionWithDefaultValue PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testPrecedenceOfSecretStoreValueKeepingSecrets PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testNonStringValueReturnsUnchanged PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testPrecedenceOfSecretStoreValue PASSED
+
+org.logstash.common.ConfigVariableExpanderTest > testExpansionWithoutValueThrows PASSED
+
+org.logstash.common.DeadLetterQueueFactoryTest > testOpenableAfterRelease PASSED
+
+org.logstash.common.DeadLetterQueueFactoryTest > testSameBeforeRelease PASSED
+
+org.logstash.common.FsUtilTest > trueIfEnoughSpace PASSED
+
+org.logstash.common.FsUtilTest > falseIfNotEnoughSpace PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[0] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[0] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[1] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[1] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[2] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[2] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[3] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[3] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[4] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[4] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[5] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[5] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[6] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[6] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[7] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[7] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldThrowWhenMissingAField[8] PASSED
+
+org.logstash.common.SourceWithMetadataTest > itShouldInstantiateCleanlyWhenParamsAreGood[8] PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testBlockBoundary PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testFlushAfterSegmentComplete PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderWithBlockInternalFragmentation PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderWithCleanConsumedIsEnabledDeleteFullyConsumedSegmentsAfterBeingAcknowledged PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testMultiFlushAfterSegmentComplete PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testStoreReaderPositionAndRestart PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testFlushAfterWriterClose PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testSeek PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testBlockAndSegmentBoundary PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testBlockBoundaryMultiple PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testStoreReaderPositionWithBlocksWithInternalFragmentation PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testFlushAfterDelay STANDARD_OUT
+    events per block= 4
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testFlushAfterDelay PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testStoreReaderPositionWithBlocksWithInternalFragmentationOnceMessageIsBiggerThenBlock PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testWriteStopSmallWriteSeekByTimestamp PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderFindSegmentHoleAfterSimulatingRetentionPolicyClean PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testConcurrentWriteReadRandomEventSize PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testWriteStopBigWriteSeekByTimestamp PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testSeekByTimestampWhenSegmentIs1Byte PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderLockProhibitMultipleInstances PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testSeekToMiddleOfRemovedLog PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReadFromTwoSegments PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderCleanMultipleConsumedSegmentsAfterMarkForDeleteAndDontTouchLockOrWriterHeadFiles PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testRestartFromCommitPointRealData PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderDoesntIncrementStatisticsOnDeletionError PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testSeekByTimestampMoveAfterDeletedSegment PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testSeekByTimestampWhenAllSegmentsAreDeleted PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testSeekToStartOfRemovedLog PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderWhenAllRemaningSegmentsAreRemoved PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testWriteReadRandomEventSize PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testSeekToMiddleWhileTheLogIsRemoved PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testRereadFinalBlock PASSED
+
+org.logstash.common.io.DeadLetterQueueReaderTest > testReaderWithCleanConsumedIsEnabledWhenSetCurrentPositionThenCleanupTrashedSegments PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterAgeRetentionTest > testRemovesOlderSegmentsWhenWriteOnReopenedDLQContainingExpiredSegments PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterAgeRetentionTest > testRemoveMultipleOldestSegmentsWhenRetainedAgeIsExceeded PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterAgeRetentionTest > testRemovesOlderSegmentsWhenWritesIntoDLQContainingExpiredSegments PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterAgeRetentionTest > testDLQWriterFlusherRemovesExpiredSegmentWhenCurrentWriterIsStale PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterAgeRetentionTest > testDLQWriterFlusherRemovesExpiredSegmentWhenCurrentHeadSegmentIsEmpty PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterAgeRetentionTest > testDLQWriterCloseRemovesExpiredSegmentWhenCurrentWriterIsUntouched PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testDoesNotWriteBeyondLimit STANDARD_OUT
+    [ERROR] 2026-03-22 15:42:31.020 [Test worker] DeadLetterQueueWriter - Cannot write event to DLQ(path: /tmp/junit5163874126588369551/junit3806385824834258316): reached maxQueueSize of 1215
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testDoesNotWriteBeyondLimit PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testReadTimestampOfLastEventInSegment PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testUpdateOldestSegmentReferenceWithAllDeletedSegments PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testUpdateOldestSegmentReference PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testRemoveSegmentsOrder PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testWrite PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testDropEventCountCorrectlyNotEnqueuedEvents STANDARD_OUT
+    [ERROR] 2026-03-22 15:42:35.263 [Test worker] DeadLetterQueueWriter - Cannot write event to DLQ(path: /tmp/junit5687010599086575122/junit8318478062617157646): reached maxQueueSize of 20971520
+    [ERROR] 2026-03-22 15:42:35.264 [Test worker] DeadLetterQueueWriter - Cannot write event to DLQ(path: /tmp/junit5687010599086575122/junit8318478062617157646): reached maxQueueSize of 20971520
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testDropEventCountCorrectlyNotEnqueuedEvents PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testUpdateOldestSegmentReferenceWithDeletedSegment PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testRemoveOldestSegmentWhenRetainedSizeIsExceededAndDropOlderModeIsEnabled PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testUncleanCloseOfPreviousWriter PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testLockFileManagement PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testDoesNotWriteMessagesAlreadyRoutedThroughDLQ STANDARD_OUT
+    [WARN ] 2026-03-22 15:42:35.486 [Test worker] DeadLetterQueueWriter - Event previously submitted to dead letter queue. Skipping...
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testDoesNotWriteMessagesAlreadyRoutedThroughDLQ PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > givenDLQWriterCreatedSomeSegmentsWhenReaderWithCleanConsumedNotifyTheDeletionOfSomeThenWriterUpdatesItsMetricsSize PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testInitializeWriterWith1ByteEntry PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testSlowFlush PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testCloseFlush PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testFileLocking PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testNotFlushed PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testUpdateOldestSegmentReferenceWithNonLexicographicallySortableFileNames PASSED
+
+org.logstash.common.io.DeadLetterQueueWriterTest > testReadTimestampOfLastEventInSegmentWithDeletedSegment PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testObviouslyInvalidSegment STANDARD_OUT
+    [WARN ] 2026-03-22 15:42:45.199 [Test worker] RecordIOReader - Error reading segment file /tmp/junit16780841241634331472/test
+    java.lang.IllegalStateException: Invalid version on DLQ data file /tmp/junit16780841241634331472/test. Expected version: 1. Version found on file:  
+    	at org.logstash.common.io.RecordIOReader.<init>(RecordIOReader.java:89) ~[main/:?]
+    	at org.logstash.common.io.RecordIOReader.getSegmentStatus(RecordIOReader.java:381) ~[main/:?]
+    	at org.logstash.common.io.RecordIOReaderTest.testObviouslyInvalidSegment(RecordIOReaderTest.java:183) ~[test/:?]
+    	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+    	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
+    	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+    	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+    	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.run(ParentRunner.java:413) ~[junit-4.13.2.jar:4.13.2]
+    	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:112) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:58) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:40) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:60) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:52) ~[?:?]
+    	at jdk.internal.reflect.GeneratedMethodAccessor14.invoke(Unknown Source) ~[?:?]
+    	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+    	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+    	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36) ~[?:?]
+    	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24) ~[?:?]
+    	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33) ~[?:?]
+    	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94) ~[?:?]
+    	at com.sun.proxy.$Proxy5.processTestClass(Unknown Source) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:176) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:129) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:100) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:60) ~[?:?]
+    	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56) ~[?:?]
+    	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:113) ~[?:?]
+    	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:65) ~[?:?]
+    	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69) ~[gradle-worker.jar:?]
+    	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74) ~[gradle-worker.jar:?]
+
+org.logstash.common.io.RecordIOReaderTest > testObviouslyInvalidSegment PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testVersionMismatch PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testSeekBlockSizeEvents PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testReadMiddle PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testEmptySegment PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testReadEmptyBlock PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testFind PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testPartiallyWrittenSegment STANDARD_OUT
+    [WARN ] 2026-03-22 15:42:45.369 [Test worker] RecordIOReader - Error reading segment file /tmp/junit5515834468641783074/test
+    java.lang.IllegalStateException: invalid checksum of record
+    	at org.logstash.common.io.RecordIOReader.getRecord(RecordIOReader.java:264) ~[main/:?]
+    	at org.logstash.common.io.RecordIOReader.readEvent(RecordIOReader.java:288) ~[main/:?]
+    	at org.logstash.common.io.RecordIOReader.getSegmentStatus(RecordIOReader.java:386) ~[main/:?]
+    	at org.logstash.common.io.RecordIOReaderTest.testPartiallyWrittenSegment(RecordIOReaderTest.java:192) ~[test/:?]
+    	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+    	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:?]
+    	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+    	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+    	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306) ~[junit-4.13.2.jar:4.13.2]
+    	at org.junit.runners.ParentRunner.run(ParentRunner.java:413) ~[junit-4.13.2.jar:4.13.2]
+    	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:112) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:58) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:40) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:60) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:52) ~[?:?]
+    	at jdk.internal.reflect.GeneratedMethodAccessor14.invoke(Unknown Source) ~[?:?]
+    	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+    	at java.lang.reflect.Method.invoke(Method.java:566) ~[?:?]
+    	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36) ~[?:?]
+    	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24) ~[?:?]
+    	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33) ~[?:?]
+    	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94) ~[?:?]
+    	at com.sun.proxy.$Proxy5.processTestClass(Unknown Source) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:176) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:129) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:100) ~[?:?]
+    	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:60) ~[?:?]
+    	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56) ~[?:?]
+    	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:113) ~[?:?]
+    	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:65) ~[?:?]
+    	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69) ~[gradle-worker.jar:?]
+    	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74) ~[gradle-worker.jar:?]
+
+org.logstash.common.io.RecordIOReaderTest > testPartiallyWrittenSegment PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testVersion PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testSeekToStartFromEndWithNextRecordPresent PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testSeekDoubleBlockSizeEvents PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testSeekToStartFromEndWithoutNextRecord PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testReadWhileWriteAcrossBoundary PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testSeekHalfBlockSizeEvents PASSED
+
+org.logstash.common.io.RecordIOReaderTest > testValidSegment PASSED
+
+org.logstash.common.io.RecordIOWriterTest > testSingleComplete PASSED
+
+org.logstash.common.io.RecordIOWriterTest > testFitsInTwoBlocks PASSED
+
+org.logstash.common.io.RecordIOWriterTest > testFitsInThreeBlocks PASSED
+
+org.logstash.common.io.RecordIOWriterTest > testReadWhileWrite PASSED
+
+org.logstash.config.ir.PipelineIRTest > testGetPostQueue PASSED
+
+org.logstash.config.ir.PipelineIRTest > hashingWithoutOriginalSource PASSED
+
+org.logstash.config.ir.PipelineIRTest > hashingWithOriginalSource PASSED
+
+org.logstash.config.ir.PipelineIRTest > testPipelineCreation PASSED
+
+org.logstash.config.ir.compiler.CommonActionsTest > testAddType PASSED
+
+org.logstash.config.ir.compiler.CommonActionsTest > testRemoveField PASSED
+
+org.logstash.config.ir.compiler.CommonActionsTest > testAddField PASSED
+
+org.logstash.config.ir.compiler.CommonActionsTest > testRemoveFieldFromMetadata PASSED
+
+org.logstash.config.ir.compiler.CommonActionsTest > testAddTag PASSED
+
+org.logstash.config.ir.compiler.CommonActionsTest > testRemoveTag PASSED
+
+org.logstash.config.ir.compiler.DatasetCompilerTest > compilesSplitDataset PASSED
+
+org.logstash.config.ir.compiler.DatasetCompilerTest > compilesOutputDataset PASSED
+
+org.logstash.config.ir.expression.ExpressionSubstitutionTest > noRegexSubstitution PASSED
+
+org.logstash.config.ir.expression.ExpressionSubstitutionTest > nestedBinaryBooleanSubstitution PASSED
+
+org.logstash.config.ir.expression.ExpressionSubstitutionTest > basicBinaryBooleanSubstitution PASSED
+
+org.logstash.config.ir.expression.ExpressionSubstitutionTest > basicUnaryBooleanSubstitution PASSED
+
+org.logstash.config.ir.graph.BooleanEdgeTest > testBasicBooleanEdgeProperties PASSED
+
+org.logstash.config.ir.graph.BooleanEdgeTest > testFactoryCreation PASSED
+
+org.logstash.config.ir.graph.EdgeTest > testBasicEdge PASSED
+
+org.logstash.config.ir.graph.GraphTest > testThreadingMulti PASSED
+
+org.logstash.config.ir.graph.GraphTest > testThreadingTyped PASSED
+
+org.logstash.config.ir.graph.GraphTest > testGraphCycleDetection PASSED
+
+org.logstash.config.ir.graph.GraphTest > testThreading PASSED
+
+org.logstash.config.ir.graph.GraphTest > copyTest PASSED
+
+org.logstash.config.ir.graph.GraphTest > testGraphBasics PASSED
+
+org.logstash.config.ir.graph.GraphTest > chainingIntoMultipleRoots PASSED
+
+org.logstash.config.ir.graph.GraphTest > chaining PASSED
+
+org.logstash.config.ir.graph.GraphTest > complexConsistencyTest PASSED
+
+org.logstash.config.ir.graph.GraphTest > SimpleConsistencyTest PASSED
+
+org.logstash.config.ir.graph.IfVertexTest > testDoesNotAcceptNonBooleanEdges PASSED
+
+org.logstash.config.ir.graph.IfVertexTest > testEdgeTypeHandling PASSED
+
+org.logstash.config.ir.graph.IfVertexTest > testIfVertexWithSecretsIsntLeaked PASSED
+
+org.logstash.config.ir.graph.IfVertexTest > testIfVertexCreation PASSED
+
+org.logstash.config.ir.graph.PlainEdgeTest > creationDoesNotRaiseException PASSED
+
+org.logstash.config.ir.graph.PlainEdgeTest > testFactoryCreationDoesNotRaiseException PASSED
+
+org.logstash.config.ir.graph.PluginVertexTest > testConstructionIdHandlingWhenExplicitId PASSED
+
+org.logstash.config.ir.graph.PluginVertexTest > testConstructionIdHandlingWhenNoExplicitId PASSED
+
+org.logstash.config.ir.graph.QueueVertexTest > testConstruction PASSED
+
+org.logstash.config.ir.graph.VertexTest > TestVertexBasics PASSED
+
+org.logstash.config.ir.graph.VertexTest > testPartialLeafOnConnectedVertex PASSED
+
+org.logstash.config.ir.graph.VertexTest > testIsLeafAndRoot PASSED
+
+org.logstash.config.ir.graph.VertexTest > testPartialLeafOnUnconnectedVertex PASSED
+
+org.logstash.config.ir.graph.algorithms.BreadthFirstTest > testBFSBasic PASSED
+
+org.logstash.config.ir.graph.algorithms.DepthFirstTest > testDFSBasic PASSED
+
+org.logstash.config.ir.graph.algorithms.DepthFirstTest > testReverseDFSVertex PASSED
+
+org.logstash.config.ir.graph.algorithms.DepthFirstTest > testDFSReverse PASSED
+
+org.logstash.config.ir.graph.algorithms.DepthFirstTest > testDFSVertex PASSED
+
+org.logstash.config.ir.graph.algorithms.GraphDiffTest > testIdenticalGraphs PASSED
+
+org.logstash.config.ir.graph.algorithms.GraphDiffTest > testDifferentSimpleGraphs PASSED
+
+org.logstash.config.ir.graph.algorithms.TopologicalSortTest > testGraphCycleDetection PASSED
+
+org.logstash.config.ir.graph.algorithms.TopologicalSortTest > testSortOrder PASSED
+
+org.logstash.config.ir.imperative.DSLTest > testComposeSingle PASSED
+
+org.logstash.config.ir.imperative.DSLTest > testDSLComplexEquality PASSED
+
+org.logstash.config.ir.imperative.DSLTest > testDSLOnePluginEquality PASSED
+
+org.logstash.config.ir.imperative.DSLTest > testComposeMulti PASSED
+
+org.logstash.config.ir.imperative.DSLTest > testComposedPluginEquality PASSED
+
+org.logstash.config.ir.imperative.IfStatementTest > testEmptyIf PASSED
+
+org.logstash.config.ir.imperative.IfStatementTest > testIfWithOneTrueStatement PASSED
+
+org.logstash.config.ir.imperative.IfStatementTest > testIfWithOneTrueOneFalseStatement PASSED
+
+org.logstash.config.ir.imperative.IfStatementTest > testIfWithOneFalseStatement PASSED
+
+org.logstash.config.ir.imperative.ImperativeToGraphtest > convertComplexExpression PASSED
+
+org.logstash.config.ir.imperative.ImperativeToGraphtest > convertSimpleExpression PASSED
+
+org.logstash.config.ir.imperative.ImperativeToGraphtest > deepDanglingPartialLeaves PASSED
+
+org.logstash.config.ir.imperative.ImperativeToGraphtest > testIdsDontAffectSourceComponentEquality PASSED
+
+org.logstash.config.ir.imperative.ImperativeToGraphtest > convertComplexExpressionWithTerminal PASSED
+
+org.logstash.execution.AbstractPipelineExtTest > testParseToDurationWithBadDurationFormatThrowsAnError PASSED
+
+org.logstash.execution.AbstractPipelineExtTest > testParseToDurationWithUnrecognizedTimeUnitThrowsAnError PASSED
+
+org.logstash.execution.AbstractPipelineExtTest > testParseToDurationSuccessfullyParseExpectedFormats PASSED
+
+org.logstash.execution.AbstractPipelineExtTest > testParseToDurationWithUnspecifiedTimeUnitThrowsAnError PASSED
+
+org.logstash.execution.ShutdownWatcherExtTest > pipelineWithDrainShouldNotPrintStallMsg PASSED
+
+org.logstash.execution.ShutdownWatcherExtTest > pipelineWithUnsafeShutdownShouldForceShutdown PASSED
+
+org.logstash.ext.JrubyEventExtLibraryTest > shouldSetJavaProxy PASSED
+
+org.logstash.ext.JrubyEventExtLibraryTest > correctlySetsValueWhenGivenMapWithKeysThatHaveFieldReferenceSpecialCharacters PASSED
+
+org.logstash.ext.JrubyEventExtLibraryTest > correctlyHandlesNonAsciiKeys PASSED
+
+org.logstash.ext.JrubyEventExtLibraryTest > correctlyRaiseRubyRuntimeErrorWhenGivenInvalidFieldReferences PASSED
+
+org.logstash.ext.JrubyMemoryReadClientExtTest > testInflightBatchesTracking PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testConstructFromRubyDateTime PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testCompareAnyType PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testCoerceInstanceOfRubyString PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testConsistentEql PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testConstructorNew PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testConstructorNow PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testCoerceInstanceOfRubyTime PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testRaiseOnInvalidFormat PASSED
+
+org.logstash.ext.JrubyTimestampExtLibraryTest > testCoerceInstanceOfRubyTimestamp PASSED
+
+org.logstash.ext.TimestampTest > testClone PASSED
+
+org.logstash.instrument.metrics.ExtendedFlowMetricTest > testFunctionalityWhenMetricInitiallyReturnsNullValue PASSED
+
+org.logstash.instrument.metrics.ExtendedFlowMetricTest > testFunctionalityWithinSecondsOfInitialization PASSED
+
+org.logstash.instrument.metrics.ExtendedFlowMetricTest > testNonMovingDenominator PASSED
+
+org.logstash.instrument.metrics.ExtendedFlowMetricTest > testBaselineFunctionality PASSED
+
+org.logstash.instrument.metrics.MetricTypeTest > ensurePassivity PASSED
+
+org.logstash.instrument.metrics.SimpleFlowMetricTest > testFunctionalityWhenMetricInitiallyReturnsNullValue PASSED
+
+org.logstash.instrument.metrics.SimpleFlowMetricTest > testBaselineFunctionality PASSED
+
+org.logstash.instrument.metrics.UpScaledMetricTest > testGetValue PASSED
+
+org.logstash.instrument.metrics.UpScaledMetricTest > testGetType PASSED
+
+org.logstash.instrument.metrics.UptimeMetricTest > withUnitsPrecise PASSED
+
+org.logstash.instrument.metrics.UptimeMetricTest > getType PASSED
+
+org.logstash.instrument.metrics.UptimeMetricTest > getNameExplicit PASSED
+
+org.logstash.instrument.metrics.UptimeMetricTest > withTemporalUnit PASSED
+
+org.logstash.instrument.metrics.UptimeMetricTest > getValue PASSED
+
+org.logstash.instrument.metrics.UptimeMetricTest > testDefaultConstructor PASSED
+
+org.logstash.instrument.metrics.counter.LongCounterTest > increment PASSED
+
+org.logstash.instrument.metrics.counter.LongCounterTest > incrementByValue PASSED
+
+org.logstash.instrument.metrics.counter.LongCounterTest > type PASSED
+
+org.logstash.instrument.metrics.counter.LongCounterTest > incrementByNegativeValue PASSED
+
+org.logstash.instrument.metrics.counter.LongCounterTest > noInitialValue PASSED
+
+org.logstash.instrument.metrics.counter.LongCounterTest > incrementByNegativeLongValue PASSED
+
+org.logstash.instrument.metrics.counter.LongCounterTest > getValue PASSED
+
+org.logstash.instrument.metrics.gauge.BooleanGaugeTest > set PASSED
+
+org.logstash.instrument.metrics.gauge.BooleanGaugeTest > getValue PASSED
+
+org.logstash.instrument.metrics.gauge.LazyDelegatingGaugeTest > set STANDARD_OUT
+    [WARN ] 2026-03-22 15:42:48.115 [Test worker] LazyDelegatingGauge - A gauge metric of an unknown type (java.util.Collections.SingletonSet) has been created for key: bar. This may result in invalid serialization.  It is recommended to log an issue to the responsible developer/development team.
+
+org.logstash.instrument.metrics.gauge.LazyDelegatingGaugeTest > set PASSED
+
+org.logstash.instrument.metrics.gauge.LazyDelegatingGaugeTest > getValue STANDARD_OUT
+    [WARN ] 2026-03-22 15:42:48.117 [Test worker] LazyDelegatingGauge - A gauge metric of an unknown type (java.util.Collections.SingletonSet) has been created for key: bar. This may result in invalid serialization.  It is recommended to log an issue to the responsible developer/development team.
+
+org.logstash.instrument.metrics.gauge.LazyDelegatingGaugeTest > getValue PASSED
+
+org.logstash.instrument.metrics.gauge.NumberGaugeTest > set PASSED
+
+org.logstash.instrument.metrics.gauge.NumberGaugeTest > getValue PASSED
+
+org.logstash.instrument.metrics.gauge.RubyHashGaugeTest > set PASSED
+
+org.logstash.instrument.metrics.gauge.RubyHashGaugeTest > getValue PASSED
+
+org.logstash.instrument.metrics.gauge.RubyTimeStampGaugeTest > set PASSED
+
+org.logstash.instrument.metrics.gauge.RubyTimeStampGaugeTest > getValue PASSED
+
+org.logstash.instrument.metrics.gauge.TextGaugeTest > set PASSED
+
+org.logstash.instrument.metrics.gauge.TextGaugeTest > getValue PASSED
+
+org.logstash.instrument.metrics.gauge.UnknownGaugeTest > set PASSED
+
+org.logstash.instrument.metrics.gauge.UnknownGaugeTest > getValue PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testValueDuringConcurrentTrackedExecutions PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testThrowing PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testAccumulatesExcessNanos PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testName PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testType PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testValueAfterConcurrentTrackedExecutions PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testReturnValue PASSED
+
+org.logstash.instrument.metrics.timer.ConcurrentLiveTimerMetricTest > testBaselineFunctionality PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testAllThreadsHaveWaitedInformation PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testStackTraceSizeOption PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testOptionsOrderingCpu PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testAllThreadsHaveThreadState PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testAllThreadsHaveCpuTime PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testAllThreadsHaveBlockedInformation PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testAllThreadsHaveStackTraces PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testOptionsOrderingBlocked PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testOptionsOrderingWait PASSED
+
+org.logstash.instruments.monitors.HotThreadMonitorTest > testThreadsReportsGenerated PASSED
+
+org.logstash.instruments.monitors.MemoryMonitorTest > testEachHeapSpaceRepresented PASSED
+
+org.logstash.instruments.monitors.MemoryMonitorTest > testAllStatsAreAvailableForHeap PASSED
+
+org.logstash.instruments.monitors.MemoryMonitorTest > testAllStatsAreAvailableForNonHeap PASSED
+
+org.logstash.instruments.monitors.ProcessMonitorTest > testReportFDStats PASSED
+
+org.logstash.instruments.monitors.ProcessMonitorTest > testReportMemStats PASSED
+
+org.logstash.instruments.monitors.ProcessMonitorTest > testReportCpuStats PASSED
+
+org.logstash.instruments.monitors.SystemMonitorTest > systemMonitorTest PASSED
+
+org.logstash.log.CustomLogEventTests > testJSONLayout PASSED
+
+org.logstash.log.CustomLogEventTests > testPatternLayout PASSED
+
+org.logstash.log.CustomLogEventTests > testJSONLayoutWithRubyObjectArgument PASSED
+
+org.logstash.log.CustomLogEventTests > testJSONLayoutWhenParamsContainsAnotherMessageField PASSED
+
+org.logstash.log.DefaultDeprecationLoggerTest > testDeprecationLoggerWriteOut_root PASSED
+
+org.logstash.log.DefaultDeprecationLoggerTest > testDeprecationLoggerWriteOut_nested PASSED
+
+org.logstash.log.LogstashConfigurationFactoryTest > testAppenderPerPipelineIsCreatedAfterLogLine PASSED
+
+org.logstash.log.LogstashConfigurationFactoryTest > testDisableAppenderPerPipelineIsCreatedAfterLogLine PASSED
+
+org.logstash.log.LogstashLoggerContextFactoryTest > testGetContextAlwaysReturnsTheSameObject PASSED
+
+org.logstash.log.PipelineRoutingAppenderTest > routingTest PASSED
+
+org.logstash.log.PipelineRoutingFilterTest > testShouldLetEventFlowIfSeparateLogFeatureIsEnabledAndTheEventIsNotPipelineTagged PASSED
+
+org.logstash.log.PipelineRoutingFilterTest > testDenyEventFlowIfSeparateLogFeatureIsEnabledAndTheEventIsPipelineTagged PASSED
+
+org.logstash.log.PipelineRoutingFilterTest > testShouldLetEventFlowIfSeparateLogFeatureIsDisabled PASSED
+
+org.logstash.log.PluginDeprecationLoggerTest > testJavaPluginUsesDeprecationLogger PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testSerializationWithArrayValue PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testValueWithNoCustomInspectMethod PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testFailingInspectMethodFallback PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testLogstashOwnedValueWithCustomInspectMethod PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testFailingToSMethodFallback PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testSerializationWithRubyMapValue PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testLogstashOwnedValueWithNoCustomInspectMethod PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testSerializationWithJavaListValue PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testSerializationWithRubyArrayValue PASSED
+
+org.logstash.log.RubyBasicObjectSerializerTest > testSerializerPriority PASSED
+
+org.logstash.plugins.AliasRegistryTest > testLoadAliasesFromYAML PASSED
+
+org.logstash.plugins.AliasRegistryTest > testProductionConfigAliasesGemsExists PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testBrokenConfig PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testDefaultValues PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testBadUriThrows PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testBadDefaultUriThrows PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testBooleanValues PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testConfiguration PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testPasswordDefaultValue PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testUriValue PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testDowncastFromLongToDouble PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testDefaultCodec PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testUriDefaultValue PASSED
+
+org.logstash.plugins.ConfigurationImplTest > testPassword PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[0: optional config items, none provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[1: optional config items, some provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[2: optional config items, all provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[3: optional config items, too many provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[4: required config items, all provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[5: required config items, some provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[6: required config items, too many provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[7: optional+required config items, some provided] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[8: optional+required config items, some missing] PASSED
+
+org.logstash.plugins.PluginUtilValidateConfigTest > testValidateConfig[9: optional+required config items, some missing, some invalid] PASSED
+
+org.logstash.plugins.PluginValidatorTest > testValidCodecPlugin PASSED
+
+org.logstash.plugins.PluginValidatorTest > testValidOutputPlugin PASSED
+
+org.logstash.plugins.PluginValidatorTest > testValidInputPlugin PASSED
+
+org.logstash.plugins.PluginValidatorTest > testInvalidInputPlugin SKIPPED
+
+org.logstash.plugins.PluginValidatorTest > testValidFilterPlugin PASSED
+
+org.logstash.plugins.codecs.LineTest > testEncodeWithUtf8 PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeWithCharset PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeWithMulticharTrailingDelimiter PASSED
+
+org.logstash.plugins.codecs.LineTest > testClone PASSED
+
+org.logstash.plugins.codecs.LineTest > testFlush PASSED
+
+org.logstash.plugins.codecs.LineTest > testEncodeWithFormat PASSED
+
+org.logstash.plugins.codecs.LineTest > testSimpleDecode PASSED
+
+org.logstash.plugins.codecs.LineTest > testEncodeWithCharset PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeAcrossMultibyteCharBoundary PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeCustomDelimiter PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeDefaultDelimiter PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeWithMulticharDelimiter PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeOnDelimiterOnly PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeWithTrailingDelimiter PASSED
+
+org.logstash.plugins.codecs.LineTest > testDecodeWithUtf8 PASSED
+
+org.logstash.plugins.codecs.LineTest > testEncode PASSED
+
+org.logstash.plugins.codecs.LineTest > testSuccessiveDecodesWithTrailingDelimiter PASSED
+
+org.logstash.plugins.codecs.PlainTest > testEncodeWithUtf8 PASSED
+
+org.logstash.plugins.codecs.PlainTest > testDecodeWithCharset PASSED
+
+org.logstash.plugins.codecs.PlainTest > testClone PASSED
+
+org.logstash.plugins.codecs.PlainTest > testEncodeWithFormat PASSED
+
+org.logstash.plugins.codecs.PlainTest > testSimpleDecode PASSED
+
+org.logstash.plugins.codecs.PlainTest > testEncodeWithCharset PASSED
+
+org.logstash.plugins.codecs.PlainTest > testEmptyDecode PASSED
+
+org.logstash.plugins.codecs.PlainTest > testDecodeWithUtf8 PASSED
+
+org.logstash.plugins.filters.UuidTest > testUuidWithOverwrite PASSED
+
+org.logstash.plugins.filters.UuidTest > testUuidWithoutOverwrite PASSED
+
+org.logstash.plugins.filters.UuidTest > testUuidWithoutRequiredConfigThrows STANDARD_OUT
+    15:42:52.527 [Test worker] ERROR co.elastic.logstash.api.PluginHelper - Required setting 'target' not specified for plugin 'java_uuid'
+
+org.logstash.plugins.filters.UuidTest > testUuidWithoutRequiredConfigThrows PASSED
+
+org.logstash.plugins.inputs.StdinTest > testSimpleEvent PASSED
+
+org.logstash.plugins.inputs.StdinTest > testUtf8Events PASSED
+
+org.logstash.plugins.inputs.StdinTest > testEvents PASSED
+
+org.logstash.plugins.outputs.StdoutTest > testUnderlyingStreamIsNotClosed PASSED
+
+org.logstash.plugins.outputs.StdoutTest > testEventLargerThanBuffer PASSED
+
+org.logstash.plugins.outputs.StdoutTest > testEvents PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > activeSenderPreventsPrune[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > whenInBlockingModeInputsShutdownLast[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > whenInputFailsOutputRetryOnlyNotYetDelivered[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > registerUnregisterListenerUpdatesOutputs[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > sendingEmptyListToNowhereStillReturns[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > senderRegisterUnregister[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > listenUnlistenUpdatesOutputReceivers[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > activeListenerPreventsPrune[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > missingInputEventuallySucceeds[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > whenInDefaultNonBlockingModeInputsShutdownInstantly[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > subscribeUnsubscribe[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > multipleSendersPreventPrune[class org.logstash.plugins.pipeline.PipelineBusV2$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > activeSenderPreventsPrune[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > whenInBlockingModeInputsShutdownLast[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > whenInputFailsOutputRetryOnlyNotYetDelivered[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > registerUnregisterListenerUpdatesOutputs[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > sendingEmptyListToNowhereStillReturns[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > senderRegisterUnregister[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > listenUnlistenUpdatesOutputReceivers[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > activeListenerPreventsPrune[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > missingInputEventuallySucceeds[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > whenInDefaultNonBlockingModeInputsShutdownInstantly[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > subscribeUnsubscribe[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.plugins.pipeline.PipelineBusTest > multipleSendersPreventPrune[class org.logstash.plugins.pipeline.PipelineBusV1$Testable] PASSED
+
+org.logstash.secret.SecretIdentifierTest > testBasic PASSED
+
+org.logstash.secret.SecretIdentifierTest > testColon PASSED
+
+org.logstash.secret.SecretIdentifierTest > testCase PASSED
+
+org.logstash.secret.SecretIdentifierTest > testFromExternal PASSED
+
+org.logstash.secret.SecretIdentifierTest > testFromExternalInvalid PASSED
+
+org.logstash.secret.SecretIdentifierTest > testNullKey PASSED
+
+org.logstash.secret.SecretIdentifierTest > testEmptyKey PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testAddMultipleKeys PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testAddWithNoIdentifiers PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testAdd PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testBadCommand PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testList PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testAddNonAsciiValue PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testAddWithStdinOption PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testRemoveMissing STANDARD_OUT
+
+    Enter value for e787a286-60b7-4670-8289-8d56aef9f4fd: Added 'e787a286-60b7-4670-8289-8d56aef9f4fd' to the Logstash keystore.
+
+
+org.logstash.secret.cli.SecretStoreCliTest > testRemoveMissing PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testHelpList PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testHelpCreate PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testAddWithoutCreatedKeystore PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testCommandParseWithValidCommand PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testHelpAdd PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testHelpRemove PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > tesCommandsAllowHelpOption PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testAddEmptyValue PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testCreateNewAllNo PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testRemoveMultipleKeys PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testCreateNoEnvironmentWarning PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testCommandWithUnrecognizedOption PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testCreateNewAllYes PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testDoubleCreateWarning PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testRemoveWithNoIdentifiers PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testRemove STANDARD_OUT
+
+    Enter value for 751af01f-e633-422b-9ea2-7010227d743e: Added '751af01f-e633-422b-9ea2-7010227d743e' to the Logstash keystore.
+
+
+org.logstash.secret.cli.SecretStoreCliTest > testRemove PASSED
+
+org.logstash.secret.cli.SecretStoreCliTest > testCommandParseWithInvalidCommand PASSED
+
+org.logstash.secret.password.DigitValidatorTest > testValidateSuccess PASSED
+
+org.logstash.secret.password.DigitValidatorTest > testValidateFailure PASSED
+
+org.logstash.secret.password.EmptyStringValidatorTest > testValidateSuccess PASSED
+
+org.logstash.secret.password.EmptyStringValidatorTest > testValidateFailure PASSED
+
+org.logstash.secret.password.LengthValidatorTest > testValidateSuccess PASSED
+
+org.logstash.secret.password.LengthValidatorTest > testValidateFailure PASSED
+
+org.logstash.secret.password.LowerCaseValidatorTest > testValidateSuccess PASSED
+
+org.logstash.secret.password.LowerCaseValidatorTest > testValidateFailure PASSED
+
+org.logstash.secret.password.PasswordParamConverterTest > testEmptyValue PASSED
+
+org.logstash.secret.password.PasswordParamConverterTest > testUnsupportedKlass PASSED
+
+org.logstash.secret.password.PasswordParamConverterTest > testConvert PASSED
+
+org.logstash.secret.password.PasswordValidatorTest > testValidPassword PASSED
+
+org.logstash.secret.password.PasswordValidatorTest > testPolicyCombinedOutput PASSED
+
+org.logstash.secret.password.PasswordValidatorTest > testPolicyMap PASSED
+
+org.logstash.secret.password.SymbolValidatorTest > testValidateSuccess PASSED
+
+org.logstash.secret.password.SymbolValidatorTest > testValidateFailure PASSED
+
+org.logstash.secret.password.UpperCaseValidatorTest > testValidateSuccess PASSED
+
+org.logstash.secret.password.UpperCaseValidatorTest > testValidateFailure PASSED
+
+org.logstash.secret.store.SecretStoreFactoryTest > testAlternativeImplementation PASSED
+
+org.logstash.secret.store.SecretStoreFactoryTest > testAlternativeImplementationInvalid PASSED
+
+org.logstash.secret.store.SecretStoreFactoryTest > testDefaultLoadWithEnvPass PASSED
+
+org.logstash.secret.store.SecretStoreFactoryTest > testCreateLoad PASSED
+
+org.logstash.secret.store.SecretStoreFactoryTest > testErrorLoading PASSED
+
+org.logstash.secret.store.SecretStoreUtilTest > testAsciiCharToBytes PASSED
+
+org.logstash.secret.store.SecretStoreUtilTest > testClear PASSED
+
+org.logstash.secret.store.SecretStoreUtilTest > testBase64EncodeBytes PASSED
+
+org.logstash.secret.store.SecretStoreUtilTest > testBase64EncodeChars PASSED
+
+org.logstash.secret.store.SecretStoreUtilTest > testBase64EncodeBytesToChars PASSED
+
+org.logstash.secret.store.SecretStoreUtilTest > testObfuscate PASSED
+
+org.logstash.secret.store.SecretStoreUtilTest > testAsciiBytesToChar PASSED
+
+org.logstash.secret.store.SecureConfigTest > testClearedAdd PASSED
+
+org.logstash.secret.store.SecureConfigTest > testClearedGet PASSED
+
+org.logstash.secret.store.SecureConfigTest > test PASSED
+
+org.logstash.secret.store.SecureConfigTest > testClearedClone PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > retrieveWithInvalidInput PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > tamperedKeystore PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > invalidDirectory PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testEmptyNotAllowedOnExisting PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > basicTest PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > wrongPassword PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > isLogstashKeystore PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testExternalUpdateList PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testExternalUpdateRead PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testLoadNotCreated PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > notLogstashKeystoreNoMarker PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testRestrictivePermissions PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testFileLock PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testGeneratedSecret PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > overwriteExisting PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > notLogstashKeystore PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testDefaultPermissions PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testEmptyNotAllowedOnCreate PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testWithRealSecondJvm SKIPPED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > retrieveMissingSecret PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > readExisting PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testExternalUpdatePersist PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > concurrentReadTest PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testAlreadyCreated PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testDelete PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testLargeKeysAndValues PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > purgeMissingSecret PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > readWriteListDelete PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testNoPathDefined PASSED
+
+org.logstash.secret.store.backend.JavaKeyStoreTest > testNonAscii PASSED
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenDisjointedChainPresented STANDARD_OUT
+    ROOT: `3700208913f1b4955cf4df3cfcd241a5d98c00131966da6a78fe70532c22696c` (CN=root, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    INTR: `dfb69ff77651063393dc3e77423382390a3c21859253457259f6a637a2515cda` (CN=intermediate-ca, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    SRVR: `ddf798cd453f19ee4300c4e4ac1f56b897ebbd9853f406d1947419b0e0fb91b2` (CN=server, O=MyLab, L=Lisbon, ST=NA, C=PT)
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenDisjointedChainPresented PASSED
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenAMatchingExpiredCertificateIsOnTheChain STANDARD_OUT
+    ROOT: `3700208913f1b4955cf4df3cfcd241a5d98c00131966da6a78fe70532c22696c` (CN=root, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    INTR: `dfb69ff77651063393dc3e77423382390a3c21859253457259f6a637a2515cda` (CN=intermediate-ca, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    SRVR: `ddf798cd453f19ee4300c4e4ac1f56b897ebbd9853f406d1947419b0e0fb91b2` (CN=server, O=MyLab, L=Lisbon, ST=NA, C=PT)
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenAMatchingExpiredCertificateIsOnTheChain PASSED
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenAMatchingValidCertificateIsIntermediateOfTheChain STANDARD_OUT
+    ROOT: `3700208913f1b4955cf4df3cfcd241a5d98c00131966da6a78fe70532c22696c` (CN=root, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    INTR: `dfb69ff77651063393dc3e77423382390a3c21859253457259f6a637a2515cda` (CN=intermediate-ca, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    SRVR: `ddf798cd453f19ee4300c4e4ac1f56b897ebbd9853f406d1947419b0e0fb91b2` (CN=server, O=MyLab, L=Lisbon, ST=NA, C=PT)
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenAMatchingValidCertificateIsIntermediateOfTheChain PASSED
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenAMatchingValidCertificateIsRootOfTheChain STANDARD_OUT
+    ROOT: `3700208913f1b4955cf4df3cfcd241a5d98c00131966da6a78fe70532c22696c` (CN=root, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    INTR: `dfb69ff77651063393dc3e77423382390a3c21859253457259f6a637a2515cda` (CN=intermediate-ca, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    SRVR: `ddf798cd453f19ee4300c4e4ac1f56b897ebbd9853f406d1947419b0e0fb91b2` (CN=server, O=MyLab, L=Lisbon, ST=NA, C=PT)
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenAMatchingValidCertificateIsRootOfTheChain PASSED
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenNoMatchingCertificateIsOnTheChain STANDARD_OUT
+    ROOT: `3700208913f1b4955cf4df3cfcd241a5d98c00131966da6a78fe70532c22696c` (CN=root, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    INTR: `dfb69ff77651063393dc3e77423382390a3c21859253457259f6a637a2515cda` (CN=intermediate-ca, O=MyLab, L=Lisbon, ST=NA, C=PT)
+    SRVR: `ddf798cd453f19ee4300c4e4ac1f56b897ebbd9853f406d1947419b0e0fb91b2` (CN=server, O=MyLab, L=Lisbon, ST=NA, C=PT)
+
+org.logstash.util.CATrustedFingerprintTrustStrategyTest > testIsTrustedWhenNoMatchingCertificateIsOnTheChain PASSED
+
+org.logstash.util.CloudSettingAuthTest > testThrowExceptionWhenGivenStringWhichIsEmpty PASSED
+
+org.logstash.util.CloudSettingAuthTest > testThrowExceptionWhenGivenStringWithoutPassword PASSED
+
+org.logstash.util.CloudSettingAuthTest > testNullInputDoenstThrowAnException PASSED
+
+org.logstash.util.CloudSettingAuthTest > testThrowExceptionWhenGivenStringWithoutSeparatorOrPassword PASSED
+
+org.logstash.util.CloudSettingAuthTest > testWhenGivenStringWhichIsCloudAuthSetTheString PASSED
+
+org.logstash.util.CloudSettingAuthTest > testThrowExceptionWhenGivenStringWithoutUsername PASSED
+
+org.logstash.util.CloudSettingIdTest > testWithRealWorldInput PASSED
+
+org.logstash.util.CloudSettingIdTest > testNullInputMakesAllGettersReturnNull PASSED
+
+org.logstash.util.CloudSettingIdTest > testGivenAcceptableInputEmptyKibanaUUID PASSED
+
+org.logstash.util.CloudSettingIdTest > testAccessorsWithAcceptableInput PASSED
+
+org.logstash.util.CloudSettingIdTest > testThrowExceptionWhenKibanaSegmentSegmentIsUndefined PASSED
+
+org.logstash.util.CloudSettingIdTest > testWhenCloudIdContainsPortDescriptionForESAndKibana PASSED
+
+org.logstash.util.CloudSettingIdTest > testThrowExceptionWhenElasticSegmentSegmentIsUndefined PASSED
+
+org.logstash.util.CloudSettingIdTest > testWhenCloudIdDefinesExtraData PASSED
+
+org.logstash.util.CloudSettingIdTest > testDecodingWithoutLabelSegment PASSED
+
+org.logstash.util.CloudSettingIdTest > testNullInputDoenstThrowAnException PASSED
+
+org.logstash.util.CloudSettingIdTest > testThrowExceptionWhenAtLeatOneSegmentIsEmpty PASSED
+
+org.logstash.util.CloudSettingIdTest > testThrowExceptionWhenMalformedValueIsGiven PASSED
+
+org.logstash.util.CloudSettingIdTest > testWhenCloudIdContainsCloudPort PASSED
+
+org.logstash.util.CloudSettingIdTest > testWhenCloudIdDefinesCloudPortAndKibanaPort PASSED
+
+org.logstash.util.CloudSettingIdTest > testWhenCloudIdOnlyDefinesKibanaPort PASSED
+
+org.logstash.util.ExponentialBackoffTest > testWithoutException PASSED
+
+org.logstash.util.ExponentialBackoffTest > testOneException PASSED
+
+org.logstash.util.ExponentialBackoffTest > testExceptionsReachMaxRetry PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetIfSetOrElseSupply PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetIfSetOrElseSupplyNullValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferAndGetWithValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testFromOfWithNull PASSED
+
+org.logstash.util.SetOnceReferenceTest > testFromOfNullableWithNull PASSED
+
+org.logstash.util.SetOnceReferenceTest > testFromOfWithValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferNullValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferAndGetWithNullReturningSupplier PASSED
+
+org.logstash.util.SetOnceReferenceTest > testFromUnset PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferSupplierThatReturnsNullValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferAndGetWithNullValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferSupplier PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferAndGetWithSupplier PASSED
+
+org.logstash.util.SetOnceReferenceTest > testFromOfNullableWithValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferAndGetOptionalWithValue PASSED
+
+org.logstash.util.SetOnceReferenceTest > testUnsetOfferAndGetOptionalWithNullValue PASSED
+
+------------------------------------------------------------------------
+|  Results: FAILURE (874 tests, 867 successes, 3 failures, 4 skipped)  |
+------------------------------------------------------------------------
+
+874 tests completed, 3 failed, 4 skipped
+
+> Task :logstash-core:javaTests FAILED
+
+> Task :logstash-core:rubyTests
+Picked up JAVA_TOOL_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+Picked up _JAVA_OPTIONS: -Dhttp.proxyHost=hkgpqwg00206.huawei.com -Dhttp.proxyPort=8080 -Dhttps.proxyHost=hkgpqwg00206.huawei.com -Dhttps.proxyPort=8080 -Dhttp.proxyUser=test -Dhttp.proxyPassword='test' -Dhttps.proxyUser=test -Dhttps.proxyPassword='test' -Dhttp.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dhttps.nonProxyHosts='localhost|127.0.0.1|10.*|192.168.*|mirrors.tools.huawei.com' -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai
+
+org.logstash.RSpecTests > rspecTests[compliance] STANDARD_OUT
+    Sending Logstash logs to null which is now configured via log4j2.properties
+    Run options: exclude {:integration=>true, :redis=>true, :socket=>true, :performance=>true, :couchdb=>true, :elasticsearch=>true, :elasticsearch_secure=>true, :export_cypher=>true, :windows=>true}
+
+    Randomized with seed 50043
+
+    Project licenses
+      logstash-codec-plain
+        behaves like runtime license test
+    [32m      has runtime dependencies with expected licenses[0m
+    [32m      have an expected license[0m
+      logstash-output-elasticsearch
+        behaves like runtime license test
+    [32m      have an expected license[0m
+    [32m      has runtime dependencies with expected licenses[0m
+      logstash-core
+        behaves like runtime license test
+    [32m      has runtime dependencies with expected licenses[0m
+    [32m      have an expected license[0m
+
+    Finished in 0.3843 seconds (files took 3.08 seconds to load)
+    [32m6 examples, 0 failures[0m
+
+    Randomized with seed 50043
+
+
+org.logstash.RSpecTests > rspecTests[compliance] PASSED
+
+org.logstash.RSpecTests > rspecTests[core tests] STANDARD_OUT
+
+    An error occurred while loading ./logstash-core/spec/logstash/agent_spec.rb.
+    Hint: Install the `did_you_mean` gem in order to provide suggestions for similarly named files.
+    [31mFailure/Error: [0mstatus = [1;34;4mRSpec[0m::[1;34;4mCore[0m::[1;34;4mRunner[0m.run([1;36mARGV[0m.empty? ? ([1;32m$JUNIT_ARGV[0m || [[31m[1;31m"[0m[31mspec[1;31m"[0m[31m[0m]) : [1;36mARGV[0m).to_i[0m
+    [31m[0m
+    [31mLoadError:[0m
+    [31m  no such file to load -- logstash/inputs/generator[0m
+    [36m# ./logstash-core/spec/logstash/agent_spec.rb:20:in `<main>'[0m
+    [36m# ./lib/bootstrap/rspec.rb:36:in `<main>'[0m
+
+    An error occurred while loading ./logstash-core/spec/logstash/java_pipeline_spec.rb.
+    Hint: Install the `did_you_mean` gem in order to provide suggestions for similarly named files.
+    [31mFailure/Error: [0mstatus = [1;34;4mRSpec[0m::[1;34;4mCore[0m::[1;34;4mRunner[0m.run([1;36mARGV[0m.empty? ? ([1;32m$JUNIT_ARGV[0m || [[31m[1;31m"[0m[31mspec[1;31m"[0m[31m[0m]) : [1;36mARGV[0m).to_i[0m
+    [31m[0m
+    [31mLoadError:[0m
+    [31m  no such file to load -- logstash/inputs/generator[0m
+    [36m# ./logstash-core/spec/logstash/java_pipeline_spec.rb:19:in `<main>'[0m
+    [36m# ./lib/bootstrap/rspec.rb:36:in `<main>'[0m
+
+    An error occurred while loading ./logstash-core/spec/logstash/pipeline_action/create_spec.rb.
+    Hint: Install the `did_you_mean` gem in order to provide suggestions for similarly named files.
+    [31mFailure/Error: [0mstatus = [1;34;4mRSpec[0m::[1;34;4mCore[0m::[1;34;4mRunner[0m.run([1;36mARGV[0m.empty? ? ([1;32m$JUNIT_ARGV[0m || [[31m[1;31m"[0m[31mspec[1;31m"[0m[31m[0m]) : [1;36mARGV[0m).to_i[0m
+    [31m[0m
+    [31mLoadError:[0m
+    [31m  no such file to load -- logstash/inputs/generator[0m
+    [36m# ./logstash-core/spec/logstash/pipeline_action/create_spec.rb:23:in `<main>'[0m
+    [36m# ./lib/bootstrap/rspec.rb:36:in `<main>'[0m
+
+    An error occurred while loading ./logstash-core/spec/logstash/pipeline_pq_file_spec.rb.
+    Hint: Install the `did_you_mean` gem in order to provide suggestions for similarly named files.
+    [31mFailure/Error: [0mstatus = [1;34;4mRSpec[0m::[1;34;4mCore[0m::[1;34;4mRunner[0m.run([1;36mARGV[0m.empty? ? ([1;32m$JUNIT_ARGV[0m || [[31m[1;31m"[0m[31mspec[1;31m"[0m[31m[0m]) : [1;36mARGV[0m).to_i[0m
+    [31m[0m
+    [31mLoadError:[0m
+    [31m  no such file to load -- logstash/inputs/generator[0m
+    [36m# ./logstash-core/spec/logstash/pipeline_pq_file_spec.rb:19:in `<main>'[0m
+    [36m# ./lib/bootstrap/rspec.rb:36:in `<main>'[0m
+    WARNING: A maven settings file already exist at /root/.m2/settings.xml, please review the content to make sure it includes your proxies configuration.
+    Run options: exclude {:integration=>true, :redis=>true, :socket=>true, :performance=>true, :couchdb=>true, :elasticsearch=>true, :elasticsearch_secure=>true, :export_cypher=>true, :windows=>true}
+
+    Randomized with seed 50043
+
+    Finished in 0.00109 seconds (files took 6.38 seconds to load)
+    [31m0 examples, 0 failures, 4 errors occurred outside of examples[0m
+
+    Randomized with seed 50043
+
+
+org.logstash.RSpecTests > rspecTests[core tests] FAILED
+    java.lang.AssertionError: RSpec test suite `core tests` saw at least one failure.
+        at org.junit.Assert.fail(Assert.java:89)
+        at org.logstash.RSpecTests.rspecTests(RSpecTests.java:72)
+
+org.logstash.config.ir.CompiledPipelineTest > conditionalNestedMetaFieldPipeline PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > moreThan255Parents PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesRegexMatchesWithConstant PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > buildsForkedPipeline PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesGreaterThan PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesLessOrEqualThan PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > conditionalWithNullField PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesEquals PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > equalityCheckOnCompositeField PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesRegexNoMatchesWithConstant PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesNotEquals PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesLessThan PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > testReuseCompiledClasses PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > buildsStraightPipeline PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > compilerBenchmark PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > testCacheCompiledClassesWithDifferentId PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > buildsTrivialPipeline PASSED
+
+org.logstash.config.ir.CompiledPipelineTest > correctlyCompilesGreaterOrEqualThan PASSED
+
+org.logstash.config.ir.ConfigCompilerTest > testCompileWithFullyCommentedSource PASSED
+
+org.logstash.config.ir.ConfigCompilerTest > testCompileWithAnEmptySource PASSED
+
+org.logstash.config.ir.ConfigCompilerTest > testComplexConfigs PASSED
+
+org.logstash.config.ir.ConfigCompilerTest > testCompilingPipelineWithMultipleSources PASSED
+
+org.logstash.config.ir.ConfigCompilerTest > testComplexConfigToPipelineIR PASSED
+
+org.logstash.config.ir.ConfigCompilerTest > testConfigToPipelineIR PASSED
+
+org.logstash.config.ir.ConfigCompilerTest > testConfigDuplicateBlocksToPipelineIR PASSED
+
+org.logstash.config.ir.EventConditionTest > testConditionWithConstantFalseLiteralValue PASSED
+
+org.logstash.config.ir.EventConditionTest > testConditionWithConstantEmptyStringValue PASSED
+
+org.logstash.config.ir.EventConditionTest > testInclusionWithFieldInField PASSED
+
+org.logstash.config.ir.EventConditionTest > testConditionWithSecretStoreVariable PASSED
+
+org.logstash.config.ir.EventConditionTest > testConditionWithConstantValue PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testObjectEqualityOnConfigHashAndPipelineId PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testIsSystemWhenPipelineIsSystemPipeline PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testSourceAndLineRemapping_pipelineDefinedMInMultipleFiles_dontmatch PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testIsSystemWhenPipelineIsNotSystemPipeline PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testSourceAndLineRemapping_pipelineDefinedMInMultipleFiles PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testSourceAndLineRemapping_pipelineDefinedInSingleFileMultiLine_dontmatch PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testSourceAndLineRemapping_pipelineDefinedInSingleFileOneLine PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testSourceAndLineRemapping_pipelineDefinedInSingleFileMultiLine PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testReturnsTheSource PASSED
+
+org.logstash.config.ir.PipelineConfigTest > testSourceAndLineRemapping_pipelineDefinedMInMultipleFiles_withEmptyLinesInTheMiddle PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > delegatesClone PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > delegatesGetId PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > delegatesConfigSchema PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > delegatesGetName PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > flushIncrementsEventCount PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > flushDelegatesCall PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > encodeIncrementsEventCount PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > encodeDelegatesCall PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > plainCodecPluginPushesPluginNameToMetric PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > decodeIncrementsEventCount PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > plainCodecDelegatorInitializesCleanly PASSED
+
+org.logstash.config.ir.compiler.JavaCodecDelegatorTest > decodeDelegatesCall PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > singleConcurrencyStrategyIsDefault PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > outputStrategyTests PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > multiReceiveIncrementsEventCount PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > plainOutputPluginInitializesCleanly PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > multiReceivePassesBatch PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > registersOutputPlugin PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > plainOutputPluginPushesPluginNameToMetric PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > multiReceiveRecordsDurationInMillis SKIPPED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > outputStrategyMethodDelegationTests PASSED
+
+org.logstash.config.ir.compiler.OutputDelegatorTest > closesOutputPlugin PASSED
+
+org.logstash.execution.ObservedExecutionTest > compute PASSED
+
+org.logstash.plugins.CounterMetricImplTest > testReset PASSED
+
+org.logstash.plugins.CounterMetricImplTest > testIncrement PASSED
+
+org.logstash.plugins.CounterMetricImplTest > testIncrementByAmount PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testGauge PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testRoot PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testIncrement PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testNamespaceUnicodeFragment PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testTimeCallable SKIPPED
+
+org.logstash.plugins.NamespacedMetricImplTest > testReportTime PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testGaugeNested PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testGaugeUnicode PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testIncrementWithAmount PASSED
+
+org.logstash.plugins.NamespacedMetricImplTest > testNamespace PASSED
+
+org.logstash.plugins.factory.PluginFactoryExtTest > testPluginIdResolvedWithEnvironmentVariables PASSED
+
+----------------------------------------------------------------------
+|  Results: FAILURE (79 tests, 76 successes, 1 failures, 2 skipped)  |
+----------------------------------------------------------------------
+
+79 tests completed, 1 failed, 2 skipped
+
+> Task :logstash-core:rubyTests FAILED
+> Task :logstash-core:jacocoTestReport
+> Task :logstash-core-benchmarks:compileTestJava NO-SOURCE
+> Task :logstash-core-benchmarks:processTestResources NO-SOURCE
+> Task :logstash-core-benchmarks:testClasses UP-TO-DATE
+> Task :logstash-core-benchmarks:test SKIPPED
+> Task :logstash-integration-tests:compileTestJava
+> Task :logstash-integration-tests:processTestResources NO-SOURCE
+> Task :logstash-integration-tests:testClasses
+> Task :logstash-integration-tests:test NO-SOURCE
+> Task :logstash-xpack:compileTestJava
+> Task :logstash-xpack:processTestResources NO-SOURCE
+> Task :logstash-xpack:testClasses
+> Task :logstash-xpack:test NO-SOURCE
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':logstash-core:javaTests'.
+> There were failing tests. See the report at: file:///home/logstash/logstash-core/build/reports/tests/javaTests/index.html
+
+* Try:
+> Run with --scan to get full insights.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+* What went wrong:
+Execution failed for task ':logstash-core:rubyTests'.
+> There were failing tests. See the report at: file:///home/logstash/logstash-core/build/reports/tests/rubyTests/index.html
+
+* Try:
+> Run with --scan to get full insights.
+==============================================================================
+
+BUILD FAILED in 4m 26s
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.7/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+60 actionable tasks: 57 executed, 3 up-to-date
+脚本结束时间: 2026-03-22 07:44:05

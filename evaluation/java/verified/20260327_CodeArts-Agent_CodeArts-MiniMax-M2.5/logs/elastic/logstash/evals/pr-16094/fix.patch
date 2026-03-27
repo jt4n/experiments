@@ -1,0 +1,14 @@
+diff --git a/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java b/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
+index b52c14a6f..28f3eda0a 100644
+--- a/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
++++ b/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
+@@ -70,6 +70,9 @@ public class CustomLogEventSerializer extends JsonSerializer<CustomLogEvent> {
+ 
+         for (final Map.Entry<Object, Object> entry : message.getParams().entrySet()) {
+             final String paramName = entry.getKey().toString();
++            if ("message".equals(paramName)) {
++                continue;
++            }
+             final Object paramValue = entry.getValue();
+ 
+             try {

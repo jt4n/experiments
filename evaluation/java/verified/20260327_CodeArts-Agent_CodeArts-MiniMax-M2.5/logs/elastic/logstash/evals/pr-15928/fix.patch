@@ -1,0 +1,17 @@
+diff --git a/config/jvm.options b/config/jvm.options
+index b729fce91..b30b3d6f4 100644
+--- a/config/jvm.options
++++ b/config/jvm.options
+@@ -45,6 +45,12 @@
+ # use our provided JNA always versus the system one
+ #-Djna.nosys=true
+ 
++# Netty allocator configuration
++# Set maxOrder to 11 to restore the default chunk size to 16MB (8KB << 11 = 16MB)
++# Netty 4.1.75+ changed the default maxOrder from 11 to 9, reducing chunk size to 4MB
++# Objects larger than chunkSize are allocated outside the PooledAllocator, which is expensive
++-Dio.netty.allocator.maxOrder=11
++
+ # Turn on JRuby invokedynamic
+ -Djruby.compile.invokedynamic=true
+ 

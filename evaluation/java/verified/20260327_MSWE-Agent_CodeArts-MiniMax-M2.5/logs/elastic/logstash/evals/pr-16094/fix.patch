@@ -1,0 +1,70 @@
+
+diff --git a/.gitignore b/.gitignore
+index cc0ab0db4..7e5ef4afe 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,4 +63,6 @@ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+ qa/integration/fixtures/logs_rollover/log4j2.properties
+-ci/serverless/config/*.log
+\ No newline at end of file
++ci/serverless/config/*.logtarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java b/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
+index b52c14a6f..82d63a8e7 100644
+--- a/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
++++ b/logstash-core/src/main/java/org/logstash/log/CustomLogEventSerializer.java
+@@ -70,6 +70,10 @@ public class CustomLogEventSerializer extends JsonSerializer<CustomLogEvent> {
+ 
+         for (final Map.Entry<Object, Object> entry : message.getParams().entrySet()) {
+             final String paramName = entry.getKey().toString();
++            // Skip if this is a duplicate of the message field already written
++            if ("message".equals(paramName)) {
++                continue;
++            }
+             final Object paramValue = entry.getValue();
+ 
+             try {
+diff --git a/logstash-core/src/test/java/org/logstash/log/CustomLogEventTests.java b/logstash-core/src/test/java/org/logstash/log/CustomLogEventTests.java
+index c340fb921..a56061be9 100644
+--- a/logstash-core/src/test/java/org/logstash/log/CustomLogEventTests.java
++++ b/logstash-core/src/test/java/org/logstash/log/CustomLogEventTests.java
+@@ -174,4 +174,36 @@ public class CustomLogEventTests {
+         assertEquals(1, logEventMapValue.get("first"));
+         assertEquals(2, logEventMapValue.get("second"));
+     }
++
++    @Test
++    @SuppressWarnings("unchecked")
++    public void testJSONLayoutWithDuplicateMessageKey() throws Exception {
++        ListAppender appender = CTX.getListAppender("JSONEventLogger").clear();
++        Logger logger = LogManager.getLogger("JSONEventLogger");
++
++        // Test that when a map with "message" key is passed, it doesn't create duplicate message fields
++        Map<String, String> messageMap = new HashMap<>();
++        messageMap.put("message", "This is the message in the map");
++        messageMap.put("foo", "bar");
++        logger.warn("Original message", messageMap);
++
++        List<String> messages = appender.getMessages();
++        assertEquals(1, messages.size());
++
++        Map<String, Object> loggedMessage = ObjectMappers.JSON_MAPPER.readValue(messages.get(0), Map.class);
++        Map<String, Object> logEvent = (Map<String, Object>) loggedMessage.get("logEvent");
++
++        // Check that there's only one "message" field
++        assertEquals("Original message", logEvent.get("message"));
++        assertEquals("bar", logEvent.get("foo"));
++
++        // Ensure there's no duplicate key
++        int messageCount = 0;
++        for (String key : logEvent.keySet()) {
++            if ("message".equals(key)) {
++                messageCount++;
++            }
++        }
++        assertEquals("Should have exactly one message key", 1, messageCount);
++    }
+ }

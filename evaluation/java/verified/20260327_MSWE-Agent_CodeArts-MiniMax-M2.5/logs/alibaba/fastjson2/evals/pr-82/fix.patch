@@ -1,0 +1,67 @@
+
+diff --git a/.gitignore b/.gitignore
+index f8de26f04..8f81cfc95 100644
+Binary files a/.gitignore and b/.gitignore differ
+diff --git a/core/src/main/java/com/alibaba/fastjson2/JSON.java b/core/src/main/java/com/alibaba/fastjson2/JSON.java
+index b6a0ff2ce..ed220eae9 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/JSON.java
++++ b/core/src/main/java/com/alibaba/fastjson2/JSON.java
+@@ -351,26 +351,12 @@ public interface JSON {
+      * @param object   Java Object to be serialized into JSON {@link String}
+      * @param features features to be enabled in serialization
+      */
+-    static String toJSONString(Object object, JSONWriter.Feature... features) {
+-        JSONWriter.Context writeContext = new JSONWriter.Context(JSONFactory.defaultObjectWriterProvider, features);
+-
+-        boolean pretty = (writeContext.features & JSONWriter.Feature.PrettyFormat.mask) != 0;
+-        JSONWriterUTF16 jsonWriter = JDKUtils.JVM_VERSION == 8 ? new JSONWriterUTF16JDK8(writeContext) : new JSONWriterUTF16(writeContext);
+-
+-        try (JSONWriter writer = pretty ?
+-                new JSONWriterPretty(jsonWriter) : jsonWriter) {
+-            if (object == null) {
+-                writer.writeNull();
+-            } else {
+-                writer.setRootObject(object);
+-                Class<?> valueClass = object.getClass();
++    static boolean isArray(String text) {
++        return JSONReader.of(text).isArray();
++    }
+ 
+-                boolean fieldBased = (writeContext.features & JSONWriter.Feature.FieldBased.mask) != 0;
+-                ObjectWriter<?> objectWriter = writeContext.provider.getObjectWriter(valueClass, valueClass, fieldBased);
+-                objectWriter.write(writer, object, null, null, 0);
+-            }
+-            return writer.toString();
+-        }
++    static boolean isObject(String text) {
++        return JSONReader.of(text).isObject();
+     }
+ 
+     /**
+diff --git a/core/src/main/java/com/alibaba/fastjson2/JSONReader.java b/core/src/main/java/com/alibaba/fastjson2/JSONReader.java
+index af3a042cd..726c83100 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/JSONReader.java
++++ b/core/src/main/java/com/alibaba/fastjson2/JSONReader.java
+@@ -352,10 +352,22 @@ public abstract class JSONReader implements Closeable {
+     }
+ 
+     public boolean isArray() {
++        if (Character.isWhitespace(this.ch)) {
++            next();
++            while (Character.isWhitespace(this.ch)) {
++                next();
++            }
++        }
+         return this.ch == '[';
+     }
+ 
+     public boolean isObject() {
++        if (Character.isWhitespace(this.ch)) {
++            next();
++            while (Character.isWhitespace(this.ch)) {
++                next();
++            }
++        }
+         return this.ch == '{';
+     }
+ 

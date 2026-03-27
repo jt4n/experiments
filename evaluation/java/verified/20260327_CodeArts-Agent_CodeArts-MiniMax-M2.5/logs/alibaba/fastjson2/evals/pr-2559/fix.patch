@@ -1,0 +1,27 @@
+diff --git a/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java b/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java
+index d37ae571b..fe6822a6a 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java
++++ b/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java
+@@ -1533,6 +1533,22 @@ public class TypeUtils {
+                 if (targetClass.isInstance(apply)) {
+                     return (T) apply;
+                 }
++                Function typeConvert2 = provider.getTypeConvert(apply.getClass(), targetClass);
++                if (typeConvert2 != null) {
++                    return (T) typeConvert2.apply(apply);
++                }
++                if (apply instanceof Number && (targetClass == Double.class || targetClass == double.class)) {
++                    return (T) Double.valueOf(((Number) apply).doubleValue());
++                }
++                if (apply instanceof Number && (targetClass == Float.class || targetClass == float.class)) {
++                    return (T) Float.valueOf(((Number) apply).floatValue());
++                }
++                if (apply instanceof Number && (targetClass == Integer.class || targetClass == int.class)) {
++                    return (T) Integer.valueOf(((Number) apply).intValue());
++                }
++                if (apply instanceof Number && (targetClass == Long.class || targetClass == long.class)) {
++                    return (T) Long.valueOf(((Number) apply).longValue());
++                }
+             }
+         }
+ 

@@ -1,0 +1,296 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonParser.java b/src/main/java/com/fasterxml/jackson/core/JsonParser.java
+index 3dddc1cb..860e9edb 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonParser.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonParser.java
+@@ -42,6 +42,37 @@ public abstract class JsonParser
+         INT, LONG, BIG_INTEGER, FLOAT, DOUBLE, BIG_DECIMAL
+     };
+ 
++    /**
++     * Enumeration of possible "native" (optimal) types that can be
++     * used for floating-point numbers.
++     *<p>
++     * Unlike {@link NumberType}, this enumeration only includes
++     * floating-point types, and includes an {@link #UNKNOWN} type
++     * to be used when the actual floating-point type cannot be
++     * determined from the representation (as is the case with
++     * textual formats like JSON).
++     *
++     * @since 2.18
++     */
++    public enum NumberTypeFP {
++        /** 32-bit binary floating-point (Java {@code float}) */
++        FLOAT,
++
++        /** 64-bit binary floating-point (Java {@code double}) */
++        DOUBLE,
++
++        /** Arbitrary precision decimal floating-point (Java {@code BigDecimal}) */
++        BIG_DECIMAL,
++
++        /**
++         * Unknown floating-point type: used when the actual type
++         * cannot be determined from the representation.
++         * This is typically the case for textual formats like JSON
++         * that do not distinguish between different FP types.
++         */
++        UNKNOWN
++    };
++
+     /**
+      * Default set of {@link StreamReadCapability}ies that may be used as
+      * basis for format-specific readers (or as bogus instance if non-null
+@@ -1724,6 +1755,42 @@ public abstract class JsonParser
+      */
+     public abstract NumberType getNumberType() throws IOException;
+ 
++    /**
++     * If current token is of type {@link JsonToken#VALUE_NUMBER_FLOAT}, returns
++     * the specific floating-point type that best represents the value.
++     *<p>
++     * Unlike {@link #getNumberType()}, which returns {@link NumberType#DOUBLE}
++     * for most textual formats (like JSON) because they do not distinguish
++     * between different floating-point types, this method returns
++     * {@link NumberTypeFP#UNKNOWN} for such formats.
++     *<p>
++     * Binary formats that store specific FP types (like Smile) can return
++     * {@link NumberTypeFP#FLOAT}, {@link NumberTypeFP#DOUBLE}, or
++     * {@link NumberTypeFP#BIG_DECIMAL} as appropriate.
++     *
++     * @return Type of current floating-point number, if parser points to
++     *   {@link JsonToken#VALUE_NUMBER_FLOAT}; {@link NumberTypeFP#UNKNOWN} otherwise
++     *
++     * @throws IOException for low-level read issues, or
++     *   {@link JsonParseException} for decoding problems
++     *
++     * @since 2.18
++     */
++    public NumberTypeFP getNumberTypeFP() throws IOException
++    {
++        NumberType type = getNumberType();
++        if (type == NumberType.FLOAT) {
++            return NumberTypeFP.FLOAT;
++        }
++        if (type == NumberType.DOUBLE) {
++            return NumberTypeFP.DOUBLE;
++        }
++        if (type == NumberType.BIG_DECIMAL) {
++            return NumberTypeFP.BIG_DECIMAL;
++        }
++        return NumberTypeFP.UNKNOWN;
++    }
++
+     /**
+      * Numeric accessor that can be called when the current
+      * token is of type {@link JsonToken#VALUE_NUMBER_INT} and
+diff --git a/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java b/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+index 878d0fbb..83595476 100644
+--- a/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
++++ b/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+@@ -781,6 +781,30 @@ public abstract class ParserBase extends ParserMinimalBase
+         return NumberType.DOUBLE;
+     }
+ 
++    @Override
++    public NumberTypeFP getNumberTypeFP() throws IOException
++    {
++        if (_currToken != JsonToken.VALUE_NUMBER_FLOAT) {
++            return NumberTypeFP.UNKNOWN;
++        }
++        if (_numTypesValid == NR_UNKNOWN) {
++            _parseNumericValue(NR_UNKNOWN);
++        }
++        if ((_numTypesValid & NR_FLOAT) != 0) {
++            return NumberTypeFP.FLOAT;
++        }
++        if ((_numTypesValid & NR_BIGDECIMAL) != 0) {
++            return NumberTypeFP.BIG_DECIMAL;
++        }
++        if ((_numTypesValid & NR_DOUBLE) != 0) {
++            if (_numberIsNaN) {
++                return NumberTypeFP.DOUBLE;
++            }
++            return NumberTypeFP.UNKNOWN;
++        }
++        return NumberTypeFP.UNKNOWN;
++    }
++
+     @Override
+     public int getIntValue() throws IOException
+     {
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java b/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
+index 759482a6..c0df4230 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
+@@ -1025,6 +1025,9 @@ public class FilteringParserDelegate extends JsonParserDelegate
+     @Override
+     public NumberType getNumberType() throws IOException { return delegate.getNumberType(); }
+ 
++    @Override
++    public NumberTypeFP getNumberTypeFP() throws IOException { return delegate.getNumberTypeFP(); }
++
+     @Override
+     public Number getNumberValue() throws IOException { return delegate.getNumberValue(); }
+ 
+diff --git a/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java b/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java
+index fdeb557a..f69e8500 100644
+--- a/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java
++++ b/src/main/java/com/fasterxml/jackson/core/util/JsonParserDelegate.java
+@@ -244,6 +244,9 @@ public class JsonParserDelegate extends JsonParser
+     @Override
+     public NumberType getNumberType() throws IOException { return delegate.getNumberType(); }
+ 
++    @Override
++    public NumberTypeFP getNumberTypeFP() throws IOException { return delegate.getNumberTypeFP(); }
++
+     @Override
+     public Number getNumberValue() throws IOException { return delegate.getNumberValue(); }
+ 
+diff --git a/src/test/java/com/fasterxml/jackson/core/read/NumberTypeFPTest.java b/src/test/java/com/fasterxml/jackson/core/read/NumberTypeFPTest.java
+new file mode 100644
+index 00000000..37b0b1ba
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/core/read/NumberTypeFPTest.java
+@@ -0,0 +1,141 @@
++package com.fasterxml.jackson.core.read;
++
++import com.fasterxml.jackson.core.*;
++import com.fasterxml.jackson.core.json.JsonReadFeature;
++
++public class NumberTypeFPTest extends com.fasterxml.jackson.core.BaseTest
++{
++    protected JsonFactory jsonFactory() {
++        return sharedStreamFactory();
++    }
++
++    public void testNumberTypeFPForFloat() throws Exception
++    {
++        for (int mode : ALL_MODES) {
++            _testNumberTypeFPForFloat(mode);
++        }
++    }
++
++    private void _testNumberTypeFPForFloat(int mode) throws Exception
++    {
++        String DOC = "[ 1.5 ]";
++        JsonParser p = createParser(jsonFactory(), mode, DOC);
++        assertToken(JsonToken.START_ARRAY, p.nextToken());
++        assertToken(JsonToken.VALUE_NUMBER_FLOAT, p.nextToken());
++        
++        // For textual formats (JSON), getNumberTypeFP should return UNKNOWN
++        // because there's no way to distinguish float from double
++        assertEquals(JsonParser.NumberTypeFP.UNKNOWN, p.getNumberTypeFP());
++        
++        p.close();
++    }
++
++    public void testNumberTypeFPForNaN() throws Exception
++    {
++        JsonFactory f = JsonFactory.builder()
++                .configure(JsonReadFeature.ALLOW_NON_NUMERIC_NUMBERS, true)
++                .build();
++        for (int mode : ALL_MODES) {
++            _testNumberTypeFPForNaN(f, mode);
++        }
++    }
++
++    private void _testNumberTypeFPForNaN(JsonFactory f, int mode) throws Exception
++    {
++        String DOC = "[ NaN ]";
++        JsonParser p = createParser(f, mode, DOC);
++        assertToken(JsonToken.START_ARRAY, p.nextToken());
++        assertToken(JsonToken.VALUE_NUMBER_FLOAT, p.nextToken());
++        
++        // For NaN values, should return DOUBLE because that's the only type that can represent NaN
++        assertEquals(JsonParser.NumberTypeFP.DOUBLE, p.getNumberTypeFP());
++        
++        p.close();
++    }
++
++    public void testNumberTypeFPForDouble() throws Exception
++    {
++        for (int mode : ALL_MODES) {
++            _testNumberTypeFPForDouble(mode);
++        }
++    }
++
++    private void _testNumberTypeFPForDouble(int mode) throws Exception
++    {
++        String DOC = "[ 1.234567890123456789 ]";
++        JsonParser p = createParser(jsonFactory(), mode, DOC);
++        assertToken(JsonToken.START_ARRAY, p.nextToken());
++        assertToken(JsonToken.VALUE_NUMBER_FLOAT, p.nextToken());
++        
++        // For textual formats (JSON), getNumberTypeFP should return UNKNOWN
++        assertEquals(JsonParser.NumberTypeFP.UNKNOWN, p.getNumberTypeFP());
++        
++        // After accessing as double, should still return UNKNOWN
++        // because we don't know if it was originally a float or double
++        p.getDoubleValue();
++        assertEquals(JsonParser.NumberTypeFP.UNKNOWN, p.getNumberTypeFP());
++        
++        p.close();
++    }
++
++    public void testNumberTypeFPForBigDecimal() throws Exception
++    {
++        for (int mode : ALL_MODES) {
++            _testNumberTypeFPForBigDecimal(mode);
++        }
++    }
++
++    private void _testNumberTypeFPForBigDecimal(int mode) throws Exception
++    {
++        String DOC = "[ 1.234567890123456789012345678901234567890 ]";
++        JsonParser p = createParser(jsonFactory(), mode, DOC);
++        assertToken(JsonToken.START_ARRAY, p.nextToken());
++        assertToken(JsonToken.VALUE_NUMBER_FLOAT, p.nextToken());
++        
++        // When accessed as BigDecimal, should return BIG_DECIMAL
++        p.getDecimalValue();
++        assertEquals(JsonParser.NumberTypeFP.BIG_DECIMAL, p.getNumberTypeFP());
++        
++        p.close();
++    }
++
++    public void testNumberTypeFPForInt() throws Exception
++    {
++        for (int mode : ALL_MODES) {
++            _testNumberTypeFPForInt(mode);
++        }
++    }
++
++    private void _testNumberTypeFPForInt(int mode) throws Exception
++    {
++        String DOC = "[ 123 ]";
++        JsonParser p = createParser(jsonFactory(), mode, DOC);
++        assertToken(JsonToken.START_ARRAY, p.nextToken());
++        assertToken(JsonToken.VALUE_NUMBER_INT, p.nextToken());
++        
++        // For integers, should return UNKNOWN
++        assertEquals(JsonParser.NumberTypeFP.UNKNOWN, p.getNumberTypeFP());
++        
++        p.close();
++    }
++
++    public void testNumberTypeFPForNonNumber() throws Exception
++    {
++        for (int mode : ALL_MODES) {
++            _testNumberTypeFPForNonNumber(mode);
++        }
++    }
++
++    private void _testNumberTypeFPForNonNumber(int mode) throws Exception
++    {
++        String DOC = "[ \"hello\" ]";
++        JsonParser p = createParser(jsonFactory(), mode, DOC);
++        assertToken(JsonToken.START_ARRAY, p.nextToken());
++        assertToken(JsonToken.VALUE_STRING, p.nextToken());
++        
++        // For non-numbers, should return UNKNOWN
++        assertEquals(JsonParser.NumberTypeFP.UNKNOWN, p.getNumberTypeFP());
++        
++        p.close();
++    }
++}
+\ No newline at end of file

@@ -1,0 +1,155 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java
+index 757992cf0..dd48785ea 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeDeserializer.java
+@@ -100,6 +100,11 @@ public class AsDeductionTypeDeserializer extends AsPropertyTypeDeserializer
+         if (t == JsonToken.START_OBJECT) {
+             t = p.nextToken();
+         } else if (/*t == JsonToken.START_ARRAY ||*/ t != JsonToken.FIELD_NAME) {
++            // For scalar values (like enum strings), try to find a matching subtype
++            if (t == JsonToken.VALUE_STRING || t == JsonToken.VALUE_NUMBER_INT
++                    || t == JsonToken.VALUE_TRUE || t == JsonToken.VALUE_FALSE) {
++                return _deserializeTypedFromScalar(p, ctxt);
++            }
+             /* This is most likely due to the fact that not all Java types are
+              * serialized as JSON Objects; so if "as-property" inclusion is requested,
+              * serialization of things like Lists must be instead handled as if
+@@ -147,6 +152,45 @@ public class AsDeductionTypeDeserializer extends AsPropertyTypeDeserializer
+         return _deserializeTypedUsingDefaultImpl(p, ctxt, tb, msgToReportIfDefaultImplFailsToo);
+     }
+ 
++    /**
++     * Method to handle scalar values (like enum strings) for DEDUCTION mode.
++     * Tries to find a matching subtype based on the input value.
++     */
++    protected Object _deserializeTypedFromScalar(JsonParser p, DeserializationContext ctxt) throws IOException {
++        // For scalar values, we need to find a matching subtype.
++        // This is primarily for enum types where the value is a string like "FOURLEGGED"
++        String typeId = null;
++        if (p.currentToken() == JsonToken.VALUE_STRING) {
++            typeId = p.getValueAsString();
++        } else if (p.currentToken() == JsonToken.VALUE_NUMBER_INT) {
++            typeId = String.valueOf(p.getIntValue());
++        } else if (p.currentToken() == JsonToken.VALUE_TRUE) {
++            typeId = "true";
++        } else if (p.currentToken() == JsonToken.VALUE_FALSE) {
++            typeId = "false";
++        }
++
++        if (typeId != null) {
++            // Try to find a subtype that can deserialize this value
++            for (Map.Entry<BitSet, String> entry : subtypeFingerprints.entrySet()) {
++                String subtypeClassName = entry.getValue();
++                try {
++                    Class<?> subtypeClass = Class.forName(subtypeClassName);
++                    JavaType subtypeType = ctxt.constructSpecializedType(_baseType, subtypeClass);
++                    JsonDeserializer<Object> deser = ctxt.findContextualValueDeserializer(subtypeType, _property);
++                    // Try to deserialize to see if it matches
++                    Object result = deser.deserialize(p, ctxt);
++                    return result;
++                } catch (ClassNotFoundException e) {
++                    // Ignore and continue
++                }
++            }
++        }
++
++        // Fall back to default implementation
++        return _deserializeTypedUsingDefaultImpl(p, ctxt, null, "Cannot deduce unique subtype");
++    }
++
+     // Keep only fingerprints containing this field
+     private static void prune(List<BitSet> candidates, int bit) {
+         for (Iterator<BitSet> iter = candidates.iterator(); iter.hasNext(); ) {
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeSerializer.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeSerializer.java
+new file mode 100644
+index 000000000..5145ac99d
+--- /dev/null
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsDeductionTypeSerializer.java
+@@ -0,0 +1,70 @@
++package com.fasterxml.jackson.databind.jsontype.impl;
++
++import java.io.IOException;
++
++import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
++
++import com.fasterxml.jackson.core.JsonGenerator;
++import com.fasterxml.jackson.core.JsonToken;
++import com.fasterxml.jackson.core.type.WritableTypeId;
++
++import com.fasterxml.jackson.databind.BeanProperty;
++import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
++
++/**
++ * Type serializer used with {@link com.fasterxml.jackson.annotation.JsonTypeInfo.Id#DEDUCTION}.
++ * For scalar values (like enums), no type information is written since deduction
++ * is based on the fields present in the object.
++ *
++ * @since 2.12
++ */
++public class AsDeductionTypeSerializer extends AsPropertyTypeSerializer
++{
++    public AsDeductionTypeSerializer(TypeIdResolver idRes,
++            BeanProperty property, String propName)
++    {
++        super(idRes, property, propName);
++    }
++
++    @Override
++    public AsDeductionTypeSerializer forProperty(BeanProperty prop) {
++        return (_property == prop) ? this :
++            new AsDeductionTypeSerializer(_idResolver, prop, _typePropertyName);
++    }
++
++    @Override
++    public As getTypeInclusion() { return As.EXISTING_PROPERTY; }
++
++    @Override
++    public WritableTypeId writeTypePrefix(JsonGenerator g, WritableTypeId typeIdDef)
++        throws IOException
++    {
++        // For DEDUCTION mode, don't write type info for scalar values
++        // (like enums). Deduction is based on object fields, not scalar values.
++        if (_isScalar(typeIdDef.valueShape)) {
++            return null;
++        }
++        return super.writeTypePrefix(g, typeIdDef);
++    }
++
++    @Override
++    public WritableTypeId writeTypeSuffix(JsonGenerator g, WritableTypeId typeIdDef)
++        throws IOException
++    {
++        // For DEDUCTION mode, don't write type info for scalar values
++        // typeIdDef may be null if writeTypePrefix returned null
++        if (typeIdDef == null || _isScalar(typeIdDef.valueShape)) {
++            return null;
++        }
++        return super.writeTypeSuffix(g, typeIdDef);
++    }
++
++    private boolean _isScalar(JsonToken valueShape) {
++        return valueShape == JsonToken.VALUE_STRING
++                || valueShape == JsonToken.VALUE_NUMBER_INT
++                || valueShape == JsonToken.VALUE_NUMBER_FLOAT
++                || valueShape == JsonToken.VALUE_TRUE
++                || valueShape == JsonToken.VALUE_FALSE
++                ;
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java
+index e87d25cbc..707a701b9 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java
+@@ -113,8 +113,9 @@ public class StdTypeResolverBuilder
+                 subtypes, true, false);
+ 
+         if(_idType == JsonTypeInfo.Id.DEDUCTION) {
+-            // Deduction doesn't require a type property. We use EXISTING_PROPERTY with a name of <null> to drive this.
+-            return new AsExistingPropertyTypeSerializer(idRes, null, _typeProperty);
++            // Deduction doesn't require a type property. We use a special serializer
++            // that doesn't write type info for scalar values (like enums).
++            return new AsDeductionTypeSerializer(idRes, null, _typeProperty);
+         }
+ 
+         switch (_includeAs) {

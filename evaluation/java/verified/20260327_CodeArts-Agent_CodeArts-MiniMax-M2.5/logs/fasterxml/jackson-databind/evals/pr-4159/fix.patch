@@ -1,0 +1,37 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+index a278b1dc2..cc40860b5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+@@ -154,16 +154,31 @@ class FactoryBasedEnumDeserializer
+             }
+ 
+             // 12-Oct-2021, tatu: We really should only get here if and when String
+-            //    value is expected; otherwise Deserializer should have been used earlier
++            //    value is expected; otherwise Deserializer should have been used early
+             // 14-Jan-2022, tatu: as per [databind#3369] need to consider structured
+             //    value types (Object, Array) as well.
+             // 15-Nov-2022, tatu: Fix for [databind#3655] requires handling of possible
+             //    unwrapping, do it here
++            // 27-Feb-2025, tatu: [databind#???] Need to handle START_ARRAY as well, for
++            //    polymorphic type id with WRAPPER_ARRAY (or similar)
+             JsonToken t = p.currentToken();
+             boolean unwrapping = (t == JsonToken.START_ARRAY)
+                     && ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
+             if (unwrapping) {
+                 t = p.nextToken();
++            } else if (t == JsonToken.START_ARRAY) {
++                // [databind#???]: Not unwrapping - check if this is a two-element array
++                //   (WRAPPER_ARRAY format). Skip first element, use second element.
++                p.nextToken(); // Skip first element (type id)
++                JsonToken next = p.nextToken(); // Get second element (value)
++                if (next == JsonToken.END_ARRAY) {
++                    // Single-element array - will fail later with proper error
++                    t = p.currentToken();
++                } else {
++                    // There's a second element - this is WRAPPER_ARRAY format
++                    // Use second element as the value
++                    t = next;
++                }
+             }
+             if ((t == null) || !t.isScalarValue()) {
+                 // Could argue we should throw an exception but...

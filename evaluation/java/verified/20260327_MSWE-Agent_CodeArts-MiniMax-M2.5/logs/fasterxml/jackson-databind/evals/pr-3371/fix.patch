@@ -1,0 +1,29 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java b/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java
+index ebfa4e07d..e92e0996f 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/SettableBeanProperty.java
+@@ -563,10 +563,7 @@ public abstract class SettableBeanProperty
+         }
+         // 20-Oct-2016, tatu: Also tricky -- for now, report an error
+         if (_valueTypeDeserializer != null) {
+-            ctxt.reportBadDefinition(getType(),
+-                    String.format("Cannot merge polymorphic property '%s'",
+-                            getName()));
+-//            return _valueDeserializer.deserializeWithType(p, ctxt, _valueTypeDeserializer);
++            return _valueDeserializer.deserializeWithType(p, ctxt, _valueTypeDeserializer, toUpdate);
+         }
+         // 04-May-2018, tatu: [databind#2023] Coercion from String (mostly) can give null
+         Object value = _valueDeserializer.deserialize(p, ctxt, toUpdate);

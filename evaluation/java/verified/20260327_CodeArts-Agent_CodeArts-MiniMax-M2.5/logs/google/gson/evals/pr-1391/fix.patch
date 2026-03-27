@@ -1,0 +1,55 @@
+diff --git a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+index adea605f..177fd8c8 100644
+--- a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
++++ b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+@@ -340,21 +340,25 @@ public final class $Gson$Types {
+   private static Type resolve(Type context, Class<?> contextRawType, Type toResolve,
+                               Collection<TypeVariable> visitedTypeVariables) {
+     // this implementation is made a little more complicated in an attempt to avoid object-creation
+-    while (true) {
+-      if (toResolve instanceof TypeVariable) {
+-        TypeVariable<?> typeVariable = (TypeVariable<?>) toResolve;
+-        if (visitedTypeVariables.contains(typeVariable)) {
+-          // cannot reduce due to infinite recursion
+-          return toResolve;
+-        } else {
++    TypeVariable<?> resolvingTypeVariable = null;
++    try {
++      while (true) {
++        if (toResolve instanceof TypeVariable) {
++          TypeVariable<?> typeVariable = (TypeVariable<?>) toResolve;
++          if (visitedTypeVariables.contains(typeVariable)) {
++            // cannot reduce due to infinite recursion
++            return toResolve;
++          }
+           visitedTypeVariables.add(typeVariable);
+-        }
+-        toResolve = resolveTypeVariable(context, contextRawType, typeVariable);
+-        if (toResolve == typeVariable) {
+-          return toResolve;
+-        }
++          resolvingTypeVariable = typeVariable;
++          toResolve = resolveTypeVariable(context, contextRawType, typeVariable);
++          if (toResolve == typeVariable) {
++            return toResolve;
++          }
++          // Continue processing the resolved type; keep typeVariable in visitedTypeVariables
++          // to prevent infinite recursion.
+ 
+-      } else if (toResolve instanceof Class && ((Class<?>) toResolve).isArray()) {
++        } else if (toResolve instanceof Class && ((Class<?>) toResolve).isArray()) {
+         Class<?> original = (Class<?>) toResolve;
+         Type componentType = original.getComponentType();
+         Type newComponentType = resolve(context, contextRawType, componentType, visitedTypeVariables);
+@@ -413,6 +417,11 @@ public final class $Gson$Types {
+       } else {
+         return toResolve;
+       }
++      }
++    } finally {
++      if (resolvingTypeVariable != null) {
++        visitedTypeVariables.remove(resolvingTypeVariable);
++      }
+     }
+   }
+ 

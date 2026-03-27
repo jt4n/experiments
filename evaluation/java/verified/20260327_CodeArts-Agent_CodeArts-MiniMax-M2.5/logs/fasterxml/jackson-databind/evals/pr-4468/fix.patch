@@ -1,0 +1,31 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java b/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java
+index 6c756979e..a23f68901 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ext/CoreXMLDeserializers.java
+@@ -125,6 +125,26 @@ public class CoreXMLDeserializers extends Deserializers.Base
+             throw new IllegalStateException();
+         }
+ 
++        @Override // since 2.19
++        public Object getEmptyValue(DeserializationContext ctxt)
++                throws JsonMappingException
++        {
++            switch (_kind) {
++            case TYPE_QNAME:
++                return QName.valueOf("");
++            }
++            return super.getEmptyValue(ctxt);
++        }
++
++        @Override // since 2.19
++        protected Object _deserializeFromEmptyStringDefault(DeserializationContext ctxt) throws IOException {
++            switch (_kind) {
++            case TYPE_QNAME:
++                return getEmptyValue(ctxt);
++            }
++            return super._deserializeFromEmptyStringDefault(ctxt);
++        }
++
+         protected XMLGregorianCalendar _gregorianFromDate(DeserializationContext ctxt,
+                 Date d)
+         {

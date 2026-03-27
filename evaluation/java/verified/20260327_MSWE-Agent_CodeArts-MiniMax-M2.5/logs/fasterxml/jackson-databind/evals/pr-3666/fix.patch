@@ -1,0 +1,35 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+index 2d77d9bcb..f4c52a6b5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+@@ -357,6 +357,17 @@ public abstract class StdDeserializer<T>
+         // 23-Mar-2017, tatu: Let's specifically block recursive resolution to avoid
+         //   either supporting nested arrays, or to cause infinite looping.
+         if (p.hasToken(JsonToken.START_ARRAY)) {
++            // [jackson-databind#2585]: unwrap single-value arrays if enabled
++            if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
++                if (p.nextToken() == JsonToken.START_ARRAY) {
++                    @SuppressWarnings("unchecked")
++                    T result = (T) handleNestedArrayForSingle(p, ctxt);
++                    return result;
++                }
++                final T result = deserialize(p, ctxt);
++                _verifyEndArrayForSingle(p, ctxt);
++                return result;
++            }
+             @SuppressWarnings("unchecked")
+             T result = (T) handleNestedArrayForSingle(p, ctxt);
+             return result;

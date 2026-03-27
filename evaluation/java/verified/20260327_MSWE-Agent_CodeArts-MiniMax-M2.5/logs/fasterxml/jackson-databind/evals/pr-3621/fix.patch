@@ -1,0 +1,145 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+index aa0c70874..8d249a018 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+@@ -414,6 +414,15 @@ public abstract class StdDeserializer<T>
+             // 12-Jun-2020, tatu: For some reason calling `_deserializeFromArray()` won't work so:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++                //   unbounded nesting.
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ctxt.handleUnexpectedToken(Boolean.TYPE, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                            + "only single wrapper allowed with `%s`",
++                            Boolean.TYPE.getName(),
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++                }
+                 final boolean parsed = _parseBooleanPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -583,6 +592,15 @@ public abstract class StdDeserializer<T>
+             // 12-Jun-2020, tatu: For some reason calling `_deserializeFromArray()` won't work so:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++                //   unbounded nesting.
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ctxt.handleUnexpectedToken(Byte.TYPE, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                            + "only single wrapper allowed with `%s`",
++                            Byte.TYPE.getName(),
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++                }
+                 final byte parsed = _parseBytePrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -653,6 +671,15 @@ public abstract class StdDeserializer<T>
+             // 12-Jun-2020, tatu: For some reason calling `_deserializeFromArray()` won't work so:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++                //   unbounded nesting.
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ctxt.handleUnexpectedToken(Short.TYPE, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                            + "only single wrapper allowed with `%s`",
++                            Short.TYPE.getName(),
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++                }
+                 final short parsed = _parseShortPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -720,6 +747,15 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++                //   unbounded nesting.
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ctxt.handleUnexpectedToken(Integer.TYPE, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                            + "only single wrapper allowed with `%s`",
++                            Integer.TYPE.getName(),
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++                }
+                 final int parsed = _parseIntPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -871,6 +907,15 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++                //   unbounded nesting.
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ctxt.handleUnexpectedToken(Long.TYPE, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                            + "only single wrapper allowed with `%s`",
++                            Long.TYPE.getName(),
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++                }
+                 final long parsed = _parseLongPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -996,6 +1041,15 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++                //   unbounded nesting.
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ctxt.handleUnexpectedToken(Float.TYPE, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                            + "only single wrapper allowed with `%s`",
++                            Float.TYPE.getName(),
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++                }
+                 final float parsed = _parseFloatPrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -1103,6 +1157,15 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_START_ARRAY:
+             if (ctxt.isEnabled(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS)) {
+                 p.nextToken();
++                // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++                //   unbounded nesting.
++                if (p.currentToken() == JsonToken.START_ARRAY) {
++                    return ctxt.handleUnexpectedToken(Double.TYPE, p,
++                            "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                            + "only single wrapper allowed with `%s`",
++                            Double.TYPE.getName(),
++                            "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++                }
+                 final double parsed = _parseDoublePrimitive(p, ctxt);
+                 _verifyEndArrayForSingle(p, ctxt);
+                 return parsed;
+@@ -1249,6 +1312,15 @@ public abstract class StdDeserializer<T>
+ 
+         if (unwrap || (act != CoercionAction.Fail)) {
+             JsonToken t = p.nextToken();
++            // 05-Sep-2022, tatu: [CVE-2022-42003] Need to prevent
++            //   unbounded nesting.
++            if (t == JsonToken.START_ARRAY) {
++                return (java.util.Date) ctxt.handleUnexpectedToken(_valueClass, p,
++                        "Cannot deserialize value of type %s from deeply-nested JSON Array: "
++                        + "only single wrapper allowed with `%s`",
++                        _valueClass.getName(),
++                        "DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS");
++            }
+             if (t == JsonToken.END_ARRAY) {
+                 switch (act) {
+                 case AsEmpty:

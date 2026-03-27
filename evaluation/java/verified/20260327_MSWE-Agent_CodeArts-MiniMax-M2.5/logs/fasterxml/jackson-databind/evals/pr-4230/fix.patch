@@ -1,0 +1,82 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java b/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
+index 62690877d..247e96d38 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
++++ b/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
+@@ -379,6 +379,7 @@ child.getClass().getName(), propName, OverwriteMode.NULLS);
+         return null;
+     }
+ 
++
+     @Override
+     public List<JsonNode> findValues(String propertyName, List<JsonNode> foundSoFar)
+     {
+@@ -388,12 +389,15 @@ child.getClass().getName(), propName, OverwriteMode.NULLS);
+                 foundSoFar = new ArrayList<>();
+             }
+             foundSoFar.add(jsonNode);
+-            return foundSoFar;
++            // Don't return early - continue to search in other children
+         }
+ 
+-        // only add children if parent not added
++        // Continue searching in all children
+         for (JsonNode child : _children.values()) {
+-            foundSoFar = child.findValues(propertyName, foundSoFar);
++            // Skip the child that was already found (to avoid duplicate search)
++            if (child != jsonNode) {
++                foundSoFar = child.findValues(propertyName, foundSoFar);
++            }
+         }
+         return foundSoFar;
+     }
+@@ -407,12 +411,15 @@ child.getClass().getName(), propName, OverwriteMode.NULLS);
+                 foundSoFar = new ArrayList<>();
+             }
+             foundSoFar.add(jsonNode.asText());
+-            return foundSoFar;
++            // Don't return early - continue to search in other children
+         }
+ 
+-        // only add children if parent not added
++        // Continue searching in all children
+         for (JsonNode child : _children.values()) {
+-            foundSoFar = child.findValuesAsText(propertyName, foundSoFar);
++            // Skip the child that was already found (to avoid duplicate search)
++            if (child != jsonNode) {
++                foundSoFar = child.findValuesAsText(propertyName, foundSoFar);
++            }
+         }
+         return foundSoFar;
+     }
+@@ -442,12 +449,15 @@ child.getClass().getName(), propName, OverwriteMode.NULLS);
+                 foundSoFar = new ArrayList<>();
+             }
+             foundSoFar.add(this);
+-            return foundSoFar;
++            // Don't return early - continue to search in other children
+         }
+ 
+-        // only add children if parent not added
++        // Continue searching in all children
+         for (JsonNode child : _children.values()) {
+-            foundSoFar = child.findParents(propertyName, foundSoFar);
++            // Skip the child that was already found (to avoid duplicate search)
++            if (child != jsonNode) {
++                foundSoFar = child.findParents(propertyName, foundSoFar);
++            }
+         }
+         return foundSoFar;
+     }

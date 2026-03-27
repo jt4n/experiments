@@ -1,0 +1,31 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/cfg/CoercionConfigs.java b/src/main/java/com/fasterxml/jackson/databind/cfg/CoercionConfigs.java
+index c6badfb6d..e0fe6b092 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/cfg/CoercionConfigs.java
++++ b/src/main/java/com/fasterxml/jackson/databind/cfg/CoercionConfigs.java
+@@ -229,6 +229,14 @@ public class CoercionConfigs
+         }
+ 
+         if (inputShape == CoercionInputShape.EmptyString) {
++            // 09-Jun-2020, tatu: Seems necessary to support backwards-compatibility with
++            //     2.11, wrt "FromStringDeserializer" supported types
++            // [databind#3718] However, must check for "OtherScalar" BEFORE checking for
++            //    ACCEPT_EMPTY_STRING_AS_NULL_OBJECT to allow proper handling of empty
++            //    Strings for types like Locale (that should be converted to ROOT locale)
++            if (targetType == LogicalType.OtherScalar) {
++                return CoercionAction.TryConvert;
++            }
+             // Since coercion of scalar must be enabled (see check above), allow empty-string
+             // coercions by default even without this setting
+             if (baseScalar
+@@ -236,11 +244,6 @@ public class CoercionConfigs
+                     || config.isEnabled(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)) {
+                 return CoercionAction.AsNull;
+             }
+-            // 09-Jun-2020, tatu: Seems necessary to support backwards-compatibility with
+-            //     2.11, wrt "FromStringDeserializer" supported types
+-            if (targetType == LogicalType.OtherScalar) {
+-                return CoercionAction.TryConvert;
+-            }
+             // But block from allowing structured types like POJOs, Maps etc
+             return CoercionAction.Fail;
+         }

@@ -1,0 +1,170 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java b/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
+index 85b25684..5c371c80 100644
+--- a/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
++++ b/src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java
+@@ -42,17 +42,28 @@ public class StreamReadConstraints
+      */
+     public static final int DEFAULT_MAX_STRING_LEN = 5_000_000;
+ 
++    /**
++     * Default setting for maximum scale for {@link java.math.BigDecimal} when
++     * converting to {@link java.math.BigInteger}: see {@link Builder#maxBigDecimalScale(int)} for details.
++     *
++     * @since 2.16
++     */
++    public static final int DEFAULT_MAX_BIGDECIMAL_SCALE = 9999;
++
+     protected final int _maxNestingDepth;
+     protected final int _maxNumLen;
+     protected final int _maxStringLen;
++    protected final int _maxBigDecimalScale;
+ 
+     private static final StreamReadConstraints DEFAULT =
+-        new StreamReadConstraints(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN);
++        new StreamReadConstraints(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN,
++                DEFAULT_MAX_BIGDECIMAL_SCALE);
+ 
+     public static final class Builder {
+         private int maxNestingDepth;
+         private int maxNumLen;
+         private int maxStringLen;
++        private int maxBigDecimalScale;
+ 
+         /**
+          * Sets the maximum nesting depth. The depth is a count of objects and arrays that have not
+@@ -111,24 +122,52 @@ public class StreamReadConstraints
+             return this;
+         }
+ 
++        /**
++         * Sets the maximum scale for {@link java.math.BigDecimal} when converting
++         * to {@link java.math.BigInteger}.
++         * The default is 9999.
++         *<p>
++         * This limit is used to prevent performance issues when converting very large
++         * floating-point numbers (e.g., in scientific notation like "1e+9999") to BigInteger.
++         * Such numbers can have extremely large scales that cause slow conversions or
++         * memory issues.
++         *
++         * @param maxBigDecimalScale the maximum scale allowed for BigDecimal to BigInteger conversion
++         *
++         * @return this builder
++         * @throws IllegalArgumentException if the maxBigDecimalScale is set to a negative value
++         *
++         * @since 2.16
++         */
++        public Builder maxBigDecimalScale(final int maxBigDecimalScale) {
++            if (maxBigDecimalScale < 0) {
++                throw new IllegalArgumentException("Cannot set maxBigDecimalScale to a negative value");
++            }
++            this.maxBigDecimalScale = maxBigDecimalScale;
++            return this;
++        }
++
+         Builder() {
+-            this(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN);
++            this(DEFAULT_MAX_DEPTH, DEFAULT_MAX_NUM_LEN, DEFAULT_MAX_STRING_LEN, DEFAULT_MAX_BIGDECIMAL_SCALE);
+         }
+ 
+-        Builder(final int maxNestingDepth, final int maxNumLen, final int maxStringLen) {
++        Builder(final int maxNestingDepth, final int maxNumLen, final int maxStringLen,
++                final int maxBigDecimalScale) {
+             this.maxNestingDepth = maxNestingDepth;
+             this.maxNumLen = maxNumLen;
+             this.maxStringLen = maxStringLen;
++            this.maxBigDecimalScale = maxBigDecimalScale;
+         }
+ 
+         Builder(StreamReadConstraints src) {
+             maxNestingDepth = src._maxNestingDepth;
+             maxNumLen = src._maxNumLen;
+             maxStringLen = src._maxStringLen;
++            maxBigDecimalScale = src._maxBigDecimalScale;
+         }
+ 
+         public StreamReadConstraints build() {
+-            return new StreamReadConstraints(maxNestingDepth, maxNumLen, maxStringLen);
++            return new StreamReadConstraints(maxNestingDepth, maxNumLen, maxStringLen, maxBigDecimalScale);
+         }
+     }
+ 
+@@ -138,10 +177,12 @@ public class StreamReadConstraints
+     /**********************************************************************
+      */
+ 
+-    protected StreamReadConstraints(final int maxNestingDepth, final int maxNumLen, final int maxStringLen) {
++    protected StreamReadConstraints(final int maxNestingDepth, final int maxNumLen, final int maxStringLen,
++            final int maxBigDecimalScale) {
+         _maxNestingDepth = maxNestingDepth;
+         _maxNumLen = maxNumLen;
+         _maxStringLen = maxStringLen;
++        _maxBigDecimalScale = maxBigDecimalScale;
+     }
+ 
+     public static Builder builder() {
+@@ -196,6 +237,19 @@ public class StreamReadConstraints
+         return _maxStringLen;
+     }
+ 
++    /**
++     * Accessor for maximum scale for {@link java.math.BigDecimal} when converting
++     * to {@link java.math.BigInteger}.
++     * see {@link Builder#maxBigDecimalScale(int)} for details.
++     *
++     * @return Maximum allowed scale for BigDecimal to BigInteger conversion
++     *
++     * @since 2.16
++     */
++    public int getMaxBigDecimalScale() {
++        return _maxBigDecimalScale;
++    }
++
+     /*
+     /**********************************************************************
+     /* Convenience methods for validation, document limits
+@@ -265,6 +319,28 @@ public class StreamReadConstraints
+         }
+     }
+ 
++    /**
++     * Convenience method that can be used to verify that the scale of a
++     * {@link java.math.BigDecimal} does not exceed the maximum allowed by this
++     * constraints object when converting to {@link java.math.BigInteger}:
++     * if it does, a
++     * {@link StreamConstraintsException}
++     * is thrown.
++     *
++     * @param scale scale of the BigDecimal
++     *
++     * @throws StreamConstraintsException If scale exceeds maximum
++     *
++     * @since 2.16
++     */
++    public void validateBigDecimalScale(int scale) throws StreamConstraintsException
++    {
++        if (scale > _maxBigDecimalScale) {
++            throw new StreamConstraintsException(String.format("BigDecimal scale (%d) exceeds the maximum allowed scale (%d)",
++                    scale, _maxBigDecimalScale));
++        }
++    }
++
+     /**
+      * Convenience method that can be used to verify that a String
+      * of specified length does not exceed maximum specific by this
+diff --git a/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java b/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+index 023661e9..794d4a56 100644
+--- a/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
++++ b/src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+@@ -1217,6 +1217,12 @@ public abstract class ParserBase extends ParserMinimalBase
+     // @since 2.15
+     protected BigInteger _convertBigDecimalToBigInteger(BigDecimal bigDec) throws IOException {
+         // 04-Apr-2022, tatu: wrt [core#968] Need to limit max scale magnitude
++        // 05-Mar-2024, tatu: [core#???] Need to limit max scale for conversion to BigInteger
++        //   to avoid performance issues with extremely large scales (from scientific notation)
++        final int scale = bigDec.scale();
++        if (scale != 0) {
++            _streamReadConstraints.validateBigDecimalScale(Math.abs(scale));
++        }
+         return bigDec.toBigInteger();
+     }
+ 

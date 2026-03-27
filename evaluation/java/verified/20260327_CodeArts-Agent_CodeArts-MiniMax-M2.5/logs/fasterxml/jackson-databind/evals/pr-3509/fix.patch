@@ -1,0 +1,105 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java
+index 8d4b1d307..936a5dc43 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java
+@@ -612,8 +612,17 @@ public class NumberDeserializers
+             case JsonTokenId.ID_NULL: // null fine for non-primitive
+                 return (Float) getNullValue(ctxt);
+             case JsonTokenId.ID_NUMBER_FLOAT:
+-            case JsonTokenId.ID_NUMBER_INT: // safe coercion
+                 return p.getFloatValue();
++            case JsonTokenId.ID_NUMBER_INT: {
++                CoercionAction act = _checkIntToFloatCoercion(p, ctxt, _valueClass);
++                if (act == CoercionAction.AsNull) {
++                    return (Float) getNullValue(ctxt);
++                }
++                if (act == CoercionAction.AsEmpty) {
++                    return (Float) getEmptyValue(ctxt);
++                }
++                return p.getFloatValue();
++            }
+             // 29-Jun-2020, tatu: New! "Scalar from Object" (mostly for XML)
+             case JsonTokenId.ID_START_OBJECT:
+                 text = ctxt.extractScalarFromObject(p, this, _valueClass);
+@@ -701,8 +710,17 @@ public class NumberDeserializers
+             case JsonTokenId.ID_NULL: // null fine for non-primitive
+                 return (Double) getNullValue(ctxt);
+             case JsonTokenId.ID_NUMBER_FLOAT:
+-            case JsonTokenId.ID_NUMBER_INT: // safe coercion
+                 return p.getDoubleValue();
++            case JsonTokenId.ID_NUMBER_INT: {
++                CoercionAction act = _checkIntToFloatCoercion(p, ctxt, _valueClass);
++                if (act == CoercionAction.AsNull) {
++                    return (Double) getNullValue(ctxt);
++                }
++                if (act == CoercionAction.AsEmpty) {
++                    return (Double) getEmptyValue(ctxt);
++                }
++                return p.getDoubleValue();
++            }
+             // 29-Jun-2020, tatu: New! "Scalar from Object" (mostly for XML)
+             case JsonTokenId.ID_START_OBJECT:
+                 text = ctxt.extractScalarFromObject(p, this, _valueClass);
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+index bc58c448d..a8421d84b 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+@@ -983,7 +983,16 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_STRING:
+             text = p.getText();
+             break;
+-        case JsonTokenId.ID_NUMBER_INT:
++        case JsonTokenId.ID_NUMBER_INT: {
++            CoercionAction act = _checkIntToFloatCoercion(p, ctxt, Float.TYPE);
++            if (act == CoercionAction.AsNull) {
++                return 0f;
++            }
++            if (act == CoercionAction.AsEmpty) {
++                return 0f;
++            }
++            return p.getFloatValue();
++        }
+         case JsonTokenId.ID_NUMBER_FLOAT:
+             return p.getFloatValue();
+         case JsonTokenId.ID_NULL:
+@@ -1104,7 +1113,16 @@ public abstract class StdDeserializer<T>
+         case JsonTokenId.ID_STRING:
+             text = p.getText();
+             break;
+-        case JsonTokenId.ID_NUMBER_INT:
++        case JsonTokenId.ID_NUMBER_INT: {
++            CoercionAction act = _checkIntToFloatCoercion(p, ctxt, Double.TYPE);
++            if (act == CoercionAction.AsNull) {
++                return 0.0;
++            }
++            if (act == CoercionAction.AsEmpty) {
++                return 0.0;
++            }
++            return p.getDoubleValue();
++        }
+         case JsonTokenId.ID_NUMBER_FLOAT:
+             return p.getDoubleValue();
+         case JsonTokenId.ID_NULL:
+@@ -1474,6 +1492,22 @@ value, _coercedTypeDesc());
+         return act;
+     }
+ 
++    /**
++     * @since 2.14
++     */
++    protected CoercionAction _checkIntToFloatCoercion(JsonParser p, DeserializationContext ctxt,
++            Class<?> rawTargetType)
++        throws IOException
++    {
++        final CoercionAction act = ctxt.findCoercionAction(LogicalType.Float,
++                rawTargetType, CoercionInputShape.Integer);
++        if (act == CoercionAction.Fail) {
++            return _checkCoercionFail(ctxt, act, rawTargetType, p.getNumberValue(),
++                    "Integer value ("+p.getText()+")");
++        }
++        return act;
++    }
++
+     /**
+      * @since 2.12
+      */

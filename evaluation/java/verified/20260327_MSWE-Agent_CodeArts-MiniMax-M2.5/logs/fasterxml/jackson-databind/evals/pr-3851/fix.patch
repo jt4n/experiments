@@ -1,0 +1,198 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+index 1c65431e5..8159ad518 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FactoryBasedEnumDeserializer.java
+@@ -132,6 +132,16 @@ class FactoryBasedEnumDeserializer
+             // 30-Mar-2020, tatu: For properties-based one, MUST get JSON Object (before
+             //   2.11, was just assuming match)
+             if (_creatorProps != null) {
++                // If input is a simple String, use delegating creator instead
++                if (p.isExpectedStringToken()) {
++                    String text = p.getText();
++                    try {
++                        return _factory.callOnWith(_valueClass, text);
++                    } catch (Exception e) {
++                        Throwable t = ClassUtil.throwRootCauseIfIOE(e);
++                        return ctxt.handleInstantiationProblem(_valueClass, text, t);
++                    }
++                }
+                 if (!p.isExpectedStartObjectToken()) {
+                     final JavaType targetType = getValueType(ctxt);
+                     ctxt.reportInputMismatch(targetType,
+diff --git a/src/test/java/com/fasterxml/jackson/databind/deser/enums/EnumDeserWithMultipleCreatorsTest.java b/src/test/java/com/fasterxml/jackson/databind/deser/enums/EnumDeserWithMultipleCreatorsTest.java
+new file mode 100644
+index 000000000..cf3985957
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/databind/deser/enums/EnumDeserWithMultipleCreatorsTest.java
+@@ -0,0 +1,158 @@
++package com.fasterxml.jackson.databind.deser.enums;
++
++import org.junit.jupiter.api.Test;
++
++import com.fasterxml.jackson.annotation.JsonCreator;
++import com.fasterxml.jackson.annotation.JsonFormat;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import com.fasterxml.jackson.databind.*;
++
++import java.util.Arrays;
++import java.util.Objects;
++
++import static org.junit.jupiter.api.Assertions.assertEquals;
++
++/**
++ * Test for [databind#XXX]: Cannot use both `JsonCreator.Mode.DELEGATING` and 
++ * `JsonCreator.Mode.PROPERTIES` static creator factory methods for Enums
++ */
++public class EnumDeserWithMultipleCreatorsTest extends BaseMapTest {
++
++    // Test enum with both DELEGATING and PROPERTIES creators
++    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
++    enum AEnum {
++        A("AType"),
++        B("BType");
++
++        private final String type;
++
++        AEnum(String type) {
++            this.type = type;
++        }
++
++        public String getType() {
++            return type;
++        }
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        public static AEnum fromString(String type) {
++            return Arrays.stream(values())
++                    .filter(aEnum -> aEnum.type.equals(type))
++                    .findFirst()
++                    .orElseThrow();
++        }
++
++        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
++        public static AEnum create(@JsonProperty("type") String type) {
++            return fromString(type);
++        }
++
++        @Override
++        public boolean equals(Object o) {
++            if (this == o) return true;
++            if (o == null || getClass() != o.getClass()) return false;
++            AEnum aEnum = (AEnum) o;
++            return Objects.equals(type, aEnum.type);
++        }
++
++        @Override
++        public int hashCode() {
++            return Objects.hash(type);
++        }
++    }
++
++    // Test POJO with both DELEGATING and PROPERTIES creators (should work)
++    static class AClass {
++        private final String name;
++
++        AClass(String name) {
++            this.name = name;
++        }
++
++        public String getName() {
++            return name;
++        }
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        public static AClass fromString(String name) {
++            return new AClass(name);
++        }
++
++        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
++        public static AClass create(@JsonProperty("name") String name) {
++            return new AClass(name);
++        }
++
++        @Override
++        public boolean equals(Object o) {
++            if (this == o) return true;
++            if (o == null || getClass() != o.getClass()) return false;
++            AClass aClass = (AClass) o;
++            return Objects.equals(name, aClass.name);
++        }
++
++        @Override
++        public int hashCode() {
++            return Objects.hash(name);
++        }
++    }
++
++    // Test for enum with only DELEGATING creator (should still work)
++    enum SimpleDelegatingEnum {
++        X, Y, Z;
++
++        @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
++        public static SimpleDelegatingEnum fromString(String name) {
++            return valueOf(name);
++        }
++    }
++
++    // Test for enum with only PROPERTIES creator (should still work)
++    @JsonFormat(shape = JsonFormat.Shape.OBJECT)
++    enum SimplePropertiesEnum {
++        X("xVal"),
++        Y("yVal");
++
++        private final String value;
++
++        SimplePropertiesEnum(String value) {
++            this.value = value;
++        }
++
++        @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
++        public static SimplePropertiesEnum create(@JsonProperty("value") String value) {
++            return Arrays.stream(values())
++                    .filter(e -> e.value.equals(value))
++                    .findFirst()
++                    .orElseThrow();
++        }
++    }
++
++    private final ObjectMapper mapper = newJsonMapper();
++
++    // Test that both creators work for POJO
++    @Test
++    public void testClassWithBothCreators() throws JsonProcessingException {
++        assertEquals(new AClass("someName"), mapper.readValue("{ \"name\": \"someName\" }", AClass.class));
++        assertEquals(new AClass("someName"), mapper.readValue("\"someName\"", AClass.class));
++    }
++
++    // Test that both creators work for Enum
++    @Test
++    public void testEnumWithBothCreators() throws JsonProcessingException {
++        assertEquals(AEnum.A, mapper.readValue("{ \"type\": \"AType\" }", AEnum.class));
++        assertEquals(AEnum.A, mapper.readValue("\"AType\"", AEnum.class));
++    }
++
++    // Test that only DELEGATING still works
++    @Test
++    public void testEnumWithOnlyDelegating() throws JsonProcessingException {
++        assertEquals(SimpleDelegatingEnum.X, mapper.readValue("\"X\"", SimpleDelegatingEnum.class));
++    }
++
++    // Test that only PROPERTIES still works
++    @Test
++    public void testEnumWithOnlyProperties() throws JsonProcessingException {
++        assertEquals(SimplePropertiesEnum.X, mapper.readValue("{ \"value\": \"xVal\" }", SimplePropertiesEnum.class));
++    }
++}

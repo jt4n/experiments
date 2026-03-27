@@ -1,0 +1,175 @@
+diff --git a/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java b/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java
+index b7621a790..267e7a11c 100644
+--- a/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java
++++ b/logstash-core/src/main/java/org/logstash/instrument/metrics/FlowMetric.java
+@@ -22,7 +22,10 @@ package org.logstash.instrument.metrics;
+ import java.math.BigDecimal;
+ import java.math.RoundingMode;
+ import java.time.Duration;
++import java.util.ArrayDeque;
++import java.util.Deque;
+ import java.util.HashMap;
++import java.util.Iterator;
+ import java.util.Map;
+ import java.util.Objects;
+ import java.util.Optional;
+@@ -48,6 +51,29 @@ public class FlowMetric extends AbstractMetric<Map<String,Double>> {
+     static final String LIFETIME_KEY = "lifetime";
+     static final String CURRENT_KEY = "current";
+ 
++    static final String LAST_1_MINUTE_KEY = "last_1_minute";
++    static final String LAST_5_MINUTES_KEY = "last_5_minutes";
++    static final String LAST_15_MINUTES_KEY = "last_15_minutes";
++    static final String LAST_1_HOUR_KEY = "last_1_hour";
++    static final String LAST_24_HOURS_KEY = "last_24_hours";
++
++    private static final Duration WINDOW_1_MINUTE = Duration.ofMinutes(1);
++    private static final Duration WINDOW_5_MINUTES = Duration.ofMinutes(5);
++    private static final Duration WINDOW_15_MINUTES = Duration.ofMinutes(15);
++    private static final Duration WINDOW_1_HOUR = Duration.ofHours(1);
++    private static final Duration WINDOW_24_HOURS = Duration.ofHours(24);
++
++    private static final Duration GRANULARITY_1_MINUTE = Duration.ofSeconds(3);
++    private static final Duration GRANULARITY_5_MINUTES = Duration.ofSeconds(15);
++    private static final Duration GRANULARITY_15_MINUTES = Duration.ofSeconds(30);
++    private static final Duration GRANULARITY_1_HOUR = Duration.ofSeconds(60);
++    private static final Duration GRANULARITY_24_HOURS = Duration.ofMinutes(15);
++
++    private static final Duration CURRENT_WINDOW = Duration.ofSeconds(10);
++    private static final Duration CURRENT_GRANULARITY = Duration.ofSeconds(1);
++
++    private final Map<String, Deque<Capture>> windowCaptures = new HashMap<>();
++
+     public FlowMetric(final String name,
+                       final Metric<? extends Number> numeratorMetric,
+                       final Metric<? extends Number> denominatorMetric) {
+@@ -65,20 +91,88 @@ public class FlowMetric extends AbstractMetric<Map<String,Double>> {
+ 
+         this.baseline = doCapture();
+         this.head = new AtomicReference<>(this.baseline);
++
++        windowCaptures.put(CURRENT_KEY, new ArrayDeque<>());
++        windowCaptures.put(LAST_1_MINUTE_KEY, new ArrayDeque<>());
++        windowCaptures.put(LAST_5_MINUTES_KEY, new ArrayDeque<>());
++        windowCaptures.put(LAST_15_MINUTES_KEY, new ArrayDeque<>());
++        windowCaptures.put(LAST_1_HOUR_KEY, new ArrayDeque<>());
++        windowCaptures.put(LAST_24_HOURS_KEY, new ArrayDeque<>());
+     }
+ 
+     public void capture() {
+         final Capture newestHead = doCapture();
+         final Capture previousHead = head.getAndSet(newestHead);
++
++        addCaptureToWindow(CURRENT_KEY, newestHead, CURRENT_WINDOW, CURRENT_GRANULARITY);
++        addCaptureToWindow(LAST_1_MINUTE_KEY, newestHead, WINDOW_1_MINUTE, GRANULARITY_1_MINUTE);
++        addCaptureToWindow(LAST_5_MINUTES_KEY, newestHead, WINDOW_5_MINUTES, GRANULARITY_5_MINUTES);
++        addCaptureToWindow(LAST_15_MINUTES_KEY, newestHead, WINDOW_15_MINUTES, GRANULARITY_15_MINUTES);
++        addCaptureToWindow(LAST_1_HOUR_KEY, newestHead, WINDOW_1_HOUR, GRANULARITY_1_HOUR);
++        addCaptureToWindow(LAST_24_HOURS_KEY, newestHead, WINDOW_24_HOURS, GRANULARITY_24_HOURS);
++
+         instant.getAndAccumulate(previousHead, (current, given) -> {
+-            // keep our current value if the given one is less than ~100ms older than our newestHead
+-            // this is naive and when captures happen too frequently without relief can result in
+-            // our "current" window growing indefinitely, but we are shipping with a 5s cadence
+-            // and shouldn't hit this edge-case in practice.
+             return (newestHead.calculateCapturePeriod(given).toMillis() > 100) ? given : current;
+         });
+     }
+ 
++    private void addCaptureToWindow(String windowKey, Capture newestCapture, Duration windowDuration, Duration granularity) {
++        Deque<Capture> captures = windowCaptures.get(windowKey);
++        captures.addLast(newestCapture);
++        compactCaptures(captures, newestCapture, windowDuration, granularity);
++        pruneOldCaptures(captures, newestCapture, windowDuration);
++    }
++
++    private void compactCaptures(Deque<Capture> captures, Capture newestCapture, Duration windowDuration, Duration granularity) {
++        if (captures.size() < 3) {
++            return;
++        }
++
++        Iterator<Capture> iterator = captures.iterator();
++        iterator.next();
++
++        Capture previous = iterator.next();
++        while (iterator.hasNext()) {
++            Capture current = iterator.next();
++            Duration period = current.calculateCapturePeriod(previous);
++            if (period.compareTo(granularity) < 0) {
++                iterator.remove();
++            }
++            previous = current;
++        }
++    }
++
++    private void pruneOldCaptures(Deque<Capture> captures, Capture newestCapture, Duration windowDuration) {
++        if (captures.size() <= 1) {
++            return;
++        }
++
++        Duration windowPlusTolerance = windowDuration.plus(windowDuration.multipliedBy(5).dividedBy(100));
++
++        Capture oldestNeededForWindow = null;
++        for (Capture capture : captures) {
++            Duration age = newestCapture.calculateCapturePeriod(capture);
++            if (age.compareTo(windowDuration) >= 0) {
++                oldestNeededForWindow = capture;
++                break;
++            }
++        }
++
++        Iterator<Capture> iterator = captures.iterator();
++        while (iterator.hasNext()) {
++            Capture capture = iterator.next();
++            if (capture == oldestNeededForWindow) {
++                break;
++            }
++            Duration age = newestCapture.calculateCapturePeriod(capture);
++            if (age.compareTo(windowPlusTolerance) > 0) {
++                iterator.remove();
++            } else {
++                break;
++            }
++        }
++    }
++
+     /**
+      * @return a map containing all available finite rates (see {@link Capture#calculateRate(Capture)})
+      */
+@@ -93,9 +187,36 @@ public class FlowMetric extends AbstractMetric<Map<String,Double>> {
+         headCapture.calculateRate(baseline).ifPresent((rate) -> rates.put(LIFETIME_KEY, rate));
+         headCapture.calculateRate(instant::get).ifPresent((rate) -> rates.put(CURRENT_KEY,  rate));
+ 
++        calculateWindowRate(rates, headCapture, CURRENT_KEY, CURRENT_WINDOW);
++        calculateWindowRate(rates, headCapture, LAST_1_MINUTE_KEY, WINDOW_1_MINUTE);
++        calculateWindowRate(rates, headCapture, LAST_5_MINUTES_KEY, WINDOW_5_MINUTES);
++        calculateWindowRate(rates, headCapture, LAST_15_MINUTES_KEY, WINDOW_15_MINUTES);
++        calculateWindowRate(rates, headCapture, LAST_1_HOUR_KEY, WINDOW_1_HOUR);
++        calculateWindowRate(rates, headCapture, LAST_24_HOURS_KEY, WINDOW_24_HOURS);
++
+         return Map.copyOf(rates);
+     }
+ 
++    private void calculateWindowRate(Map<String, Double> rates, Capture headCapture, String windowKey, Duration windowDuration) {
++        Deque<Capture> captures = windowCaptures.get(windowKey);
++        if (captures == null || captures.isEmpty()) {
++            return;
++        }
++
++        Capture oldestInWindow = null;
++        for (Capture capture : captures) {
++            Duration age = headCapture.calculateCapturePeriod(capture);
++            if (age.compareTo(windowDuration) >= 0) {
++                oldestInWindow = capture;
++                break;
++            }
++        }
++
++        if (oldestInWindow != null) {
++            headCapture.calculateRate(oldestInWindow).ifPresent((rate) -> rates.put(windowKey, rate));
++        }
++    }
++
+     Capture doCapture() {
+         return new Capture(numeratorMetric.getValue(), denominatorMetric.getValue(), nanoTimeSupplier.getAsLong());
+     }

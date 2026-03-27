@@ -1,0 +1,191 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+index 34ddfa658..c878fb42d 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+@@ -297,8 +297,9 @@ public class BeanDeserializer
+     {
+         final Object bean = _valueInstantiator.createUsingDefault(ctxt);
+         // [databind#631]: Assign current value, to be accessible by custom serializers
+-        p.setCurrentValue(bean);
++        // [databind#1834]: but only if we have entered the object (not for empty Objects)
+         if (p.hasTokenId(JsonTokenId.ID_FIELD_NAME)) {
++            p.setCurrentValue(bean);
+             String propName = p.currentName();
+             do {
+                 p.nextToken();
+@@ -361,7 +362,10 @@ public class BeanDeserializer
+         }
+         final Object bean = _valueInstantiator.createUsingDefault(ctxt);
+         // [databind#631]: Assign current value, to be accessible by custom deserializers
+-        p.setCurrentValue(bean);
++        // [databind#1834]: but only if we have entered the object (not for empty Objects)
++        if (p.hasTokenId(JsonTokenId.ID_FIELD_NAME)) {
++            p.setCurrentValue(bean);
++        }
+         if (p.canReadObjectId()) {
+             Object id = p.getObjectId();
+             if (id != null) {
+@@ -450,7 +454,10 @@ public class BeanDeserializer
+                                 _creatorReturnedNullException());
+                     }
+                     // [databind#631]: Assign current value, to be accessible by custom serializers
+-                    p.setCurrentValue(bean);
++                    // [databind#1834]: but only if we have entered the object (not for empty Objects)
++                    if (p.hasTokenId(JsonTokenId.ID_FIELD_NAME)) {
++                        p.setCurrentValue(bean);
++                    }
+ 
+                     //  polymorphic?
+                     if (bean.getClass() != _beanType.getRawClass()) {
+@@ -715,7 +722,10 @@ public class BeanDeserializer
+         final Object bean = _valueInstantiator.createUsingDefault(ctxt);
+ 
+         // [databind#631]: Assign current value, to be accessible by custom serializers
+-        p.setCurrentValue(bean);
++        // [databind#1834]: but only if we have entered the object (not for empty Objects)
++        if (p.hasTokenId(JsonTokenId.ID_FIELD_NAME)) {
++            p.setCurrentValue(bean);
++        }
+ 
+         if (_injectables != null) {
+             injectValues(ctxt, bean);
+@@ -862,7 +872,10 @@ public class BeanDeserializer
+                         bean = wrapInstantiationProblem(e, ctxt);
+                     }
+                     // [databind#631]: Assign current value, to be accessible by custom serializers
+-                    p.setCurrentValue(bean);
++                    // [databind#1834]: but only if we have entered the object (not for empty Objects)
++                    if (p.hasTokenId(JsonTokenId.ID_FIELD_NAME)) {
++                        p.setCurrentValue(bean);
++                    }
+                     // if so, need to copy all remaining tokens into buffer
+                     while (t == JsonToken.FIELD_NAME) {
+                         // NOTE: do NOT skip name as it needs to be copied; `copyCurrentStructure` does that
+diff --git a/src/test/java/com/fasterxml/jackson/databind/deser/Issue1834Test.java b/src/test/java/com/fasterxml/jackson/databind/deser/Issue1834Test.java
+new file mode 100644
+index 000000000..de0ed24b0
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/databind/deser/Issue1834Test.java
+@@ -0,0 +1,121 @@
++package com.fasterxml.jackson.databind.deser;
++
++import java.io.IOException;
++
++import com.fasterxml.jackson.core.*;
++import com.fasterxml.jackson.databind.*;
++import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
++
++public class Issue1834Test extends BaseMapTest
++{
++    static class Field2Deserializer extends JsonDeserializer<Field2> {
++        @Override
++        public Field2 deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
++            // Check parent context - this is where the parent bean should be
++            JsonStreamContext parent = jp.getParsingContext().getParent();
++            if (parent != null) {
++                lastCurrentValue = parent.getCurrentValue();
++            }
++            
++            jp.skipChildren();
++            Field2 result = new Field2();
++            result.value = "A";
++            return result;
++        }
++    }
++
++    static Object lastCurrentValue;
++
++    static class Bean {
++        public Field1 field1;
++
++        @JsonDeserialize(using = Field2Deserializer.class)
++        public Field2 field2;
++    }
++
++    static class Field1 {
++        // empty object
++    }
++    
++    static class Field2 {
++        public String value;
++    }
++
++    public void testCurrentValueWithEmptyObject() throws Exception {
++        ObjectMapper mapper = new ObjectMapper();
++        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
++        
++        // Test with non-empty object for field1
++        String json = "{\"field1\": {\"x\":1}, \"field2\": {\"value\": \"A\"}}";
++        lastCurrentValue = null;
++        Bean result = mapper.readValue(json, Bean.class);
++        assertNotNull("Current value should not be null", lastCurrentValue);
++        assertTrue("Current value should be Bean, but was: " + lastCurrentValue.getClass().getName(),
++                lastCurrentValue instanceof Bean);
++        
++        // Test with empty object for field1 (the main issue)
++        json = "{\"field1\": {}, \"field2\": {\"value\": \"A\"}}";
++        lastCurrentValue = null;
++        result = mapper.readValue(json, Bean.class);
++        assertNotNull("Current value should not be null", lastCurrentValue);
++        assertTrue("Current value should be Bean, but was: " + lastCurrentValue.getClass().getName(),
++                lastCurrentValue instanceof Bean);
++    }
++    
++    // Test multiple consecutive empty objects
++    static class Bean3Fields {
++        public Field1 field1;
++        public Field1 field2;
++        
++        @JsonDeserialize(using = Field3Deserializer.class)
++        public Field2 field3;
++    }
++    
++    static class Field3Deserializer extends JsonDeserializer<Field2> {
++        @Override
++        public Field2 deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
++            JsonStreamContext parent = jp.getParsingContext().getParent();
++            if (parent != null) {
++                lastCurrentValue = parent.getCurrentValue();
++            }
++            jp.skipChildren();
++            return new Field2();
++        }
++    }
++    
++    public void testCurrentValueWithMultipleEmptyObjects() throws Exception {
++        ObjectMapper mapper = new ObjectMapper();
++        
++        // Test with multiple empty objects before the field with custom deserializer
++        String json = "{\"field1\": {}, \"field2\": {}, \"field3\": {\"value\": \"A\"}}";
++        lastCurrentValue = null;
++        Bean3Fields result = mapper.readValue(json, Bean3Fields.class);
++        assertNotNull("Current value should not be null", lastCurrentValue);
++        assertTrue("Current value should be Bean3Fields, but was: " + lastCurrentValue.getClass().getName(),
++                lastCurrentValue instanceof Bean3Fields);
++    }
++    
++    // Test nested empty objects
++    static class NestedBean {
++        public NestedField inner;
++        
++        @JsonDeserialize(using = Field3Deserializer.class)
++        public Field2 field2;
++    }
++    
++    static class NestedField {
++        public Field1 empty;
++    }
++    
++    public void testCurrentValueWithNestedEmptyObject() throws Exception {
++        ObjectMapper mapper = new ObjectMapper();
++        
++        // Test with nested empty object
++        String json = "{\"inner\": {\"empty\": {}}, \"field2\": {\"value\": \"A\"}}";
++        lastCurrentValue = null;
++        NestedBean result = mapper.readValue(json, NestedBean.class);
++        assertNotNull("Current value should not be null", lastCurrentValue);
++        assertTrue("Current value should be NestedBean, but was: " + lastCurrentValue.getClass().getName(),
++                lastCurrentValue instanceof NestedBean);
++    }
++}
+\ No newline at end of file

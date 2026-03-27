@@ -1,0 +1,58 @@
+
+diff --git a/.gitignore b/.gitignore
+index cc0ab0db4..7e5ef4afe 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -63,4 +63,6 @@ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+ qa/integration/fixtures/logs_rollover/log4j2.properties
+-ci/serverless/config/*.log
+\ No newline at end of file
++ci/serverless/config/*.logtarget/
++out/
++.gradle/
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index 1db0ac91a..26151016e 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -67,6 +67,7 @@ import org.logstash.Event;
+ import org.logstash.FieldReference;
+ import org.logstash.FileLockFactory;
+ import org.logstash.Timestamp;
++import org.logstash.common.io.SegmentListener;
+ 
+ import static org.logstash.common.io.DeadLetterQueueUtils.listFiles;
+ import static org.logstash.common.io.DeadLetterQueueUtils.listSegmentPaths;
+@@ -76,7 +77,7 @@ import static org.logstash.common.io.RecordIOWriter.BLOCK_SIZE;
+ import static org.logstash.common.io.RecordIOWriter.RECORD_HEADER_SIZE;
+ import static org.logstash.common.io.RecordIOWriter.VERSION_SIZE;
+ 
+-public final class DeadLetterQueueWriter implements Closeable {
++public final class DeadLetterQueueWriter implements Closeable, SegmentListener {
+ 
+     private enum FinalizeWhen { ALWAYS, ONLY_IF_STALE }
+ 
+@@ -701,8 +702,21 @@ public final class DeadLetterQueueWriter implements Closeable {
+         Files.delete(deleteTarget);
+         logger.debug("Deleted temporary empty file {}", deleteTarget);
+     }
+-
+     private static boolean isWindows() {
+         return System.getProperty("os.name").startsWith("Windows");
+     }
++
++    @Override
++    public void segmentCompleted(DeadLetterQueueReader reader) {
++        // no-op
++    }
++
++    @Override
++    public void segmentsDeleted(int numberOfSegments, long numberOfEvents) {
++        try {
++            this.currentQueueSize.set(computeQueueSize());
++        } catch (IOException e) {
++            logger.warn("Unable to recompute queue size after segments were deleted", e);
++        }
++    }
+ }

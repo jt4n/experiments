@@ -1,0 +1,69 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java b/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
+index 1e31bdfee..fe4b780c0 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/std/ReferenceTypeSerializer.java
+@@ -216,6 +216,10 @@ public abstract class ReferenceTypeSerializer<T>
+                 ser = provider.handlePrimaryContextualization(ser, property);
+             }
+         }
++        // Also: do we have a Converter annotation?
++        if (ser != null) {
++            ser = findConvertingContentSerializer(provider, property, ser);
++        }
+         // First, resolve wrt property, resolved serializers
+         ReferenceTypeSerializer<?> refSer;
+         if ((_property == property)
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java b/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java
+index c8eec1c08..8aa096982 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java
+@@ -203,19 +203,24 @@ public abstract class StdSerializer<T>
+      * Helper method that calls necessary visit method(s) to indicate that the
+      * underlying JSON type is JSON Integer number.
+      *
+-     * @since 2.7
+-     */
+-    protected void visitIntFormat(JsonFormatVisitorWrapper visitor, JavaType typeHint,
+-            NumberType numberType)
+-        throws JsonMappingException
+-    {
+-        JsonIntegerFormatVisitor v2 = visitor.expectIntegerFormat(typeHint);
+-        if (_neitherNull(v2, numberType)) {
+-            v2.numberType(numberType);
++        // First: do we have an annotation override from property?
++        JsonSerializer<?> ser = findAnnotatedContentSerializer(provider, property);
++        if (ser == null) {
++            // If not, use whatever was configured by type
++            ser = _valueSerializer;
++            if (ser == null) {
++                // A few conditions needed to be able to fetch serializer here:
++                if (_useStatic(provider, property, _referredType)) {
++                    ser = _findSerializer(provider, _referredType, property);
++                }
++            } else {
++                ser = provider.handlePrimaryContextualization(ser, property);
++            }
++        }
++        // Also: do we have a Converter annotation?
++        if (ser != null) {
++            ser = findConvertingContentSerializer(provider, property, ser);
+         }
+-    }
+-
+-    /**
+      * Helper method that calls necessary visit method(s) to indicate that the
+      * underlying JSON type is JSON Integer number, but that there is also a further
+      * format restriction involved.

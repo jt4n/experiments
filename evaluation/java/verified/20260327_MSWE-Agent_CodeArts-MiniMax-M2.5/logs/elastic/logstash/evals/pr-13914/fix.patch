@@ -1,0 +1,104 @@
+
+diff --git a/.gitignore b/.gitignore
+index 4c0c15eb7..682d481bf 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -61,4 +61,6 @@ lib/pluginmanager/plugin_aliases.yml
+ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+-qa/integration/fixtures/logs_rollover/log4j2.properties
+\ No newline at end of file
++qa/integration/fixtures/logs_rollover/log4j2.propertiestarget/
++out/
++.gradle/
+diff --git a/bin/logstash.lib.sh b/bin/logstash.lib.sh
+index 29680db94..c0c06ac96 100755
+--- a/bin/logstash.lib.sh
++++ b/bin/logstash.lib.sh
+@@ -76,6 +76,15 @@ setup_bundled_jdk_part() {
+   fi
+ }
+ 
++
++get_bundled_jdk_version() {
++  local jdk_dir="${LOGSTASH_HOME}/${BUNDLED_JDK_PART}"
++  local version_file="${jdk_dir}/VERSION"
++  if [ -f "${version_file}" ]; then
++    cat "${version_file}"
++  fi
++}
++
+ # Accepts 1 parameter which is the path the directory where logstash jar are contained.
+ setup_classpath() {
+   local classpath="${1?classpath (and jar_directory) required}"
+@@ -100,14 +109,15 @@ setup_java() {
+       if [ -x "$LS_JAVA_HOME/bin/java" ]; then
+         JAVACMD="$LS_JAVA_HOME/bin/java"
+         if [ -d "${LOGSTASH_HOME}/${BUNDLED_JDK_PART}" -a -x "${LOGSTASH_HOME}/${BUNDLED_JDK_PART}/bin/java" ]; then
+-          echo "WARNING: Using LS_JAVA_HOME while Logstash distribution comes with a bundled JDK."
++          BUNDLED_JDK_VERSION=$(get_bundled_jdk_version)
++          echo "WARNING: Using LS_JAVA_HOME while Logstash distribution comes with a bundled JDK: ${BUNDLED_JDK_VERSION}"
+         fi
+       else
+         echo "Invalid LS_JAVA_HOME, doesn't contain bin/java executable."
+       fi
+     elif [ -d "${LOGSTASH_HOME}/${BUNDLED_JDK_PART}" -a -x "${LOGSTASH_HOME}/${BUNDLED_JDK_PART}/bin/java" ]; then
+-      echo "Using bundled JDK: ${LOGSTASH_HOME}/${BUNDLED_JDK_PART}"
+-      JAVACMD="${LOGSTASH_HOME}/${BUNDLED_JDK_PART}/bin/java"
++      BUNDLED_JDK_VERSION=$(get_bundled_jdk_version)
++      echo "Using bundled JDK: ${BUNDLED_JDK_VERSION}. To change, set JAVA_HOME."
+     elif [ -n "$JAVACMD_TEST" ]; then
+       set +e
+       JAVACMD=`command -v java`
+diff --git a/bin/setup.bat b/bin/setup.bat
+index 5e8acb4d1..e0b4a921f 100644
+--- a/bin/setup.bat
++++ b/bin/setup.bat
+@@ -18,21 +18,36 @@ if not "%DIRNAME%" == "bin" (
+ )
+ for %%I in ("%LS_HOME%..") do set LS_HOME=%%~dpfI
+ 
++
+ rem ### 2: set java
+ 
++rem Function to read bundled JDK version from VERSION file
++set "BUNDLED_JDK_VERSION="
++if exist "%LS_HOME%\jdk\VERSION" (
++  set /p BUNDLED_JDK_VERSION=<"%LS_HOME%\jdk\VERSION"
++)
++
+ if defined LS_JAVA_HOME (
+   set JAVACMD=%LS_JAVA_HOME%\bin\java.exe
+   echo Using LS_JAVA_HOME defined java: %LS_JAVA_HOME%
+   if exist "%LS_HOME%\jdk" (
+-    echo WARNING: Using LS_JAVA_HOME while Logstash distribution comes with a bundled JDK.
++    if defined BUNDLED_JDK_VERSION (
++      echo WARNING: Using LS_JAVA_HOME while Logstash distribution comes with a bundled JDK: %BUNDLED_JDK_VERSION%
++    ) else (
++      echo WARNING: Using LS_JAVA_HOME while Logstash distribution comes with a bundled JDK.
++    )
+   )
+ ) else (
+   if exist "%LS_HOME%\jdk" (
+     set JAVACMD=%LS_HOME%\jdk\bin\java.exe
+-    echo "Using bundled JDK: !JAVACMD!"
++    if defined BUNDLED_JDK_VERSION (
++      echo Using bundled JDK: %BUNDLED_JDK_VERSION%
++    ) else (
++      echo Using bundled JDK: !JAVACMD!
++    )
+   ) else (
+     for %%I in (java.exe) do set JAVACMD="%%~$PATH:I"
+-    echo "Using system java: !JAVACMD!"
++    echo Using system java: !JAVACMD!
+   )
+ )
+ 
+@@ -62,4 +77,4 @@ if not exist %JRUBY_BIN% (
+   exit /b 1
+ )
+ 
+-set RUBYLIB=%LS_HOME%\lib
+\ No newline at end of file
++set RUBYLIB=%LS_HOME%\lib

@@ -1,0 +1,89 @@
+
+diff --git a/.gitignore b/.gitignore
+index 4c0c15eb7..682d481bf 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -61,4 +61,6 @@ lib/pluginmanager/plugin_aliases.yml
+ logstash-core/src/main/resources/org/logstash/plugins/plugin_aliases.yml
+ spec/unit/plugin_manager/plugin_aliases.yml
+ logstash-core/src/test/resources/org/logstash/plugins/plugin_aliases.yml
+-qa/integration/fixtures/logs_rollover/log4j2.properties
+\ No newline at end of file
++qa/integration/fixtures/logs_rollover/log4j2.propertiestarget/
++out/
++.gradle/
+diff --git a/logstash-core/lib/logstash/pipeline_action/reload.rb b/logstash-core/lib/logstash/pipeline_action/reload.rb
+index 9b7c66b59..641d6fcd6 100644
+--- a/logstash-core/lib/logstash/pipeline_action/reload.rb
++++ b/logstash-core/lib/logstash/pipeline_action/reload.rb
+@@ -63,13 +63,15 @@ module LogStash module PipelineAction
+         # important NOT to explicitly return from block here
+         # the block must emit a success boolean value
+ 
+-        # First shutdown old pipeline
+-        old_pipeline.shutdown
+-
+-        # Then create a new pipeline
++        # First create and start a new pipeline
+         new_pipeline = LogStash::JavaPipeline.new(@pipeline_config, @metric, agent)
+         success = new_pipeline.start # block until the pipeline is correctly started or crashed
+ 
++        # Only shutdown old pipeline after new pipeline successfully started
++        if success
++          old_pipeline.shutdown
++        end
++
+         # return success and new_pipeline to registry reload_pipeline
+         [success, new_pipeline]
+       end
+diff --git a/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java b/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java
+index 906defd8e..f6d26ce93 100644
+--- a/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java
++++ b/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java
+@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
+ import org.logstash.RubyUtil;
+ import org.logstash.ext.JrubyEventExtLibrary;
+ 
++import java.io.IOException;
+ import java.util.Collection;
+ import java.util.concurrent.ConcurrentHashMap;
+ import java.util.stream.Stream;
+@@ -61,7 +62,14 @@ public class PipelineBus {
+                 final Stream<JrubyEventExtLibrary.RubyEvent> clones = events.stream().map(e -> e.rubyClone(RubyUtil.RUBY));
+ 
+                 PipelineInput input = addressState.getInput(); // Save on calls to getInput since it's volatile
+-                boolean sendWasSuccess = input != null && input.internalReceive(clones);
++                boolean sendWasSuccess = false;
++                try {
++                    sendWasSuccess = input != null && input.internalReceive(clones);
++                } catch (IOException e) {
++                    logger.error("IO error while sending events to downstream pipeline {}: {}", address, e.getMessage());
++                    // Clones have already been consumed or lost, there is nothing we can do
++                    sendWasSuccess = false;
++                }
+ 
+                 // Retry send if the initial one failed
+                 while (ensureDelivery && !sendWasSuccess) {
+@@ -70,7 +78,13 @@ public class PipelineBus {
+                             "Maybe the destination pipeline is down or stopping? Will Retry.", address);
+                     logger.warn(message);
+                     input = addressState.getInput();
+-                    sendWasSuccess = input != null && input.internalReceive(clones);
++                    try {
++                        sendWasSuccess = input != null && input.internalReceive(clones);
++                    } catch (IOException e) {
++                        logger.error("IO error while sending events to downstream pipeline {}: {}", address, e.getMessage());
++                        // Clones have already been consumed or lost, there is nothing we can do
++                        sendWasSuccess = false;
++                    }
+                     try {
+                         Thread.sleep(1000);
+                     } catch (InterruptedException e) {
+@@ -79,7 +93,6 @@ public class PipelineBus {
+                     }
+                 }
+             });
+-        }
+     }
+ 
+     /**

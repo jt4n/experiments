@@ -1,0 +1,14 @@
+diff --git a/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java b/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java
+index e39a5a0e..6ac3924e 100644
+--- a/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java
++++ b/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java
+@@ -567,6 +567,9 @@ public class MavenProjectProperties implements ProjectProperties {
+         if (execution.getGoals().contains("repackage")) {
+           Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();
+ 
++          if (configuration == null) {
++            return Optional.empty();
++          }
+           boolean skip = Boolean.valueOf(getChildValue(configuration, "skip").orElse("false"));
+           return skip ? Optional.empty() : Optional.of(configuration);
+         }

@@ -1,0 +1,47 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java
+index 0bdb8afe8..f46b3ccb9 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdNodeBasedDeserializer.java
+@@ -61,6 +61,29 @@ public abstract class StdNodeBasedDeserializer<T>
+ 
+     public abstract T convert(JsonNode root, DeserializationContext ctxt) throws IOException;
+ 
++    /**
++     * Method that can be overridden to handle case where there is a value
++     * to update (merge into), as an alternative to {@link #convert(JsonNode, DeserializationContext)}
++     * which is called if no merge value is provided.
++     *<p>
++     * Default implementation simply calls {@link #handleBadMerge} to indicate that
++     * this deserializer does not explicitly support merging into existing value;
++     * and then calls {@link #convert(JsonNode, DeserializationContext)} to produce
++     * the value to return.
++     *
++     * @param root Tree to convert
++     * @param ctxt Context to use
++     * @param intoValue Value to update (merge into); may be {@code null}
++     *
++     * @return Resulting value
++     *
++     * @since 2.19
++     */
++    public T convert(JsonNode root, DeserializationContext ctxt, T intoValue) throws IOException {
++        ctxt.handleBadMerge(this);
++        return convert(root, ctxt);
++    }
++
+     /*
+     /**********************************************************
+     /* JsonDeserializer impl
+@@ -73,6 +96,12 @@ public abstract class StdNodeBasedDeserializer<T>
+         return convert(n, ctxt);
+     }
+ 
++    @Override
++    public T deserialize(JsonParser jp, DeserializationContext ctxt, T intoValue) throws IOException {
++        JsonNode n = (JsonNode) _treeDeserializer.deserialize(jp, ctxt);
++        return convert(n, ctxt, intoValue);
++    }
++
+     @Override
+     public Object deserializeWithType(JsonParser jp, DeserializationContext ctxt,
+             TypeDeserializer td)

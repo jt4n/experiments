@@ -1,0 +1,64 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java b/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
+index 2a6c1e0f..b7cdf611 100644
+--- a/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
++++ b/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java
+@@ -97,6 +97,23 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+      */
+     void releasePooled(P pooled);
+ 
++    /**
++     * Method that can be called to clear all currently pooled objects, without
++     * having to acquire them first: typically useful for cases where there is
++     * a need to release memory or other resources accumulated by the pool.
++     *<p>
++     * Default implementation is a no-op (no recycling done); actual implementations
++     * should override this method if they are able to clear the pooled objects.
++     *<p>
++     * Note that calling this method does NOT prevent future use of the pool:
++     * new objects can still be acquired after clearing.
++     *
++     * @since 2.17
++     */
++    default void clear() {
++        // nothing to do by default
++    }
++
+     /*
+     /**********************************************************************
+     /* Partial/base RecyclerPool implementations
+@@ -231,6 +248,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+         public void releasePooled(P pooled) {
+             pool.offerLast(pooled);
+         }
++
++        @Override
++        public void clear() {
++            pool.clear();
++        }
+     }
+ 
+     /**
+@@ -286,6 +308,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+             }
+         }
+ 
++        @Override
++        public void clear() {
++            head.set(null);
++        }
++
+         protected static class Node<P> {
+             final P value;
+             Node<P> next;
+@@ -342,6 +369,11 @@ public interface RecyclerPool<P extends RecyclerPool.WithPool<P>> extends Serial
+             pool.offer(pooled);
+         }
+ 
++        @Override
++        public void clear() {
++            pool.clear();
++        }
++
+         // // // Other methods
+ 
+         public int capacity() {

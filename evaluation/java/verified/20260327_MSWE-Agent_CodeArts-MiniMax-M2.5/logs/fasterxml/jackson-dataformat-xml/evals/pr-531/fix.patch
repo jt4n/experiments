@@ -1,0 +1,62 @@
+
+diff --git a/.gitignore b/.gitignore
+index c3bde803..741679f7 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -20,3 +20,7 @@ target
+ *.ipr
+ *.iws
+ .idea
++target/
++out/
++*.jar
++.gradle/
+diff --git a/DollarTest.java b/DollarTest.java
+new file mode 100644
+index 00000000..8b137891
+--- /dev/null
++++ b/DollarTest.java
+@@ -0,0 +1 @@
++
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlBeanDeserializerModifier.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlBeanDeserializerModifier.java
+index 303ba80c..81d10aa3 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlBeanDeserializerModifier.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlBeanDeserializerModifier.java
+@@ -42,6 +42,13 @@ public class XmlBeanDeserializerModifier
+             if (acc == null) {
+                 continue;
+             }
++            // Handle dollar sign escaping: convert $$ back to $
++            String name = prop.getName();
++            if (name.contains("$$")) {
++                name = name.replace("$$", "$");
++                prop = prop.withSimpleName(name);
++                propDefs.set(i, prop);
++            }
+             /* First: handle "as text"? Such properties
+              * are exposed as values of 'unnamed' fields; so one way to
+              * map them is to rename property to have name ""... (and
+@@ -61,6 +68,10 @@ public class XmlBeanDeserializerModifier
+             
+             if (wrapperName != null && wrapperName != PropertyName.NO_NAME) {
+                 String localName = wrapperName.getSimpleName();
++                // Handle dollar sign escaping in wrapper name: convert $$ back to $
++                if (localName != null && localName.contains("$$")) {
++                    localName = localName.replace("$$", "$");
++                }
+                 if ((localName != null && localName.length() > 0)
+                         && !localName.equals(prop.getName())) {
+                     // make copy-on-write as necessary
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlBeanSerializerBase.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlBeanSerializerBase.java
+index 7b43fa71..2f3f17c4 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlBeanSerializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlBeanSerializerBase.java
+@@ -100,7 +100,7 @@ public abstract class XmlBeanSerializerBase extends BeanSerializerBase
+                     textIndex = i;
+                 }
+             }
+-            _xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName());
++            _xmlNames[i] = new QName((ns == null) ? "" : ns, bpw.getName().replace("$", "$$"));
+         }
+         _textPropertyIndex = textIndex;
+     }

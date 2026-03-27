@@ -1,0 +1,85 @@
+
+diff --git a/.gitignore b/.gitignore
+index 5bda0b93..e930bdfb 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -18,3 +18,8 @@ local.properties
+ build
+ 
+ .DS_Store
++target/
++out/
++*.class
++*.jar
++.gradle/
+diff --git a/TestEnumSetCollection.java b/TestEnumSetCollection.java
+new file mode 100644
+index 00000000..cb6de8df
+--- /dev/null
++++ b/TestEnumSetCollection.java
+@@ -0,0 +1,39 @@
++import com.google.gson.Gson;
++import java.util.Collection;
++import java.util.Set;
++
++public class TestEnumSetCollection {
++    public static void main(String[] args) {
++        Gson gson = new Gson();
++        
++        String json = "{\"collection\":[\"ONE\",\"THREE\"]}";
++        TestEnumSetCollectionImpl withSet = gson.fromJson(json, TestEnumSetCollectionImpl.class);
++        
++        System.out.println("Collection type: " + withSet.collection.getClass());
++        System.out.println("Element types: ");
++        for (Object elem : withSet.collection) {
++            System.out.println("  " + elem.getClass() + " Is TestEnum: " + (elem instanceof TestEnum));
++        }
++        
++        // Try to use the collection as Set<TestEnum> - this should throw ClassCastException if bug exists
++        try {
++            Set<TestEnum> set = withSet.collection;
++            System.out.println("Success! Collection is Set<TestEnum>: " + set);
++        } catch (ClassCastException e) {
++            System.err.println("ClassCastException: " + e.getMessage());
++            System.exit(1);
++        }
++    }
++    
++    public Set<TestEnum> collection;
++    
++    enum TestEnum { ONE, TWO, THREE }
++    
++    private static class TestEnumSetCollectionImpl extends SetCollection<TestEnum> {}
++    
++    private static class SetCollection<T> extends BaseCollection<T, Set<T>> {}
++    
++    private static class BaseCollection<U, C extends Collection<U>> {
++        public C collection;
++    }
++}
+diff --git a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+index adea605f..c30e73c6 100644
+--- a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
++++ b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+@@ -351,9 +351,20 @@ public final class $Gson$Types {
+         }
+         toResolve = resolveTypeVariable(context, contextRawType, typeVariable);
+         if (toResolve == typeVariable) {
++          // After resolving the TypeVariable, remove it from visited set so it can be
++          // resolved again if encountered in other type arguments
++          // (e.g., SetCollection<T, Set<T>>)
++          // but keep it in visited during the recursive resolution of the resolved result
++          // to prevent infinite recursion (e.g., TestType<? super X>)
++          visitedTypeVariables.remove(typeVariable);
+           return toResolve;
+         }
+-
++        // After resolving the TypeVariable to a different type, remove it from visited set
++        // so it can be resolved again if encountered in other type arguments
++        // (e.g., SetCollection<T, Set<T>>)
++        // but keep it in visited during the recursive resolution of the resolved result
++        // to prevent infinite recursion (e.g., TestType<? super X>)
++        visitedTypeVariables.remove(typeVariable);
+       } else if (toResolve instanceof Class && ((Class<?>) toResolve).isArray()) {
+         Class<?> original = (Class<?>) toResolve;
+         Type componentType = original.getComponentType();

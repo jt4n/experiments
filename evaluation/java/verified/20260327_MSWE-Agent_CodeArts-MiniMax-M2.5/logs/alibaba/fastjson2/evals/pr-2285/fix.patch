@@ -1,0 +1,31 @@
+
+diff --git a/.gitignore b/.gitignore
+index e09139a19..502e2970f 100644
+Binary files a/.gitignore and b/.gitignore differ
+diff --git a/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java b/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java
+index b921de01f..7aea37731 100644
+--- a/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java
++++ b/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java
+@@ -283,12 +283,18 @@ public class ObjectWriterBaseModule
+                 fieldInfo.fieldClassMixIn = true;
+             }
+ 
+-            int modifiers = field.getModifiers();
+-            boolean isTransient = Modifier.isTransient(modifiers);
+-            if (isTransient) {
+-                fieldInfo.ignore = true;
++            // Check if the field's type class has a JSONType annotation
++            Class<?> fieldType = field.getType();
++            JSONType jsonType = fieldType.getAnnotation(JSONType.class);
++            if (jsonType != null) {
++                Class<?> serializer = jsonType.serializer();
++                if (ObjectWriter.class.isAssignableFrom(serializer)) {
++                    fieldInfo.writeUsing = serializer;
++                }
+             }
+ 
++            int modifiers = field.getModifiers();
++
+             JSONField jsonField = null;
+             Annotation[] annotations = getAnnotations(field);
+             for (Annotation annotation : annotations) {

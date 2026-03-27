@@ -1,0 +1,21 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+index 1aad80538..99296aed9 100644
+--- a/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
++++ b/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java
+@@ -211,6 +211,16 @@ public final class DeadLetterQueueWriter implements Closeable {
+     @Override
+     public void close() {
+         if (open.compareAndSet(true, false)) {
++            try {
++                lock.lock();
++                try {
++                    executeAgeRetentionPolicy();
++                } finally {
++                    lock.unlock();
++                }
++            } catch (Exception e) {
++                logger.warn("Unable to execute age retention policy on dlq writer close, ignoring", e);
++            }
+             try {
+                 finalizeSegment(FinalizeWhen.ALWAYS);
+             } catch (Exception e) {

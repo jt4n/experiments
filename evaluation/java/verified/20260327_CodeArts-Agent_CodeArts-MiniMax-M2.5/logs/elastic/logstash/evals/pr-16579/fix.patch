@@ -1,0 +1,30 @@
+diff --git a/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java b/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java
+index 2d7b90bba..906adc75f 100644
+--- a/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java
++++ b/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java
+@@ -77,10 +77,24 @@ public class BufferedTokenizerExt extends RubyObject {
+     @SuppressWarnings("rawtypes")
+     public RubyArray extract(final ThreadContext context, IRubyObject data) {
+         final RubyArray entities = data.convertToString().split(delimiter, -1);
++        if (entities.isEmpty()) {
++            return RubyUtil.RUBY.newArray();
++        }
+         if (hasSizeLimit) {
+             final int entitiesSize = ((RubyString) entities.first()).size();
+             if (inputSize + entitiesSize > sizeLimit) {
+-                throw new IllegalStateException("input buffer full");
++                input.clear();
++                inputSize = 0;
++                if (entities.size() == 1) {
++                    throw new IllegalStateException("input buffer full");
++                }
++                RubyArray result = RubyUtil.RUBY.newArray();
++                for (int i = 1; i < entities.size(); i++) {
++                    result.append(entities.get(i));
++                }
++                input.append(entities.last(context));
++                inputSize = ((RubyString) input.first()).size();
++                return result;
+             }
+             this.inputSize = inputSize + entitiesSize;
+         }

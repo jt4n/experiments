@@ -1,0 +1,21 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+index b6ef5f52..3fbfe1fa 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonFactory.java
+@@ -222,7 +222,7 @@ public class JsonFactory
+      * It should not be linked back to the original blueprint, to
+      * avoid contents from leaking between factories.
+      */
+-    protected final transient CharsToNameCanonicalizer _rootCharSymbols;
++    protected transient CharsToNameCanonicalizer _rootCharSymbols;
+ 
+     /**
+      * Alternative to the basic symbol table, some stream-based
+@@ -871,6 +871,7 @@ public class JsonFactory
+      */
+     public JsonFactory setStreamReadConstraints(StreamReadConstraints src) {
+         _streamReadConstraints = Objects.requireNonNull(src);
++        _rootCharSymbols = CharsToNameCanonicalizer.createRoot(this);
+         return this;
+     }
+ 

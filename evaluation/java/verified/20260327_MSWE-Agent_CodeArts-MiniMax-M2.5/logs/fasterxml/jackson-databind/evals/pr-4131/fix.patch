@@ -1,0 +1,172 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/JsonNode.java b/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
+index 3d6878fea..34eaf5b1a 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
++++ b/src/main/java/com/fasterxml/jackson/databind/JsonNode.java
+@@ -1168,6 +1168,73 @@ public abstract class JsonNode
+         return withObject(JsonPointer.compile(expr), overwriteMode, preferIndex);
+     }
+ 
++    /**
++     * Method that will return given property of this ObjectNode as an
++     * {@link ObjectNode}. If the property does not exist, or exists but
++     * is not an ObjectNode, a new ObjectNode will be added and returned.
++     * This is
++     * a
++     * Short-cut equivalent to:
++     *<pre>
++     *   withObject(JsonPointer.compile(propName));
++     *</pre>
++     *
++     * @param propName Name of the property from which to get or create
++     *   an {@link ObjectNode}
++     *
++     * @return {@link ObjectNode} that is value of specified property
++     *   -- newly created if did not exist or was {@code null} previously
++     *
++     * @since 2.14
++     */
++    public ObjectNode withObjectProperty(String propName) {
++        JsonNode n = get(propName);
++        if (n == null) {
++            n = objectNode();
++            _children.put(propName, n);
++        }
++        if (n instanceof ObjectNode) {
++            return (ObjectNode) n;
++        }
++        throw new UnsupportedOperationException(
++                "Property '" + propName + "' has value that is not of type `ObjectNode` (but `"
++                        + n.getClass().getName() + "`)");
++    }
++
++    /**
++     * Method that will return given property of this ObjectNode as an
++     * {@link ArrayNode}. If the property does not exist, or exists but
++     * is not an ArrayNode, a new ArrayNode will be added and returned.
++     * This is
++     * a
++     * Short-cut equivalent to:
++     *<pre>
++     *   withArray(JsonPointer.compile(propName));
++     *</pre>
++     *
++     * @param propName Name of the property from which to get or create
++     *   an {@link ArrayNode}
++     *
++     * @return {@link ArrayNode} that is value of specified property
++     *   -- newly created if did not exist or was {@code null} previously
++     *
++     * @since 2.14
++     */
++    public ArrayNode withArrayProperty(String propName) {
++        JsonNode n = get(propName);
++        if (n == null) {
++            n = arrayNode();
++            _children.put(propName, n);
++        }
++        if (n instanceof ArrayNode) {
++            return (ArrayNode) n;
++        }
++        throw new UnsupportedOperationException(
++                "Property '" + propName + "' has value that is not of type `ArrayNode` (but `"
++                        + n.getClass().getName() + "`)");
++    }
++
++
+     /**
+      * Same as {@link #withObject(JsonPointer, OverwriteMode, boolean)} but
+      * with defaults of {@code OvewriteMode#NULLS} (overwrite mode)
+diff --git a/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java b/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
+index 35db7d578..bf8a21c25 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
++++ b/src/main/java/com/fasterxml/jackson/databind/node/ObjectNode.java
+@@ -111,6 +111,76 @@ public class ObjectNode
+         return result;
+     }
+ 
++    /**
++     * Method that will return given property of this ObjectNode as an
++     * {@link ObjectNode}. If the property does not exist, or exists but
++     * is not an ObjectNode, a new ObjectNode will be added and returned.
++     * This is
++     * a
++     * Short-cut equivalent to:
++     *<pre>
++     *   withObject(JsonPointer.compile(propName));
++     *</pre>
++     *
++     * @param propName Name of the property from which to get or create
++     *   an {@link ObjectNode}
++     *
++     * @return {@link ObjectNode} that is value of specified property
++     *   -- newly created if did not exist or was {@code null} previously
++     *
++     * @since 2.14
++     */
++    @Override
++    public ObjectNode withObjectProperty(String propName) {
++        JsonNode n = get(propName);
++        if (n == null) {
++            n = objectNode();
++            _children.put(propName, n);
++        }
++        if (n instanceof ObjectNode) {
++            return (ObjectNode) n;
++        }
++        throw new UnsupportedOperationException(
++                "Property '" + propName + "' has value that is not of type `ObjectNode` (but `"
++                        + n.getClass().getName() + "`)");
++    }
++
++    /**
++     * Method that will return given property of this ObjectNode as an
++     * {@link ArrayNode}. If the property does not exist, or exists but
++     * is not an ArrayNode, a new ArrayNode will be added and returned.
++     * This is
++     * a
++     * Short-cut equivalent to:
++     *<pre>
++     *   withArray(JsonPointer.compile(propName));
++     *</pre>
++     *
++     * @param propName Name of the property from which to get or create
++     *   an {@link ArrayNode}
++     *
++     * @return {@link ArrayNode} that is value of specified property
++     *   -- newly created if did not exist or was {@code null} previously
++     *
++     * @since 2.14
++     */
++    @Override
++    public ArrayNode withArrayProperty(String propName) {
++        JsonNode n = get(propName);
++        if (n == null) {
++            n = arrayNode();
++            _children.put(propName, n);
++        }
++        if (n instanceof ArrayNode) {
++            return (ArrayNode) n;
++        }
++        throw new UnsupportedOperationException(
++                "Property '" + propName + "' has value that is not of type `ArrayNode` (but `"
++                        + n.getClass().getName() + "`)");
++    }
++
++    @Override
++
+     @Override
+     protected ObjectNode _withObject(JsonPointer origPtr,
+             JsonPointer currentPtr,

@@ -1,0 +1,50 @@
+diff --git a/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java b/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java
+index 6a690919..3f257c7b 100644
+--- a/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java
++++ b/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java
+@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
+ import com.google.gson.stream.JsonReader;
+ import com.google.gson.stream.JsonWriter;
+ import java.io.IOException;
++import java.lang.reflect.Field;
+ import java.lang.reflect.Type;
+ import java.lang.reflect.TypeVariable;
+ 
+@@ -53,10 +54,10 @@ final class TypeAdapterRuntimeTypeWrapper<T> extends TypeAdapter<T> {
+     if (runtimeType != type) {
+       @SuppressWarnings("unchecked")
+       TypeAdapter<T> runtimeTypeAdapter = (TypeAdapter<T>) context.getAdapter(TypeToken.get(runtimeType));
+-      if (!(runtimeTypeAdapter instanceof ReflectiveTypeAdapterFactory.Adapter)) {
++      if (!isReflective(runtimeTypeAdapter)) {
+         // The user registered a type adapter for the runtime type, so we will use that
+         chosen = runtimeTypeAdapter;
+-      } else if (!(delegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
++      } else if (!isReflective(delegate)) {
+         // The user registered a type adapter for Base class, so we prefer it over the
+         // reflective type adapter for the runtime type
+         chosen = delegate;
+@@ -78,4 +79,24 @@ final class TypeAdapterRuntimeTypeWrapper<T> extends TypeAdapter<T> {
+     }
+     return type;
+   }
++
++  private static boolean isReflective(TypeAdapter<?> adapter) {
++    if (adapter instanceof ReflectiveTypeAdapterFactory.Adapter) {
++      return true;
++    }
++    // Handle the case where the adapter is a FutureTypeAdapter wrapping a reflective adapter
++    // This happens for types with cyclic dependencies
++    if (adapter.getClass().getName().equals("com.google.gson.Gson$FutureTypeAdapter")) {
++      try {
++        Field delegateField = adapter.getClass().getDeclaredField("delegate");
++        delegateField.setAccessible(true);
++        Object delegate = delegateField.get(adapter);
++        return delegate instanceof ReflectiveTypeAdapterFactory.Adapter;
++      } catch (Exception e) {
++        // If we can't access the delegate field, assume it's not reflective
++        return false;
++      }
++    }
++    return false;
++  }
+ }

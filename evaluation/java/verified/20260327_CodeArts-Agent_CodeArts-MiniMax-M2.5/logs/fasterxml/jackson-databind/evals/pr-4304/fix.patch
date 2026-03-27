@@ -1,0 +1,17 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeIdResolverBase.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeIdResolverBase.java
+index 6f4710a46..8fcc066f7 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeIdResolverBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeIdResolverBase.java
+@@ -21,8 +21,11 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
+  * is only used sub-classes.
+  */
+ public abstract class TypeIdResolverBase
+-    implements TypeIdResolver
++    implements TypeIdResolver,
++        java.io.Serializable
+ {
++    private static final long serialVersionUID = 1L;
++
+     protected final TypeFactory _typeFactory;
+ 
+     /**

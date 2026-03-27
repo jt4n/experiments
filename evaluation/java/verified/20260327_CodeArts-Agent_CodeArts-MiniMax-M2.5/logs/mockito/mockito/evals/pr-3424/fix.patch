@@ -1,0 +1,319 @@
+diff --git a/src/main/java/org/mockito/MockitoFramework.java b/src/main/java/org/mockito/MockitoFramework.java
+index 020186f05..4d08f645e 100644
+--- a/src/main/java/org/mockito/MockitoFramework.java
++++ b/src/main/java/org/mockito/MockitoFramework.java
+@@ -137,4 +137,41 @@ public interface MockitoFramework {
+      * @see #clearInlineMocks()
+      */
+     void clearInlineMock(Object mock);
++
++    /**
++     * Disables inline mocks and prepares them for clear.
++     * When any method is called on a disabled mock, a {@link org.mockito.exceptions.misusing.DisabledMockException}
++     * will be thrown with the provided message.
++     * <p>
++     * This method is useful for detecting when a mock is used after {@link #clearInlineMocks()} has been called,
++     * which can happen when a mock is set as a callback on a global object and not properly cleaned up.
++     * Instead of getting a cryptic NullPointerException, you get a clear error message indicating
++     * that the mock was disabled and potentially which test leaked the mock.
++     * <p>
++     * This method is only meaningful if inline mock maker is in use.
++     * For all other intents and purposes, this method is a no-op and need not be used.
++     * <p>
++     * Example usage:
++     * <pre class="code"><code class="java">
++     * public class ExampleTest {
++     *
++     *     &#064;After
++     *     public void disableMocks() {
++     *         Mockito.framework().disableInlineMocks("Test leaked a mock - check test X");
++     *     }
++     *
++     *     &#064;Test
++     *     public void someTest() {
++     *         // If this test forgets to clean up a mock set on a global object,
++     *         // the next test will get a clear error message
++     *         ...
++     *     }
++     * }
++     * </pre>
++     *
++     * @param message the message to include in the exception when a disabled mock is accessed
++     * @since 5.13.0
++     * @see #clearInlineMocks()
++     */
++    void disableInlineMocks(String message);
+ }
+diff --git a/src/main/java/org/mockito/exceptions/misusing/DisabledMockException.java b/src/main/java/org/mockito/exceptions/misusing/DisabledMockException.java
+new file mode 100644
+index 000000000..b08e72370
+--- /dev/null
++++ b/src/main/java/org/mockito/exceptions/misusing/DisabledMockException.java
+@@ -0,0 +1,16 @@
++/*
++ * Copyright (c) 2007 Mockito contributors
++ * This program is made available under the terms of the MIT License.
++ */
++package org.mockito.exceptions.misusing;
++
++import org.mockito.exceptions.base.MockitoException;
++
++public class DisabledMockException extends MockitoException {
++
++    private static final long serialVersionUID = 1L;
++
++    public DisabledMockException(String message) {
++        super(message);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java b/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java
+index acfddfef3..2344bcbd6 100644
+--- a/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java
++++ b/src/main/java/org/mockito/internal/creation/bytebuddy/InlineByteBuddyMockMaker.java
+@@ -51,6 +51,11 @@ public class InlineByteBuddyMockMaker
+         inlineDelegateByteBuddyMockMaker.clearAllMocks();
+     }
+ 
++    @Override
++    public void disableInlineMocks(String message) {
++        inlineDelegateByteBuddyMockMaker.disableInlineMocks(message);
++    }
++
+     @Override
+     public <T> T createMock(MockCreationSettings<T> settings, MockHandler handler) {
+         return inlineDelegateByteBuddyMockMaker.createMock(settings, handler);
+diff --git a/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java b/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java
+index e03d11b9e..99cc9142a 100644
+--- a/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java
++++ b/src/main/java/org/mockito/internal/creation/bytebuddy/InlineDelegateByteBuddyMockMaker.java
+@@ -10,6 +10,7 @@ import org.mockito.creation.instance.InstantiationException;
+ import org.mockito.creation.instance.Instantiator;
+ import org.mockito.exceptions.base.MockitoException;
+ import org.mockito.exceptions.base.MockitoInitializationException;
++import org.mockito.exceptions.misusing.DisabledMockException;
+ import org.mockito.exceptions.misusing.MockitoConfigurationException;
+ import org.mockito.internal.SuppressSignatureCheck;
+ import org.mockito.internal.configuration.plugins.Plugins;
+@@ -222,6 +223,10 @@ class InlineDelegateByteBuddyMockMaker
+ 
+     private final ThreadLocal<Object> currentSpied = new ThreadLocal<>();
+ 
++    private volatile boolean mocksDisabled = false;
++
++    private volatile String disabledMessage = "";
++
+     InlineDelegateByteBuddyMockMaker() {
+         if (INITIALIZATION_ERROR != null) {
+             String detail;
+@@ -493,6 +498,9 @@ class InlineDelegateByteBuddyMockMaker
+             interceptor = mocks.get(mock);
+         }
+         if (interceptor == null) {
++            if (mocksDisabled) {
++                throw new DisabledMockException(disabledMessage);
++            }
+             return null;
+         } else {
+             return interceptor.handler;
+@@ -548,6 +556,13 @@ class InlineDelegateByteBuddyMockMaker
+         mocks.clear();
+     }
+ 
++    @Override
++    public void disableInlineMocks(String message) {
++        mocksDisabled = true;
++        disabledMessage = message;
++        clearAllMocks();
++    }
++
+     @Override
+     public TypeMockability isTypeMockable(final Class<?> type) {
+         return new TypeMockability() {
+diff --git a/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java b/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java
+index f4a988231..522e4886a 100644
+--- a/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java
++++ b/src/main/java/org/mockito/internal/framework/DefaultMockitoFramework.java
+@@ -62,4 +62,12 @@ public class DefaultMockitoFramework implements MockitoFramework {
+             mockMaker.clearMock(mock);
+         }
+     }
++
++    @Override
++    public void disableInlineMocks(String message) {
++        InlineMockMaker mockMaker = getInlineMockMaker();
++        if (mockMaker != null) {
++            mockMaker.disableInlineMocks(message);
++        }
++    }
+ }
+diff --git a/src/main/java/org/mockito/plugins/InlineMockMaker.java b/src/main/java/org/mockito/plugins/InlineMockMaker.java
+index 08fab59ae..9d0a6b3d4 100644
+--- a/src/main/java/org/mockito/plugins/InlineMockMaker.java
++++ b/src/main/java/org/mockito/plugins/InlineMockMaker.java
+@@ -43,4 +43,15 @@ public interface InlineMockMaker extends MockMaker {
+      * @since 2.25.0
+      */
+     void clearAllMocks();
++
++    /**
++     * Disables all inline mocks and prepares them for clear.
++     * When any method is called on a disabled mock, a {@link org.mockito.exceptions.misusing.DisabledMockException}
++     * will be thrown with the provided message.
++     *
++     * @param message the message to include in the exception when a disabled mock is accessed
++     * @since 5.13.0
++     * @see MockitoFramework#disableInlineMocks(String)
++     */
++    void disableInlineMocks(String message);
+ }
+diff --git a/src/test/java/org/mockito/internal/framework/DisableInlineMocksTest.java b/src/test/java/org/mockito/internal/framework/DisableInlineMocksTest.java
+new file mode 100644
+index 000000000..2b55fbfce
+--- /dev/null
++++ b/src/test/java/org/mockito/internal/framework/DisableInlineMocksTest.java
+@@ -0,0 +1,143 @@
++/*
++ * Copyright (c) 2017 Mockito contributors
++ * This program is made available under the terms of the MIT License.
++ */
++package org.mockito.internal.framework;
++
++import static org.junit.Assert.assertEquals;
++import static org.junit.Assert.assertTrue;
++import static org.junit.Assume.assumeTrue;
++import static org.mockito.Mockito.mock;
++import static org.mockito.Mockito.mockingDetails;
++import static org.mockito.Mockito.when;
++
++import org.junit.After;
++import org.junit.Test;
++import org.mockito.exceptions.misusing.DisabledMockException;
++import org.mockito.internal.configuration.plugins.Plugins;
++import org.mockito.plugins.InlineMockMaker;
++
++import java.util.List;
++
++public class DisableInlineMocksTest {
++
++    private DefaultMockitoFramework framework = new DefaultMockitoFramework();
++
++    @After
++    public void tearDown() {
++        // Clear any disabled state after each test
++        try {
++            framework.clearInlineMocks();
++        } catch (Exception e) {
++            // Ignore
++        }
++    }
++
++    @Test
++    public void disableInlineMocksThrowsExceptionWhenMockMethodCalled() {
++        // This test only works with inline mock maker
++        assumeTrue(Plugins.getMockMaker() instanceof InlineMockMaker);
++
++        // Given
++        List mock = mock(List.class);
++        when(mock.get(0)).thenReturn("test");
++        assertEquals("test", mock.get(0));
++
++        // When
++        framework.disableInlineMocks("Test leaked a mock");
++
++        // Then - calling a method on the mock should throw DisabledMockException
++        try {
++            mock.get(0);
++            throw new AssertionError("Expected DisabledMockException");
++        } catch (DisabledMockException e) {
++            assertEquals("Test leaked a mock", e.getMessage());
++        }
++    }
++
++    @Test
++    public void disableInlineMocksThrowsExceptionOnIsMockCheck() {
++        // This test only works with inline mock maker
++        assumeTrue(Plugins.getMockMaker() instanceof InlineMockMaker);
++
++        // Given
++        List mock = mock(List.class);
++        assertTrue(mockingDetails(mock).isMock());
++
++        // When
++        framework.disableInlineMocks("Custom error message");
++
++        // Then - accessing the mock should throw DisabledMockException
++        try {
++            mockingDetails(mock).isMock();
++            throw new AssertionError("Expected DisabledMockException");
++        } catch (DisabledMockException e) {
++            assertEquals("Custom error message", e.getMessage());
++        }
++    }
++
++    @Test
++    public void clearInlineMocksDoesNotThrowAfterDisableInlineMocks() {
++        // This test only works with inline mock maker
++        assumeTrue(Plugins.getMockMaker() instanceof InlineMockMaker);
++
++        // Given
++        List mock = mock(List.class);
++        
++        // When
++        framework.disableInlineMocks("Test message");
++        
++        // Then - clearInlineMocks should not throw
++        framework.clearInlineMocks();
++    }
++
++    @Test
++    public void disableInlineMocksWithEmptyMessage() {
++        // This test only works with inline mock maker
++        assumeTrue(Plugins.getMockMaker() instanceof InlineMockMaker);
++
++        // Given
++        List mock = mock(List.class);
++        
++        // When
++        framework.disableInlineMocks("");
++        
++        // Then
++        try {
++            mockingDetails(mock).isMock();
++            throw new AssertionError("Expected DisabledMockException");
++        } catch (DisabledMockException e) {
++            assertEquals("", e.getMessage());
++        }
++    }
++
++    @Test
++    public void disableInlineMocksClearsAllMocks() {
++        // This test only works with inline mock maker
++        assumeTrue(Plugins.getMockMaker() instanceof InlineMockMaker);
++
++        // Given
++        List mock1 = mock(List.class);
++        List mock2 = mock(List.class);
++        assertTrue(mockingDetails(mock1).isMock());
++        assertTrue(mockingDetails(mock2).isMock());
++
++        // When
++        framework.disableInlineMocks("Test message");
++
++        // Then - both mocks should be disabled
++        try {
++            mockingDetails(mock1).isMock();
++            throw new AssertionError("Expected DisabledMockException for mock1");
++        } catch (DisabledMockException e) {
++            assertEquals("Test message", e.getMessage());
++        }
++
++        try {
++            mockingDetails(mock2).isMock();
++            throw new AssertionError("Expected DisabledMockException for mock2");
++        } catch (DisabledMockException e) {
++            assertEquals("Test message", e.getMessage());
++        }
++    }
++}
+\ No newline at end of file

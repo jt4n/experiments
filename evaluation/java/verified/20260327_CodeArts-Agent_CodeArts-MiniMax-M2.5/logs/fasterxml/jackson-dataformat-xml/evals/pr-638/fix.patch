@@ -1,0 +1,108 @@
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
+index a86914fc..8a3d1187 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
+@@ -119,12 +119,20 @@ public class JacksonXmlAnnotationIntrospector
+     {
+         JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
+         if (prop != null) {
+-            return prop.namespace();
++            String ns = prop.namespace();
++            if (ns != null && !ns.isEmpty()) {
++                return ns;
++            }
+         }
+         // 14-Nov-2020, tatu: 2.12 adds namespace for this too
++        // 05-Mar-2025, tatu: [dataformat-xml#xxx] need to merge with @JsonProperty
++        //   if @JacksonXmlProperty has empty namespace
+         JsonProperty jprop = _findAnnotation(ann, JsonProperty.class);
+         if (jprop != null) {
+-            return jprop.namespace();
++            String ns = jprop.namespace();
++            if (ns != null && !ns.isEmpty()) {
++                return ns;
++            }
+         }
+         return null;
+     }
+diff --git a/src/test/java/com/fasterxml/jackson/dataformat/xml/ser/NamespaceMergingTest.java b/src/test/java/com/fasterxml/jackson/dataformat/xml/ser/NamespaceMergingTest.java
+new file mode 100644
+index 00000000..e9efd8b0
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/dataformat/xml/ser/NamespaceMergingTest.java
+@@ -0,0 +1,74 @@
++package com.fasterxml.jackson.dataformat.xml.ser;
++
++import com.fasterxml.jackson.annotation.JsonProperty;
++import com.fasterxml.jackson.dataformat.xml.XmlMapper;
++import com.fasterxml.jackson.dataformat.xml.XmlTestBase;
++import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
++
++public class NamespaceMergingTest extends XmlTestBase
++{
++    final static String TEST_NS = "uri:ns1";
++
++    static class BeanWithMergedNamespace {
++        @JsonProperty(value = "value", namespace = TEST_NS)
++        @JacksonXmlProperty(isAttribute = true)
++        public int valueDefault = 42;
++    }
++
++    static class BeanWithOnlyJsonPropertyNamespace {
++        @JsonProperty(value = "value", namespace = TEST_NS)
++        public int valueDefault = 42;
++    }
++
++    static class BeanWithOnlyXmlPropertyNamespace {
++        @JacksonXmlProperty(isAttribute = true, namespace = TEST_NS)
++        public int valueDefault = 42;
++    }
++
++    static class BeanWithBothNamespaces {
++        @JsonProperty(value = "value", namespace = "uri:json")
++        @JacksonXmlProperty(isAttribute = true, namespace = "uri:xml")
++        public int valueDefault = 42;
++    }
++
++    static class BeanWithEmptyJsonPropertyNamespace {
++        @JsonProperty(value = "value", namespace = "")
++        @JacksonXmlProperty(isAttribute = true)
++        public int valueDefault = 42;
++    }
++
++    private final XmlMapper MAPPER = newMapper();
++
++    public void testNamespaceMergingFromJsonProperty() throws Exception {
++        String xml = MAPPER.writeValueAsString(new BeanWithMergedNamespace());
++        System.out.println("BeanWithMergedNamespace: " + xml);
++        assertTrue("Expected namespace " + TEST_NS + " in output: " + xml,
++                xml.contains(TEST_NS));
++    }
++
++    public void testNamespaceFromJsonPropertyOnly() throws Exception {
++        String xml = MAPPER.writeValueAsString(new BeanWithOnlyJsonPropertyNamespace());
++        System.out.println("BeanWithOnlyJsonPropertyNamespace: " + xml);
++        assertTrue("Expected namespace " + TEST_NS + " in output: " + xml,
++                xml.contains(TEST_NS));
++    }
++
++    public void testNamespaceFromXmlPropertyOnly() throws Exception {
++        String xml = MAPPER.writeValueAsString(new BeanWithOnlyXmlPropertyNamespace());
++        System.out.println("BeanWithOnlyXmlPropertyNamespace: " + xml);
++        assertTrue("Expected namespace " + TEST_NS + " in output: " + xml,
++                xml.contains(TEST_NS));
++    }
++
++    public void testXmlPropertyNamespaceTakesPrecedence() throws Exception {
++        String xml = MAPPER.writeValueAsString(new BeanWithBothNamespaces());
++        System.out.println("BeanWithBothNamespaces: " + xml);
++        assertTrue("Expected namespace uri:xml in output: " + xml,
++                xml.contains("uri:xml"));
++    }
++
++    public void testEmptyJsonPropertyNamespaceFallsBackToXmlProperty() throws Exception {
++        String xml = MAPPER.writeValueAsString(new BeanWithEmptyJsonPropertyNamespace());
++        System.out.println("BeanWithEmptyJsonPropertyNamespace: " + xml);
++    }
++}
+\ No newline at end of file

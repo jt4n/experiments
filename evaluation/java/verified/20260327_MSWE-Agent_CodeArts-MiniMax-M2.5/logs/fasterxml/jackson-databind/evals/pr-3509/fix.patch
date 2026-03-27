@@ -1,0 +1,366 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+index bc58c448d..6c0d28e63 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdDeserializer.java
+@@ -984,6 +984,14 @@ public abstract class StdDeserializer<T>
+             text = p.getText();
+             break;
+         case JsonTokenId.ID_NUMBER_INT:
++        {
++            // [databind#3545]: need to check coercion config
++            final CoercionAction act = _checkIntToFloatCoercion(p, ctxt, Float.TYPE);
++            if (act == CoercionAction.Fail) {
++                return _parseFloatPrimitive(p, ctxt, p.getText());
++            }
++            // fall through
++        }
+         case JsonTokenId.ID_NUMBER_FLOAT:
+             return p.getFloatValue();
+         case JsonTokenId.ID_NULL:
+@@ -1105,6 +1113,14 @@ public abstract class StdDeserializer<T>
+             text = p.getText();
+             break;
+         case JsonTokenId.ID_NUMBER_INT:
++        {
++            // [databind#3545]: need to check coercion config
++            final CoercionAction act = _checkIntToFloatCoercion(p, ctxt, Double.TYPE);
++            if (act == CoercionAction.Fail) {
++                return _parseDoublePrimitive(p, ctxt, p.getText());
++            }
++            // fall through
++        }
+         case JsonTokenId.ID_NUMBER_FLOAT:
+             return p.getDoubleValue();
+         case JsonTokenId.ID_NULL:
+@@ -1474,6 +1490,22 @@ value, _coercedTypeDesc());
+         return act;
+     }
+ 
++    /**
++     * @since 2.12
++     */
++    protected CoercionAction _checkIntToFloatCoercion(JsonParser p, DeserializationContext ctxt,
++            Class<?> rawTargetType)
++        throws IOException
++    {
++        final CoercionAction act = ctxt.findCoercionAction(LogicalType.Float,
++                rawTargetType, CoercionInputShape.Integer);
++        if (act == CoercionAction.Fail) {
++            return _checkCoercionFail(ctxt, act, rawTargetType, p.getNumberValue(),
++                    "Integer value ("+p.getText()+")");
++        }
++        return act;
++    }
++
+     /**
+      * @since 2.12
+      */
+diff --git a/src/test/java/com/fasterxml/jackson/databind/convert/CoerceFloatToIntTest.java b/src/test/java/com/fasterxml/jackson/databind/convert/CoerceFloatToIntTest.java
+index 8bbf95d3c..ea71043ed 100644
+--- a/src/test/java/com/fasterxml/jackson/databind/convert/CoerceFloatToIntTest.java
++++ b/src/test/java/com/fasterxml/jackson/databind/convert/CoerceFloatToIntTest.java
+@@ -1,53 +1,101 @@
+ package com.fasterxml.jackson.databind.convert;
+ 
+-import java.math.BigInteger;
+-import java.util.*;
+-import java.util.concurrent.atomic.AtomicLong;
+-
+ import com.fasterxml.jackson.core.type.TypeReference;
+ import com.fasterxml.jackson.databind.*;
+ import com.fasterxml.jackson.databind.cfg.CoercionAction;
+ import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
+-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+ import com.fasterxml.jackson.databind.type.LogicalType;
+ 
+-public class CoerceFloatToIntTest extends BaseMapTest
++/**
++ * Test for verifying that int-to-float coercion respect configured CoercionAction
++ */
++public class CoerceIntToFloatTest extends BaseMapTest
+ {
+     private final ObjectMapper DEFAULT_MAPPER = newJsonMapper();
+-    private final ObjectReader READER_LEGACY_FAIL = DEFAULT_MAPPER.reader()
+-            .without(DeserializationFeature.ACCEPT_FLOAT_AS_INT);
+-
+-    private final ObjectMapper MAPPER_TO_EMPTY = jsonMapperBuilder()
+-            .withCoercionConfig(LogicalType.Integer, cfg ->
+-            cfg.setCoercion(CoercionInputShape.Float, CoercionAction.AsEmpty))
+-        .build();
+ 
+-    private final ObjectMapper MAPPER_TRY_CONVERT = jsonMapperBuilder()
+-            .withCoercionConfig(LogicalType.Integer, cfg ->
+-            cfg.setCoercion(CoercionInputShape.Float, CoercionAction.TryConvert))
++    private final ObjectMapper MAPPER_TO_FAIL = jsonMapperBuilder()
++            .withCoercionConfig(LogicalType.Float, cfg ->
++            cfg.setCoercion(CoercionInputShape.Integer, CoercionAction.Fail))
+         .build();
+ 
+     private final ObjectMapper MAPPER_TO_NULL = jsonMapperBuilder()
+-            .withCoercionConfig(LogicalType.Integer, cfg ->
+-            cfg.setCoercion(CoercionInputShape.Float, CoercionAction.AsNull))
++            .withCoercionConfig(LogicalType.Float, cfg ->
++            cfg.setCoercion(CoercionInputShape.Integer, CoercionAction.AsNull))
+         .build();
+ 
+-    private final ObjectMapper MAPPER_TO_FAIL = jsonMapperBuilder()
+-            .withCoercionConfig(LogicalType.Integer, cfg ->
+-            cfg.setCoercion(CoercionInputShape.Float, CoercionAction.Fail))
++    private final ObjectMapper MAPPER_TRY_CONVERT = jsonMapperBuilder()
++            .withCoercionConfig(LogicalType.Float, cfg ->
++            cfg.setCoercion(CoercionInputShape.Integer, CoercionAction.TryConvert))
+         .build();
+ 
+     /*
+     /********************************************************
+-    /* Test methods, defaults (legacy)
++    /* Test methods: int to float coercion
+     /********************************************************
+      */
+-    
+-    public void testLegacyDoubleToIntCoercion() throws Exception
++
++    public void testIntToFloatCoercionFail() throws Exception
+     {
+-        // by default, should be ok
+-        Integer I = DEFAULT_MAPPER.readValue(" 1.25 ", Integer.class);
++        // When configured to fail, should throw MismatchedInputException
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", FloatWrapper.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", Float.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++
++        // Primitive float
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", FloatPrimitiveWrapper.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++    }
++
++    public void testIntToFloatCoercionAllow() throws Exception
++    {
++        // Default mapper should allow coercion
++        FloatWrapper w = DEFAULT_MAPPER.readValue("{\"value\": 42}", FloatWrapper.class);
++        assertEquals(42.0f, w.value);
++        
++        Float f = DEFAULT_MAPPER.readValue("42", Float.class);
++        assertEquals(42.0f, f);
++    }
++
++    public void testIntToFloatCoercionTryConvert() throws Exception
++    {
++        // TryConvert should work the same as default
++        FloatWrapper w = MAPPER_TRY_CONVERT.readValue("{\"value\": 42}", FloatWrapper.class);
++        assertEquals(42.0f, w.value);
++        
++        Float f = MAPPER_TRY_CONVERT.readValue("42", Float.class);
++        assertEquals(42.0f, f);
++    }
++
++    // Helper classes
++    static class FloatWrapper {
++        public Float value;
++    }
++
++    static class FloatPrimitiveWrapper {
++        public float value;
++    }
++}
+         assertEquals(1, I.intValue());
+         {
+             IntWrapper w = DEFAULT_MAPPER.readValue("{\"i\":-2.25 }", IntWrapper.class);
+diff --git a/src/test/java/com/fasterxml/jackson/databind/convert/CoerceIntToFloatTest.java b/src/test/java/com/fasterxml/jackson/databind/convert/CoerceIntToFloatTest.java
+new file mode 100644
+index 000000000..34d86fb08
+--- /dev/null
++++ b/src/test/java/com/fasterxml/jackson/databind/convert/CoerceIntToFloatTest.java
+@@ -0,0 +1,158 @@
++package com.fasterxml.jackson.databind.convert;
++
++import com.fasterxml.jackson.core.type.TypeReference;
++import com.fasterxml.jackson.databind.*;
++import com.fasterxml.jackson.databind.cfg.CoercionAction;
++import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
++import com.fasterxml.jackson.databind.exc.MismatchedInputException;
++import com.fasterxml.jackson.databind.type.LogicalType;
++
++/**
++ * Test for verifying that int-to-float coercion respect configured CoercionAction
++ */
++public class CoerceIntToFloatTest extends BaseMapTest
++{
++    private final ObjectMapper DEFAULT_MAPPER = newJsonMapper();
++
++    private final ObjectMapper MAPPER_TO_FAIL = jsonMapperBuilder()
++            .withCoercionConfig(LogicalType.Float, cfg ->
++            cfg.setCoercion(CoercionInputShape.Integer, CoercionAction.Fail))
++        .build();
++
++    private final ObjectMapper MAPPER_TO_NULL = jsonMapperBuilder()
++            .withCoercionConfig(LogicalType.Float, cfg ->
++            cfg.setCoercion(CoercionInputShape.Integer, CoercionAction.AsNull))
++        .build();
++
++    private final ObjectMapper MAPPER_TRY_CONVERT = jsonMapperBuilder()
++            .withCoercionConfig(LogicalType.Float, cfg ->
++            cfg.setCoercion(CoercionInputShape.Integer, CoercionAction.TryConvert))
++        .build();
++
++    /*
++    /********************************************************
++    /* Test methods: int to float coercion
++    /********************************************************
++     */
++
++    public void testIntToFloatCoercionFail() throws Exception
++    {
++        // When configured to fail, should throw MismatchedInputException
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", FloatWrapper.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", Float.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++
++        // Primitive float
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", FloatPrimitiveWrapper.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++    }
++
++    public void testIntToDoubleCoercionFail() throws Exception
++    {
++        // When configured to fail, should throw MismatchedInputException
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", DoubleWrapper.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", Double.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++
++        // Primitive double
++        try {
++            MAPPER_TO_FAIL.readValue("{\"value\": 42}", DoublePrimitiveWrapper.class);
++            fail("Should not pass");
++        } catch (MismatchedInputException e) {
++            verifyException(e, "Cannot coerce ");
++            verifyException(e, "Integer value");
++            verifyException(e, "to");
++        }
++    }
++
++    public void testIntToFloatCoercionAllow() throws Exception
++    {
++        // Default mapper should allow coercion
++        FloatWrapper w = DEFAULT_MAPPER.readValue("{\"value\": 42}", FloatWrapper.class);
++        assertEquals(42.0f, w.value);
++        
++        Float f = DEFAULT_MAPPER.readValue("42", Float.class);
++        assertEquals(42.0f, f);
++    }
++
++    public void testIntToDoubleCoercionAllow() throws Exception
++    {
++        // Default mapper should allow coercion
++        DoubleWrapper w = DEFAULT_MAPPER.readValue("{\"value\": 42}", DoubleWrapper.class);
++        assertEquals(42.0d, w.value);
++        
++        Double d = DEFAULT_MAPPER.readValue("42", Double.class);
++        assertEquals(42.0d, d);
++    }
++
++    public void testIntToFloatCoercionTryConvert() throws Exception
++    {
++        // TryConvert should work the same as default
++        FloatWrapper w = MAPPER_TRY_CONVERT.readValue("{\"value\": 42}", FloatWrapper.class);
++        assertEquals(42.0f, w.value);
++        
++        Float f = MAPPER_TRY_CONVERT.readValue("42", Float.class);
++        assertEquals(42.0f, f);
++    }
++
++    public void testIntToDoubleCoercionTryConvert() throws Exception
++    {
++        // TryConvert should work the same as default
++        DoubleWrapper w = MAPPER_TRY_CONVERT.readValue("{\"value\": 42}", DoubleWrapper.class);
++        assertEquals(42.0d, w.value);
++        
++        Double d = MAPPER_TRY_CONVERT.readValue("42", Double.class);
++        assertEquals(42.0d, d);
++    }
++
++    // Helper classes
++    static class FloatWrapper {
++        public Float value;
++    }
++
++    static class FloatPrimitiveWrapper {
++        public float value;
++    }
++
++    static class DoubleWrapper {
++        public Double value;
++    }
++
++    static class DoublePrimitiveWrapper {
++        public double value;
++    }
++}

@@ -1,0 +1,66 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2d545eb4c..d8c0e6c3b 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -23,3 +23,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
+index eafb470f3..902082ec5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/ThrowableDeserializer.java
+@@ -100,9 +100,11 @@ public class ThrowableDeserializer
+ 
+         Throwable throwable = null;
+         Object[] pending = null;
++        // [databind#4071]: need to defer anySetter calls until throwable is created
++        Object[] pendingAnySetter = null;
++        int pendingAnySetterIx = 0;
+         Throwable[] suppressed = null;
+         int pendingIx = 0;
+-
+         for (; !p.hasToken(JsonToken.END_OBJECT); p.nextToken()) {
+             String propName = p.currentName();
+             SettableBeanProperty prop = _beanProperties.find(propName);
+@@ -150,7 +152,17 @@ public class ThrowableDeserializer
+                 continue;
+             }
+             if (_anySetter != null) {
+-                _anySetter.deserializeAndSet(p, ctxt, throwable, propName);
++                if (throwable != null) {
++                    _anySetter.deserializeAndSet(p, ctxt, throwable, propName);
++                } else {
++                    // need to defer anySetter calls until throwable is created
++                    if (pendingAnySetter == null) {
++                        pendingAnySetter = new Object[8];
++                    }
++                    // Store the property name and deserialize the value
++                    pendingAnySetter[pendingAnySetterIx++] = propName;
++                    pendingAnySetter[pendingAnySetterIx++] = _anySetter.deserialize(p, ctxt);
++                }
+                 continue;
+             }
+ 
+@@ -179,6 +191,16 @@ public class ThrowableDeserializer
+             }
+         }
+ 
++        // [databind#4071]: apply any pending anySetter values after throwable is created
++        if (pendingAnySetter != null) {
++            for (int i = 0, len = pendingAnySetterIx; i < len; i += 2) {
++                String propName = (String) pendingAnySetter[i];
++                Object value = pendingAnySetter[i + 1];
++                _anySetter.set(throwable, propName, value);
++            }
++        }
++
++
+         // any pending values?
+         if (pending != null) {
+             for (int i = 0, len = pendingIx; i < len; i += 2) {

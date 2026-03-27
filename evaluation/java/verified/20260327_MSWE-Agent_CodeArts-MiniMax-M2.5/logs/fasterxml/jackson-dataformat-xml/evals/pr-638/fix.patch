@@ -1,0 +1,41 @@
+
+diff --git a/.gitignore b/.gitignore
+index cdbf5d44..f55596e6 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,7 @@ syntax: glob
+ *.ipr
+ *.iws
+ .idea
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
+index a86914fc..59a8d923 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/JacksonXmlAnnotationIntrospector.java
+@@ -119,12 +119,21 @@ public class JacksonXmlAnnotationIntrospector
+     {
+         JacksonXmlProperty prop = _findAnnotation(ann, JacksonXmlProperty.class);
+         if (prop != null) {
+-            return prop.namespace();
++            String ns = prop.namespace();
++            // If @JacksonXmlProperty has a non-empty namespace, use it
++            // Otherwise, fall back to @JsonProperty namespace
++            if (ns != null && !ns.isEmpty()) {
++                return ns;
++            }
+         }
+         // 14-Nov-2020, tatu: 2.12 adds namespace for this too
+         JsonProperty jprop = _findAnnotation(ann, JsonProperty.class);
+         if (jprop != null) {
+-            return jprop.namespace();
++            String ns = jprop.namespace();
++            // @JsonProperty can have null or empty namespace
++            if (ns != null && !ns.isEmpty()) {
++                return ns;
++            }
+         }
+         return null;
+     }

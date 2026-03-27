@@ -1,0 +1,232 @@
+
+diff --git a/.gitignore b/.gitignore
+index 97155eb32..76babf412 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -22,3 +22,7 @@ target
+ *.ipr
+ *.iws
+ /target
++target/
++out/
++*.jar
++.gradle/
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+index f615a6467..dcc865182 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+@@ -171,6 +171,15 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+      */
+     protected final ClassLoader _classLoader;
+ 
++    /**
++     * Maximum depth of type parameters that {@link TypeParser} will handle
++     * before throwing an error, to prevent stack overflow on deeply nested
++     * generic types.
++     * 
++     * @since 2.15
++     */
++    protected final int _maxTypeParameterDepth;
++
+     /*
+     /**********************************************************
+     /* Life-cycle
+@@ -194,6 +203,13 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+      * @since 2.12
+      */
+     protected TypeFactory(LookupCache<Object,JavaType> typeCache) {
++        this(typeCache, 64);
++    }
++
++    /**
++     * @since 2.15
++     */
++    protected TypeFactory(LookupCache<Object,JavaType> typeCache, int maxTypeParameterDepth) {
+         if (typeCache == null) {
+             typeCache = new LRUMap<>(16, 200);
+         }
+@@ -201,6 +217,7 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+         _parser = new TypeParser(this);
+         _modifiers = null;
+         _classLoader = null;
++        _maxTypeParameterDepth = maxTypeParameterDepth;
+     }
+ 
+     /**
+@@ -218,6 +235,16 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+      */
+     protected TypeFactory(LookupCache<Object,JavaType> typeCache, TypeParser p,
+                           TypeModifier[] mods, ClassLoader classLoader)
++    {
++        this(typeCache, p, mods, classLoader, 64);
++    }
++
++    /**
++     * @since 2.15
++     */
++    protected TypeFactory(LookupCache<Object,JavaType> typeCache, TypeParser p,
++                          TypeModifier[] mods, ClassLoader classLoader,
++                          int maxTypeParameterDepth)
+     {
+         if (typeCache == null) {
+             typeCache = new LRUMap<>(16, 200);
+@@ -227,6 +254,7 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+         _parser = p.withFactory(this);
+         _modifiers = mods;
+         _classLoader = classLoader;
++        _maxTypeParameterDepth = maxTypeParameterDepth;
+     }
+ 
+     /**
+@@ -252,7 +280,8 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+             // but may keep existing cache otherwise
+             mods = ArrayBuilders.insertInListNoDup(_modifiers, mod);
+         }
+-        return new TypeFactory(typeCache, _parser, mods, _classLoader);
++        return new TypeFactory(typeCache, _parser, mods, _classLoader,
++                _maxTypeParameterDepth);
+     }
+ 
+     /**
+@@ -260,7 +289,24 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+      * {@link ClassLoader} to use by {@link #findClass}.
+      */
+     public TypeFactory withClassLoader(ClassLoader classLoader) {
+-        return new TypeFactory(_typeCache, _parser, _modifiers, classLoader);
++        return new TypeFactory(_typeCache, _parser, _modifiers, classLoader,
++                _maxTypeParameterDepth);
++    }
++
++    /**
++     * Method for setting maximum depth of type parameters that 
++     * {@link TypeParser} will handle before throwing an error.
++     * This is to prevent stack overflow on deeply nested generic types.
++     * 
++     * @param maxTypeParameterDepth Maximum depth of type parameters to handle
++     * 
++     * @return This factory for method chaining
++     * 
++     * @since 2.15
++     */
++    public TypeFactory withMaxTypeParameterDepth(int maxTypeParameterDepth) {
++        return new TypeFactory(_typeCache, _parser, _modifiers, _classLoader,
++                maxTypeParameterDepth);
+     }
+ 
+     /**
+@@ -273,7 +319,8 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+      */
+     @Deprecated // since 2.12
+     public TypeFactory withCache(LRUMap<Object,JavaType> cache)  {
+-        return new TypeFactory(cache, _parser, _modifiers, _classLoader);
++        return new TypeFactory(cache, _parser, _modifiers, _classLoader,
++                _maxTypeParameterDepth);
+     }
+ 
+     /**
+@@ -284,7 +331,8 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+      * @since 2.12
+      */
+     public TypeFactory withCache(LookupCache<Object,JavaType> cache)  {
+-        return new TypeFactory(cache, _parser, _modifiers, _classLoader);
++        return new TypeFactory(cache, _parser, _modifiers, _classLoader,
++                _maxTypeParameterDepth);
+     }
+ 
+     /**
+@@ -312,8 +360,16 @@ public class TypeFactory // note: was final in 2.9, removed from 2.10
+         return _classLoader;
+     }
+ 
++    /**
++     * @return Maximum depth of type parameters that {@link TypeParser} will handle
++     * 
++     * @since 2.15
++     */
++    public int getMaxTypeParameterDepth() {
++        return _maxTypeParameterDepth;
++    }
++
+     /*
+-    /**********************************************************
+     /* Static methods for non-instance-specific functionality
+     /**********************************************************
+      */
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeParser.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeParser.java
+index 6bb31f11b..4dda0f810 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeParser.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeParser.java
+@@ -15,16 +15,27 @@ public class TypeParser
+     private static final long serialVersionUID = 1L;
+ 
+     protected final TypeFactory _factory;
++    
++    /**
++     * Maximum depth of type parameters to parse before throwing an error.
++     * @since 2.15
++     */
++    protected final int _maxTypeParameterDepth;
+ 
+     public TypeParser(TypeFactory f) {
+-        _factory = f;
++        this(f, 64);
+     }
+ 
+     /**
+-     * @since 2.6.2
++     * @since 2.15
+      */
++    public TypeParser(TypeFactory f, int maxTypeParameterDepth) {
++        _factory = f;
++        _maxTypeParameterDepth = maxTypeParameterDepth;
++    }
++
+     public TypeParser withFactory(TypeFactory f) {
+-        return (f == _factory) ? this : new TypeParser(f);
++        return (f == _factory) ? this : new TypeParser(f, _maxTypeParameterDepth);
+     }
+ 
+     public JavaType parse(String canonical) throws IllegalArgumentException
+@@ -40,6 +51,12 @@ public class TypeParser
+ 
+     protected JavaType parseType(MyTokenizer tokens)
+         throws IllegalArgumentException
++    {
++        return parseType(tokens, 0);
++    }
++
++    protected JavaType parseType(MyTokenizer tokens, int depth)
++        throws IllegalArgumentException
+     {
+         if (!tokens.hasMoreTokens()) {
+             throw _problem(tokens, "Unexpected end-of-string");
+@@ -50,7 +67,7 @@ public class TypeParser
+         if (tokens.hasMoreTokens()) {
+             String token = tokens.nextToken();
+             if ("<".equals(token)) {
+-                List<JavaType> parameterTypes = parseTypes(tokens);
++                List<JavaType> parameterTypes = parseTypes(tokens, depth + 1);
+                 TypeBindings b = TypeBindings.create(base, parameterTypes);
+                 return _factory._fromClass(null, base, b);
+             }
+@@ -63,9 +80,19 @@ public class TypeParser
+     protected List<JavaType> parseTypes(MyTokenizer tokens)
+         throws IllegalArgumentException
+     {
++        return parseTypes(tokens, 0);
++    }
++
++    protected List<JavaType> parseTypes(MyTokenizer tokens, int depth)
++        throws IllegalArgumentException
++    {
++        if (_maxTypeParameterDepth > 0 && depth > _maxTypeParameterDepth) {
++            throw new IllegalArgumentException("Type parameter depth exceeded maximum ("
++                    + _maxTypeParameterDepth + ")");
++        }
+         ArrayList<JavaType> types = new ArrayList<JavaType>();
+         while (tokens.hasMoreTokens()) {
+-            types.add(parseType(tokens));
++            types.add(parseType(tokens, depth + 1));
+             if (!tokens.hasMoreTokens()) break;
+             String token = tokens.nextToken();
+             if (">".equals(token)) return types;

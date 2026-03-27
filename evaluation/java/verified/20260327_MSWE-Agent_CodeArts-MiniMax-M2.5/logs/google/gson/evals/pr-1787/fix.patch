@@ -1,0 +1,85 @@
+
+diff --git a/.gitignore b/.gitignore
+index 2fc591bd..8ea6cb9e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -20,3 +20,8 @@ build
+ .DS_Store
+ 
+ examples/android-proguard-example/gen
++target/
++out/
++*.class
++*.jar
++.gradle/
+diff --git a/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java b/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java
+index 6a690919..da46b409 100644
+--- a/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java
++++ b/gson/src/main/java/com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper.java
+@@ -56,16 +56,16 @@ final class TypeAdapterRuntimeTypeWrapper<T> extends TypeAdapter<T> {
+       if (!(runtimeTypeAdapter instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+         // The user registered a type adapter for the runtime type, so we will use that
+         chosen = runtimeTypeAdapter;
+-      } else if (!(delegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+-        // The user registered a type adapter for Base class, so we prefer it over the
+-        // reflective type adapter for the runtime type
+-        chosen = delegate;
+-      } else {
+-        // Use the type adapter for runtime type
+-        chosen = runtimeTypeAdapter;
+-      }
+-    }
+-    chosen.write(out, value);
++      } else if (!isReflective(delegate)) {
++        // The user registered a type adapter for Base class, so we prefer it over the
++        // reflective type adapter for the runtime type
++        chosen = delegate;
++      } else {
++        // Use the type adapter for runtime type
++        chosen = runtimeTypeAdapter;
++      }
++    }
++    chosen.write(out, value);
+   }
+ 
+   /**
+@@ -74,8 +74,34 @@ final class TypeAdapterRuntimeTypeWrapper<T> extends TypeAdapter<T> {
+   private Type getRuntimeTypeIfMoreSpecific(Type type, Object value) {
+     if (value != null
+         && (type == Object.class || type instanceof TypeVariable<?> || type instanceof Class<?>)) {
+-      type = value.getClass();
+-    }
+-    return type;
+-  }
+-}
++      type = value.getClass();
++    }
++    return type;
++  }
++
++  /**
++   * Checks if the given type adapter is a reflective adapter or a FutureTypeAdapter wrapping
++   * a reflective adapter (which happens for classes with cyclic dependencies).
++   */
++  private boolean isReflective(TypeAdapter<?> typeAdapter) {
++    if (typeAdapter instanceof ReflectiveTypeAdapterFactory.Adapter) {
++      return true;
++    }
++    // Check if it's a FutureTypeAdapter wrapping a reflective adapter
++    // FutureTypeAdapter is a private class in Gson, so we check by name
++    if (typeAdapter.getClass().getName().equals("com.google.gson.Gson$FutureTypeAdapter")) {
++      try {
++        // Get the delegate field via reflection
++        java.lang.reflect.Field delegateField = typeAdapter.getClass().getDeclaredField("delegate");
++        delegateField.setAccessible(true);
++        Object delegate = delegateField.get(typeAdapter);
++        if (delegate instanceof ReflectiveTypeAdapterFactory.Adapter) {
++          return true;
++        }
++      } catch (Exception e) {
++        // If reflection fails, assume it's not reflective
++      }
++    }
++    return false;
++  }
++}

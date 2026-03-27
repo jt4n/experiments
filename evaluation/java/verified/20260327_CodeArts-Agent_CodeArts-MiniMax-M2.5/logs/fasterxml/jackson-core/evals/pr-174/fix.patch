@@ -1,0 +1,33 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/JsonPointer.java b/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
+index ff251034..bad21a5c 100644
+--- a/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
++++ b/src/main/java/com/fasterxml/jackson/core/JsonPointer.java
+@@ -194,6 +194,28 @@ public class JsonPointer
+         return _headSegment;
+     }
+ 
++    /**
++     * Accessor for getting the "leaf" of this pointer: that is, the last
++     * segment of this pointer expression.
++     * For empty pointer (one that matches nothing), will return null.
++     *
++     * @return Pointer instance representing the last segment of this
++     *   pointer expression (for example, for input {@code "/a/b/c"} would return
++     *   pointer for {@code "/c"})
++     *
++     * @since 2.6
++     */
++    public JsonPointer leaf() {
++        JsonPointer current = this;
++        while (true) {
++            JsonPointer next = current._nextSegment;
++            if (next == null || next.matches()) {
++                return current;
++            }
++            current = next;
++        }
++    }
++
+     /*
+     /**********************************************************
+     /* Standard method overrides

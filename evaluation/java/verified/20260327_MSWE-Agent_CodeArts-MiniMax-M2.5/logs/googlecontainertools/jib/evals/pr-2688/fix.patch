@@ -1,0 +1,25 @@
+
+diff --git a/.gitignore b/.gitignore
+index a414d36d..942beea0 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -13,3 +13,6 @@ bin/
+ .classpath
+ .project
+ .DS_Store
++out/
++*.class
++*.jar
+diff --git a/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java b/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java
+index e39a5a0e..3711e9ae 100644
+--- a/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java
++++ b/jib-maven-plugin/src/main/java/com/google/cloud/tools/jib/maven/MavenProjectProperties.java
+@@ -568,7 +568,7 @@ public class MavenProjectProperties implements ProjectProperties {
+           Xpp3Dom configuration = (Xpp3Dom) execution.getConfiguration();
+ 
+           boolean skip = Boolean.valueOf(getChildValue(configuration, "skip").orElse("false"));
+-          return skip ? Optional.empty() : Optional.of(configuration);
++          return skip ? Optional.empty() : Optional.ofNullable(configuration);
+         }
+       }
+     }

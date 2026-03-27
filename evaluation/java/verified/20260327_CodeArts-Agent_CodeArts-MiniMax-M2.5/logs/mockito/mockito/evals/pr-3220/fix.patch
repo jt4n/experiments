@@ -1,0 +1,12 @@
+diff --git a/src/main/java/org/mockito/internal/MockitoCore.java b/src/main/java/org/mockito/internal/MockitoCore.java
+index fd39f6a4a..d72251295 100644
+--- a/src/main/java/org/mockito/internal/MockitoCore.java
++++ b/src/main/java/org/mockito/internal/MockitoCore.java
+@@ -131,6 +131,7 @@ public class MockitoCore {
+         }
+         MockSettingsImpl impl = MockSettingsImpl.class.cast(settings);
+         MockCreationSettings<T> creationSettings = impl.buildStatic(classToMock);
++        checkDoNotMockAnnotation(creationSettings.getTypeToMock(), creationSettings);
+         MockMaker.StaticMockControl<T> control = createStaticMock(classToMock, creationSettings);
+         control.enable();
+         mockingProgress().mockingStarted(classToMock, creationSettings);
