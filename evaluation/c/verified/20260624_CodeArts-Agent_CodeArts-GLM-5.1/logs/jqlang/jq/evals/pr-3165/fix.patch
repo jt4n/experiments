@@ -1,0 +1,156 @@
+diff --git a/src/builtin.c b/src/builtin.c
+index da4a770..d737257 100644
+--- a/src/builtin.c
++++ b/src/builtin.c
+@@ -1365,6 +1365,21 @@ static jv f_stderr(jq_state *jq, jv input) {
+   return input;
+ }
+ 
++static jv f_output_file(jq_state *jq, jv input, jv filename, jv contents) {
++  if (jv_get_kind(filename) != JV_KIND_STRING) {
++    jv_free(contents);
++    return ret_error2(input, filename, jv_string("output_file requires a string filename"));
++  }
++  jq_output_file_cb cb;
++  void *data;
++  jq_get_output_file_cb(jq, &cb, &data);
++  if (cb != NULL)
++    cb(data, jv_copy(filename), jv_copy(contents));
++  jv_free(filename);
++  jv_free(contents);
++  return input;
++}
++
+ static jv tm2jv(struct tm *tm) {
+   return JV_ARRAY(jv_number(tm->tm_year + 1900),
+                   jv_number(tm->tm_mon),
+@@ -1858,6 +1873,7 @@ BINOPS
+   {f_input, "input", 1},
+   {f_debug, "debug", 1},
+   {f_stderr, "stderr", 1},
++  {f_output_file, "output_file", 3},
+   {f_strptime, "strptime", 2},
+   {f_strftime, "strftime", 2},
+   {f_strflocaltime, "strflocaltime", 2},
+diff --git a/src/execute.c b/src/execute.c
+index cf255e4..02b3398 100644
+--- a/src/execute.c
++++ b/src/execute.c
+@@ -51,6 +51,8 @@ struct jq_state {
+   void *debug_cb_data;
+   jq_msg_cb stderr_cb;
+   void *stderr_cb_data;
++  jq_output_file_cb output_file_cb;
++  void *output_file_cb_data;
+ };
+ 
+ struct closure {
+@@ -1323,6 +1325,16 @@ void jq_get_stderr_cb(jq_state *jq, jq_msg_cb *cb, void **data) {
+   *data = jq->stderr_cb_data;
+ }
+ 
++void jq_set_output_file_cb(jq_state *jq, jq_output_file_cb cb, void *data) {
++  jq->output_file_cb = cb;
++  jq->output_file_cb_data = data;
++}
++
++void jq_get_output_file_cb(jq_state *jq, jq_output_file_cb *cb, void **data) {
++  *cb = jq->output_file_cb;
++  *data = jq->output_file_cb_data;
++}
++
+ void
+ jq_halt(jq_state *jq, jv exit_code, jv error_message)
+ {
+diff --git a/src/jq.h b/src/jq.h
+index 8e9a7b8..82816bc 100644
+--- a/src/jq.h
++++ b/src/jq.h
+@@ -42,6 +42,9 @@ void jq_set_debug_cb(jq_state *, jq_msg_cb, void *);
+ void jq_get_debug_cb(jq_state *, jq_msg_cb *, void **);
+ void jq_set_stderr_cb(jq_state *, jq_msg_cb, void *);
+ void jq_get_stderr_cb(jq_state *, jq_msg_cb *, void **);
++typedef void (*jq_output_file_cb)(void *, jv, jv);
++void jq_set_output_file_cb(jq_state *, jq_output_file_cb, void *);
++void jq_get_output_file_cb(jq_state *, jq_output_file_cb *, void **);
+ 
+ void jq_set_attrs(jq_state *, jv);
+ jv jq_get_attrs(jq_state *);
+diff --git a/src/main.c b/src/main.c
+index a8c217f..91227ef 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -106,6 +106,7 @@ static void usage(int code, int keep_it_short) {
+       "      --jsonargs            consume remaining arguments as positional\n"
+       "                            JSON values;\n"
+       "  -e, --exit-status         set exit status code based on the output;\n"
++      "      --sandbox             disallow file I/O in jq programs;\n"
+ #ifdef WIN32
+       "  -b, --binary              open input/output streams in binary mode;\n"
+ #endif
+@@ -165,6 +166,7 @@ enum {
+   RUN_TESTS             = 32768,
+   /* debugging only */
+   DUMP_DISASM           = 65536,
++  SANDBOX               = 131072,
+ };
+ 
+ enum {
+@@ -274,6 +276,33 @@ static void stderr_cb(void *data, jv input) {
+   jv_free(input);
+ }
+ 
++static void output_file_cb(void *data, jv filename, jv contents) {
++  const char *fname = jv_string_value(filename);
++  FILE *f = fopen(fname, "w");
++  if (f == NULL) {
++    fprintf(stderr, "%s: %s\n", fname, strerror(errno));
++    jv_free(contents);
++  } else {
++    if (jv_get_kind(contents) == JV_KIND_STRING) {
++      priv_fwrite(jv_string_value(contents), jv_string_length_bytes(jv_copy(contents)),
++          f, 0);
++      jv_free(contents);
++    } else {
++      jv_dumpf(contents, f, JV_PRINT_INDENT_FLAGS(0));
++    }
++    if (fclose(f) != 0) {
++      fprintf(stderr, "%s: %s\n", fname, strerror(errno));
++    }
++  }
++  jv_free(filename);
++}
++
++static void output_file_sandbox_cb(void *data, jv filename, jv contents) {
++  fprintf(stderr, "%s\n", jv_string_value(filename));
++  jv_free(filename);
++  jv_free(contents);
++}
++
+ #ifdef WIN32
+ int umain(int argc, char* argv[]);
+ 
+@@ -547,6 +576,10 @@ int main(int argc, char* argv[]) {
+         options |= DUMP_DISASM;
+         continue;
+       }
++      if (isoption(argv[i],  0,  "sandbox", &short_opts)) {
++        options |= SANDBOX;
++        continue;
++      }
+       if (isoption(argv[i],  0,  "debug-trace=all", &short_opts)) {
+         jq_flags |= JQ_DEBUG_TRACE_ALL;
+         if (!short_opts) continue;
+@@ -711,6 +744,12 @@ int main(int argc, char* argv[]) {
+   // Let jq program call `stderr` builtin and have that go somewhere
+   jq_set_stderr_cb(jq, stderr_cb, &dumpopts);
+ 
++  // Let jq program call `output_file` builtin and have that go somewhere
++  if (options & SANDBOX)
++    jq_set_output_file_cb(jq, output_file_sandbox_cb, &dumpopts);
++  else
++    jq_set_output_file_cb(jq, output_file_cb, &dumpopts);
++
+   if (nfiles == 0)
+     jq_util_input_add_input(input_state, "-");
+ 

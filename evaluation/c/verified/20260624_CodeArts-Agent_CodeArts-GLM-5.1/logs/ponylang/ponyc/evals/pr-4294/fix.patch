@@ -1,0 +1,14 @@
+diff --git a/src/libponyrt/gc/trace.c b/src/libponyrt/gc/trace.c
+index e42b56bc..412bef2b 100644
+--- a/src/libponyrt/gc/trace.c
++++ b/src/libponyrt/gc/trace.c
+@@ -117,6 +117,9 @@ PONY_API void pony_traceknown(pony_ctx_t* ctx, void* p, pony_type_t* t, int m)
+ 
+ PONY_API void pony_traceunknown(pony_ctx_t* ctx, void* p, int m)
+ {
++  if(p == NULL)
++    return;
++
+   pony_type_t* t = *(pony_type_t**)p;
+ 
+   if(t->dispatch != NULL)

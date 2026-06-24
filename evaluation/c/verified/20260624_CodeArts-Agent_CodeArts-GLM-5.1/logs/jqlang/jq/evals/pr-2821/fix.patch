@@ -1,0 +1,24 @@
+diff --git a/src/jv_aux.c b/src/jv_aux.c
+index 133fb54..ab5b7ed 100644
+--- a/src/jv_aux.c
++++ b/src/jv_aux.c
+@@ -146,9 +146,16 @@ jv jv_set(jv t, jv k, jv v) {
+     t = jv_object_set(t, k, v);
+   } else if (jv_get_kind(k) == JV_KIND_NUMBER &&
+              (jv_get_kind(t) == JV_KIND_ARRAY || isnull)) {
+-    if (isnull) t = jv_array();
+-    t = jv_array_set(t, (int)jv_number_value(k), v);
+-    jv_free(k);
++    if (jv_is_integer(k)) {
++      if (isnull) t = jv_array();
++      t = jv_array_set(t, (int)jv_number_value(k), v);
++      jv_free(k);
++    } else {
++      jv_free(t);
++      jv_free(k);
++      jv_free(v);
++      t = jv_invalid_with_msg(jv_string("Fractional array index"));
++    }
+   } else if (jv_get_kind(k) == JV_KIND_OBJECT &&
+              (jv_get_kind(t) == JV_KIND_ARRAY || isnull)) {
+     if (isnull) t = jv_array();

@@ -1,0 +1,46 @@
+diff --git a/src/libponyc/type/cap.c b/src/libponyc/type/cap.c
+index 3549010..932dd54 100644
+--- a/src/libponyc/type/cap.c
++++ b/src/libponyc/type/cap.c
+@@ -764,6 +764,20 @@ bool cap_view_upper(token_id left_cap, token_id left_eph,
+   switch(left_cap)
+   {
+     case TK_TAG:
++    {
++      // A tag can see val and tag, but nothing else.
++      switch(*right_cap)
++      {
++        case TK_VAL:
++        case TK_CAP_SHARE:
++        case TK_TAG:
++          return true;
++
++        default:
++          return false;
++      }
++    }
++
+     case TK_CAP_SEND:
+     case TK_CAP_SHARE:
+     case TK_CAP_ALIAS:
+@@ -898,6 +912,20 @@ bool cap_view_lower(token_id left_cap, token_id left_eph,
+   switch(left_cap)
+   {
+     case TK_TAG:
++    {
++      // A tag can see val and tag, but nothing else.
++      switch(*right_cap)
++      {
++        case TK_VAL:
++        case TK_CAP_SHARE:
++        case TK_TAG:
++          return true;
++
++        default:
++          return false;
++      }
++    }
++
+     case TK_CAP_SEND:
+     case TK_CAP_SHARE:
+     case TK_CAP_ALIAS:

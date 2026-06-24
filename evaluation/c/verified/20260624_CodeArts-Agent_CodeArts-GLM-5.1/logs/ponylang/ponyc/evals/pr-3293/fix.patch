@@ -1,0 +1,182 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d8038c4..33a08a2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -122,7 +122,7 @@ All notable changes to the Pony compiler and standard library will be documented
+ - Fix default arguments not being displayed correctly in generated docs ([PR #3018](https://github.com/ponylang/ponyc/pull/3018))
+ - Fix linker library version error on MacOS when installed via Homebrew ([PR #2998](https://github.com/ponylang/ponyc/pull/2998))
+ - Correctly specify linkage on Windows for runtime library backpressure functions. ([PR #2989](https://github.com/ponylang/ponyc/pull/2989))
+-- Reject Pointer and MaybePointer from being embedded ([PR #3006](https://github.com/ponylang/ponyc/pull/3006))
++- Reject Pointer and NullablePointer from being embedded ([PR #3006](https://github.com/ponylang/ponyc/pull/3006))
+ 
+ ### Added
+ 
+diff --git a/packages/builtin/maybe_pointer.pony b/packages/builtin/maybe_pointer.pony
+deleted file mode 100644
+index 8e7f52d..0000000
+--- a/packages/builtin/maybe_pointer.pony
++++ /dev/null
+@@ -1,35 +0,0 @@
+-struct MaybePointer[A]
+-  """
+-  A MaybePointer[A] is used to encode a possibly-null type. It should
+-  _only_ be used for structs that need to be passed to and from the C FFI.
+-
+-  An optional type for anything that isn't a struct should be encoded as a
+-  union type, for example (A | None).
+-  """
+-  new create(that: A) =>
+-    """
+-    This re-encodes the type of `that` from A to MaybePointer[A], allowing
+-    `that` to be assigned to a field or variable of type MaybePointer[A]. It
+-    doesn't allocate a wrapper object: there is no containing object for `that`.
+-    """
+-    compile_intrinsic
+-
+-  new none() =>
+-    """
+-    This returns a null pointer typed as a MaybePointer[A].
+-    """
+-    compile_intrinsic
+-
+-  fun apply(): this->A ? =>
+-    """
+-    This re-encodes the type of `this` from MaybePointer[A] to A, allowing
+-    `this` to be assigned to a field of variable of type A. If `this` is a null
+-    pointer, an error is raised.
+-    """
+-    compile_intrinsic
+-
+-  fun is_none(): Bool =>
+-    """
+-    Returns true if `this` is null (ie apply would raise an error).
+-    """
+-    compile_intrinsic
+diff --git a/packages/builtin/nullable_pointer.pony b/packages/builtin/nullable_pointer.pony
+new file mode 100644
+index 0000000..d58ee23
+--- /dev/null
++++ b/packages/builtin/nullable_pointer.pony
+@@ -0,0 +1,35 @@
++struct NullablePointer[A]
++  """
++  A NullablePointer[A] is used to encode a possibly-null type. It should
++  _only_ be used for structs that need to be passed to and from the C FFI.
++
++  An optional type for anything that isn't a struct should be encoded as a
++  union type, for example (A | None).
++  """
++  new create(that: A) =>
++    """
++    This re-encodes the type of `that` from A to NullablePointer[A], allowing
++    `that` to be assigned to a field or variable of type NullablePointer[A]. It
++    doesn't allocate a wrapper object: there is no containing object for `that`.
++    """
++    compile_intrinsic
++
++  new none() =>
++    """
++    This returns a null pointer typed as a NullablePointer[A].
++    """
++    compile_intrinsic
++
++  fun apply(): this->A ? =>
++    """
++    This re-encodes the type of `this` from NullablePointer[A] to A, allowing
++    `this` to be assigned to a field of variable of type A. If `this` is a null
++    pointer, an error is raised.
++    """
++    compile_intrinsic
++
++  fun is_none(): Bool =>
++    """
++    Returns true if `this` is null (ie apply would raise an error).
++    """
++    compile_intrinsic
+diff --git a/src/libponyc/codegen/codegen.c b/src/libponyc/codegen/codegen.c
+index 259c22c..ffb6369 100644
+--- a/src/libponyc/codegen/codegen.c
++++ b/src/libponyc/codegen/codegen.c
+@@ -120,7 +120,7 @@ static void init_runtime(compile_t* c)
+   c->str_F32 = stringtab("F32");
+   c->str_F64 = stringtab("F64");
+   c->str_Pointer = stringtab("Pointer");
+-  c->str_Maybe = stringtab("MaybePointer");
++  c->str_Maybe = stringtab("NullablePointer");
+   c->str_DoNotOptimise = stringtab("DoNotOptimise");
+   c->str_Array = stringtab("Array");
+   c->str_String = stringtab("String");
+diff --git a/src/libponyc/codegen/genserialise.c b/src/libponyc/codegen/genserialise.c
+index e150ada..40dac2e 100644
+--- a/src/libponyc/codegen/genserialise.c
++++ b/src/libponyc/codegen/genserialise.c
+@@ -400,7 +400,7 @@ bool genserialise(compile_t* c, reach_type_t* t)
+ 
+       if(package == c->str_builtin)
+       {
+-        // Don't serialise MaybePointer[A]
++        // Don't serialise NullablePointer[A]
+         if(name == c->str_Maybe)
+           return true;
+ 
+diff --git a/src/libponyc/expr/ffi.c b/src/libponyc/expr/ffi.c
+index f381d21..55c3161 100644
+--- a/src/libponyc/expr/ffi.c
++++ b/src/libponyc/expr/ffi.c
+@@ -21,7 +21,7 @@ static bool void_star_param(ast_t* param_type, ast_t* arg_type)
+     return false;
+ 
+   // Parameter type is Pointer[None]
+-  // If the argument is Pointer[A], MaybePointer[A] or USize, allow it
++  // If the argument is Pointer[A], NullablePointer[A] or USize, allow it
+   while(ast_id(arg_type) == TK_ARROW)
+     arg_type = ast_childidx(arg_type, 1);
+ 
+diff --git a/src/libponyc/expr/reference.c b/src/libponyc/expr/reference.c
+index 2b11d13..0b52e0f 100644
+--- a/src/libponyc/expr/reference.c
++++ b/src/libponyc/expr/reference.c
+@@ -912,7 +912,7 @@ bool expr_nominal(pass_opt_t* opt, ast_t** astp)
+ 
+   if(is_maybe(ast))
+   {
+-    // MaybePointer[A] must be bound to a struct.
++    // NullablePointer[A] must be bound to a struct.
+     pony_assert(ast_childcount(typeargs) == 1);
+     ast_t* typeparam = ast_child(typeparams);
+     ast_t* typearg = ast_child(typeargs);
+@@ -945,7 +945,7 @@ bool expr_nominal(pass_opt_t* opt, ast_t** astp)
+     {
+       ast_error(opt->check.errors, ast,
+         "%s is not allowed: "
+-        "the type argument to MaybePointer must be a struct",
++        "the type argument to NullablePointer must be a struct",
+         ast_print_type(ast));
+ 
+       return false;
+diff --git a/src/libponyc/type/subtype.c b/src/libponyc/type/subtype.c
+index cd43487..248312c 100644
+--- a/src/libponyc/type/subtype.c
++++ b/src/libponyc/type/subtype.c
+@@ -1744,7 +1744,7 @@ bool is_pointer(ast_t* type)
+ 
+ bool is_maybe(ast_t* type)
+ {
+-  return is_literal(type, "MaybePointer");
++  return is_literal(type, "NullablePointer");
+ }
+ 
+ bool is_none(ast_t* type)
+diff --git a/src/libponyrt/gc/serialise.c b/src/libponyrt/gc/serialise.c
+index d404641..17826c4 100644
+--- a/src/libponyrt/gc/serialise.c
++++ b/src/libponyrt/gc/serialise.c
+@@ -237,7 +237,7 @@ PONY_API void* pony_deserialise_offset(pony_ctx_t* ctx, pony_type_t* t,
+   uintptr_t offset)
+ {
+   // if all the bits of the offset are set, it is either a Pointer[A] a or a
+-  // MaybePointer[A].
++  // NullablePointer[A].
+   if(offset == ALL_BITS)
+     return NULL;
+ 

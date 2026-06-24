@@ -1,0 +1,43 @@
+diff --git a/src/builtin.jq b/src/builtin.jq
+index a102fd5..9c90932 100644
+--- a/src/builtin.jq
++++ b/src/builtin.jq
+@@ -143,7 +143,11 @@ def sub($re; s; flags):
+             ({}; . + $pair)
+         | $in[0:$edit.offset]
+           + s
+-          + ($in[$len:] | if length > 0 and gs then mysub else . end)
++          + (if $edit.length == 0 then
++               $in[$len:$len+1] + ($in[$len+1:] | if length > 0 and gs then mysub else . end)
++             else
++               $in[$len:] | if length > 0 and gs then mysub else . end
++             end)
+         end ;
+     mysub ;
+     (flags | index("g")) as $gs
+@@ -152,8 +156,23 @@ def sub($re; s; flags):
+ #
+ def sub($re; s): sub($re; s; "");
+ # repeated substitution of re (which may contain named captures)
+-def gsub($re; s; flags): sub($re; s; flags + "g");
+-def gsub($re; s): sub($re; s; "g");
++def gsub($re; s; flags):
++  def subg: [explode[] | select(. != 103)] | implode;
++  (flags | subg) as $fla
++  | . as $in
++  | [match($re; $fla + "g")]
++  | if length == 0 then $in
++    else
++      $in
++      | reduce ([match($re; $fla + "g")] | .[]) as $m (
++          {result: "", offset: 0};
++          .result += $in[.offset:$m.offset]
++          | .offset = $m.offset + $m.length
++          | .result += (reduce ($m.captures | .[] | select(.name != null) | { (.name): .string }) as $pair ({}; . + $pair) | s)
++        )
++      | .result + $in[.offset:]
++    end;
++def gsub($re; s): gsub($re; s; "");
+ 
+ ########################################################################
+ # generic iterator/generator

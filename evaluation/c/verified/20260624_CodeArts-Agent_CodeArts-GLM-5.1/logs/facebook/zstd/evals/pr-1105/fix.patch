@@ -1,0 +1,184 @@
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index 36b91030..199e22ba 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -477,6 +477,99 @@ size_t ZSTD_CCtxParam_setParameter(
+     }
+ }
+ 
++size_t ZSTD_CCtxParam_getParameter(
++        ZSTD_CCtx_params* CCtxParams, ZSTD_cParameter param, unsigned* value)
++{
++    switch(param)
++    {
++    case ZSTD_p_format :
++        *value = (unsigned)CCtxParams->format;
++        break;
++    case ZSTD_p_compressionLevel :
++        *value = (unsigned)CCtxParams->compressionLevel;
++        break;
++    case ZSTD_p_windowLog :
++        *value = CCtxParams->cParams.windowLog;
++        break;
++    case ZSTD_p_hashLog :
++        *value = CCtxParams->cParams.hashLog;
++        break;
++    case ZSTD_p_chainLog :
++        *value = CCtxParams->cParams.chainLog;
++        break;
++    case ZSTD_p_searchLog :
++        *value = CCtxParams->cParams.searchLog;
++        break;
++    case ZSTD_p_minMatch :
++        *value = CCtxParams->cParams.searchLength;
++        break;
++    case ZSTD_p_targetLength :
++        *value = CCtxParams->cParams.targetLength;
++        break;
++    case ZSTD_p_compressionStrategy :
++        *value = (unsigned)CCtxParams->cParams.strategy;
++        break;
++    case ZSTD_p_compressLiterals:
++        *value = !CCtxParams->disableLiteralCompression;
++        break;
++    case ZSTD_p_contentSizeFlag :
++        *value = CCtxParams->fParams.contentSizeFlag;
++        break;
++    case ZSTD_p_checksumFlag :
++        *value = CCtxParams->fParams.checksumFlag;
++        break;
++    case ZSTD_p_dictIDFlag :
++        *value = !CCtxParams->fParams.noDictIDFlag;
++        break;
++    case ZSTD_p_forceMaxWindow :
++        *value = CCtxParams->forceWindow;
++        break;
++    case ZSTD_p_nbWorkers :
++#ifndef ZSTD_MULTITHREAD
++        *value = 0;
++#else
++        *value = CCtxParams->nbWorkers;
++#endif
++        break;
++    case ZSTD_p_jobSize :
++#ifndef ZSTD_MULTITHREAD
++        return ERROR(parameter_unsupported);
++#else
++        *value = CCtxParams->jobSize;
++#endif
++        break;
++    case ZSTD_p_overlapSizeLog :
++#ifndef ZSTD_MULTITHREAD
++        return ERROR(parameter_unsupported);
++#else
++        *value = CCtxParams->overlapSizeLog;
++#endif
++        break;
++    case ZSTD_p_enableLongDistanceMatching :
++        *value = CCtxParams->ldmParams.enableLdm;
++        break;
++    case ZSTD_p_ldmHashLog :
++        *value = CCtxParams->ldmParams.hashLog;
++        break;
++    case ZSTD_p_ldmMinMatch :
++        *value = CCtxParams->ldmParams.minMatchLength;
++        break;
++    case ZSTD_p_ldmBucketSizeLog :
++        *value = CCtxParams->ldmParams.bucketSizeLog;
++        break;
++    case ZSTD_p_ldmHashEveryLog :
++        *value = CCtxParams->ldmParams.hashEveryLog;
++        break;
++    default: return ERROR(parameter_unsupported);
++    }
++    return 0;
++}
++
++size_t ZSTD_CCtx_getParameter(ZSTD_CCtx* cctx, ZSTD_cParameter param, unsigned* value)
++{
++    return ZSTD_CCtxParam_getParameter(&cctx->requestedParams, param, value);
++}
++
+ /** ZSTD_CCtx_setParametersUsingCCtxParams() :
+  *  just applies `params` into `cctx`
+  *  no action is performed, parameters are merely stored.
+diff --git a/lib/decompress/zstd_decompress.c b/lib/decompress/zstd_decompress.c
+index 103dcc64..4e736460 100644
+--- a/lib/decompress/zstd_decompress.c
++++ b/lib/decompress/zstd_decompress.c
+@@ -2679,6 +2679,21 @@ size_t ZSTD_DCtx_setFormat(ZSTD_DCtx* dctx, ZSTD_format_e format)
+     return 0;
+ }
+ 
++size_t ZSTD_DCtx_getParameter(ZSTD_DCtx* dctx, ZSTD_dParameter param, unsigned* value)
++{
++    switch(param)
++    {
++    case ZSTD_d_windowLogMax:
++        *value = (unsigned)ZSTD_highbit32((U32)dctx->maxWindowSize);
++        break;
++    case ZSTD_d_format:
++        *value = (unsigned)dctx->format;
++        break;
++    default: return ERROR(parameter_unsupported);
++    }
++    return 0;
++}
++
+ 
+ size_t ZSTD_sizeof_DStream(const ZSTD_DStream* dctx)
+ {
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 714155ad..3ec12f3d 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -1071,6 +1071,12 @@ typedef enum {
+  *            or an error code (which can be tested with ZSTD_isError()). */
+ ZSTDLIB_API size_t ZSTD_CCtx_setParameter(ZSTD_CCtx* cctx, ZSTD_cParameter param, unsigned value);
+ 
++/*! ZSTD_CCtx_getParameter() :
++ *  Get the requested value of one compression parameter, selected by enum ZSTD_cParameter.
++ * @result : 0, or an error code (which can be tested with ZSTD_isError()).
++ */
++ZSTDLIB_API size_t ZSTD_CCtx_getParameter(ZSTD_CCtx* cctx, ZSTD_cParameter param, unsigned* value);
++
+ /*! ZSTD_CCtx_setPledgedSrcSize() :
+  *  Total input data size to be compressed as a single frame.
+  *  This value will be controlled at the end, and result in error if not respected.
+@@ -1238,6 +1244,13 @@ ZSTDLIB_API size_t ZSTD_CCtxParams_init_advanced(ZSTD_CCtx_params* cctxParams, Z
+  */
+ ZSTDLIB_API size_t ZSTD_CCtxParam_setParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, unsigned value);
+ 
++/*! ZSTD_CCtxParam_getParameter() :
++ *  Similar to ZSTD_CCtx_getParameter.
++ *  Get the requested value of one compression parameter, selected by enum ZSTD_cParameter.
++ * @result : 0, or an error code (which can be tested with ZSTD_isError()).
++ */
++ZSTDLIB_API size_t ZSTD_CCtxParam_getParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, unsigned* value);
++
+ /*! ZSTD_CCtx_setParametersUsingCCtxParams() :
+  *  Apply a set of ZSTD_CCtx_params to the compression context.
+  *  This can be done even after compression is started,
+@@ -1323,6 +1336,22 @@ ZSTDLIB_API size_t ZSTD_DCtx_setMaxWindowSize(ZSTD_DCtx* dctx, size_t maxWindowS
+  */
+ ZSTDLIB_API size_t ZSTD_DCtx_setFormat(ZSTD_DCtx* dctx, ZSTD_format_e format);
+ 
++/*! ZSTD_dParameter :
++ *  Decompression parameters available through ZSTD_DCtx_getParameter() */
++typedef enum {
++    ZSTD_d_windowLogMax=100,  /* Select a size limit for the decompression window log. This can be used to limit
++                               * memory usage on the decompression side. The windowLogMax value is in power of 2.
++                               * Note: the default value is set to ZSTD_WINDOWLOG_MAX. */
++    ZSTD_d_format,            /* See ZSTD_format_e enum definition. Cast selected format as unsigned for
++                               * ZSTD_DCtx_setFormat() compatibility. */
++} ZSTD_dParameter;
++
++/*! ZSTD_DCtx_getParameter() :
++ *  Get the requested value of one decompression parameter, selected by enum ZSTD_dParameter.
++ * @result : 0, or an error code (which can be tested with ZSTD_isError()).
++ */
++ZSTDLIB_API size_t ZSTD_DCtx_getParameter(ZSTD_DCtx* dctx, ZSTD_dParameter param, unsigned* value);
++
+ 
+ /** ZSTD_getFrameHeader_advanced() :
+  *  same as ZSTD_getFrameHeader(),

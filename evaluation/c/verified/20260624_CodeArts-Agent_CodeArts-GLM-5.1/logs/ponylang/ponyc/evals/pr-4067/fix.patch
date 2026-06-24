@@ -1,0 +1,28 @@
+diff --git a/src/libponyc/codegen/genopt.cc b/src/libponyc/codegen/genopt.cc
+index 970e43fc..62eeb16a 100644
+--- a/src/libponyc/codegen/genopt.cc
++++ b/src/libponyc/codegen/genopt.cc
+@@ -11,7 +11,6 @@
+ #include <llvm/IR/DebugInfo.h>
+ 
+ #include <llvm/IR/LegacyPassManager.h>
+-#include <llvm/Analysis/CallGraph.h>
+ #include <llvm/Analysis/Lint.h>
+ #include <llvm/Analysis/TargetLibraryInfo.h>
+ #include <llvm/Analysis/TargetTransformInfo.h>
+@@ -190,15 +189,6 @@ public:
+       invoke->getUnwindDest()->removePredecessor(call.getParent());
+     }
+ 
+-    CallGraphWrapperPass* cg_pass =
+-      getAnalysisIfAvailable<CallGraphWrapperPass>();
+-    CallGraph* cg = cg_pass ? &cg_pass->getCallGraph() : nullptr;
+-    CallGraphNode* cg_node = cg ? (*cg)[&f] : nullptr;
+-    if (cg_node)
+-    {
+-      cg_node->removeCallEdgeFor(call);
+-    }
+-
+     inst->eraseFromParent();
+ 
+     for(auto new_call: new_calls)

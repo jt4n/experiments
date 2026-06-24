@@ -1,0 +1,18 @@
+diff --git a/src/libponyc/expr/array.c b/src/libponyc/expr/array.c
+index bb751f9..ae7b672 100644
+--- a/src/libponyc/expr/array.c
++++ b/src/libponyc/expr/array.c
+@@ -80,7 +80,12 @@ bool expr_array(pass_opt_t* opt, ast_t** astp)
+ 
+   BUILD(ref, ast, NODE(TK_REFERENCE, ID("Array")));
+ 
+-  ast_t* a_type = alias(type);
++  ast_t* a_type;
++
++  if(told_type)
++    a_type = type;
++  else
++    a_type = alias(type);
+ 
+   BUILD(qualify, ast,
+     NODE(TK_QUALIFY,

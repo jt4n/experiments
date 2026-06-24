@@ -1,0 +1,97 @@
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index dc70dfbd..5a4fafd0 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -410,16 +410,17 @@ size_t ZSTD_CCtxParams_init_advanced(ZSTD_CCtx_params* cctxParams, ZSTD_paramete
+  * Sets cctxParams' cParams and fParams from params, but otherwise leaves them alone.
+  * @param params Validated zstd parameters.
+  */
+-static void ZSTD_CCtxParams_setZstdParams(
++size_t ZSTD_CCtxParams_setZstdParams(
+         ZSTD_CCtx_params* cctxParams, const ZSTD_parameters* params)
+ {
+-    assert(!ZSTD_checkCParams(params->cParams));
++    DEBUGLOG(4, "ZSTD_CCtxParams_setZstdParams");
++    RETURN_ERROR_IF(!cctxParams, GENERIC, "NULL pointer!");
++    RETURN_ERROR_IF(!params, GENERIC, "NULL pointer!");
++    FORWARD_IF_ERROR(ZSTD_checkCParams(params->cParams), "");
+     cctxParams->cParams = params->cParams;
+     cctxParams->fParams = params->fParams;
+-    /* Should not matter, as all cParams are presumed properly defined.
+-     * But, set it for tracing anyway.
+-     */
+     cctxParams->compressionLevel = ZSTD_NO_CLEVEL;
++    return 0;
+ }
+ 
+ ZSTD_bounds ZSTD_cParam_getBounds(ZSTD_cParameter param)
+@@ -1191,6 +1192,25 @@ size_t ZSTD_CCtx_setCParams(ZSTD_CCtx* cctx, ZSTD_compressionParameters cparams)
+     return 0;
+ }
+ 
++size_t ZSTD_CCtx_setFParams(ZSTD_CCtx* cctx, ZSTD_frameParameters fparams)
++{
++    DEBUGLOG(4, "ZSTD_CCtx_setFParams");
++    assert(cctx != NULL);
++    RETURN_ERROR_IF(cctx->streamStage != zcss_init, stage_wrong,
++                    "can only set params in cctx init stage");
++    cctx->requestedParams.fParams = fparams;
++    return 0;
++}
++
++size_t ZSTD_CCtx_setParameters(ZSTD_CCtx* cctx, ZSTD_parameters params)
++{
++    DEBUGLOG(4, "ZSTD_CCtx_setParameters");
++    assert(cctx != NULL);
++    FORWARD_IF_ERROR(ZSTD_CCtx_setCParams(cctx, params.cParams), "");
++    FORWARD_IF_ERROR(ZSTD_CCtx_setFParams(cctx, params.fParams), "");
++    return 0;
++}
++
+ size_t ZSTD_CCtx_setPledgedSrcSize(ZSTD_CCtx* cctx, unsigned long long pledgedSrcSize)
+ {
+     DEBUGLOG(4, "ZSTD_CCtx_setPledgedSrcSize to %llu bytes", pledgedSrcSize);
+@@ -5703,7 +5723,7 @@ size_t ZSTD_initCStream_advanced(ZSTD_CStream* zcs,
+     FORWARD_IF_ERROR( ZSTD_CCtx_reset(zcs, ZSTD_reset_session_only) , "");
+     FORWARD_IF_ERROR( ZSTD_CCtx_setPledgedSrcSize(zcs, pledgedSrcSize) , "");
+     FORWARD_IF_ERROR( ZSTD_checkCParams(params.cParams) , "");
+-    ZSTD_CCtxParams_setZstdParams(&zcs->requestedParams, &params);
++    FORWARD_IF_ERROR( ZSTD_CCtxParams_setZstdParams(&zcs->requestedParams, &params) , "");
+     FORWARD_IF_ERROR( ZSTD_CCtx_loadDictionary(zcs, dict, dictSize) , "");
+     return 0;
+ }
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 6c0c8eec..15189619 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -1809,6 +1809,16 @@ ZSTDLIB_STATIC_API ZSTD_compressionParameters ZSTD_adjustCParams(ZSTD_compressio
+  * @return 0 on success, or an error code (can be checked with ZSTD_isError()) */
+ ZSTDLIB_STATIC_API size_t ZSTD_CCtx_setCParams(ZSTD_CCtx* cctx, ZSTD_compressionParameters cparams);
+ 
++/*! ZSTD_CCtx_setFParams() :
++ *  Set all parameters provided within @fparams into the working @cctx.
++ * @return 0 on success, or an error code (can be checked with ZSTD_isError()) */
++ZSTDLIB_STATIC_API size_t ZSTD_CCtx_setFParams(ZSTD_CCtx* cctx, ZSTD_frameParameters fparams);
++
++/*! ZSTD_CCtx_setParameters() :
++ *  Set all parameters provided within @params into the working @cctx.
++ * @return 0 on success, or an error code (can be checked with ZSTD_isError()) */
++ZSTDLIB_STATIC_API size_t ZSTD_CCtx_setParameters(ZSTD_CCtx* cctx, ZSTD_parameters params);
++
+ /*! ZSTD_compress_advanced() :
+  *  Note : this function is now DEPRECATED.
+  *         It can be replaced by ZSTD_compress2(), in combination with ZSTD_CCtx_setParameter() and other parameter setters.
+@@ -2208,6 +2218,13 @@ ZSTDLIB_STATIC_API size_t ZSTD_CCtxParams_init(ZSTD_CCtx_params* cctxParams, int
+  */
+ ZSTDLIB_STATIC_API size_t ZSTD_CCtxParams_init_advanced(ZSTD_CCtx_params* cctxParams, ZSTD_parameters params);
+ 
++/*! ZSTD_CCtxParams_setZstdParams() :
++ *  Sets the compression and frame parameters of cctxParams according to
++ *  params. Other parameters are left unchanged.
++ * @return 0 on success, or an error code (can be checked with ZSTD_isError()).
++ */
++ZSTDLIB_STATIC_API size_t ZSTD_CCtxParams_setZstdParams(ZSTD_CCtx_params* cctxParams, const ZSTD_parameters* params);
++
+ /*! ZSTD_CCtxParams_setParameter() : Requires v1.4.0+
+  *  Similar to ZSTD_CCtx_setParameter.
+  *  Set one compression parameter, selected by enum ZSTD_cParameter.

@@ -1,0 +1,132 @@
+diff --git a/src/libponyc/codegen/genexe.c b/src/libponyc/codegen/genexe.c
+index d147e19..e209bfe 100644
+--- a/src/libponyc/codegen/genexe.c
++++ b/src/libponyc/codegen/genexe.c
+@@ -259,7 +259,28 @@ static bool link_exe(compile_t* c, ast_t* program,
+     "-Wl,--end-group ", "-l", "");
+   const char* lib_args = program_lib_args(program);
+ 
+-  size_t ld_len = 512 + strlen(file_exe) + strlen(file_o) + strlen(lib_args);
++  // Build rpath args from all library paths so shared libraries can be
++  // found at runtime. This is needed because we use ld.gold which does not
++  // support LD_RUN_PATH.
++  strlist_t* libpaths = program_lib_paths(program);
++  size_t rpath_len = 1;
++
++  for(strlist_t* p = libpaths; p != NULL; p = strlist_next(p))
++    rpath_len += 16 + strlen(strlist_data(p));
++
++  char* rpath_args = (char*)ponyint_pool_alloc_size(rpath_len);
++  rpath_args[0] = '\0';
++
++  for(strlist_t* p = libpaths; p != NULL; p = strlist_next(p))
++  {
++    const char* libpath = strlist_data(p);
++    strcat(rpath_args, "-Wl,-rpath,");
++    strcat(rpath_args, libpath);
++    strcat(rpath_args, " ");
++  }
++
++  size_t ld_len = 512 + strlen(file_exe) + strlen(file_o) + strlen(lib_args) +
++    strlen(rpath_args);
+   char* ld_cmd = (char*)ponyint_pool_alloc_size(ld_len);
+ 
+   snprintf(ld_cmd, ld_len, PONY_COMPILER " -o %s -O3 -march=" PONY_ARCH " "
+@@ -274,12 +295,12 @@ static bool link_exe(compile_t* c, ast_t* program,
+ #ifdef PLATFORM_IS_LINUX
+     "-fuse-ld=gold "
+ #endif
+-    "%s %s -lponyrt -lpthread "
++    "%s %s %s -lponyrt -lpthread "
+ #ifdef PLATFORM_IS_LINUX
+     "-ldl "
+ #endif
+     "-lm",
+-    file_exe, file_o, lib_args
++    file_exe, file_o, lib_args, rpath_args
+     );
+ 
+   PONY_LOG(c->opt, VERBOSITY_TOOL_INFO, ("%s\n", ld_cmd));
+@@ -288,10 +309,12 @@ static bool link_exe(compile_t* c, ast_t* program,
+   {
+     errorf(NULL, "unable to link: %s", ld_cmd);
+     ponyint_pool_free_size(ld_len, ld_cmd);
++    ponyint_pool_free_size(rpath_len, rpath_args);
+     return false;
+   }
+ 
+   ponyint_pool_free_size(ld_len, ld_cmd);
++  ponyint_pool_free_size(rpath_len, rpath_args);
+ #elif defined(PLATFORM_IS_WINDOWS)
+   vcvars_t vcvars;
+ 
+diff --git a/src/libponyc/pkg/program.c b/src/libponyc/pkg/program.c
+index 1bfa9b1..6595ea2 100644
+--- a/src/libponyc/pkg/program.c
++++ b/src/libponyc/pkg/program.c
+@@ -222,3 +222,45 @@ const char* program_lib_args(ast_t* program)
+ 
+   return data->lib_args;
+ }
++
++
++strlist_t* program_lib_paths(ast_t* program)
++{
++  assert(program != NULL);
++  assert(ast_id(program) == TK_PROGRAM);
++
++  program_t* data = (program_t*)ast_data(program);
++  assert(data != NULL);
++
++  // Combine libpaths from source use commands and package_paths (from
++  // --path and PONYPATH). We need to return a single list. We'll build
++  // a new list that merges both, without modifying the originals.
++  strlist_t* result = NULL;
++
++  for(strlist_t* p = data->libpaths; p != NULL; p = strlist_next(p))
++  {
++    const char* path = strlist_data(p);
++
++    if(strlist_find(result, path) == NULL)
++      result = strlist_append(result, path);
++  }
++
++  for(strlist_t* p = package_paths(); p != NULL; p = strlist_next(p))
++  {
++    const char* path = quoted_locator(NULL, strlist_data(p));
++
++    if(path == NULL)
++      continue;
++
++    if(strlist_find(result, path) == NULL)
++      result = strlist_append(result, path);
++  }
++
++  return result;
++}
++
++
++void program_lib_paths_free(strlist_t* paths)
++{
++  strlist_free(paths);
++}
+diff --git a/src/libponyc/pkg/program.h b/src/libponyc/pkg/program.h
+index 8832276..d2232d7 100644
+--- a/src/libponyc/pkg/program.h
++++ b/src/libponyc/pkg/program.h
+@@ -41,6 +41,15 @@ void program_lib_build_args(ast_t* program, const char* path_preamble,
+  */
+ const char* program_lib_args(ast_t* program);
+ 
++/** Get the combined list of library paths from use "path:" commands and
++ * from --path / PONYPATH. The returned list must be freed with
++ * program_lib_paths_free() when no longer needed.
++ */
++strlist_t* program_lib_paths(ast_t* program);
++
++/** Free a list returned by program_lib_paths(). */
++void program_lib_paths_free(strlist_t* paths);
++
+ PONY_EXTERN_C_END
+ 
+ #endif

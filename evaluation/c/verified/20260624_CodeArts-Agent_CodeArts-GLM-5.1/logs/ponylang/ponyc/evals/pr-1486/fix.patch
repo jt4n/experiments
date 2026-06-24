@@ -1,0 +1,24 @@
+diff --git a/src/libponyc/expr/reference.c b/src/libponyc/expr/reference.c
+index 37b9421..bdfe250 100644
+--- a/src/libponyc/expr/reference.c
++++ b/src/libponyc/expr/reference.c
+@@ -716,10 +716,15 @@ bool expr_reference(pass_opt_t* opt, ast_t** astp)
+ 
+           if(t->frame->recover != def_recover)
+           {
+-            ast_error(opt->check.errors, ast, "can't access a non-sendable "
+-              "local defined outside of a recover expression from within "
+-              "that recover expression");
+-            return false;
++            ast_t* parent = ast_parent(ast);
++
++            if(ast_id(parent) != TK_DOT)
++            {
++              ast_error(opt->check.errors, ast, "can't access a non-sendable "
++                "local defined outside of a recover expression from within "
++                "that recover expression");
++              return false;
++            }
+           }
+         }
+       }

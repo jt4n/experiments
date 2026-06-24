@@ -1,0 +1,41 @@
+diff --git a/src/builtin.jq b/src/builtin.jq
+index 483ddcc..1ec9630 100644
+--- a/src/builtin.jq
++++ b/src/builtin.jq
+@@ -12,24 +12,21 @@ def add: reduce .[] as $x (null; . + $x);
+ def del(f): delpaths([path(f)]);
+ def _assign(paths; $value): reduce path(paths) as $p (.; setpath($p; $value));
+ def _modify(paths; update):
+-    reduce path(paths) as $p (.;
+-        . as $dot
++    [path(paths)] as $all_paths
++  | reduce $all_paths[] as $p ([., []];
++        .[0] as $dot | .[1] as $del
+       | null
+       | label $out
+       | ($dot | getpath($p)) as $v
+-      | (
+-          (   $$$$v
+-            | update
+-            | (., break $out) as $v
+-            | $$$$dot
+-            | setpath($p; $v)
+-          ),
+-          (
+-              $$$$dot
+-            | delpaths([$p])
+-          )
+-        )
+-    );
++      | (   $$$$v
++          | update
++          | (., break $out) as $v
++          | [ ($$$$dot | setpath($p; $v)), $$$$del ]
++        ),
++        [ $$$$dot, $$$$del + [$p] ]
++    )
++  | .[0] as $dot | .[1] as $del
++  | ($$$$dot | delpaths($$$$del));
+ def map_values(f): .[] |= f;
+ 
+ # recurse

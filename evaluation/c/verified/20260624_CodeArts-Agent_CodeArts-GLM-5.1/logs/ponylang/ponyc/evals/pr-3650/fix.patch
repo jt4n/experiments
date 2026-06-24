@@ -1,0 +1,47 @@
+diff --git a/src/libponyc/pass/refer.c b/src/libponyc/pass/refer.c
+index 75ae6c64..aa342626 100644
+--- a/src/libponyc/pass/refer.c
++++ b/src/libponyc/pass/refer.c
+@@ -102,6 +102,26 @@ static const char* generate_multi_dot_name(ast_t* ast, ast_t** def_found) {
+     len += strlen(ast_name(right)) + 1;
+   } while(def == NULL);
+ 
++  // Look through single-child sequences (from parenthesization)
++  // and consume expressions on the LHS of a dot.
++  while(true)
++  {
++    if(ast_id(temp_ast) == TK_SEQ && ast_childcount(temp_ast) == 1)
++    {
++      temp_ast = ast_child(temp_ast);
++      continue;
++    }
++
++    if(ast_id(temp_ast) == TK_CONSUME)
++    {
++      AST_GET_CHILDREN(temp_ast, cap, term);
++      temp_ast = term;
++      continue;
++    }
++
++    break;
++  }
++
+   switch(ast_id(temp_ast))
+   {
+     case TK_DOT:
+@@ -662,6 +682,7 @@ bool refer_dot(pass_opt_t* opt, ast_t* ast)
+     case TK_VARREF:
+     case TK_LETREF:
+     case TK_DOT:
++    case TK_CONSUME:
+     {
+       // check multi_dot reference if it's not a function call
+       // only if we had a field consume/reassign
+@@ -948,6 +969,7 @@ static lvalue_t is_lvalue(pass_opt_t* opt, ast_t* ast, bool need_value)
+         case TK_VARREF:
+         case TK_LETREF:
+         case TK_DOT:
++        case TK_CONSUME:
+         {
+           return assign_multi_dot(opt, ast, need_value);
+         }

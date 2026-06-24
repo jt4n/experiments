@@ -1,0 +1,36 @@
+diff --git a/lib/decompress/zstd_decompress.c b/lib/decompress/zstd_decompress.c
+index 00e2fb4a..efc1bb3a 100644
+--- a/lib/decompress/zstd_decompress.c
++++ b/lib/decompress/zstd_decompress.c
+@@ -2232,6 +2232,12 @@ size_t ZSTD_estimateDStreamSize(size_t windowSize)
+     return ZSTD_estimateDCtxSize() + inBuffSize + outBuffSize;
+ }
+ 
++size_t ZSTD_decodingBufferSize_min(size_t windowSize)
++{
++    size_t const blockSize = MIN(windowSize, ZSTD_BLOCKSIZE_MAX);
++    return windowSize + blockSize + (WILDCOPY_OVERLENGTH * 2);
++}
++
+ ZSTDLIB_API size_t ZSTD_estimateDStreamSize_fromFrame(const void* src, size_t srcSize)
+ {
+     U32 const windowSizeMax = 1U << ZSTD_WINDOWLOG_MAX;
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 8817ef94..dadc83c5 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -524,6 +524,14 @@ ZSTDLIB_API size_t ZSTD_estimateCStreamSize_advanced_usingCCtxParams(const ZSTD_
+ ZSTDLIB_API size_t ZSTD_estimateDStreamSize(size_t windowSize);
+ ZSTDLIB_API size_t ZSTD_estimateDStreamSize_fromFrame(const void* src, size_t srcSize);
+ 
++/*! ZSTD_decodingBufferSize_min() :
++ *  same as ZSTD_estimateDStreamSize, but only returns the outBuffSize part.
++ *  This is useful for users who manage their own output buffer allocation
++ *  when using ZSTD_decompressBlock() directly.
++ *  Note : buffer size must be at least this value for correct decompression,
++ *         but it can be larger if the user knows the exact output size. */
++ZSTDLIB_API size_t ZSTD_decodingBufferSize_min(size_t windowSize);
++
+ typedef enum {
+     ZSTD_dlm_byCopy = 0,      /* Copy dictionary content internally. */
+     ZSTD_dlm_byRef,           /* Reference dictionary content -- the dictionary buffer must outlives its users. */

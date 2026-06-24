@@ -1,0 +1,1158 @@
+检测到 Ubuntu 20 系统
+进入ubuntu其他系统
+替换系统源完成
+==============================================================================
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal InRelease [265 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu focal-updates InRelease [128 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu focal-backports InRelease [128 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu focal-security InRelease [128 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 Packages [1275 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 Packages [11.3 MB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu focal/multiverse amd64 Packages [177 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu focal/restricted amd64 Packages [33.4 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu focal-updates/restricted amd64 Packages [4904 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu focal-updates/multiverse amd64 Packages [36.2 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu focal-updates/universe amd64 Packages [1588 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 Packages [4850 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu focal-backports/universe amd64 Packages [28.4 kB]
+Get:14 http://mirrors.tools.huawei.com/ubuntu focal-backports/main amd64 Packages [54.7 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu focal-security/multiverse amd64 Packages [32.5 kB]
+Get:16 http://mirrors.tools.huawei.com/ubuntu focal-security/restricted amd64 Packages [4710 kB]
+Get:17 http://mirrors.tools.huawei.com/ubuntu focal-security/main amd64 Packages [4366 kB]
+Get:18 http://mirrors.tools.huawei.com/ubuntu focal-security/universe amd64 Packages [1300 kB]
+Fetched 35.3 MB in 2s (16.0 MB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+patch is already the newest version (2.7.6-6).
+patch set to manually installed.
+build-essential is already the newest version (12.8ubuntu1.1).
+zlib1g-dev is already the newest version (1:1.2.11.dfsg-2ubuntu1.5).
+zlib1g-dev set to manually installed.
+The following additional packages will be installed:
+  autogen-doc guile-2.2-libs libgc1c2 libltdl7 libonig5 libopts25
+  libopts25-dev libpcre2-16-0 libpcre2-32-0 libpcre2-posix2
+Suggested packages:
+  ncurses-doc libssl-doc
+The following NEW packages will be installed:
+  autogen autogen-doc guile-2.2-libs libgc1c2 libltdl7 libncurses-dev
+  libonig-dev libonig5 libopts25 libopts25-dev libpcre2-16-0 libpcre2-32-0
+  libpcre2-dev libpcre2-posix2 libssl-dev
+0 upgraded, 15 newly installed, 0 to remove and 48 not upgraded.
+Need to get 9952 kB of archives.
+After this operation, 65.8 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libgc1c2 amd64 1:7.6.4-0.4ubuntu1 [83.9 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libltdl7 amd64 2.4.6-14 [38.5 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 guile-2.2-libs amd64 2.2.7+1-4 [4962 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libopts25 amd64 1:5.18.16-3 [59.4 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libopts25-dev amd64 1:5.18.16-3 [96.0 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 autogen amd64 1:5.18.16-3 [559 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 autogen-doc all 1:5.18.16-3 [1002 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libncurses-dev amd64 6.2-0ubuntu2.1 [340 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libonig5 amd64 6.9.4-1 [142 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libonig-dev amd64 6.9.4-1 [54.2 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-16-0 amd64 10.34-7ubuntu0.1 [181 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-32-0 amd64 10.34-7ubuntu0.1 [170 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-posix2 amd64 10.34-7ubuntu0.1 [5988 B]
+Get:14 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-dev amd64 10.34-7ubuntu0.1 [672 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libssl-dev amd64 1.1.1f-1ubuntu2.24 [1586 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 9952 kB in 11s (927 kB/s)
+Selecting previously unselected package libgc1c2:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 21871 files and directories currently installed.)
+Preparing to unpack .../00-libgc1c2_1%3a7.6.4-0.4ubuntu1_amd64.deb ...
+Unpacking libgc1c2:amd64 (1:7.6.4-0.4ubuntu1) ...
+Selecting previously unselected package libltdl7:amd64.
+Preparing to unpack .../01-libltdl7_2.4.6-14_amd64.deb ...
+Unpacking libltdl7:amd64 (2.4.6-14) ...
+Selecting previously unselected package guile-2.2-libs:amd64.
+Preparing to unpack .../02-guile-2.2-libs_2.2.7+1-4_amd64.deb ...
+Unpacking guile-2.2-libs:amd64 (2.2.7+1-4) ...
+Selecting previously unselected package libopts25:amd64.
+Preparing to unpack .../03-libopts25_1%3a5.18.16-3_amd64.deb ...
+Unpacking libopts25:amd64 (1:5.18.16-3) ...
+Selecting previously unselected package libopts25-dev:amd64.
+Preparing to unpack .../04-libopts25-dev_1%3a5.18.16-3_amd64.deb ...
+Unpacking libopts25-dev:amd64 (1:5.18.16-3) ...
+Selecting previously unselected package autogen.
+Preparing to unpack .../05-autogen_1%3a5.18.16-3_amd64.deb ...
+Unpacking autogen (1:5.18.16-3) ...
+Replaced by files in installed package libopts25-dev:amd64 (1:5.18.16-3) ...
+Selecting previously unselected package autogen-doc.
+Preparing to unpack .../06-autogen-doc_1%3a5.18.16-3_all.deb ...
+Unpacking autogen-doc (1:5.18.16-3) ...
+Selecting previously unselected package libncurses-dev:amd64.
+Preparing to unpack .../07-libncurses-dev_6.2-0ubuntu2.1_amd64.deb ...
+Unpacking libncurses-dev:amd64 (6.2-0ubuntu2.1) ...
+Selecting previously unselected package libonig5:amd64.
+Preparing to unpack .../08-libonig5_6.9.4-1_amd64.deb ...
+Unpacking libonig5:amd64 (6.9.4-1) ...
+Selecting previously unselected package libonig-dev.
+Preparing to unpack .../09-libonig-dev_6.9.4-1_amd64.deb ...
+Unpacking libonig-dev (6.9.4-1) ...
+Selecting previously unselected package libpcre2-16-0:amd64.
+Preparing to unpack .../10-libpcre2-16-0_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-16-0:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libpcre2-32-0:amd64.
+Preparing to unpack .../11-libpcre2-32-0_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-32-0:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libpcre2-posix2:amd64.
+Preparing to unpack .../12-libpcre2-posix2_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-posix2:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libpcre2-dev:amd64.
+Preparing to unpack .../13-libpcre2-dev_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-dev:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libssl-dev:amd64.
+Preparing to unpack .../14-libssl-dev_1.1.1f-1ubuntu2.24_amd64.deb ...
+Unpacking libssl-dev:amd64 (1.1.1f-1ubuntu2.24) ...
+Setting up libncurses-dev:amd64 (6.2-0ubuntu2.1) ...
+Setting up libgc1c2:amd64 (1:7.6.4-0.4ubuntu1) ...
+Setting up libopts25:amd64 (1:5.18.16-3) ...
+Setting up libpcre2-16-0:amd64 (10.34-7ubuntu0.1) ...
+Setting up autogen-doc (1:5.18.16-3) ...
+Setting up libpcre2-32-0:amd64 (10.34-7ubuntu0.1) ...
+Setting up libssl-dev:amd64 (1.1.1f-1ubuntu2.24) ...
+Setting up libpcre2-posix2:amd64 (10.34-7ubuntu0.1) ...
+Setting up libltdl7:amd64 (2.4.6-14) ...
+Setting up libonig5:amd64 (6.9.4-1) ...
+Setting up guile-2.2-libs:amd64 (2.2.7+1-4) ...
+Setting up libpcre2-dev:amd64 (10.34-7ubuntu0.1) ...
+Setting up libopts25-dev:amd64 (1:5.18.16-3) ...
+Setting up libonig-dev (6.9.4-1) ...
+Setting up autogen (1:5.18.16-3) ...
+Processing triggers for libc-bin (2.31-0ubuntu9.16) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+cmake is already the newest version (3.16.3-1ubuntu1.20.04.1).
+zlib1g-dev is already the newest version (1:1.2.11.dfsg-2ubuntu1.5).
+0 upgraded, 0 newly installed, 0 to remove and 48 not upgraded.
+=== RUN FULL via /home/fix-run.sh (tee log) ===
+#!/bin/bash
+set -e
+
+cd /home/zstd
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make 
+make test
+
+=========================================
+当前目录：/home
+当前目录内容：add_certificate_for_c.sh check_git_changes.sh fix-run.sh fix.patch prepare.sh run.sh test-run.sh test.patch zstd
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  wget
+0 upgraded, 1 newly installed, 0 to remove and 48 not upgraded.
+Need to get 349 kB of archives.
+After this operation, 1012 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 wget amd64 1.20.3-1ubuntu2.1 [349 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 349 kB in 0s (1471 kB/s)
+Selecting previously unselected package wget.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 23540 files and directories currently installed.)
+Preparing to unpack .../wget_1.20.3-1ubuntu2.1_amd64.deb ...
+Unpacking wget (1.20.3-1ubuntu2.1) ...
+Setting up wget (1.20.3-1ubuntu2.1) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  alsa-topology-conf alsa-ucm-conf libasound2 libasound2-data libcanberra0
+  libgpm2 libogg0 libtdb1 libvorbis0a libvorbisfile3 sound-theme-freedesktop
+  vim-common vim-runtime xxd
+Suggested packages:
+  libasound2-plugins alsa-utils libcanberra-gtk0 libcanberra-pulse gpm ctags
+  vim-doc vim-scripts
+The following NEW packages will be installed:
+  alsa-topology-conf alsa-ucm-conf libasound2 libasound2-data libcanberra0
+  libgpm2 libogg0 libtdb1 libvorbis0a libvorbisfile3 sound-theme-freedesktop
+  vim vim-common vim-runtime xxd
+0 upgraded, 15 newly installed, 0 to remove and 48 not upgraded.
+Need to get 8249 kB of archives.
+After this operation, 38.3 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 xxd amd64 2:8.1.2269-1ubuntu5.32 [50.0 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 vim-common all 2:8.1.2269-1ubuntu5.32 [84.9 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 alsa-topology-conf all 1.2.2-1 [7364 B]
+Get:4 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 alsa-ucm-conf all 1.2.2-1ubuntu0.13 [27.0 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libasound2-data all 1.2.2-2.1ubuntu2.5 [20.1 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libasound2 amd64 1.2.2-2.1ubuntu2.5 [335 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libtdb1 amd64 1.4.5-0ubuntu0.20.04.1 [44.2 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libogg0 amd64 1.3.4-0ubuntu1 [24.0 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libvorbis0a amd64 1.3.6-2ubuntu1 [87.0 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libvorbisfile3 amd64 1.3.6-2ubuntu1 [16.1 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 sound-theme-freedesktop all 0.8-2ubuntu1 [384 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libcanberra0 amd64 0.30-7ubuntu1 [38.1 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libgpm2 amd64 1.20.7-5 [15.1 kB]
+Get:14 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 vim-runtime all 2:8.1.2269-1ubuntu5.32 [5876 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 vim amd64 2:8.1.2269-1ubuntu5.32 [1241 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 8249 kB in 0s (20.6 MB/s)
+Selecting previously unselected package xxd.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 23551 files and directories currently installed.)
+Preparing to unpack .../00-xxd_2%3a8.1.2269-1ubuntu5.32_amd64.deb ...
+Unpacking xxd (2:8.1.2269-1ubuntu5.32) ...
+Selecting previously unselected package vim-common.
+Preparing to unpack .../01-vim-common_2%3a8.1.2269-1ubuntu5.32_all.deb ...
+Unpacking vim-common (2:8.1.2269-1ubuntu5.32) ...
+Selecting previously unselected package alsa-topology-conf.
+Preparing to unpack .../02-alsa-topology-conf_1.2.2-1_all.deb ...
+Unpacking alsa-topology-conf (1.2.2-1) ...
+Selecting previously unselected package alsa-ucm-conf.
+Preparing to unpack .../03-alsa-ucm-conf_1.2.2-1ubuntu0.13_all.deb ...
+Unpacking alsa-ucm-conf (1.2.2-1ubuntu0.13) ...
+Selecting previously unselected package libasound2-data.
+Preparing to unpack .../04-libasound2-data_1.2.2-2.1ubuntu2.5_all.deb ...
+Unpacking libasound2-data (1.2.2-2.1ubuntu2.5) ...
+Selecting previously unselected package libasound2:amd64.
+Preparing to unpack .../05-libasound2_1.2.2-2.1ubuntu2.5_amd64.deb ...
+Unpacking libasound2:amd64 (1.2.2-2.1ubuntu2.5) ...
+Selecting previously unselected package libtdb1:amd64.
+Preparing to unpack .../06-libtdb1_1.4.5-0ubuntu0.20.04.1_amd64.deb ...
+Unpacking libtdb1:amd64 (1.4.5-0ubuntu0.20.04.1) ...
+Selecting previously unselected package libogg0:amd64.
+Preparing to unpack .../07-libogg0_1.3.4-0ubuntu1_amd64.deb ...
+Unpacking libogg0:amd64 (1.3.4-0ubuntu1) ...
+Selecting previously unselected package libvorbis0a:amd64.
+Preparing to unpack .../08-libvorbis0a_1.3.6-2ubuntu1_amd64.deb ...
+Unpacking libvorbis0a:amd64 (1.3.6-2ubuntu1) ...
+Selecting previously unselected package libvorbisfile3:amd64.
+Preparing to unpack .../09-libvorbisfile3_1.3.6-2ubuntu1_amd64.deb ...
+Unpacking libvorbisfile3:amd64 (1.3.6-2ubuntu1) ...
+Selecting previously unselected package sound-theme-freedesktop.
+Preparing to unpack .../10-sound-theme-freedesktop_0.8-2ubuntu1_all.deb ...
+Unpacking sound-theme-freedesktop (0.8-2ubuntu1) ...
+Selecting previously unselected package libcanberra0:amd64.
+Preparing to unpack .../11-libcanberra0_0.30-7ubuntu1_amd64.deb ...
+Unpacking libcanberra0:amd64 (0.30-7ubuntu1) ...
+Selecting previously unselected package libgpm2:amd64.
+Preparing to unpack .../12-libgpm2_1.20.7-5_amd64.deb ...
+Unpacking libgpm2:amd64 (1.20.7-5) ...
+Selecting previously unselected package vim-runtime.
+Preparing to unpack .../13-vim-runtime_2%3a8.1.2269-1ubuntu5.32_all.deb ...
+Adding 'diversion of /usr/share/vim/vim81/doc/help.txt to /usr/share/vim/vim81/doc/help.txt.vim-tiny by vim-runtime'
+Adding 'diversion of /usr/share/vim/vim81/doc/tags to /usr/share/vim/vim81/doc/tags.vim-tiny by vim-runtime'
+Unpacking vim-runtime (2:8.1.2269-1ubuntu5.32) ...
+Selecting previously unselected package vim.
+Preparing to unpack .../14-vim_2%3a8.1.2269-1ubuntu5.32_amd64.deb ...
+Unpacking vim (2:8.1.2269-1ubuntu5.32) ...
+Setting up libgpm2:amd64 (1.20.7-5) ...
+Setting up libogg0:amd64 (1.3.4-0ubuntu1) ...
+Setting up alsa-ucm-conf (1.2.2-1ubuntu0.13) ...
+Setting up libtdb1:amd64 (1.4.5-0ubuntu0.20.04.1) ...
+Setting up xxd (2:8.1.2269-1ubuntu5.32) ...
+Setting up libasound2-data (1.2.2-2.1ubuntu2.5) ...
+Setting up vim-common (2:8.1.2269-1ubuntu5.32) ...
+Setting up libvorbis0a:amd64 (1.3.6-2ubuntu1) ...
+Setting up alsa-topology-conf (1.2.2-1) ...
+Setting up sound-theme-freedesktop (0.8-2ubuntu1) ...
+Setting up libasound2:amd64 (1.2.2-2.1ubuntu2.5) ...
+Setting up vim-runtime (2:8.1.2269-1ubuntu5.32) ...
+Setting up libvorbisfile3:amd64 (1.3.6-2ubuntu1) ...
+Setting up libcanberra0:amd64 (0.30-7ubuntu1) ...
+Setting up vim (2:8.1.2269-1ubuntu5.32) ...
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vim (vim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vimdiff (vimdiff) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rvim (rvim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rview (rview) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vi (vi) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/vi.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/vi.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/vi.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/vi.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/vi.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/vi.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/vi.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/vi.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/view (view) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/view.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/view.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/view.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/view.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/view.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/view.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/view.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/view.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/ex (ex) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/ex.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/ex.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/ex.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/ex.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/ex.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/ex.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/ex.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/ex.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/editor.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/editor.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/editor.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/editor.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/editor.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/editor.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/editor.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/editor.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group editor) doesn't exist
+Processing triggers for libc-bin (2.31-0ubuntu9.16) ...
+Processing triggers for mime-support (3.64ubuntu1) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  curl
+0 upgraded, 1 newly installed, 0 to remove and 48 not upgraded.
+Need to get 162 kB of archives.
+After this operation, 414 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 curl amd64 7.68.0-1ubuntu2.25 [162 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 162 kB in 0s (864 kB/s)
+Selecting previously unselected package curl.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 25901 files and directories currently installed.)
+Preparing to unpack .../curl_7.68.0-1ubuntu2.25_amd64.deb ...
+Unpacking curl (7.68.0-1ubuntu2.25) ...
+Setting up curl (7.68.0-1ubuntu2.25) ...
+=== 配置证书 (abcert) ===
+[abcert][INFO] Created temporary directory .tmp.pems.GxBRtHp8
+[abcert][INFO] Operating system: Ubuntu 20.04.6 LTS
+[abcert][INFO] Installing certificates
+'.tmp.pems.GxBRtHp8/HWBPITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWBPITEnterpriseCA1.crt'
+'.tmp.pems.GxBRtHp8/HWITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWITEnterpriseCA1.crt'
+'.tmp.pems.GxBRtHp8/HuaweiBPITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiBPITRootCA.crt'
+'.tmp.pems.GxBRtHp8/HuaweiITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiITRootCA.crt'
+'.tmp.pems.GxBRtHp8/HuaweiWebSecureInternetGatewayCA.pem' -> '/usr/local/share/ca-certificates/HuaweiWebSecureInternetGatewayCA.crt'
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+5 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+[abcert][INFO] Removed .tmp.pems.GxBRtHp8
+abcert 安装完成
+================git=====================
+http.version=HTTP/1.1
+http.postbuffer=524288000
+http.timeout=600
+================git=====================
+================env=====================
+HTTPS_PROXY=http://test:test@proxysg.huawei.com:8080/
+no_proxy=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+HOSTNAME=ba5e7789a0a6
+HOME=/root
+OLDPWD=/home
+NO_PROXY=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+https_proxy=http://test:test@proxysg.huawei.com:8080/
+http_proxy=http://test:test@proxysg.huawei.com:8080/
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+GIT_SSL_NO_VERIFY=true
+LANG=C.UTF-8
+DEBIAN_FRONTEND=noninteractive
+LC_ALL=C.UTF-8
+PWD=/tmp/tmp.vUhri0QGYy/abcert_install
+HTTP_PROXY=http://test:test@proxysg.huawei.com:8080/
+================env=====================
+#!/bin/bash
+# set -e
+
+cd /home/zstd
+git ls-files --others --exclude-standard | xargs -I {} mv {} {}.bak
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make -j8
+make -j8 test
+
+=========================================
+make[1]: Entering directory '/home/zstd/programs'
+make[1]: Entering directory '/home/zstd/lib'
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/debug.o common/debug.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/entropy_common.o common/entropy_common.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/error_private.o common/error_private.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/fse_decompress.o common/fse_decompress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/pool.o common/pool.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/threading.o common/threading.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/xxhash.o common/xxhash.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o common/zstd_common.o common/zstd_common.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/fse_compress.o compress/fse_compress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/hist.o compress/hist.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/huf_compress.o compress/huf_compress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_compress.o compress/zstd_compress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_compress_literals.o compress/zstd_compress_literals.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o zstdcli.o zstdcli.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_compress_sequences.o compress/zstd_compress_sequences.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_double_fast.o compress/zstd_double_fast.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_fast.o compress/zstd_fast.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_lazy.o compress/zstd_lazy.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_ldm.o compress/zstd_ldm.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstd_opt.o compress/zstd_opt.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o compress/zstdmt_compress.o compress/zstdmt_compress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o decompress/huf_decompress.o decompress/huf_decompress.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o util.o util.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o timefn.o timefn.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o fileio.o fileio.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o decompress/zstd_ddict.o decompress/zstd_ddict.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o decompress/zstd_decompress.o decompress/zstd_decompress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o decompress/zstd_decompress_block.o decompress/zstd_decompress_block.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o deprecated/zbuff_common.o deprecated/zbuff_common.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o deprecated/zbuff_compress.o deprecated/zbuff_compress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o deprecated/zbuff_decompress.o deprecated/zbuff_decompress.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o dictBuilder/cover.o dictBuilder/cover.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o benchfn.o benchfn.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o benchzstd.o benchzstd.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o dictBuilder/divsufsort.o dictBuilder/divsufsort.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o dictBuilder/fastcover.o dictBuilder/fastcover.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o dictBuilder/zdict.o dictBuilder/zdict.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o legacy/zstd_v05.o legacy/zstd_v05.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o datagen.o datagen.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o legacy/zstd_v06.o legacy/zstd_v06.c
+cc -O3 -DBACKTRACE_ENABLE=0  -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5  -c -o dibio.o dibio.c
+cc -O3   -I. -I./common -DXXH_NAMESPACE=ZSTD_ -I./legacy -DZSTD_LEGACY_SUPPORT=5  -c -o legacy/zstd_v07.o legacy/zstd_v07.c
+compiling dynamic library 1.4.3
+==> building with threading support
+==> building zstd with .gz compression support
+==> no liblzma, building zstd without .xz/.lzma support
+==> no liblz4, building zstd without .lz4 support
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -DZSTD_MULTITHREAD -DZSTD_GZCOMPRESS -DZSTD_GZDECOMPRESS   -DZSTD_LEGACY_SUPPORT=5 -O3 -DBACKTRACE_ENABLE=0  -pthread -lz    ../lib/common/debug.c ../lib/common/entropy_common.c ../lib/common/error_private.c ../lib/common/fse_decompress.c ../lib/common/pool.c ../lib/common/threading.c ../lib/common/xxhash.c ../lib/common/zstd_common.c ../lib/compress/fse_compress.c ../lib/compress/hist.c ../lib/compress/huf_compress.c ../lib/compress/zstd_compress.c ../lib/compress/zstd_compress_literals.c ../lib/compress/zstd_compress_sequences.c ../lib/compress/zstd_double_fast.c ../lib/compress/zstd_fast.c ../lib/compress/zstd_lazy.c ../lib/compress/zstd_ldm.c ../lib/compress/zstd_opt.c ../lib/compress/zstdmt_compress.c ../lib/decompress/huf_decompress.c ../lib/decompress/zstd_ddict.c ../lib/decompress/zstd_decompress.c ../lib/decompress/zstd_decompress_block.c ../lib/dictBuilder/cover.c ../lib/dictBuilder/divsufsort.c ../lib/dictBuilder/fastcover.c ../lib/dictBuilder/zdict.c ../lib/legacy/zstd_v05.c ../lib/legacy/zstd_v06.c ../lib/legacy/zstd_v07.c zstdcli.o util.o timefn.o fileio.o benchfn.o benchzstd.o datagen.o dibio.o  -o zstd -pthread -lz   
+compiling static library
+creating versioned links
+make[1]: Leaving directory '/home/zstd/lib'
+make[1]: Leaving directory '/home/zstd/programs'
+cp programs/zstd .
+MOREFLAGS="-g -DDEBUGLEVEL=1 -Werror" make -j -C programs allVariants
+make[1]: warning: -j0 forced in submake: resetting jobserver mode.
+make[1]: Entering directory '/home/zstd/programs'
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wpointer-arith -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -Wc++-compat -g -DDEBUGLEVEL=1 -Werror  -DZSTD_NOBENCH -DZSTD_NODICT -DZSTD_NODECOMPRESS ../lib/common/fse_decompress.c ../lib/common/entropy_common.c ../lib/common/pool.c ../lib/common/error_private.c ../lib/common/xxhash.c ../lib/common/debug.c ../lib/common/threading.c ../lib/common/zstd_common.c ../lib/compress/zstd_double_fast.c ../lib/compress/zstd_lazy.c ../lib/compress/zstd_fast.c ../lib/compress/zstd_ldm.c ../lib/compress/hist.c ../lib/compress/zstd_compress.c ../lib/compress/fse_compress.c ../lib/compress/zstd_compress_literals.c ../lib/compress/zstd_compress_sequences.c ../lib/compress/huf_compress.c ../lib/compress/zstdmt_compress.c ../lib/compress/zstd_opt.c zstdcli.c util.c timefn.c fileio.c -o zstd-compress
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wpointer-arith -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -Wc++-compat -g -DDEBUGLEVEL=1 -Werror  -DZSTD_NOBENCH -DZSTD_NODICT -DZSTD_NOCOMPRESS ../lib/common/fse_decompress.c ../lib/common/entropy_common.c ../lib/common/pool.c ../lib/common/error_private.c ../lib/common/xxhash.c ../lib/common/debug.c ../lib/common/threading.c ../lib/common/zstd_common.c ../lib/decompress/zstd_decompress.c ../lib/decompress/huf_decompress.c ../lib/decompress/zstd_decompress_block.c ../lib/decompress/zstd_ddict.c zstdcli.c util.c timefn.c fileio.c -o zstd-decompress
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -Os -s  -DZSTD_NOBENCH -DZSTD_NODICT ../lib/decompress/zstd_decompress.c ../lib/decompress/huf_decompress.c ../lib/decompress/zstd_decompress_block.c ../lib/decompress/zstd_ddict.c ../lib/common/fse_decompress.c ../lib/common/entropy_common.c ../lib/common/pool.c ../lib/common/error_private.c ../lib/common/xxhash.c ../lib/common/debug.c ../lib/common/threading.c ../lib/common/zstd_common.c ../lib/compress/zstd_double_fast.c ../lib/compress/zstd_lazy.c ../lib/compress/zstd_fast.c ../lib/compress/zstd_ldm.c ../lib/compress/hist.c ../lib/compress/zstd_compress.c ../lib/compress/fse_compress.c ../lib/compress/zstd_compress_literals.c ../lib/compress/zstd_compress_sequences.c ../lib/compress/huf_compress.c ../lib/compress/zstdmt_compress.c ../lib/compress/zstd_opt.c zstdcli.c util.c timefn.c fileio.c -o zstd-small
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -DXXH_NAMESPACE=ZSTD_ -I../lib/legacy -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wpointer-arith -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -Wc++-compat -g -DDEBUGLEVEL=1 -Werror  ../lib/decompress/zstd_decompress.c ../lib/decompress/huf_decompress.c ../lib/decompress/zstd_decompress_block.c ../lib/decompress/zstd_ddict.c ../lib/common/fse_decompress.c ../lib/common/entropy_common.c ../lib/common/pool.c ../lib/common/error_private.c ../lib/common/xxhash.c ../lib/common/debug.c ../lib/common/threading.c ../lib/common/zstd_common.c ../lib/compress/zstd_double_fast.c ../lib/compress/zstd_lazy.c ../lib/compress/zstd_fast.c ../lib/compress/zstd_ldm.c ../lib/compress/hist.c ../lib/compress/zstd_compress.c ../lib/compress/fse_compress.c ../lib/compress/zstd_compress_literals.c ../lib/compress/zstd_compress_sequences.c ../lib/compress/huf_compress.c ../lib/compress/zstdmt_compress.c ../lib/compress/zstd_opt.c ../lib/dictBuilder/divsufsort.c ../lib/dictBuilder/zdict.c ../lib/dictBuilder/cover.c ../lib/dictBuilder/fastcover.c zstdcli.o util.o fileio.c benchfn.o benchzstd.o timefn.o datagen.o dibio.o -o zstd-nolegacy 
+make[1]: Leaving directory '/home/zstd/programs'
+make -C tests test
+make[1]: Entering directory '/home/zstd/tests'
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1   ../programs/datagen.c datagencli.c -o datagen
+make -C ../programs zstd MOREFLAGS+="-g -DDEBUGLEVEL=1"
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -DNDEBUG    -pthread ../programs/datagen.c ../programs/util.c ../programs/timefn.c ../programs/benchfn.c fullbench.c ../lib/decompress/zstd_decompress.c ../lib/decompress/huf_decompress.c ../lib/decompress/zstd_decompress_block.c ../lib/decompress/zstd_ddict.c ../lib/common/fse_decompress.c ../lib/common/entropy_common.c ../lib/common/pool.c ../lib/common/error_private.c ../lib/common/xxhash.c ../lib/common/debug.c ../lib/common/threading.c ../lib/common/zstd_common.c ../lib/compress/zstd_double_fast.c ../lib/compress/zstd_lazy.c ../lib/compress/zstd_fast.c ../lib/compress/zstd_ldm.c ../lib/compress/hist.c ../lib/compress/zstd_compress.c ../lib/compress/fse_compress.c ../lib/compress/zstd_compress_literals.c ../lib/compress/zstd_compress_sequences.c ../lib/compress/huf_compress.c ../lib/compress/zstdmt_compress.c ../lib/compress/zstd_opt.c -o fullbench
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/zstd_decompress.c -o zstdmt_d_zstd_decompress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/huf_decompress.c -o zstdmt_d_huf_decompress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/zstd_decompress_block.c -o zstdmt_d_zstd_decompress_block.o
+make[2]: Entering directory '/home/zstd/programs'
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/zstd_ddict.c -o zstdmt_d_zstd_ddict.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/fse_decompress.c -o zstdmt_m_fse_decompress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/entropy_common.c -o zstdmt_m_entropy_common.o
+make[2]: 'zstd' is up to date.
+make[2]: Leaving directory '/home/zstd/programs'
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/pool.c -o zstdmt_m_pool.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/error_private.c -o zstdmt_m_error_private.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/xxhash.c -o zstdmt_m_xxhash.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/debug.c -o zstdmt_m_debug.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/threading.c -o zstdmt_m_threading.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/zstd_common.c -o zstdmt_m_zstd_common.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_double_fast.c -o zstdmt_c_zstd_double_fast.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_lazy.c -o zstdmt_c_zstd_lazy.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_fast.c -o zstdmt_c_zstd_fast.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_ldm.c -o zstdmt_c_zstd_ldm.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/hist.c -o zstdmt_c_hist.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_compress.c -o zstdmt_c_zstd_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/fse_compress.c -o zstdmt_c_fse_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_compress_literals.c -o zstdmt_c_zstd_compress_literals.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_compress_sequences.c -o zstdmt_c_zstd_compress_sequences.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/huf_compress.c -o zstdmt_c_huf_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstdmt_compress.c -o zstdmt_c_zstdmt_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_opt.c -o zstdmt_c_zstd_opt.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/zstd_decompress.c -o zstdd_zstd_decompress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/huf_decompress.c -o zstdd_huf_decompress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/zstd_decompress_block.c -o zstdd_zstd_decompress_block.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/decompress/zstd_ddict.c -o zstdd_zstd_ddict.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/fse_decompress.c -o zstdm_fse_decompress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/entropy_common.c -o zstdm_entropy_common.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/pool.c -o zstdm_pool.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/error_private.c -o zstdm_error_private.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/xxhash.c -o zstdm_xxhash.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/debug.c -o zstdm_debug.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/threading.c -o zstdm_threading.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/common/zstd_common.c -o zstdm_zstd_common.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_double_fast.c -o zstdc_zstd_double_fast.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_lazy.c -o zstdc_zstd_lazy.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_fast.c -o zstdc_zstd_fast.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_ldm.c -o zstdc_zstd_ldm.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/hist.c -o zstdc_hist.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_compress.c -o zstdc_zstd_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/fse_compress.c -o zstdc_fse_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_compress_literals.c -o zstdc_zstd_compress_literals.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_compress_sequences.c -o zstdc_zstd_compress_sequences.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/huf_compress.c -o zstdc_huf_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstdmt_compress.c -o zstdc_zstdmt_compress.o
+cc -c -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  ../lib/compress/zstd_opt.c -o zstdc_zstd_opt.o
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -I../lib/legacy -DZSTD_LEGACY_SUPPORT=4 -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1   ../lib/decompress/zstd_decompress.c ../lib/decompress/huf_decompress.c ../lib/decompress/zstd_decompress_block.c ../lib/decompress/zstd_ddict.c ../lib/common/fse_decompress.c ../lib/common/entropy_common.c ../lib/common/pool.c ../lib/common/error_private.c ../lib/common/xxhash.c ../lib/common/debug.c ../lib/common/threading.c ../lib/common/zstd_common.c ../lib/compress/zstd_double_fast.c ../lib/compress/zstd_lazy.c ../lib/compress/zstd_fast.c ../lib/compress/zstd_ldm.c ../lib/compress/hist.c ../lib/compress/zstd_compress.c ../lib/compress/fse_compress.c ../lib/compress/zstd_compress_literals.c ../lib/compress/zstd_compress_sequences.c ../lib/compress/huf_compress.c ../lib/compress/zstdmt_compress.c ../lib/compress/zstd_opt.c ../lib/legacy/zstd_v05.c ../lib/legacy/zstd_v04.c ../lib/legacy/zstd_v07.c ../lib/legacy/zstd_v03.c ../lib/legacy/zstd_v01.c ../lib/legacy/zstd_v06.c ../lib/legacy/zstd_v02.c legacy.c -o legacy
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1   -DZSTD_MULTITHREAD -pthread ../programs/util.c ../programs/timefn.c poolTests.c ../lib/common/pool.c ../lib/common/threading.c ../lib/common/zstd_common.c ../lib/common/error_private.c -o poolTests
+file ../programs/zstd
+../programs/zstd: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=e0425c049b1032f79b2f5e50bfe6074dd160e873, for GNU/Linux 3.2.0, not stripped
+ZSTD=" ../programs/zstd" ./playTests.sh --test-large-data
+
+Starting playTests.sh isWindows=false ZSTD=' ../programs/zstd'
+
+===>  simple tests 
+
+test : basic compression 
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+test : basic decompression
+tmp.zst              : 0 MB...                                                                                    tmp.zst             : 65537 bytes 
+test : too large compression level => auto-fix
+Warning : compression level higher than max, reduced to 19 
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 31.54%   ( 65537 =>  20669 bytes, tmp.zst) 
+error: numeric value too large 
+test : --fast aka negative compression levels
+Read : 0 / 0 MB ==> 56%                                                                                tmp                  : 55.93%   ( 65537 =>  36656 bytes, tmp.zst) 
+Read : 0 / 0 MB ==> 56%                                                                                tmp                  : 56.31%   ( 65537 =>  36902 bytes, tmp.zst) 
+Read : 0 / 0 MB ==> 100%                                                                                tmp                  :100.02%   ( 65537 =>  65551 bytes, tmp.zst) 
+error: numeric value too large 
+Incorrect parameters
+Usage : 
+      zstd [args] [FILE(s)] [-o file] 
+
+FILE    : a filename 
+          with no FILE, or when FILE is - , read standard input
+Arguments : 
+ -#     : # compression level (1-19, default: 3) 
+ -d     : decompression 
+ -D file: use `file` as Dictionary 
+ -o file: result stored into `file` (only if 1 input file) 
+ -f     : overwrite output without prompting and (de)compress links 
+--rm    : remove source file(s) after successful de/compression 
+ -k     : preserve source file(s) (default) 
+ -h/-H  : display help/long help and exit 
+test : too large numeric argument
+error: numeric value too large 
+test : set compression level with environment variable ZSTD_CLEVEL
+Read : 0 / 0 MB ==> 33%                                                                                tmp                  : 33.15%   ( 65537 =>  21726 bytes, tmp.zst) 
+Read : 0 / 0 MB ==> 62%                                                                                tmp                  : 61.55%   ( 65537 =>  40341 bytes, tmp.zst) 
+Read : 0 / 0 MB ==> 33%                                                                                tmp                  : 33.15%   ( 65537 =>  21726 bytes, tmp.zst) 
+Ignore environment variable setting ZSTD_CLEVEL=: not a valid integer value
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+Ignore environment variable setting ZSTD_CLEVEL=-: not a valid integer value
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+Ignore environment variable setting ZSTD_CLEVEL=a: not a valid integer value
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+Ignore environment variable setting ZSTD_CLEVEL=+a: not a valid integer value
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+Ignore environment variable setting ZSTD_CLEVEL=3a7: not a valid integer value
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+Ignore environment variable setting ZSTD_CLEVEL=50000000000: numeric value too large
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+test : override ZSTD_CLEVEL with command line option
+Read : 0 / 0 MB ==> 56%                                                                                tmp                  : 56.31%   ( 65537 =>  36902 bytes, tmp.zst) 
+test : compress to stdout
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, /*stdout*\) 
+test : compress to named file
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmpCompressed) 
+test : -o must be followed by filename (must fail)
+error : command must be followed by argument 
+test : force write, correct order
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmpCompressed) 
+test : forgotten argument
+error : command must be followed by argument 
+test : implied stdout when input is stdin
+bob
+test : null-length file roundtrip
+-n 
+test : ensure small file doesn't add 3-bytes null block
+
+Read : 0 / 0 MB ==> 1000%                                                                                tmp1                 :1400.00%   (     1 =>     14 bytes, /*stdout*\) 
+14
+14
+test : decompress file with wrong suffix (must fail)
+zstd: tmpCompressed: unknown suffix -- ignored 
+zstd: tmp: unknown suffix -- ignored 
+test : decompress into stdout
+tmpCompressed        : 0 MB...                                                                                    tmpCompressed       : 65537 bytes 
+tmpCompressed        : 0 MB...                                                                                    tmpCompressed       : 65537 bytes 
+test : decompress from stdin into stdout
+test : impose memory limitation (must fail)
+tmp.zst : Decoding error (36) : Frame requires too much memory for decoding 
+tmp.zst : Window size larger than maximum : 65537 > 2048
+tmp.zst : Use --long=17 or --memory=1MB
+tmp.zst : Decoding error (36) : Frame requires too much memory for decoding 
+tmp.zst : Window size larger than maximum : 65537 > 2048
+tmp.zst : Use --long=17 or --memory=1MB
+tmp.zst : Decoding error (36) : Frame requires too much memory for decoding 
+tmp.zst : Window size larger than maximum : 65537 > 2048
+tmp.zst : Use --long=17 or --memory=1MB
+tmp.zst : Decoding error (36) : Frame requires too much memory for decoding 
+tmp.zst : Window size larger than maximum : 65537 > 2048
+tmp.zst : Use --long=17 or --memory=1MB
+test : overwrite protection
+zstd: tmp.zst already exists; not overwritten  
+test : force overwrite
+test : overwrite readonly file
+zstd: tmpro.zst already exists; not overwritten  
+test: --no-progress flag
+                                                                               tmpro                :425.00%   (     4 =>     17 bytes, /*stdout*\) 
+                                                                               /*stdin*\           : 4 bytes 
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+                                                                               tmpro                :425.00%   (     4 =>     17 bytes, /*stdout*\) 
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+                                                                               /*stdin*\           : 4 bytes 
+test: overwrite input file (must fail)
+zstd: Refusing to open an output file which will overwrite the input file 
+zstd: Refusing to open an output file which will overwrite the input file 
+test: detect that input file does not exist
+zstd: can't stat nothere : No such file or directory -- ignored 
+test: --[no-]compress-literals
+Read : 0 / 0 MB ==> 54%                                                                                tmp                  : 54.22%   ( 65537 =>  35532 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 65537 bytes 
+Read : 0 / 0 MB ==> 56%                                                                                tmp                  : 55.93%   ( 65537 =>  36656 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 65537 bytes 
+Read : 0 / 0 MB ==> 39%                                                                                tmp                  : 39.32%   ( 65537 =>  25772 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 65537 bytes 
+Read : 0 / 0 MB ==> 33%                                                                                tmp                  : 32.75%   ( 65537 =>  21461 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 65537 bytes 
+Read : 0 / 0 MB ==> 34%                                                                                tmp                  : 33.85%   ( 65537 =>  22183 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 65537 bytes 
+./poolTests
+Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 31.54%   ( 65537 =>  20669 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 65537 bytes 
+queueSize==0, numThreads=1 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==1, numThreads=1 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==2, numThreads=1 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==0, numThreads=2 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==1, numThreads=2 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==2, numThreads=2 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==0, numThreads=3 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==1, numThreads=3 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==2, numThreads=3 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==0, numThreads=4 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==1, numThreads=4 
+SUCCESS: testOrder
+SUCCESS: testWait
+queueSize==2, numThreads=4 
+SUCCESS: testOrder
+SUCCESS: testWait
+SUCCESS: thread reduction effective 
+SUCCESS: all jobs in queue completed on early end 
+PASS: all POOL tests
+Loading tmp...                                                                              |-tmp               :     65537 -> |-tmp               :     65537 ->     22179 (2.955), 585.7 MB/s |-tmp               :     65537 ->     22179 (2.955), 585.7 MB/s ,1809.8 MB/s -1#
+Loading tmp...                                                                              |-tmp               :     65537 -> |-tmp               :     65537 ->     21294 (3.078), 199.9 MB/s |-tmp               :     65537 ->     21294 (3.078), 199.9 MB/s ,1829.2 MB/s  0#
+Loading tmp...                                                                              |-tmp               :     65537 -> |-tmp               :     65537 ->     21457 (3.054), 491.2 MB/s |-tmp               :     65537 ->     21457 (3.054), 491.2 MB/s ,1920.8 MB/s  1#
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  -pthread ../lib/dictBuilder/divsufsort.c ../lib/dictBuilder/zdict.c ../lib/dictBuilder/cover.c ../lib/dictBuilder/fastcover.c ../programs/util.c ../programs/timefn.c ../programs/datagen.c fuzzer.c zstdmt_d_zstd_decompress.o zstdmt_d_huf_decompress.o zstdmt_d_zstd_decompress_block.o zstdmt_d_zstd_ddict.o zstdmt_m_fse_decompress.o zstdmt_m_entropy_common.o zstdmt_m_pool.o zstdmt_m_error_private.o zstdmt_m_xxhash.o zstdmt_m_debug.o zstdmt_m_threading.o zstdmt_m_zstd_common.o zstdmt_c_zstd_double_fast.o zstdmt_c_zstd_lazy.o zstdmt_c_zstd_fast.o zstdmt_c_zstd_ldm.o zstdmt_c_hist.o zstdmt_c_zstd_compress.o zstdmt_c_fse_compress.o zstdmt_c_zstd_compress_literals.o zstdmt_c_zstd_compress_sequences.o zstdmt_c_huf_compress.o zstdmt_c_zstdmt_compress.o zstdmt_c_zstd_opt.o -o fuzzer
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -DZSTD_MULTITHREAD -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1  -pthread zstdmt_d_zstd_decompress.o zstdmt_d_huf_decompress.o zstdmt_d_zstd_decompress_block.o zstdmt_d_zstd_ddict.o zstdmt_m_fse_decompress.o zstdmt_m_entropy_common.o zstdmt_m_pool.o zstdmt_m_error_private.o zstdmt_m_xxhash.o zstdmt_m_debug.o zstdmt_m_threading.o zstdmt_m_zstd_common.o zstdmt_c_zstd_double_fast.o zstdmt_c_zstd_lazy.o zstdmt_c_zstd_fast.o zstdmt_c_zstd_ldm.o zstdmt_c_hist.o zstdmt_c_zstd_compress.o zstdmt_c_fse_compress.o zstdmt_c_zstd_compress_literals.o zstdmt_c_zstd_compress_sequences.o zstdmt_c_huf_compress.o zstdmt_c_zstdmt_compress.o zstdmt_c_zstd_opt.o ../lib/dictBuilder/divsufsort.c ../lib/dictBuilder/zdict.c ../lib/dictBuilder/cover.c ../lib/dictBuilder/fastcover.c ../programs/datagen.c ../programs/util.c ../programs/timefn.c seqgen.c zstreamtest.c -o zstreamtest
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1   zstdd_zstd_decompress.o zstdd_huf_decompress.o zstdd_zstd_decompress_block.o zstdd_zstd_ddict.o zstdm_fse_decompress.o zstdm_entropy_common.o zstdm_pool.o zstdm_error_private.o zstdm_xxhash.o zstdm_debug.o zstdm_threading.o zstdm_zstd_common.o zstdc_zstd_double_fast.o zstdc_zstd_lazy.o zstdc_zstd_fast.o zstdc_zstd_ldm.o zstdc_hist.o zstdc_zstd_compress.o zstdc_fse_compress.o zstdc_zstd_compress_literals.o zstdc_zstd_compress_sequences.o zstdc_huf_compress.o zstdc_zstdmt_compress.o zstdc_zstd_opt.o invalidDictionaries.c -o invalidDictionaries
+cc -I../lib -I../lib/common -I../lib/compress -I../lib/dictBuilder -I../lib/deprecated -I../programs -O3 -Wall -Wextra -Wcast-qual -Wcast-align -Wshadow -Wstrict-aliasing=1 -Wswitch-enum -Wdeclaration-after-statement -Wstrict-prototypes -Wundef -Wvla -Wformat=2 -Winit-self -Wfloat-equal -Wwrite-strings -Wredundant-decls -Wmissing-prototypes -g -DDEBUGLEVEL=1   zstdd_zstd_decompress.o zstdd_huf_decompress.o zstdd_zstd_decompress_block.o zstdd_zstd_ddict.o zstdm_fse_decompress.o zstdm_entropy_common.o zstdm_pool.o zstdm_error_private.o zstdm_xxhash.o zstdm_debug.o zstdm_threading.o zstdm_zstd_common.o zstdc_zstd_double_fast.o zstdc_zstd_lazy.o zstdc_zstd_fast.o zstdc_zstd_ldm.o zstdc_hist.o zstdc_fse_compress.o zstdc_zstd_compress_literals.o zstdc_zstd_compress_sequences.o zstdc_huf_compress.o zstdc_zstdmt_compress.o zstdc_zstd_opt.o ../lib/dictBuilder/divsufsort.c ../lib/dictBuilder/zdict.c ../lib/dictBuilder/cover.c ../lib/dictBuilder/fastcover.c ../programs/util.c ../programs/timefn.c decodecorpus.c -o decodecorpus -lm
+./invalidDictionaries
+Loading tmp...                                                                              |-tmp               :     65537 -> |-tmp               :     65537 ->     36652 (1.788), 589.4 MB/s |-tmp               :     65537 ->     36652 (1.788), 589.4 MB/s ,5726.9 MB/s  /-tmp               :     65537 ->     36652 (1.788), 589.4 MB/s ,5726.9 MB/s -1#
+Loading tmp...                                                                              |-tmp               :     65537 -> |-tmp               :     65537 ->     34517 (1.899), 209.6 MB/s |-tmp               :     65537 ->     34517 (1.899), 209.6 MB/s ,4294.2 MB/s  /-tmp               :     65537 ->     34517 (1.899), 221.4 MB/s 0#
+./fuzzer -v -T200s 
+Loading tmp...                                                                              |-tmp               :     65537 -> |-tmp               :     65537 ->     35528 (1.845), 662.8 MB/sStarting zstd tester (64-bits, 1.4.3)
+Seed = 9946
+test  0 : ZSTD_getErrorName : OK : No error detected 
+test  1 : ZSTD_getErrorName with wrong value : OK : No error detected 
+test  2 : min compression level : -131072 (OK) 
+test  3 : compress 5242880 bytes : OK (1652589 bytes : 31.52%)
+test  4 : size of cctx for level 1 : 573460 bytes 
+test  5 : decompress skippable frame -8 size : OK 
+test  6 : ZSTD_getFrameContentSize test : OK 
+test  7 : ZSTD_findDecompressedSize test : OK 
+test  8 : tight ZSTD_decompressBound test : OK 
+test  9 : ZSTD_decompressBound test with invalid srcSize : OK 
+test 10 : decompress 5242880 bytes : OK 
+test 11 : check decompressed result : OK 
+test 12 : decompress with null dict : OK 
+test 13 : decompress with null DDict : OK 
+test 14 : decompress with 1 missing byte : OK 
+test 15 : decompress with 1 too much byte : OK 
+test 16 : decompress too large input : OK 
+./zstreamtest -v -T90s 
+test 17 : ZSTD_decompressBound test with content size missing : Starting zstream tester (64-bits, 1.4.3)
+Seed = 9946
+OK 
+test 18 : check CCtx size after compressing empty input : OK 
+test 19 : decompress empty frame into NULL : OK 
+test 20 : re-use CCtx with expanding block size : OK 
+test 21 : re-using a CCtx should compress the same : OK 
+test 22 : btultra2 & 1st block : OK 
+test 23 : ZSTD_CCtx_getParameter() : OK 
+test 24 : overflow protection with large windowLog : creating dictionary for unit tests 
+OK 
+test 25 : size down context : OK 
+test 26 : create static CCtx for level 3 :OK 
+test 27 : init CCtx for level 3 : OK 
+test 28 : simple compression test with static CCtx : OK (1693061 bytes : 32.29%)
+test 29 : simple decompression test with static DCtx : OK 
+test 30 : check decompressed result : OK 
+test 31 : init CCtx for too large level (must fail) : OK 
+test 32 : init CCtx for small level 1 (should work again) : OK 
+test 33 : init CStream for small level 1 : OK 
+test 34 : init static CStream with dictionary (should fail) : OK 
+test 35 : init DStream (should fail) : OK 
+test 36 : Static negative levels : OK 
+test 37 : create ZSTDMT CCtx : OK 
+test 38 : compress 5242880 bytes with 2 threads : OK (1651893 bytes : 31.51%)
+test 39 : decompressed size test : OK 
+test 40 : decompress 5242880 bytes : OK 
+test 41 : check decompressed result : OK 
+test 42 : compress -T2 with checksum : OK (1653837 bytes : 31.54%)
+test 43 : decompress 5242880 bytes : OK 
+test 44 : compress -T2 with/without literals compression : OK 
+test 45 : Multithreaded ZSTD_compress2() with rsyncable : OK 
+test 46 : setting multithreaded parameters : OK 
+test 47 : compress multiple frames : test  1 : compress 10485760 bytes : OK (3309210 bytes)
+test  2 : skipframe + compress 10485760 bytes : OK 
+test 48 : get decompressed size of multiple frames : OK 
+test 49 : get tight decompressed bound of multiple frames : OK 
+test 50 : decompress multiple frames : OK 
+test 51 : check decompressed result : OK 
+test 52 : copy context too soon : OK 
+test 53 : load dictionary into context : OK 
+test 54 : compress with flat dictionary : OK (3465381 bytes : 33.05%)
+test  3 : estimate CStream size : OK (1568041 bytes) 
+test  4 : estimate CStream size using CCtxParams : OK 
+test  5 : check actual CStream size : OK (1568041 bytes) 
+test  6 : use bad compression parameters : init error : Parameter is out of bound 
+test  7 : decompress skippable frame : OK 
+test  8 : decompress 10485760 bytes : OK 
+test  9 : decompress again without init (re-use previous settings): OK (3087384 bytes : 58.89%)
+test 55 : frame built with flat dictionary should be decompressible : OK 
+test 10 : check decompressed result : OK 
+test 11 : estimate DStream size : OK (1104488 bytes) 
+test 12 : check actual DStream size : OK (1104488 bytes) 
+test 13 : decompress byte-by-byte : OK 
+test 56 : compress with duplicated context : OK (3087384 bytes : 58.89%)
+test 57 : frame built with duplicated context should be decompressible : OK 
+test 14 : check decompressed result : OK 
+test 15 : generate error when ZSTD_decompressStream() doesn't progress : OK 
+test 58 : decompress with DDict : OK 
+test 16 : compress_srcSize 10485760 bytes : OK (size of DDict : 27271) 
+test 59 : decompress with static DDict : OK (size of static DDict : 27271) 
+test 60 : check content size on duplicated context : OK 
+test 61 : flat-dictionary efficiency test : 
+OK (3465381 bytes : 33.05%)
+test 17 : too large srcSize : 10485759 bytes : OK (error detected : Src size is incorrect) 
+test 18 : too small srcSize : 10485759 bytes : OK (error detected : Src size is incorrect) 
+test 19 : wrong srcSize !contentSizeFlag : 10485759 bytes :  |-tmp               :     65537 ->     35528 (1.845), 662.8 MB/s ,6207.3 MB/s  1#
+test : file removal
+test 62 : dictBuilder on cyclic data : Read : 0 / 0 MB ==> 32%                                                                                tmp                  : 32.50%   ( 65537 =>  21298 bytes, tmp.zst) 
+tmp.zst              : 0 MB...                                                                                    tmp.zst             : 65537 bytes 
+test : should quietly not remove non-regular file
+OK (error detected : Src size is incorrect) 
+test 20 : context re-use : OK 
+test 21 : digested dictionary : OK, created dictionary of size 438 
+test 63 : dictBuilder : OK (6118469 bytes : 58.35%)
+test 22 : check CStream size : OK (214279 bytes) 
+test 23 : decompress 10485760 bytes with digested dictionary : OK 
+test 24 : maxWindowSize < frame requirement : OK (Dictionary mismatch)
+Read : 0 / 0 MB ==> 250%                                                                                tmp                  :316.67%   (     6 =>     19 bytes, /dev/zero) 
+Read : 0 / 0 MB ==> 250%                                                                                tmp                  :316.67%   (     6 =>     19 bytes, /dev/null) 
+test : --rm on stdin
+test 25 : dictionary source size and level : zstd: can't stat tmp : No such file or directory -- ignored 
+test : -d -f do not delete destination when source is not present
+zstd: can't stat tmp.zst : No such file or directory -- ignored 
+test : -f do not delete destination when source is not present
+zstd: can't stat tmp : No such file or directory -- ignored 
+test : compress multiple files
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 12 bytes 
+hello
+world
+zstd: tmpexists already exists; not overwritten  
+
+===>  Advanced compression parameters 
+Incorrect parameters
+Usage : 
+      zstd [args] [FILE(s)] [-o file] 
+
+FILE    : a filename 
+          with no FILE, or when FILE is - , read standard input
+Arguments : 
+ -#     : # compression level (1-19, default: 3) 
+ -d     : decompression 
+ -D file: use `file` as Dictionary 
+ -o file: result stored into `file` (only if 1 input file) 
+ -f     : overwrite output without prompting and (de)compress links 
+--rm    : remove source file(s) after successful de/compression 
+ -k     : preserve source file(s) (default) 
+ -h/-H  : display help/long help and exit 
+Incorrect parameters
+Usage : 
+      zstd [args] [FILE(s)] [-o file] 
+
+FILE    : a filename 
+          with no FILE, or when FILE is - , read standard input
+Arguments : 
+ -#     : # compression level (1-19, default: 3) 
+ -d     : decompression 
+ -D file: use `file` as Dictionary 
+ -o file: result stored into `file` (only if 1 input file) 
+ -f     : overwrite output without prompting and (de)compress links 
+--rm    : remove source file(s) after successful de/compression 
+ -k     : preserve source file(s) (default) 
+ -h/-H  : display help/long help and exit 
+Incorrect parameters
+Usage : 
+      zstd [args] [FILE(s)] [-o file] 
+
+FILE    : a filename 
+          with no FILE, or when FILE is - , read standard input
+Arguments : 
+ -#     : # compression level (1-19, default: 3) 
+ -d     : decompression 
+ -D file: use `file` as Dictionary 
+ -o file: result stored into `file` (only if 1 input file) 
+ -f     : overwrite output without prompting and (de)compress links 
+--rm    : remove source file(s) after successful de/compression 
+ -k     : preserve source file(s) (default) 
+ -h/-H  : display help/long help and exit 
+OK, created dictionary of size 16384 
+test 64 : Multithreaded COVER dictBuilder : zstd: error 11 : Parameter is out of bound 
+roundTripTest: ./datagen -g512K  |  ../programs/zstd -v |  ../programs/zstd -d
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+(L3) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 31.95%                                                                                /*stdin*\            : 32.62%   (524288 => 170998 bytes, /*stdout*\) 
+roundTripTest: ./datagen -g512K  |  ../programs/zstd -v --zstd=mml=3,tlen=48,strat=6 |  ../programs/zstd -d --zstd=mml=3,tlen=48,strat=6
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+(L3) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 33.43%                                                                                /*stdin*\            : 34.55%   (524288 => 181144 bytes, /*stdout*\) 
+roundTripTest: ./datagen -g512K  |  ../programs/zstd -v --zstd=strat=6,wlog=23,clog=23,hlog=22,slog=6 |  ../programs/zstd -d --zstd=strat=6,wlog=23,clog=23,hlog=22,slog=6
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+(L3) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 31.24%                                                                                /*stdin*\            : 32.42%   (524288 => 169989 bytes, /*stdout*\) 
+roundTripTest: ./datagen -g512K  |  ../programs/zstd -v --zstd=windowLog=23,chainLog=23,hashLog=22,searchLog=6,minMatch=3,targetLength=48,strategy=6 |  ../programs/zstd -d --zstd=windowLog=23,chainLog=23,hashLog=22,searchLog=6,minMatch=3,targetLength=48,strategy=6
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+(L3) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 33.06% OK, created dictionary of size 16384 
+test 65 : COVER dictBuilder with shrinkDict:                                                                                /*stdin*\            : 34.46%   (524288 => 180688 bytes, /*stdout*\) 
+roundTripTest: ./datagen -g512K  |  ../programs/zstd -v --single-thread --long --zstd=ldmHashLog=20,ldmMinMatch=64,ldmBucketSizeLog=1,ldmHashRateLog=7 |  ../programs/zstd -d --single-thread --long --zstd=ldmHashLog=20,ldmMinMatch=64,ldmBucketSizeLog=1,ldmHashRateLog=7
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+(L3) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 31.67%                                                                                /*stdin*\            : 32.36%   (524288 => 169658 bytes, /*stdout*\) 
+roundTripTest: ./datagen -g512K  |  ../programs/zstd -v --single-thread --long --zstd=lhlog=20,lmml=64,lblog=1,lhrlog=7 |  ../programs/zstd -d --single-thread --long --zstd=lhlog=20,lmml=64,lblog=1,lhrlog=7
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+(L3) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 31.67%                                                                                /*stdin*\            : 32.36%   (524288 => 169658 bytes, /*stdout*\) 
+OK, created dictionary of size 16384 
+test 66 : Multithreaded FASTCOVER dictBuilder : OK, created dictionary of size 16384 
+test 67 : FASTCOVER dictBuilder with shrinkDict: OK, created dictionary of size 16384 
+test 68 : check dictID : OK : 2146929252 
+test 69 : compress with dictionary : OK (1742195 bytes : 33.23%)
+test 70 : retrieve dictID from dictionary : OK 
+test 71 : retrieve dictID from frame : OK 
+test 72 : frame built with dictionary should be decompressible : OK 
+test 73 : estimate CDict size : OK : 76564 
+test 74 : compress with CDict (size : 76564) : OK (1651543 bytes : 31.50%)
+test 75 : retrieve dictID from frame : OK 
+test 76 : frame built with dictionary should be decompressible : OK 
+roundTripTest: ./datagen -g64K  |  ../programs/zstd -v19 --zstd=strat=9 |  ../programs/zstd -d19 --zstd=strat=9
+test 77 : compress with static CDict : 
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+(L19) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 31.53%                                                                                /*stdin*\            : 31.54%   ( 65536 =>  20669 bytes, /*stdout*\) 
+
+===>  Pass-Through mode 
+Hello world 1!
+Hello world 2!
+Hello world 3!
+
+===>  frame concatenation 
+Read : 0 / 0 MB ==> 229%                                                                                hello.tmp            :285.71%   (     7 =>     20 bytes, /*stdout*\) 
+Read : 0 / 0 MB ==> 229%                                                                                world.tmp            :285.71%   (     7 =>     20 bytes, /*stdout*\) 
+helloworld.zstd      : 0 MB...                                                                                    helloworld.zstd     : 14 bytes 
+hello 
+world!
+frame concatenation without checksum
+Read : 0 / 0 MB ==> 229%                                                                                hello.tmp            :228.57%   (     7 =>     16 bytes, /*stdout*\) 
+Read : 0 / 0 MB ==> 229%                                                                                world.tmp            :228.57%   (     7 =>     16 bytes, /*stdout*\) 
+helloworld.zstd      : 0 MB...                                                                                    helloworld.zstd     : 14 bytes 
+testing zstdcat symlink
+testing zcat symlink
+frame concatenation tests completed
+
+**** flush write error test **** 
+println foo |  ../programs/zstd > /dev/full
+zstd: /*stdout*\: No space left on device 
+println foo |  ../programs/zstd |  ../programs/zstd -d > /dev/full
+zstd: /*stdout*\: No space left on device 
+
+===>  symbolic link test 
+Warning : world.tmp is a symbolic link, ignoring
+Read : 0 / 0 MB ==> 175%                                                                                hello.tmp            :208.33%   (    12 =>     25 bytes, hello.tmp.zst) 
+Warning : world.tmp is a symbolic link, ignoring
+Warning : world.tmp is a symbolic link, ignoring
+Warning : world2.tmp is a symbolic link, ignoring
+
+===>  test sparse file support 
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+Read : 0 / 5 MB ==>  0%                                                                                tmpSparse            :  0.01%   (5242880 =>    543 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 5242880 bytes 
+Files tmpSparse and tmpSparseRegen are identical
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+./fullbench -i1
+Read : 0 / 5 MB ==>  0% *** Zstandard speed analyzer 1.4.3 64-bits, by Yann Collet (Jun 24 2026) ***
+                                                                               tmpSparse            :  0.01%   (5242880 =>    543 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 5242880 bytes 
+Files tmpSparse and tmpOutSparse are identical
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+Read : 0 / 5 MB ==>  0%                                                                                tmpSparse            :  0.01%   (5242880 =>    543 bytes, /*stdout*\) 
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 5242880 bytes 
+                                                                       Sample 10000000 bytes : 
+Files tmpSparse and tmpOutNoSparse are identical
+5120 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpSparse
+ 172 -rw------- 1 root root 5242880 Jun 24 01:08 tmpSparseRegen
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+
+/*stdin*\            : 0 MB...                                                                                    /*stdin*\           : 1200007 bytes 
+
+Files - and tmpSparseOdd are identical
+44 -rw-r--r-- 1 root root 1200007 Jun 24 01:08 tmpSparseOdd
+
+ Sparse Compatibility with Console :
+Hello World 1 !
+Hello World 2 !
+
+ Sparse Compatibility with Append :
+
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+(L3) Buffered :   0 MB - Consumed :   0 MB - Compressed :   0 MB => 0.02%                                                                                tmpSparse1M          :  0.01%   (1048576 =>    115 bytes, tmpSparseCompressed) 
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+tmpSparseCompressed  : 0 MB...                                                                                    tmpSparseCompressed : 1048576 bytes 
+*** zstd command line interface 64-bits v1.4.3, by Yann Collet ***
+tmpSparseCompressed  : 0 MB...                                                                                    tmpSparseCompressed : 1048576 bytes 
+5120 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpSparse
+1024 -rw-r--r-- 1 root root 1048576 Jun 24 01:08 tmpSparse1M
+2048 -rw-r--r-- 1 root root 2097152 Jun 24 01:08 tmpSparse2M
+   4 -rw-r--r-- 1 root root     115 Jun 24 01:08 tmpSparseCompressed
+  44 -rw-r--r-- 1 root root 1200007 Jun 24 01:08 tmpSparseOdd
+ 172 -rw------- 1 root root 5242880 Jun 24 01:08 tmpSparseRegen
+1036 -rw-r--r-- 1 root root 2097152 Jun 24 01:08 tmpSparseRegenerated
+
+===>  multiple files tests 
+compress tmp* : 
+  68 -rw-r--r-- 1 root root   65537 Jun 24 01:08 tmp1
+  24 -rw-r--r-- 1 root root   21666 Jun 24 01:08 tmp1.zst
+ 100 -rw-r--r-- 1 root root  102400 Jun 24 01:08 tmp2
+  36 -rw-r--r-- 1 root root   32834 Jun 24 01:08 tmp2.zst
+1024 -rw-r--r-- 1 root root 1048576 Jun 24 01:08 tmp3
+ 336 -rw-r--r-- 1 root root  343380 Jun 24 01:08 tmp3.zst
+5120 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutNoSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutNoSparse.zst
+ 172 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutSparse.zst
+decompress tmp* : 
+  68 -rw-r--r-- 1 root root   65537 Jun 24 01:08 tmp1
+  24 -rw-r--r-- 1 root root   21666 Jun 24 01:08 tmp1.zst
+ 100 -rw-r--r-- 1 root root  102400 Jun 24 01:08 tmp2
+  36 -rw-r--r-- 1 root root   32834 Jun 24 01:08 tmp2.zst
+1024 -rw-r--r-- 1 root root 1048576 Jun 24 01:08 tmp3
+ 336 -rw-r--r-- 1 root root  343380 Jun 24 01:08 tmp3.zst
+ 168 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutNoSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutNoSparse.zst
+ 168 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutSparse.zst
+compress tmp* into stdout > tmpall : 
+  68 -rw-r--r-- 1 root root   65537 Jun 24 01:08 tmp1
+  24 -rw-r--r-- 1 root root   21666 Jun 24 01:08 tmp1.zst
+ 100 -rw-r--r-- 1 root root  102400 Jun 24 01:08 tmp2
+  36 -rw-r--r-- 1 root root   32834 Jun 24 01:08 tmp2.zst
+1024 -rw-r--r-- 1 root root 1048576 Jun 24 01:08 tmp3
+ 336 -rw-r--r-- 1 root root  343380 Jun 24 01:08 tmp3.zst
+ 172 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutNoSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutNoSparse.zst
+ 172 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutSparse.zst
+ 392 -rw-r--r-- 1 root root  397880 Jun 24 01:08 tmpall
+decompress tmpall* into stdout > tmpdec : 
+  68 -rw-r--r-- 1 root root   65537 Jun 24 01:08 tmp1
+  24 -rw-r--r-- 1 root root   21666 Jun 24 01:08 tmp1.zst
+ 100 -rw-r--r-- 1 root root  102400 Jun 24 01:08 tmp2
+  36 -rw-r--r-- 1 root root   32834 Jun 24 01:08 tmp2.zst
+1024 -rw-r--r-- 1 root root 1048576 Jun 24 01:08 tmp3
+ 336 -rw-r--r-- 1 root root  343380 Jun 24 01:08 tmp3.zst
+ 172 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutNoSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutNoSparse.zst
+ 172 -rw-r--r-- 1 root root 5242880 Jun 24 01:08 tmpOutSparse
+   4 -rw-r--r-- 1 root root     543 Jun 24 01:08 tmpOutSparse.zst
+ 392 -rw-r--r-- 1 root root  397880 Jun 24 01:08 tmpall
+ 392 -rw-r--r-- 1 root root  397880 Jun 24 01:08 tmpall2
+2380 -rw-r--r-- 1 root root 2433026 Jun 24 01:08 tmpdec
+compress multiple files including a missing one (notHere) : 
+zstd: can't stat notHere : No such file or directory -- ignored 
+
+===>  stream-size mode
+
+test : basic file compression vs sized streaming compression
+Read : 0 / 0 MB ==> 22%                                                                                tmp                  : 21.86%   ( 11000 =>   2405 bytes, tmp.zst) 
+Incorrect parameters
+Usage : 
+      zstd [args] [FILE(s)] [-o file] 
+
+FILE    : a filename 
+          with no FILE, or when FILE is - , read standard input
+Arguments : 
+ -#     : # compression level (1-19, default: 3) 
+ -d     : decompression 
+ -D file: use `file` as Dictionary 
+ -o file: result stored into `file` (only if 1 input file) 
+ -f     : overwrite output without prompting and (de)compress links 
+--rm    : remove source file(s) after successful de/compression 
+ -k     : preserve source file(s) (default) 
+ -h/-H  : display help/long help and exit 
+test : sized streaming compression and decompression
+error : command must be followed by argument 
+make[1]: *** [Makefile:338: test-zstd] Error 1
+make[1]: *** Waiting for unfinished jobs....
+OK
+test 26 : ZSTD_decompressStream() with dictionary : OK 
+test 27 : ZSTD_resetDStream() with dictionary : OK 
+test 28 : ZSTD_decompressStream() with ddict : OK 
+test 29 : ZSTD_decompressDCtx() with prefix : OK 
+test 30 : ZSTD_initDStream*() with dictionary : OK 
+test 31 : ZSTD_initCStream_usingCDict_advanced with masked dictID : OK (3308401 bytes : 31.55%)
+test 32 : try retrieving dictID from frame : OK (not detected) 
+test 33 : decompress without dictionary : OK (Corrupted block detected)
+test 34 : compress with ZSTD_CCtx_refPrefix : OK (1889 bytes : 0.04%)
+test 78 : ZSTD_compress_usingCDict_advanced, no contentSize, no dictID : OK (1651539 bytes : 31.50%)
+test 79 : try retrieving contentSize from frame : OK (unknown)
+test 80 : frame built without dictID should be decompressible : OK 
+test 81 : ZSTD_compress_advanced, no dictID : OK (1686969 bytes : 32.18%)
+test 82 : frame built without dictID should be decompressible : OK 
+test 83 : dictionary containing only header should return error : OK 
+test 84 : Building cdict w/ ZSTD_dm_fullDict on a good dictionary : OK 
+test 85 : Building cdict w/ ZSTD_dm_fullDict on a rawContent (must fail) : OK 
+test 86 : Loading rawContent starting with dict header w/ ZSTD_dm_auto should fail : OK 
+test 87 : Loading rawContent starting with dict header w/ ZSTD_dm_rawContent should pass : OK 
+test 88 : ZSTD_CCtx_refCDict() then set parameters : OK 
+test 89 : Loading dictionary before setting parameters is the same as loading after : OK 
+test 90 : Loading a dictionary clears the prefix : OK 
+test 91 : Loading a dictionary clears the cdict : OK 
+test 92 : Loading a cdict clears the prefix : OK 
+test 93 : Loading a cdict clears the dictionary : OK 
+test 94 : Loading a prefix clears the dictionary : OK 
+test 95 : Loading a prefix clears the cdict : OK 
+test 96 : Loaded dictionary persists across reset session : OK 
+test 97 : Loaded dictionary is cleared after resetting parameters : OK (3383153 bytes : 32.26%)
+test 35 : decompress with ZSTD_DCtx_refPrefix : OK 
+test 98 : ZSTD_decompressDCtx() with dictionary : OK 
+test 99 : ZSTD_decompressDCtx() with ddict : OK 
+test100 : ZSTD_decompressDCtx() with prefix : OK 
+test101 : Dictionary with non-default repcodes : OK 
+test 36 : decompress without dictionary (should fail): OK (Corrupted block detected)
+test 37 : compress again with ZSTD_compressStream2 : OK (3389916 bytes : 32.33%)
+test 38 : decompress without dictionary (should work): OK 
+test 39 : ZSTD_initCStream_advanced with pledgedSrcSize=0 and dict : OK 
+test 40 : pledgedSrcSize == 0 behaves properly : OK 
+test 41 : compress 10485760 bytes with multiple threads : OK 
+test 42 : compress 8388608 bytes with multiple threads + dictionary : OK 
+test102 : ZDICT_trainFromBuffer_cover : OK 
+test 43 : decompress large frame created from multiple threads + dictionary : OK 
+test 44 : check dictionary FSE tables can represent every code : OK 
+test 45 : ZSTD_initCStream_srcSize sets requestedParams : OK 
+test 46 : ZSTD_initCStream_advanced sets requestedParams : OK 
+test 47 : wildcopy doesn't overwrite potential match data : OK 
+test 48 : decompress blocks with small sequences section : OK 
+test 49 : dictionary + uncompressible block + reusing tables checks offset table validity: OK 
+test 50 : dictionary + small blocks + reusing tables checks offset table validity: OK 
+     1/     1    OK, created dictionary of size 16384 
+test103 : check dictID : OK : 297824531 
+test104 : ZDICT_optimizeTrainFromBuffer_cover :  1#compress                     :   550.1 MB/s  ( 3154550)     27            31        OK, created dictionary of size 16384 
+test105 : check dictID : OK : 603460011 
+test106 : Check input length for magic number : OK 
+test107 : Check magic Number : OK 
+test108 : Content size verification : OK : Src size is incorrect 
+test109 : negative compression level : OK 
+test110 : parameters in order : OK (compress : 2621440 -> 810572 bytes)
+test111 : parameters disordered : OK (compress : 2621440 -> 810572 bytes)
+test112 : get dParameter bounds OK 
+test113 : wrong dParameter : OK 
+test114 : out of bound dParameter : OK 
+test115 : magic-less format test : OK (compress : 2621440 -> 843924 bytes)
+test116 : decompress normally (should fail) : OK : Unknown frame descriptor 
+test117 : decompress of magic-less frame : one-shot OK, streaming OK : regenerated 2621440 bytes 
+test118 : Block compression test : OK 
+test119 : Block decompression test : OK 
+test120 : Huge block streaming compression test :  1#compress                     :   550.3 MB/s  ( 3154550) 
+OK 
+test121 : Dictionary Block compression test : OK 
+test122 : Dictionary Block decompression test : OK 
+test123 : Block compression with CDict : OK 
+test124 : Long RLE test : OK 
+test125 : compress 100 zeroes : OK (17 bytes : 17.00%)
+test126 : decompress 100 zeroes : OK 
+test127 : growing nbSeq : OK 
+test128 : compress lots 3-bytes sequences : OK (67780 bytes : 51.74%)
+test129 : decompress lots 3-bytes sequence : OK 
+test130 : growing literals buffer : OK 
+test131 : incompressible data and ill suited dictionary : OK 
+test132 : frame compressed size of skippable frame : OK 
+test133 : testing ZSTD error code strings : OK 
+test134 : testing ZSTD dictionary sizes : OK 
+test135 : testing FSE_normalizeCount() PR#1255: OK 
+     1              43            76            12           2#decompress                   :  1737.3 MB/s  (10000000) 
+    36              91           151            41              59             163           224        11#compressContinue             :   554.4 MB/s  ( 3154550) 
+   266           280            61             285           302        12#compressContinue_extDict     :   535.7 MB/s  ( 3154887) 
+    68              77             332            95              99          13#decompressContinue           :  1739.3 MB/s  (10000000) 
+   109             115             124             333           134          31#decodeLiteralsBlock          :  3120.1 MB/s  (   37031) 
+   141             350           358        32#decodeSeqHeaders             : 70626.9 MB/s  (      73) 
+   151             363           381           154             396        41#compressStream               :   456.5 MB/s  ( 5273976) 
+   163          42#decompressStream             :  1728.6 MB/s  (10000000) 
+   164             185             194             211             403        43#compressStream_freshCCtx     :   519.8 MB/s  ( 5273976) 
+   215             225             230             233          51#compress_generic, continue   :   414.9 MB/s  ( 3154678) 
+   435           252             448           263             460           275             480           279          52#compress_generic, end        :   552.9 MB/s  ( 3154550) 
+   287             303             507           310             314             514           329             520           341          61#compress_generic, -T2, contin:   870.3 MB/s  ( 3153296) 
+   355             543           366             547           372             564           584        62#compress_generic, -T2, end   :  1035.6 MB/s  ( 3153944) 
+./fullbench -i1 -P0
+*** Zstandard speed analyzer 1.4.3 64-bits, by Yann Collet (Jun 24 2026) ***
+                                                                       Sample 10000000 bytes : 
+   379             609           383             618           392           1#compress                     :  1808.9 MB/s  (10000241) 
+   638           398             643           701         2#decompress                   : 15485.2 MB/s  (10000000) 
+   404             421             429             441             731           452          11#compressContinue             :  1792.9 MB/s  (10000241) 
+   740           804           460             470             813           482             831        12#compressContinue_extDict     :  1782.2 MB/s  (10000223) 
+13#decompressContinue           : 14594.5 MB/s  (10000000) 
+ZSTD_decodeLiteralsBlock : impossible to test on this sample (not compressible)
+ZSTD_decodeSeqHeaders : impossible to test on this sample (not compressible)
+   492             507             875           531          41#compressStream               :  3398.2 MB/s  (10000237) 
+   534             878           539             546             564          42#decompressStream             : 15728.5 MB/s  (10000000) 
+   884           576             612             623             904           624             908        43#compressStream_freshCCtx     :  3287.2 MB/s  (10000237) 
+   635             937           644             648             953           654             963           974        51#compress_generic, continue   :  1620.3 MB/s  (10000237) 
+   978           660             668             994           669             678          52#compress_generic, end        :  1776.5 MB/s  (10000241) 
+   686             692             996           717             731             998           742          61#compress_generic, -T2, contin:  2254.7 MB/s  (10000237) 
+   753             756             764          62#compress_generic, -T2, end   :  2411.9 MB/s  (10000241)    774             999          1000        62#compress_generic, -T2, end   :  2449.9 MB/s  (10000241) 
+   775            1005           776            1030           795             812             814             821            1036           835             839            1039           855             863            1040          1042           869             875            1073          1077           880            1081          1141           882             897            1166           914            1187           916            1194           922            1218           927             938            1241           947            1254           955             961            1266           966             971            1349           973             981            1374          1381           994            1411          1002            1427          1016            1023            1032            1447          1044            1054            1468          1473          1060            1063            1087            1097            1476          1102            1106            1519          1537          1570          1571          1118            1586          1128            1600          1610          1139            1625          1142            1632          1643          1163            1646          1184            1692          1185            1699          1194            1720          1203            1206            1210            1216            1228            1722          1236            1739          1244            1751          1247            1252            1254            1268            1275            1280            1283            1293            1300            1314            1323            1328            1332            1755          1334            1342            1784          1362            1794          1370            1384            1842          1399            1409            1422            1423            1864          1428            1913          1433            1441            1919          1445            1943          1449            1961          1970          1467            1478            1495            1501            1514            1527            1549            1552            1554            1560            1563            1571            1577            1590            1594            1612            1622            1633            1640            1648            1650            1657            1665            1668            1983          2029          1669            1678            1684            1698            1712            1725            2035          1727            1735            1746            1756            1769            1785            1792            1806            1809            1816            1821            2038          2066          2068          1826            1835            2084          1843            2089          2120          2129          1850            2138          1859            2149          1864            2161          1878            2168          2202          1888            2232          2241          1892            2265          1900            2293          1913            2305          1919            1926            1937            2329          1942            2330          1945            1947            2349          1965            1971            2363          1986            2370          1991            2428          1995            2436          2010            2448          2012            2019            2027            2028            2042            2475          2052            2056            2071            2487          2507          2509          2081            2565          2115            2588          2120            2139            2146            2159            2164            2184            2211            2225            2227            2228            2615          2235            2651          2246            2260            2652          2273            2664          2286            2668          2304            2309            2679          2310            2311            2314            2682          2319            2326            2330            2690          2335            2694          2344            2714          2352            2715          2739          2361            2748          2373            2756          2385            2395            2408            2412            2427          2778 fuzzer tests completed   
+./zstreamtest --mt -t1 -T90s 
+Starting zstream tester (64-bits, 1.4.3)
+Seed = 8911
+  2428               1/     1      2440              35             45           2457              89            118           2476             140           2488             161           2497            2515             173           2526             199           2531             213           2544             270           2569             323           2578             336           2587             384           2593             398            428           2607             464            483           2615             497            543           2619             564           2629             584            618           2630             625            642           2641             659           2648             678           2653             691           2661             705           2679             706            719           2692             740           2702             776           2710             800           2718             820            844            872           2726             877            894           2734             901            915           2741             933           2742            2755             934           2756            2767             939           2771             964           2773             981           2785             999           2789            2797            1005           2807            1006           1030           1054           2813            1089           2822            1106           1178           2834            1195           2839            1228           2850            1275           1304           2851            1341           2869            1402           2874            1429           2877            1437           2882            1483           2911            1506           2929            1551           2943            1570           2947            1577           2951            1586           2954            1620           1640           2961            1655           2980            1686           2985            1730           1755           1778           2987            1808           2994            1852           2997            1890           3001            1928           1962           3007            1987           3012            2033           2083           3016            2121           3025            2205           2223           3035            3054            2241           2273           3064            2291           3068            2316           3074            2361           2390           3080            2405           3097            2415           3109            2442           2459           3115            2469           2477           2492           3121            2532           3135            2539           3141            2552           2570           3147            2590           3166            2615           3168            2657           3180            2668           3191            2674           3197            2683           3213            2702           3216            2726           3218            3229            2743           3233            2762           3240            2775           3246            2799           3249            2817           3261            2835           3270            2842           3276            2874           3278            2916           2943           3298            3324            2959           2979           2985           3000           3031           3331            3065           3342            3076           3351            3359            3086           3124           3367            3146           3375            3195           3376            3222           3259           3389            3266           3391            3273           3414            3290           3419            3304           3312           3420            3334           3426            3344           3436            3441            3354           3363           3442            3379           3393           3456            3412           3469            3421           3441           3473            3462           3483            3522           3495            3528           3561           3503            3575           3524            3611           3535            3541            3639           3655           3543            3673           3552            3684           3554            3561            3704           3710           3564            3722           3572            3736           3751           3756           3763           3796           3828           3574            3844           3579            3874           3588            3886           3901           3605            3911           3619            3936           3954           3623            3969           3627            3980           3633            3652            3983           4031           3661            4063           3670            4081           3679            4097           4108           4129           3682            4135           3689            4157           4199           3703            4241           3718            4266           3721            4288           4301           3722            4327           4337           4362           3726            4405           3737            4421           3754            4457           4485           3759            4500           3762            4557           3783            4600           4624           3795            4654           4669           3802            4708           4734           3803            4781           3810            4809           3825            4842           4843           4859           3839            4885           4916           4939           3843            4953           3849            4973           3855            4987           3877            5020           3881            5074           5107           3891            5153           3916            5211           3917            5246           3933            5294           3946            5345           3953            5353           5368           3966            5373           3967            3982            5420           3988            5472           3990            5494           4005            5532           4017            5561           5574           5598           5634           5672           5740           4018            5768           4032            5784           4040            5790           5804           4059            4069            5829           4084            5877           4092            5922           4105            5954           4134            5969           4138            5986           4151            6018           6031           4154            6077           6093           6096           4159            4171            6118           6140           6154           4173            4192            6157           6167           4206            6187           4214            6192           6209           6233           6243           4224            6287           4230            6306           6320           4241            6330           4244            6340           4250            6349           4263            6371           6402           4276            6409           4283            6437           6460           4290            6505           6531           4291            6553           6583           4298            6656           4300            6695           6746           4304            6763           4324            6767           6794           4330            6804           4333            6855           6904           4340            6917           6949           6990           4346            7017           4354            7054           7071           4370            7111           4385            7143           7156           4398            7162           4412            7189           7223           4414            7270           4419            7303           4429            7311           4442            7380           4464            7396           4465            7433           7448           4471            7458           4486            7507           4493            7528           4504            7557           7597           4517            7624           7686           4521            7733           7742           4527            7799           4537            7813           7847           7864           7883           7895           4544            7926           7942           7951           8005           8025           4551            8047           4552            8063           4554            8092           4563            8118           8136           4565            8173           4581            8219           4602            8246           8273           4609            8313           8348           8372           4611            4616            8398           8423           4641            8465           4643            8499           8532           4645            8568           4653            8572           8574           4658            4668            8590           4672            8609           4688            8647           4701            8665           8701           8713           4708            8727           4715            8744           4723            8775           8786           4740            8813           4744            8832           8850           4752            8884           8895           8930           4764            8956           4768            8965           4783            8988           9014           9033           4793            9039           4802            9048           9058           9078           9087           9095           4806            9132           4816            9175           4824            9190           4825            9213           9246           9252           9290           4831            9300           4833            9326           4835            9349           4846            9356           4847            9367           4862            9382           4866            9391           4872            9395           4885            9400           4895            9405           4901            9437           4906            4907            4910            9445           9475           9478           4922            9490           4927            9494           9514           4935            4943            9520           4954            9535           4955            9567           4961            9572           4968            9577           9580           4981            9604           9617           4993            9640           9667           5003            9671           9689           9714           5004            9742           5012            5019            5022            9743           5033            9748           5043          9757 fuzzer tests completed   
+./zstreamtest --newapi -t1 -T90s 
+Starting zstream tester (64-bits, 1.4.3)
+Seed = 6426
+     1/     1        21            5045              42            5060            5069              81              85            5071             124             145            5073             169             198            5076             201            5096            5106             224             227            5107             232            5113             268            5124            5130             283             292            5146             293            5153            5154             308            5157             311            5163             321             343            5165             354             357            5167             383            5171            5179             395            5181            5182             400             402            5194             416            5208             460            5212             498            5216            5219            5235            5244            5250             505            5259             506            5263             514             545            5265            5275             561            5287            5302            5314             570            5318             617            5326             622             623             648            5327            5329            5338            5344            5351            5354            5356             664            5371             695             718            5374             726             752            5377             764            5401             792             796            5406            5428             799             817             821             850             874             891            5438             915            5443            5453             916            5456             923            5468             960             973            5474             986            5486             993            5495            1027            5507            1034            1047            5528            1052            5534            1061            5549            1076            5552            1081          5553 fuzzer tests completed   
+  1106            1127            1153            1219            1237            1245            1275            1360            1395            1400            1404            1416            1463            1469            1484            1487            1526            1571            1587            1615            1663            1685            1704            1735            1760            1770            1802            1838            1872            1898            1907            1967            1993            2017            2046            2051            2068            2100            2124            2129            2140            2186            2189            2193            2216            2230            2257            2258            2316            2354            2373            2403            2406            2411            2423            2461            2512            2531            2564            2578            2586            2626            2629            2667            2680            2702            2726            2736            2786            2815            2819            2820            2849            2870            2908            2928            2983            2996            3012            3021            3090            3110            3136            3158            3175            3177            3194            3195            3218            3253            3278            3294            3312            3333            3350            3363            3379            3393            3396            3423            3440            3446            3503            3537            3548            3556            3591            3620            3640            3693            3709            3714            3728            3737            3767            3778            3783            3805            3809            3815            3828            3839            3849            3850            3862            3887            3929            3983            3994            4034            4056            4078            4081            4097            4116            4119            4125            4138            4162            4180            4191            4207            4254            4266            4286            4306            4327            4355            4385            4398            4463            4472            4482            4483            4485            4516            4531            4562            4587            4605            4635            4657            4667            4675            4728            4732            4749            4780            4804            4841            4853            4867            4896            4950            4955            4963            4970            4990            5002            5022            5041            5077            5087            5096            5120            5132            5141            5155            5178            5204            5226            5245            5274            5285            5290            5310            5340            5352            5373            5404            5423            5458            5469            5495            5514            5516            5542            5571            5576            5606            5646            5703            5720            5731            5765            5777            5808            5825            5849            5880            5888            5896            5931            5953            5977            5978            5979            5980            6008            6056            6112            6147            6175            6188            6196            6198            6207            6212            6235            6249            6252            6266            6283            6290            6294            6296            6330            6337            6361            6376            6420            6437            6453            6497            6560            6587            6613            6615            6666            6700            6721            6757            6769            6779            6809            6822            6841            6848            6911            6929            6948            6959          6962 fuzzer tests completed   
+make[1]: Leaving directory '/home/zstd/tests'
+make: *** [Makefile:71: test] Error 2

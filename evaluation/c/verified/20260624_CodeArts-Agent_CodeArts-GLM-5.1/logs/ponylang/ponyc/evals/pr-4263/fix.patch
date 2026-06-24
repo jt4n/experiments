@@ -1,0 +1,33 @@
+diff --git a/src/libponyc/expr/call.c b/src/libponyc/expr/call.c
+index 6fac89e2..3464e3ae 100644
+--- a/src/libponyc/expr/call.c
++++ b/src/libponyc/expr/call.c
+@@ -219,7 +219,28 @@ bool check_auto_recover_newref(ast_t* dest_type, ast_t* ast)
+     newref = child;
+ 
+   ast_t* receiver_type = method_receiver_type(newref);
++  ast_t* upper = NULL;
++
++  if(ast_id(receiver_type) == TK_ARROW)
++  {
++    upper = viewpoint_upper(receiver_type);
++    if(upper == NULL)
++      return false;
++    receiver_type = upper;
++  }
++
++  if(ast_id(receiver_type) != TK_NOMINAL &&
++    ast_id(receiver_type) != TK_TYPEPARAMREF)
++  {
++    if(upper != NULL)
++      ast_free_unattached(upper);
++    return false;
++  }
++
+   token_id rcap = ast_id(cap_fetch(receiver_type));
++  if(upper != NULL)
++    ast_free_unattached(upper);
++
+   if (!(rcap == TK_REF || rcap == TK_BOX))
+     return false;
+ 

@@ -1,0 +1,24 @@
+diff --git a/src/libponyc/type/safeto.c b/src/libponyc/type/safeto.c
+index 8492b05..f77f9b8 100644
+--- a/src/libponyc/type/safeto.c
++++ b/src/libponyc/type/safeto.c
+@@ -45,6 +45,9 @@ static bool safe_field_write(token_id cap, ast_t* type)
+     case TK_TYPEPARAMREF:
+       return cap_safetowrite(cap, cap_single(type));
+ 
++    case TK_DONTCARETYPE:
++      return true;
++
+     default: {}
+   }
+ 
+@@ -128,6 +131,9 @@ bool safe_to_write(ast_t* ast, ast_t* type)
+ 
+ bool safe_to_autorecover(ast_t* receiver_type, ast_t* type)
+ {
++  if(ast_id(type) == TK_DONTCARETYPE)
++    return true;
++
+   switch(ast_id(receiver_type))
+   {
+     case TK_ISECTTYPE:

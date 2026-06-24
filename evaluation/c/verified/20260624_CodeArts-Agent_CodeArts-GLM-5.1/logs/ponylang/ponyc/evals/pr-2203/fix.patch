@@ -1,0 +1,17 @@
+diff --git a/src/libponyc/codegen/genbox.c b/src/libponyc/codegen/genbox.c
+index 6dfa6f2..cc2e08d 100644
+--- a/src/libponyc/codegen/genbox.c
++++ b/src/libponyc/codegen/genbox.c
+@@ -17,6 +17,12 @@ LLVMValueRef gen_box(compile_t* c, ast_t* type, LLVMValueRef value)
+   pony_assert(t != NULL);
+   compile_type_t* c_t = (compile_type_t*)t->c_type;
+ 
++  if(l_type == c_t->mem_type)
++  {
++    value = gen_assign_cast(c, c_t->primitive, value, t->ast_cap);
++    l_type = LLVMTypeOf(value);
++  }
++
+   if(l_type != c_t->primitive)
+     return NULL;
+ 

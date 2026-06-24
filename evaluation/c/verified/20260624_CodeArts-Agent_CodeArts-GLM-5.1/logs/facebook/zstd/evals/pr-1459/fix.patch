@@ -1,0 +1,70 @@
+diff --git a/programs/fileio.c b/programs/fileio.c
+index 5016294f..ba203134 100644
+--- a/programs/fileio.c
++++ b/programs/fileio.c
+@@ -1173,6 +1173,13 @@ FIO_compressFilename_srcFile(cRess_t ress,
+         return 1;
+     }
+ 
++    if (strcmp(srcFileName, stdinmark)
++      && strcmp(dstFileName, stdoutmark)
++      && UTIL_isSameFile(srcFileName, dstFileName)) {
++        DISPLAYLEVEL(1, "zstd: cannot compress %s into itself \n", srcFileName);
++        return 1;
++    }
++
+     ress.srcFile = FIO_openSrcFile(srcFileName);
+     if (ress.srcFile == NULL) return 1;   /* srcFile could not be opened */
+ 
+@@ -1938,6 +1945,13 @@ static int FIO_decompressSrcFile(dRess_t ress, const char* dstFileName, const ch
+         return 1;
+     }
+ 
++    if (strcmp(srcFileName, stdinmark)
++      && strcmp(dstFileName, stdoutmark)
++      && UTIL_isSameFile(srcFileName, dstFileName)) {
++        DISPLAYLEVEL(1, "zstd: cannot decompress %s into itself \n", srcFileName);
++        return 1;
++    }
++
+     srcFile = FIO_openSrcFile(srcFileName);
+     if (srcFile==NULL) return 1;
+     ress.srcBufferLoaded = 0;
+diff --git a/programs/util.c b/programs/util.c
+index 5c5e1960..c2f7a1c2 100644
+--- a/programs/util.c
++++ b/programs/util.c
+@@ -24,6 +24,21 @@ int UTIL_isRegularFile(const char* infilename)
+     return UTIL_getFileStat(infilename, &statbuf); /* Only need to know whether it is a regular file */
+ }
+ 
++int UTIL_isSameFile(const char* file1, const char* file2)
++{
++#if defined(_MSC_VER)
++    /* note: Visual does not support file ID */
++    return !strcmp(file1, file2);
++#else
++    stat_t file1Stat;
++    stat_t file2Stat;
++    return stat(file1, &file1Stat) == 0
++        && stat(file2, &file2Stat) == 0
++        && file1Stat.st_dev == file2Stat.st_dev
++        && file1Stat.st_ino == file2Stat.st_ino;
++#endif
++}
++
+ int UTIL_getFileStat(const char* infilename, stat_t *statbuf)
+ {
+     int r;
+diff --git a/programs/util.h b/programs/util.h
+index d61ff526..e306eadd 100644
+--- a/programs/util.h
++++ b/programs/util.h
+@@ -164,6 +164,7 @@ void UTIL_waitForNextTick(void);
+ 
+ 
+ int UTIL_isRegularFile(const char* infilename);
++int UTIL_isSameFile(const char* file1, const char* file2);
+ int UTIL_setFileStat(const char *filename, stat_t *statbuf);
+ U32 UTIL_isDirectory(const char* infilename);
+ int UTIL_getFileStat(const char* infilename, stat_t *statbuf);

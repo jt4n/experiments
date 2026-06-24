@@ -1,0 +1,89 @@
+diff --git a/src/libponyc/codegen/genmatch.c b/src/libponyc/codegen/genmatch.c
+index 8938e4f..ee0d325 100644
+--- a/src/libponyc/codegen/genmatch.c
++++ b/src/libponyc/codegen/genmatch.c
+@@ -605,6 +605,28 @@ static bool static_tuple(compile_t* c, LLVMValueRef value, ast_t* type,
+     case TK_TUPLETYPE:
+       return static_tuple_from_tuple(c, value, type, pattern, next_block);
+ 
++    case TK_NOMINAL:
++    {
++      ast_t* type_def = (ast_t*)ast_data(type);
++
++      if(ast_id(type_def) == TK_INTERFACE)
++      {
++        ast_t* type_members = ast_childidx(type_def, 4);
++        pony_assert(ast_id(type_members) == TK_MEMBERS);
++
++        if(ast_childcount(type_members) == 0)
++        {
++          LLVMValueRef desc = gendesc_fetch(c, value);
++          LLVMValueRef ptr = gendesc_ptr_to_fields(c, value, desc);
++          return dynamic_tuple_ptr(c, ptr, desc, pattern, next_block);
++        }
++      }
++
++      // Can't match.
++      LLVMBuildBr(c->builder, next_block);
++      return true;
++    }
++
+     case TK_ARROW:
+       return static_tuple(c, value, ast_childidx(type, 1), pattern,
+         next_block);
+diff --git a/src/libponyc/type/matchtype.c b/src/libponyc/type/matchtype.c
+index ac6077f..c3cd48b 100644
+--- a/src/libponyc/type/matchtype.c
++++ b/src/libponyc/type/matchtype.c
+@@ -177,6 +177,42 @@ static matchtype_t is_typeparam_match_x(ast_t* operand, ast_t* pattern,
+   return ok;
+ }
+ 
++static matchtype_t is_nominal_match_tuple(ast_t* operand, ast_t* pattern,
++  pass_opt_t* opt)
++{
++  ast_t* operand_def = (ast_t*)ast_data(operand);
++
++  if(ast_id(operand_def) == TK_INTERFACE)
++  {
++    ast_t* operand_members = ast_childidx(operand_def, 4);
++    pony_assert(ast_id(operand_members) == TK_MEMBERS);
++
++    if(ast_childcount(operand_members) == 0)
++    {
++      for(ast_t* child = ast_child(pattern);
++        child != NULL;
++        child = ast_sibling(child))
++      {
++        switch(is_x_match_x(operand, child, opt))
++        {
++          case MATCHTYPE_ACCEPT:
++            break;
++
++          case MATCHTYPE_REJECT:
++            return MATCHTYPE_REJECT;
++
++          case MATCHTYPE_DENY:
++            return MATCHTYPE_DENY;
++        }
++      }
++
++      return MATCHTYPE_ACCEPT;
++    }
++  }
++
++  return MATCHTYPE_REJECT;
++}
++
+ static matchtype_t is_x_match_tuple(ast_t* operand, ast_t* pattern,
+   pass_opt_t* opt)
+ {
+@@ -192,7 +228,7 @@ static matchtype_t is_x_match_tuple(ast_t* operand, ast_t* pattern,
+       return is_tuple_match_tuple(operand, pattern, opt);
+ 
+     case TK_NOMINAL:
+-      return MATCHTYPE_REJECT;
++      return is_nominal_match_tuple(operand, pattern, opt);
+ 
+     case TK_TYPEPARAMREF:
+       return is_typeparam_match_x(operand, pattern, opt);

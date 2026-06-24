@@ -1,0 +1,59 @@
+diff --git a/src/libponyc/expr/literal.c b/src/libponyc/expr/literal.c
+index 1c1c2c1..8dd9dab 100644
+--- a/src/libponyc/expr/literal.c
++++ b/src/libponyc/expr/literal.c
+@@ -267,24 +267,15 @@ static int uifset_formal_param(pass_opt_t* opt, ast_t* type_param_ref,
+   ast_t* constraint = ast_childidx(type_param, 1);
+   pony_assert(constraint != NULL);
+ 
+-  // If the constraint is not a subtype of (Real[A] & Number) then there are no
+-  // legal types in the set
+-  BUILD(typeargs, type_param,
+-    NODE(TK_TYPEARGS,
+-      NODE(TK_TYPEPARAMREF, DATA(type_param)
+-        ID(ast_name(ast_child(type_param))) NODE(TK_VAL) NONE)));
+-
++  // If the constraint is not a subtype of Number, there are no legal UIF
++  // types. We don't require the constraint to be a subtype of Real[A]
++  // because union constraints like Unsigned may not be subtypes of
++  // Real[A] but still allow valid UIF types.
+   ast_t* number = type_builtin(opt, type_param, "Number");
+-  ast_t* real = type_builtin_args(opt, type_param, "Real", typeargs);
+-  ast_setid(ast_childidx(real, 3), TK_BOX);
+-
+-  bool is_real = is_subtype(constraint, real, NULL, opt);
+   bool is_number = is_subtype(constraint, number, NULL, opt);
+   ast_free(number);
+-  ast_free(real);
+ 
+-  if(!is_real || !is_number)
+-    // The formal param is not a subset of (Real[A] & Number)
++  if(!is_number)
+     return UIF_NO_TYPES;
+ 
+   int uif_set = 0;
+@@ -303,7 +294,7 @@ static int uifset_formal_param(pass_opt_t* opt, ast_t* type_param_ref,
+     ast_free(params);
+   }
+ 
+-  if(uif_set == 0)  // No legal types
++  if(uif_set == 0)
+     return UIF_NO_TYPES;
+ 
+   // Given formal parameter is legal to coerce to
+@@ -838,8 +829,13 @@ bool coerce_literals(ast_t** astp, ast_t* target_type, pass_opt_t* opt)
+     ast_id(lit_type) != TK_OPERATORLITERAL)
+     return true;
+ 
+-  if(target_type == NULL && !unify(literal_expr, opt, true))
+-    return false;
++  if(target_type == NULL || is_type_literal(target_type))
++  {
++    if(!unify(literal_expr, opt, true))
++      return false;
++
++    return true;
++  }
+ 
+   lit_chain_t chain;
+   chain_init_head(&chain);

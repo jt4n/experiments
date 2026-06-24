@@ -1,0 +1,80 @@
+diff --git a/src/libponyc/codegen/gentype.c b/src/libponyc/codegen/gentype.c
+index db6a6da..df98bd7 100644
+--- a/src/libponyc/codegen/gentype.c
++++ b/src/libponyc/codegen/gentype.c
+@@ -481,7 +481,15 @@ static bool make_struct(compile_t* c, reach_type_t* t)
+     }
+   }
+ 
+-  LLVMStructSetBody(type, elements, t->field_count + extra, false);
++  bool packed = false;
++
++  if(t->underlying == TK_STRUCT)
++  {
++    ast_t* def = (ast_t*)ast_data(t->ast);
++    packed = ast_has_annotation(def, "packed");
++  }
++
++  LLVMStructSetBody(type, elements, t->field_count + extra, packed);
+   ponyint_pool_free_size(buf_size, elements);
+   return true;
+ }
+diff --git a/src/libponyc/pass/syntax.c b/src/libponyc/pass/syntax.c
+index 6247881..4e9e4ff 100644
+--- a/src/libponyc/pass/syntax.c
++++ b/src/libponyc/pass/syntax.c
+@@ -354,6 +354,13 @@ static ast_result_t syntax_entity(pass_opt_t* opt, ast_t* ast,
+   const permission_def_t* def = &_entity_def[entity_def_index];
+   AST_GET_CHILDREN(ast, id, typeparams, defcap, provides, members, c_api);
+ 
++  if(ast_has_annotation(ast, "packed") && entity_def_index != DEF_STRUCT)
++  {
++    ast_error(opt->check.errors, ast,
++      "packed annotation is only allowed on structs");
++    r = AST_ERROR;
++  }
++
+   // Check if we're called Main
+   if(def->permissions[ENTITY_MAIN] == 'N' && ast_name(id) == stringtab("Main"))
+   {
+diff --git a/test/libponyc/annotations.cc b/test/libponyc/annotations.cc
+index c34d15b..972d082 100644
+--- a/test/libponyc/annotations.cc
++++ b/test/libponyc/annotations.cc
+@@ -192,3 +192,36 @@ TEST_F(AnnotationsTest, AnnotateLambda)
+ 
+   ASSERT_TRUE(ast_has_annotation(ast, "a"));
+ }
++
++TEST_F(AnnotationsTest, PackedAnnotationOnStruct)
++{
++  const char* src =
++    "struct \\packed\\ S\n"
++    "  var x: U8 = 0";
++
++  TEST_COMPILE(src, "syntax");
++}
++
++TEST_F(AnnotationsTest, PackedAnnotationOnNonStructError)
++{
++  const char* src =
++    "class \\packed\\ C";
++
++  TEST_ERROR(src);
++}
++
++TEST_F(AnnotationsTest, PackedAnnotationOnPrimitiveError)
++{
++  const char* src =
++    "primitive \\packed\\ P";
++
++  TEST_ERROR(src);
++}
++
++TEST_F(AnnotationsTest, PackedAnnotationOnActorError)
++{
++  const char* src =
++    "actor \\packed\\ A";
++
++  TEST_ERROR(src);
++}

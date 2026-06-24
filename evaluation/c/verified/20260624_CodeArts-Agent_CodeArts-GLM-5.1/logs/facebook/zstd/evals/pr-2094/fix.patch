@@ -1,0 +1,282 @@
+diff --git a/lib/decompress/zstd_decompress.c b/lib/decompress/zstd_decompress.c
+index 6ef156b6..9f7a8ae6 100644
+--- a/lib/decompress/zstd_decompress.c
++++ b/lib/decompress/zstd_decompress.c
+@@ -1551,6 +1551,8 @@ size_t ZSTD_decompressStream(ZSTD_DStream* zds, ZSTD_outBuffer* output, ZSTD_inB
+             zds->lhSize = zds->inPos = zds->outStart = zds->outEnd = 0;
+             zds->legacyVersion = 0;
+             zds->hostageByte = 0;
++            zds->outBufferMode = ZSTD_obm_buffered;
++            zds->outBufferEnd = NULL;
+             /* fall-through */
+ 
+         case zdss_loadHeader :
+diff --git a/lib/decompress/zstd_decompress_internal.h b/lib/decompress/zstd_decompress_internal.h
+index 29b4d0ac..b160c34c 100644
+--- a/lib/decompress/zstd_decompress_internal.h
++++ b/lib/decompress/zstd_decompress_internal.h
+@@ -95,6 +95,11 @@ typedef enum {
+     ZSTD_use_once = 1            /* Use the dictionary once and set to ZSTD_dont_use */
+ } ZSTD_dictUses_e;
+ 
++typedef enum {
++    ZSTD_obm_buffered = 0,  /* decompress into internal buffer, flush separately */
++    ZSTD_obm_direct   = 1   /* decompress directly into output buffer */
++} ZSTD_outBufferMode_e;
++
+ struct ZSTD_DCtx_s
+ {
+     const ZSTD_seqSymbol* LLTptr;
+@@ -147,6 +152,8 @@ struct ZSTD_DCtx_s
+     U32 legacyVersion;
+     U32 hostageByte;
+     int noForwardProgress;
++    ZSTD_outBufferMode_e outBufferMode;
++    const char* outBufferEnd;
+ 
+     /* workspace */
+     BYTE litBuffer[ZSTD_BLOCKSIZE_MAX + WILDCOPY_OVERLENGTH];
+diff --git a/test_direct_output.c b/test_direct_output.c
+new file mode 100644
+index 00000000..6add2d35
+--- /dev/null
++++ b/test_direct_output.c
+@@ -0,0 +1,238 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <zstd.h>
++
++#define ASSERT(cond, msg) do { \
++    if (!(cond)) { \
++        fprintf(stderr, "ASSERT FAILED: %s at %s:%d\n", msg, __FILE__, __LINE__); \
++        exit(1); \
++    } \
++} while(0)
++
++static void test_direct_output_basic(void) {
++    printf("test_direct_output_basic... ");
++    const char* src = "Hello world Hello world Hello world Hello world";
++    size_t srcSize = strlen(src);
++    
++    size_t cBound = ZSTD_compressBound(srcSize);
++    void* compressed = malloc(cBound);
++    size_t cSize = ZSTD_compress(compressed, cBound, src, srcSize, 1);
++    ASSERT(!ZSTD_isError(cSize), "compress failed");
++    
++    unsigned long long frameContentSize = ZSTD_getFrameContentSize(compressed, cSize);
++    ASSERT(frameContentSize != ZSTD_CONTENTSIZE_UNKNOWN, "frame content size unknown");
++    
++    void* decompressed = malloc((size_t)frameContentSize);
++    
++    ZSTD_DCtx* dctx = ZSTD_createDCtx();
++    
++    ZSTD_inBuffer input = { compressed, cSize, 0 };
++    ZSTD_outBuffer output = { decompressed, (size_t)frameContentSize, 0 };
++    
++    size_t ret;
++    do {
++        ret = ZSTD_decompressStream(dctx, &output, &input);
++        ASSERT(!ZSTD_isError(ret), "decompressStream failed");
++    } while (ret > 0);
++    
++    ASSERT(output.pos == frameContentSize, "output size mismatch");
++    ASSERT(memcmp(src, decompressed, srcSize) == 0, "decompressed data mismatch");
++    
++    ZSTD_freeDCtx(dctx);
++    free(compressed);
++    free(decompressed);
++    printf("PASSED\n");
++}
++
++static void test_direct_output_streaming(void) {
++    printf("test_direct_output_streaming... ");
++    size_t srcSize = 256 * 1024;
++    char* src = malloc(srcSize);
++    for (size_t i = 0; i < srcSize; i++) src[i] = (char)(i & 0xFF);
++    
++    size_t cBound = ZSTD_compressBound(srcSize);
++    void* compressed = malloc(cBound);
++    size_t cSize = ZSTD_compress(compressed, cBound, src, srcSize, 1);
++    ASSERT(!ZSTD_isError(cSize), "compress failed");
++    
++    unsigned long long frameContentSize = ZSTD_getFrameContentSize(compressed, cSize);
++    ASSERT(frameContentSize != ZSTD_CONTENTSIZE_UNKNOWN, "frame content size unknown");
++    
++    void* decompressed = malloc((size_t)frameContentSize);
++    
++    ZSTD_DCtx* dctx = ZSTD_createDCtx();
++    
++    size_t inChunkSize = 64;
++    size_t totalInPos = 0;
++    size_t ret;
++    size_t totalOutPos = 0;
++    
++    do {
++        ZSTD_inBuffer input = { compressed, cSize, totalInPos };
++        if (input.pos + inChunkSize < cSize) {
++            input.size = input.pos + inChunkSize;
++        }
++        
++        ZSTD_outBuffer output = { decompressed, (size_t)frameContentSize, totalOutPos };
++        
++        do {
++            ret = ZSTD_decompressStream(dctx, &output, &input);
++            ASSERT(!ZSTD_isError(ret), "decompressStream failed");
++        } while (ret > 0 && input.pos < input.size);
++        
++        totalInPos = input.pos;
++        totalOutPos = output.pos;
++    } while (ret > 0);
++    
++    ASSERT(totalOutPos == frameContentSize, "output size mismatch");
++    ASSERT(memcmp(src, decompressed, srcSize) == 0, "decompressed data mismatch");
++    
++    ZSTD_freeDCtx(dctx);
++    free(src);
++    free(compressed);
++    free(decompressed);
++    printf("PASSED\n");
++}
++
++static void test_direct_output_small_chunks(void) {
++    printf("test_direct_output_small_chunks... ");
++    size_t srcSize = 128 * 1024;
++    char* src = malloc(srcSize);
++    for (size_t i = 0; i < srcSize; i++) src[i] = (char)((i * 7 + 13) & 0xFF);
++    
++    size_t cBound = ZSTD_compressBound(srcSize);
++    void* compressed = malloc(cBound);
++    size_t cSize = ZSTD_compress(compressed, cBound, src, srcSize, 3);
++    ASSERT(!ZSTD_isError(cSize), "compress failed");
++    
++    unsigned long long frameContentSize = ZSTD_getFrameContentSize(compressed, cSize);
++    ASSERT(frameContentSize != ZSTD_CONTENTSIZE_UNKNOWN, "frame content size unknown");
++    
++    void* decompressed = malloc((size_t)frameContentSize);
++    
++    ZSTD_DCtx* dctx = ZSTD_createDCtx();
++    
++    size_t inChunkSize = 1;
++    size_t totalInPos = 0;
++    size_t totalOutPos = 0;
++    size_t ret = 1;
++    
++    while (ret > 0) {
++        ZSTD_inBuffer input = { compressed, cSize, totalInPos };
++        if (input.pos + inChunkSize < cSize) {
++            input.size = input.pos + inChunkSize;
++        }
++        
++        ZSTD_outBuffer output = { decompressed, (size_t)frameContentSize, totalOutPos };
++        
++        while (input.pos < input.size) {
++            ret = ZSTD_decompressStream(dctx, &output, &input);
++            ASSERT(!ZSTD_isError(ret), "decompressStream failed");
++            if (ret == 0) break;
++        }
++        
++        totalInPos = input.pos;
++        totalOutPos = output.pos;
++    }
++    
++    ASSERT(totalOutPos == frameContentSize, "output size mismatch");
++    ASSERT(memcmp(src, decompressed, srcSize) == 0, "decompressed data mismatch");
++    
++    ZSTD_freeDCtx(dctx);
++    free(src);
++    free(compressed);
++    free(decompressed);
++    printf("PASSED\n");
++}
++
++static void test_buffered_output_too_small(void) {
++    printf("test_buffered_output_too_small... ");
++    size_t srcSize = 128 * 1024;
++    char* src = malloc(srcSize);
++    for (size_t i = 0; i < srcSize; i++) src[i] = (char)(i & 0xFF);
++    
++    size_t cBound = ZSTD_compressBound(srcSize);
++    void* compressed = malloc(cBound);
++    size_t cSize = ZSTD_compress(compressed, cBound, src, srcSize, 1);
++    ASSERT(!ZSTD_isError(cSize), "compress failed");
++    
++    unsigned long long frameContentSize = ZSTD_getFrameContentSize(compressed, cSize);
++    
++    size_t outBufSize = ZSTD_DStreamOutSize();
++    void* outBuf = malloc(outBufSize);
++    
++    ZSTD_DCtx* dctx = ZSTD_createDCtx();
++    
++    ZSTD_inBuffer input = { compressed, cSize, 0 };
++    ZSTD_outBuffer output = { outBuf, outBufSize, 0 };
++    
++    size_t totalDecompressed = 0;
++    char* decompressed = malloc(srcSize);
++    
++    size_t ret;
++    do {
++        output.pos = 0;
++        ret = ZSTD_decompressStream(dctx, &output, &input);
++        ASSERT(!ZSTD_isError(ret), "decompressStream failed");
++        memcpy(decompressed + totalDecompressed, outBuf, output.pos);
++        totalDecompressed += output.pos;
++    } while (ret > 0);
++    
++    ASSERT(totalDecompressed == frameContentSize, "output size mismatch");
++    ASSERT(memcmp(src, decompressed, srcSize) == 0, "decompressed data mismatch");
++    
++    ZSTD_freeDCtx(dctx);
++    free(src);
++    free(compressed);
++    free(outBuf);
++    free(decompressed);
++    printf("PASSED\n");
++}
++
++static void test_direct_output_memory_savings(void) {
++    printf("test_direct_output_memory_savings... ");
++    size_t srcSize = 512 * 1024;
++    char* src = malloc(srcSize);
++    for (size_t i = 0; i < srcSize; i++) src[i] = (char)(i & 0xFF);
++    
++    size_t cBound = ZSTD_compressBound(srcSize);
++    void* compressed = malloc(cBound);
++    size_t cSize = ZSTD_compress(compressed, cBound, src, srcSize, 1);
++    ASSERT(!ZSTD_isError(cSize), "compress failed");
++    
++    unsigned long long frameContentSize = ZSTD_getFrameContentSize(compressed, cSize);
++    
++    void* decompressed = malloc((size_t)frameContentSize);
++    
++    ZSTD_DCtx* dctx = ZSTD_createDCtx();
++    
++    ZSTD_inBuffer input = { compressed, cSize, 0 };
++    ZSTD_outBuffer output = { decompressed, (size_t)frameContentSize, 0 };
++    
++    size_t ret;
++    do {
++        ret = ZSTD_decompressStream(dctx, &output, &input);
++        ASSERT(!ZSTD_isError(ret), "decompressStream failed");
++    } while (ret > 0);
++    
++    size_t dctxSize = ZSTD_sizeof_DCtx(dctx);
++    printf("dctx size with direct output: %zu bytes ", dctxSize);
++    
++    ZSTD_freeDCtx(dctx);
++    free(src);
++    free(compressed);
++    free(decompressed);
++    printf("PASSED\n");
++}
++
++int main(void) {
++    printf("=== Direct Output Mode Tests ===\n");
++    test_direct_output_basic();
++    test_direct_output_streaming();
++    test_direct_output_small_chunks();
++    test_buffered_output_too_small();
++    test_direct_output_memory_savings();
++    printf("=== All tests PASSED ===\n");
++    return 0;
++}

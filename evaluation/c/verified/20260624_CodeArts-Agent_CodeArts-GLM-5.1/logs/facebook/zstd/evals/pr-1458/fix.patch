@@ -1,0 +1,14 @@
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index c41a1b07..f74b91d0 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -1049,7 +1049,8 @@ size_t ZSTD_estimateCStreamSize(int compressionLevel)
+ {
+     int level;
+     size_t memBudget = 0;
+-    for (level=1; level<=compressionLevel; level++) {
++    for (level=ZSTD_minCLevel(); level<=compressionLevel; level++) {
++        if (level==0) continue;
+         size_t const newMB = ZSTD_estimateCStreamSize_internal(level);
+         if (newMB > memBudget) memBudget = newMB;
+     }

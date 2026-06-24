@@ -1,0 +1,13 @@
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index 538f8e9e..d525ec19 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -1479,7 +1479,7 @@ static size_t ZSTD_resetCCtx_internal(ZSTD_CCtx* zc,
+                 bufferSpace;
+ 
+             int const workspaceTooSmall = ZSTD_cwksp_sizeof(ws) < neededSpace;
+-            int const workspaceWasteful = ZSTD_cwksp_check_wasteful(ws, neededSpace);
++            int const workspaceWasteful = !zc->staticSize && ZSTD_cwksp_check_wasteful(ws, neededSpace);
+ 
+             DEBUGLOG(4, "Need %zuKB workspace, including %zuKB for match state, and %zuKB for buffers",
+                         neededSpace>>10, matchStateSize>>10, bufferSpace>>10);

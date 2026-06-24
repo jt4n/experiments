@@ -1,0 +1,15 @@
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 03ba1e2d..55fc285b 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -599,7 +599,9 @@ typedef enum {
+                               * (note : a strong exception to this rule is when first invocation of ZSTD_compressStream2() sets ZSTD_e_end :
+                               *  in which case, ZSTD_compressStream2() delegates to ZSTD_compress2(), which is always a blocking call).
+                               * More workers improve speed, but also increase memory usage.
+-                              * Default value is `0`, aka "single-threaded mode" : no worker is spawned, compression is performed inside Caller's thread, all invocations are blocking */
++                              * Default value is `0`, aka "single-threaded mode" : no worker is spawned, compression is performed inside Caller's thread, all invocations are blocking.
++                              * Note : setting ZSTD_c_nbWorkers also resets ZSTD_c_overlapLog and ZSTD_c_jobSize to their default values,
++                              * so these parameters should be set after ZSTD_c_nbWorkers. */
+     ZSTD_c_jobSize=401,      /* Size of a compression job. This value is enforced only when nbWorkers >= 1.
+                               * Each compression job is completed in parallel, so this value can indirectly impact the nb of active threads.
+                               * 0 means default, which is dynamically determined based on compression parameters.

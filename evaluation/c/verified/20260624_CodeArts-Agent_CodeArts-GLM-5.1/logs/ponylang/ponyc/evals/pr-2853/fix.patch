@@ -1,0 +1,43 @@
+diff --git a/src/libponyc/codegen/gencontrol.c b/src/libponyc/codegen/gencontrol.c
+index 3a940f2..5f28e2c 100644
+--- a/src/libponyc/codegen/gencontrol.c
++++ b/src/libponyc/codegen/gencontrol.c
+@@ -538,13 +538,33 @@ LLVMValueRef gen_return(compile_t* c, ast_t* ast)
+   ast_t* expr = ast_child(ast);
+   LLVMValueRef value = gen_expr(c, expr);
+ 
+-  size_t clause;
+-  ast_t* try_expr = ast_try_clause(ast, &clause);
+-
++  // Walk up through all enclosing try blocks and execute their then clauses.
+   // Do the then block only if we return in the body or else clause.
+   // In the then block, return without doing the then block.
+-  if((try_expr != NULL) && (clause != 2))
+-    gen_expr(c, ast_childidx(try_expr, 2));
++  ast_t* try_expr = ast;
++  ast_t* last = NULL;
++
++  while(try_expr != NULL)
++  {
++    switch(ast_id(try_expr))
++    {
++      case TK_TRY:
++      case TK_TRY_NO_CHECK:
++      {
++        size_t clause = ast_index(last);
++
++        if(clause != 2)
++          gen_expr(c, ast_childidx(try_expr, 2));
++
++        break;
++      }
++
++      default: {}
++    }
++
++    last = try_expr;
++    try_expr = ast_parent(try_expr);
++  }
+ 
+   LLVMTypeRef f_type = LLVMGetElementType(LLVMTypeOf(codegen_fun(c)));
+   LLVMTypeRef r_type = LLVMGetReturnType(f_type);

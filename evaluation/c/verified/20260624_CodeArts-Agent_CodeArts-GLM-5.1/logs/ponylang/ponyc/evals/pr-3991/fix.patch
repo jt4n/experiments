@@ -1,0 +1,85 @@
+diff --git a/src/libponyc/codegen/gencall.c b/src/libponyc/codegen/gencall.c
+index 9884407e..0ac07615 100644
+--- a/src/libponyc/codegen/gencall.c
++++ b/src/libponyc/codegen/gencall.c
+@@ -645,6 +645,9 @@ static bool contains_boxable(ast_t* type)
+       return false;
+     }
+ 
++    case TK_ARROW:
++      return contains_boxable(ast_childidx(type, 1));
++
+     default:
+       pony_assert(0);
+       return false;
+diff --git a/src/libponyc/codegen/genname.c b/src/libponyc/codegen/genname.c
+index a481f31d..67f7d45f 100644
+--- a/src/libponyc/codegen/genname.c
++++ b/src/libponyc/codegen/genname.c
+@@ -57,6 +57,12 @@ static void type_append(printbuf_t* buf, ast_t* type, bool first)
+       return;
+     }
+ 
++    case TK_ARROW:
++    {
++      type_append(buf, ast_childidx(type, 1), first);
++      return;
++    }
++
+     default: {}
+   }
+ 
+diff --git a/src/libponyc/codegen/gentrace.c b/src/libponyc/codegen/gentrace.c
+index 25387437..10e9f2d1 100644
+--- a/src/libponyc/codegen/gentrace.c
++++ b/src/libponyc/codegen/gentrace.c
+@@ -364,6 +364,9 @@ static trace_t trace_type(ast_t* type)
+     case TK_NOMINAL:
+       return trace_type_nominal(type);
+ 
++    case TK_ARROW:
++      return trace_type(ast_childidx(type, 1));
++
+     default: {}
+   }
+ 
+@@ -860,6 +863,11 @@ static void trace_dynamic(compile_t* c, LLVMValueRef ctx, LLVMValueRef object,
+       trace_dynamic_nominal(c, ctx, object, type, orig, tuple, next_block);
+       break;
+ 
++    case TK_ARROW:
++      trace_dynamic(c, ctx, object, ast_childidx(type, 1), orig, tuple,
++        next_block);
++      break;
++
+     default: {}
+   }
+ }
+diff --git a/src/libponyc/reach/reach.c b/src/libponyc/reach/reach.c
+index 00a54af4..019067c2 100644
+--- a/src/libponyc/reach/reach.c
++++ b/src/libponyc/reach/reach.c
+@@ -991,6 +991,9 @@ static reach_type_t* add_type(reach_t* r, ast_t* type, pass_opt_t* opt)
+     case TK_NOMINAL:
+       return add_nominal(r, type, opt);
+ 
++    case TK_ARROW:
++      return add_type(r, ast_childidx(type, 1), opt);
++
+     default:
+       pony_assert(0);
+   }
+diff --git a/src/libponyc/type/cap.c b/src/libponyc/type/cap.c
+index 5f441771..dfa8f4e4 100644
+--- a/src/libponyc/type/cap.c
++++ b/src/libponyc/type/cap.c
+@@ -577,6 +577,9 @@ token_id cap_dispatch(ast_t* type)
+     case TK_NOMINAL:
+       return cap_single(type);
+ 
++    case TK_ARROW:
++      return cap_dispatch(ast_childidx(type, 1));
++
+     default: {}
+   }
+ 

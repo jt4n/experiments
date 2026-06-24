@@ -1,0 +1,26 @@
+diff --git a/src/decNumber/decNumber.c b/src/decNumber/decNumber.c
+index 5062634..a99f10f 100644
+--- a/src/decNumber/decNumber.c
++++ b/src/decNumber/decNumber.c
+@@ -6206,9 +6206,18 @@ static Int decCompare(const decNumber *lhs, const decNumber *rhs,
+     rhs=temp;
+     result=-result;
+     }
+-  compare=decUnitCompare(lhs->lsu, D2U(lhs->digits),
+-                         rhs->lsu, D2U(rhs->digits),
+-                         rhs->exponent-lhs->exponent);
++  // rhs->exponent - lhs->exponent can overflow Int when exponents are
++  // at opposite extremes; in that case the exponent difference is so
++  // large that rhs coefficient * 10^diff >> lhs coefficient, so the
++  // result is the same as decUnitCompare returning -1
++  if (rhs->exponent - lhs->exponent < 0) {   // overflow check
++    compare=-1;
++    }
++   else {
++    compare=decUnitCompare(lhs->lsu, D2U(lhs->digits),
++                           rhs->lsu, D2U(rhs->digits),
++                           rhs->exponent-lhs->exponent);
++    }
+   if (compare!=BADINT) compare*=result;      // comparison succeeded
+   return compare;
+   } // decCompare

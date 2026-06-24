@@ -1,0 +1,32 @@
+diff --git a/src/libponyc/expr/match.c b/src/libponyc/expr/match.c
+index f4f3491b..56319224 100644
+--- a/src/libponyc/expr/match.c
++++ b/src/libponyc/expr/match.c
+@@ -532,12 +532,8 @@ bool expr_case(pass_opt_t* opt, ast_t* ast)
+     {
+       errorframe_t frame = NULL;
+       ast_error_frame(&frame, pattern,
+-        "this capture violates capabilities, because the match would "
+-        "need to differentiate by capability at runtime instead of matching "
+-        "on type alone");
+-      ast_error_frame(&frame, match_type, "the match type allows for more than "
+-        "one possibility with the same type as pattern type, but different "
+-        "capabilities. match type: %s",
++        "this capture violates capabilities");
++      ast_error_frame(&frame, match_type, "match type: %s",
+         ast_print_type(match_type));
+       ast_error_frame(&frame, pattern, "pattern type: %s",
+         ast_print_type(pattern_type));
+diff --git a/src/libponyc/type/matchtype.c b/src/libponyc/type/matchtype.c
+index 1572d47b..c6013fad 100644
+--- a/src/libponyc/type/matchtype.c
++++ b/src/libponyc/type/matchtype.c
+@@ -558,7 +558,7 @@ static matchtype_t is_nominal_match_struct(ast_t* operand, ast_t* pattern,
+   // the same struct as the pattern from matching.
+   if(operand_def != pattern_def)
+   {
+-    if((errorf != NULL) && report_reject)
++    if(errorf != NULL)
+     {
+       ast_error_frame(errorf, pattern,
+         "%s cannot match %s: the pattern type is a struct",

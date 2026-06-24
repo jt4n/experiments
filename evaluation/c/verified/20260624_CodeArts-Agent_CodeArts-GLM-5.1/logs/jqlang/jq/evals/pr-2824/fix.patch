@@ -1,0 +1,39 @@
+diff --git a/docs/content/manual/manual.yml b/docs/content/manual/manual.yml
+index 4028a94..d5e625c 100644
+--- a/docs/content/manual/manual.yml
++++ b/docs/content/manual/manual.yml
+@@ -3656,7 +3656,7 @@ sections:
+         - color for object keys
+ 
+       The default color scheme is the same as setting
+-      `JQ_COLORS="1;30:0;37:0;37:0;37:0;32:1;37:1;37:1;34"`.
++      `JQ_COLORS="0;90:0;37:0;37:0;37:0;32:1;37:1;37:1;34"`.
+ 
+       This is not a manual for VT100/ANSI escapes.  However, each of
+       these color specifications should consist of two numbers separated
+diff --git a/docs/content/manual/v1.6/manual.yml b/docs/content/manual/v1.6/manual.yml
+index 0a3d600..86384fb 100644
+--- a/docs/content/manual/v1.6/manual.yml
++++ b/docs/content/manual/v1.6/manual.yml
+@@ -3343,7 +3343,7 @@ sections:
+         - color for objects
+ 
+       The default color scheme is the same as setting
+-      `"JQ_COLORS=1;30:0;37:0;37:0;37:0;32:1;37:1;37"`.
++      `"JQ_COLORS=0;90:0;37:0;37:0;37:0;32:1;37:1;37"`.
+ 
+       This is not a manual for VT100/ANSI escapes.  However, each of
+       these color specifications should consist of two numbers separated
+diff --git a/src/jv_print.c b/src/jv_print.c
+index d1db88a..4b757d7 100644
+--- a/src/jv_print.c
++++ b/src/jv_print.c
+@@ -30,7 +30,7 @@
+ static char color_bufs[8][16];
+ static const char *color_bufps[8];
+ static const char* def_colors[] =
+-  {COL("1;30"),    COL("0;37"),      COL("0;37"),     COL("0;37"),
++  {COL("0;90"),    COL("0;37"),      COL("0;37"),     COL("0;37"),
+    COL("0;32"),    COL("1;37"),      COL("1;37"),     COL("1;34")};
+ #define FIELD_COLOR (colors[7])
+ 

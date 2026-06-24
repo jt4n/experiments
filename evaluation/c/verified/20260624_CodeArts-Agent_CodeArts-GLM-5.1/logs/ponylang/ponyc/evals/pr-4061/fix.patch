@@ -1,0 +1,85 @@
+diff --git a/src/libponyc/ast/id.c b/src/libponyc/ast/id.c
+index 3fda0243..cd65b1bb 100644
+--- a/src/libponyc/ast/id.c
++++ b/src/libponyc/ast/id.c
+@@ -172,9 +172,9 @@ bool check_id_method(pass_opt_t* opt, ast_t* id_node)
+ 
+ bool check_id_param(pass_opt_t* opt, ast_t* id_node)
+ {
+-  // [a-z][A-Za-z0-9_]*'* (and no double or trailing underscores)
++  // (_|[a-z][A-Za-z0-9_]*'*) (and no double or trailing underscores)
+   return check_id(opt, id_node, "parameter",
+-    START_LOWER | ALLOW_UNDERSCORE | ALLOW_TICK);
++    START_LOWER | ALLOW_UNDERSCORE | ALLOW_TICK | ALLOW_DONTCARE);
+ }
+ 
+ bool check_id_local(pass_opt_t* opt, ast_t* id_node)
+diff --git a/src/libponyc/pass/syntax.c b/src/libponyc/pass/syntax.c
+index 6e303b64..8a543ee1 100644
+--- a/src/libponyc/pass/syntax.c
++++ b/src/libponyc/pass/syntax.c
+@@ -255,6 +255,15 @@ static bool check_method(pass_opt_t* opt, ast_t* ast, int method_def_index)
+   if(!check_id_method(opt, id))
+     r = false;
+ 
++  for(ast_t* p = ast_child(params); p != NULL; p = ast_sibling(p))
++  {
++    if(ast_id(p) == TK_PARAM)
++    {
++      if(!check_id_param(opt, ast_child(p)))
++        r = false;
++    }
++  }
++
+   if(!check_permission(opt, def, METHOD_RETURN, return_type, "return type",
+     ast))
+     r = false;
+@@ -1183,6 +1192,15 @@ static ast_result_t syntax_lambda(pass_opt_t* opt, ast_t* ast)
+     capture = ast_sibling(capture);
+   }
+ 
++  for(ast_t* p = ast_child(params); p != NULL; p = ast_sibling(p))
++  {
++    if(ast_id(p) == TK_PARAM)
++    {
++      if(!check_id_param(opt, ast_child(p)))
++        r = false;
++    }
++  }
++
+   return r ? AST_OK : AST_ERROR;
+ }
+ 
+@@ -1208,6 +1226,17 @@ static ast_result_t syntax_fun(pass_opt_t* opt, ast_t* ast)
+ {
+   pony_assert(ast_id(ast) == TK_FUN);
+   AST_GET_CHILDREN(ast, cap, id, typeparams, params, type, can_error, body);
++  bool r = true;
++
++  for(ast_t* p = ast_child(params); p != NULL; p = ast_sibling(p))
++  {
++    if(ast_id(p) == TK_PARAM)
++    {
++      if(!check_id_param(opt, ast_child(p)))
++        r = false;
++    }
++  }
++
+   switch(ast_id(type))
+   {
+     case TK_ISO:
+@@ -1221,12 +1250,12 @@ static ast_result_t syntax_fun(pass_opt_t* opt, ast_t* ast)
+         ast_print_type(type));
+       ast_error_continue(opt->check.errors, type, "function return type "
+         "cannot be capability");
+-      return AST_ERROR;
++      r = false;
+     }
+     default: {}
+   }
+ 
+-  return AST_OK;
++  return r ? AST_OK : AST_ERROR;
+ }
+ 
+ 

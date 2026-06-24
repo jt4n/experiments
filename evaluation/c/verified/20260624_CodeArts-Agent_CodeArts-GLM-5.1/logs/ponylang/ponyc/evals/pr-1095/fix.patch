@@ -1,0 +1,24 @@
+diff --git a/src/libponyc/type/matchtype.c b/src/libponyc/type/matchtype.c
+index b4c4012..fd53e3e 100644
+--- a/src/libponyc/type/matchtype.c
++++ b/src/libponyc/type/matchtype.c
+@@ -200,6 +200,9 @@ static matchtype_t is_x_match_tuple(ast_t* operand, ast_t* pattern,
+     case TK_ARROW:
+       return MATCHTYPE_REJECT;
+ 
++    case TK_FUNTYPE:
++      return MATCHTYPE_DENY;
++
+     default: {}
+   }
+ 
+@@ -394,6 +397,9 @@ static matchtype_t is_x_match_nominal(ast_t* operand, ast_t* pattern,
+     case TK_ARROW:
+       return is_arrow_match_x(operand, pattern, opt);
+ 
++    case TK_FUNTYPE:
++      return MATCHTYPE_DENY;
++
+     default: {}
+   }
+ 

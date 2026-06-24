@@ -1,0 +1,38 @@
+diff --git a/src/libponyc/expr/reference.c b/src/libponyc/expr/reference.c
+index 09ef9dd..4f367a4 100644
+--- a/src/libponyc/expr/reference.c
++++ b/src/libponyc/expr/reference.c
+@@ -14,6 +14,7 @@
+ #include "../type/lookup.h"
+ #include "../ast/astbuild.h"
+ #include "../ast/id.h"
++#include "../ast/error.h"
+ #include "../../libponyrt/mem/pool.h"
+ #include <string.h>
+ #include <assert.h>
+@@ -675,18 +676,20 @@ bool expr_reference(pass_opt_t* opt, ast_t** astp)
+ 
+       ast_t* type = ast_type(def);
+ 
+-      if(is_typecheck_error(type))
+-        return false;
+-
+       if(type != NULL && ast_id(type) == TK_INFERTYPE)
+       {
+-        ast_error(opt->check.errors, ast, "cannot infer type of %s\n",
+-          ast_nice_name(def));
++        if(errors_get_count(opt->check.errors) == 0)
++          ast_error(opt->check.errors, ast, "cannot infer type of %s\n",
++            ast_nice_name(def));
++
+         ast_settype(def, ast_from(def, TK_ERRORTYPE));
+         ast_settype(ast, ast_from(ast, TK_ERRORTYPE));
+         return false;
+       }
+ 
++      if(is_typecheck_error(type))
++        return false;
++
+       if(!valid_reference(opt, ast, type, status))
+         return false;
+ 

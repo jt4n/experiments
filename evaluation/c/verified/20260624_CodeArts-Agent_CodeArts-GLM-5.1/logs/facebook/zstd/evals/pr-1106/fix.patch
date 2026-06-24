@@ -1,0 +1,42 @@
+diff --git a/doc/zstd_manual.html b/doc/zstd_manual.html
+index 623fd611..fb987158 100644
+--- a/doc/zstd_manual.html
++++ b/doc/zstd_manual.html
+@@ -881,7 +881,15 @@ size_t ZSTD_decodingBufferSize_min(unsigned long long windowSize, unsigned long
+            In order to mean "unknown content size", pass constant ZSTD_CONTENTSIZE_UNKNOWN.
+            ZSTD_CONTENTSIZE_UNKNOWN is default value for any new compression job.
+   Note 2 : If all data is provided and consumed in a single round,
+-           this value is overriden by srcSize instead. 
++           this value is overriden by srcSize instead. Here, "single round"
++           means calling ZSTD_compress_generic() with ZSTD_e_end on the
++           first invocation (i.e. no prior ZSTD_compress_generic() calls
++           for this compression job).
++  Note 3 : Pledged source size is only validated when contentSizeFlag is
++           enabled (set via ZSTD_CCtx_setParameter(ZSTD_p_contentSizeFlag, 1)),
++           since the validation is coupled with writing the content size
++           into the frame header. When contentSizeFlag is disabled, no
++           validation of pledged source size is performed. 
+ </p></pre><BR>
+ 
+ <pre><b>size_t ZSTD_CCtx_loadDictionary(ZSTD_CCtx* cctx, const void* dict, size_t dictSize);
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 913c599b..04a3c5b2 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -1085,7 +1085,15 @@ ZSTDLIB_API size_t ZSTD_CCtx_getParameter(ZSTD_CCtx* cctx, ZSTD_cParameter param
+  *           In order to mean "unknown content size", pass constant ZSTD_CONTENTSIZE_UNKNOWN.
+  *           ZSTD_CONTENTSIZE_UNKNOWN is default value for any new compression job.
+  *  Note 2 : If all data is provided and consumed in a single round,
+- *           this value is overriden by srcSize instead. */
++ *           this value is overriden by srcSize instead. Here, "single round"
++ *           means calling ZSTD_compress_generic() with ZSTD_e_end on the
++ *           first invocation (i.e. no prior ZSTD_compress_generic() calls
++ *           for this compression job).
++ *  Note 3 : Pledged source size is only validated when contentSizeFlag is
++ *           enabled (set via ZSTD_CCtx_setParameter(ZSTD_p_contentSizeFlag, 1)),
++ *           since the validation is coupled with writing the content size
++ *           into the frame header. When contentSizeFlag is disabled, no
++ *           validation of pledged source size is performed. */
+ ZSTDLIB_API size_t ZSTD_CCtx_setPledgedSrcSize(ZSTD_CCtx* cctx, unsigned long long pledgedSrcSize);
+ 
+ /*! ZSTD_CCtx_loadDictionary() :

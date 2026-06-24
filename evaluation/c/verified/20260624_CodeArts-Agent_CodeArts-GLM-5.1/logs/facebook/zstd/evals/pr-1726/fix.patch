@@ -1,0 +1,135 @@
+diff --git a/programs/fileio.c b/programs/fileio.c
+index 569a410c..5d54e707 100644
+--- a/programs/fileio.c
++++ b/programs/fileio.c
+@@ -19,6 +19,9 @@
+ #if defined(__MINGW32__) && !defined(_POSIX_SOURCE)
+ #  define _POSIX_SOURCE 1          /* disable %llu warnings with MinGW on Windows */
+ #endif
++#if !defined(_WIN32) && !defined(_XOPEN_SOURCE)
++#  define _XOPEN_SOURCE 700        /* for mkstemp on POSIX systems */
++#endif
+ 
+ /*-*************************************
+ *  Includes
+@@ -33,7 +36,7 @@
+ #include <signal.h>
+ #include "timefn.h"     /* UTIL_getTime, UTIL_clockSpanMicro */
+ 
+-#if defined (_MSC_VER)
++#if defined(_MSC_VER)
+ #  include <sys/stat.h>
+ #  include <io.h>
+ #endif
+@@ -629,6 +632,7 @@ typedef struct {
+     size_t dstBufferSize;
+     const char* dictFileName;
+     ZSTD_CStream* cctx;
++    U64   srcFileSize;
+ } cRess_t;
+ 
+ static cRess_t FIO_createCResources(FIO_prefs_t* const prefs,
+@@ -1180,7 +1184,7 @@ FIO_compressFilename_internal(FIO_prefs_t* const prefs,
+     clock_t const cpuStart = clock();
+     U64 readsize = 0;
+     U64 compressedfilesize = 0;
+-    U64 const fileSize = UTIL_getFileSize(srcFileName);
++    U64 const fileSize = ress.srcFileSize ? ress.srcFileSize : UTIL_getFileSize(srcFileName);
+     DISPLAYLEVEL(5, "%s: %u bytes \n", srcFileName, (unsigned)fileSize);
+ 
+     /* compression format selection */
+@@ -1321,6 +1325,8 @@ FIO_compressFilename_srcFile(FIO_prefs_t* const prefs,
+                              int compressionLevel)
+ {
+     int result;
++    FILE* srcFile;
++    char tmpFileName[1024] = {0};
+ 
+     /* ensure src is not a directory */
+     if (UTIL_isDirectory(srcFileName)) {
+@@ -1334,13 +1340,83 @@ FIO_compressFilename_srcFile(FIO_prefs_t* const prefs,
+         return 1;
+     }
+ 
+-    ress.srcFile = FIO_openSrcFile(srcFileName);
+-    if (ress.srcFile == NULL) return 1;   /* srcFile could not be opened */
++    srcFile = FIO_openSrcFile(srcFileName);
++    if (srcFile == NULL) return 1;   /* srcFile could not be opened */
++
++    /* if stdin is being used, copy it to a temporary file so that the
++     * file size can be determined and optimal compression parameters
++     * can be selected by the compressor */
++    if (!strcmp(srcFileName, stdinmark)) {
++        FILE* tmpFile;
++        size_t const tmpFileNameSize = sizeof(tmpFileName);
++        strncpy(tmpFileName, "zstd-stdin-XXXXXX", tmpFileNameSize);
++        tmpFileName[tmpFileNameSize-1] = '\0';
++        {   int const tmpFd = mkstemp(tmpFileName);
++            if (tmpFd == -1) {
++                DISPLAYLEVEL(1, "zstd: failed to create temporary file for stdin: %s\n", strerror(errno));
++                fclose(srcFile);
++                return 1;
++            }
++            tmpFile = fdopen(tmpFd, "wb");
++            if (tmpFile == NULL) {
++                DISPLAYLEVEL(1, "zstd: failed to fdopen temporary file for stdin: %s\n", strerror(errno));
++                close(tmpFd);
++                remove(tmpFileName);
++                fclose(srcFile);
++                return 1;
++            }
++        }
++        {   size_t const bufferSize = 64 KB;
++            void* const buffer = malloc(bufferSize);
++            if (buffer == NULL) {
++                DISPLAYLEVEL(1, "zstd: allocation error : not enough memory \n");
++                fclose(tmpFile);
++                remove(tmpFileName);
++                fclose(srcFile);
++                return 1;
++            }
++            {   size_t readSize;
++                while ((readSize = fread(buffer, 1, bufferSize, srcFile)) > 0) {
++                    if (fwrite(buffer, 1, readSize, tmpFile) != readSize) {
++                        DISPLAYLEVEL(1, "zstd: write error on temporary file : %s \n", strerror(errno));
++                        free(buffer);
++                        fclose(tmpFile);
++                        remove(tmpFileName);
++                        fclose(srcFile);
++                        return 1;
++                    }
++                }
++                if (ferror(srcFile)) {
++                    DISPLAYLEVEL(1, "zstd: read error on stdin \n");
++                    free(buffer);
++                    fclose(tmpFile);
++                    remove(tmpFileName);
++                    fclose(srcFile);
++                    return 1;
++                }
++            }
++            free(buffer);
++        }
++        fclose(srcFile);
++        fclose(tmpFile);
++        srcFile = fopen(tmpFileName, "rb");
++        if (srcFile == NULL) {
++            DISPLAYLEVEL(1, "zstd: failed to reopen temporary file : %s \n", strerror(errno));
++            remove(tmpFileName);
++            return 1;
++        }
++        ress.srcFileSize = UTIL_getFileSize(tmpFileName);
++    }
++
++    ress.srcFile = srcFile;
+ 
+     result = FIO_compressFilename_dstFile(prefs, ress, dstFileName, srcFileName, compressionLevel);
+ 
+     fclose(ress.srcFile);
+     ress.srcFile = NULL;
++    if (tmpFileName[0]) {
++        remove(tmpFileName);
++    }
+     if ( prefs->removeSrcFile   /* --rm */
+       && result == 0       /* success */
+       && strcmp(srcFileName, stdinmark)   /* exception : don't erase stdin */

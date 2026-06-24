@@ -1,0 +1,2268 @@
+检测到 Ubuntu 16 系统
+进入ubuntu其他系统
+替换系统源完成
+==============================================================================
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial InRelease [247 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu xenial-updates InRelease [106 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu xenial-backports InRelease [106 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu xenial-security InRelease [106 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu xenial/main amd64 Packages [1558 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu xenial/restricted amd64 Packages [14.1 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 Packages [9827 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu xenial/multiverse amd64 Packages [176 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 Packages [1596 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu xenial-updates/restricted amd64 Packages [15.8 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu xenial-updates/universe amd64 Packages [1471 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu xenial-updates/multiverse amd64 Packages [24.9 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu xenial-backports/main amd64 Packages [11.3 kB]
+Get:14 http://mirrors.tools.huawei.com/ubuntu xenial-backports/universe amd64 Packages [12.8 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu xenial-security/main amd64 Packages [1142 kB]
+Get:16 http://mirrors.tools.huawei.com/ubuntu xenial-security/restricted amd64 Packages [15.3 kB]
+Get:17 http://mirrors.tools.huawei.com/ubuntu xenial-security/universe amd64 Packages [920 kB]
+Get:18 http://mirrors.tools.huawei.com/ubuntu xenial-security/multiverse amd64 Packages [8787 B]
+Fetched 17.4 MB in 1s (12.5 MB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+build-essential is already the newest version (12.1ubuntu2).
+libncurses5-dev is already the newest version (6.0+20160213-1ubuntu1).
+patch is already the newest version (2.7.5-1ubuntu0.16.04.2).
+patch set to manually installed.
+zlib1g-dev is already the newest version (1:1.2.8.dfsg-2ubuntu4.3).
+The following additional packages will be installed:
+  libonig2 libpcre2-16-0 libpcre2-32-0 libpcre2-8-0 libpcre2-posix0 libssl-doc
+The following NEW packages will be installed:
+  libonig-dev libonig2 libpcre2-16-0 libpcre2-32-0 libpcre2-8-0 libpcre2-dev
+  libpcre2-posix0 libssl-dev libssl-doc
+0 upgraded, 9 newly installed, 0 to remove and 2 not upgraded.
+Need to get 3600 kB of archives.
+After this operation, 14.4 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial-updates/universe amd64 libonig2 amd64 5.9.6-1ubuntu0.1 [86.7 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu xenial-updates/universe amd64 libonig-dev amd64 5.9.6-1ubuntu0.1 [48.1 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-16-0 amd64 10.21-1 [157 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-32-0 amd64 10.21-1 [147 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-8-0 amd64 10.21-1 [165 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-posix0 amd64 10.21-1 [5632 B]
+Get:7 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-dev amd64 10.21-1 [566 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libssl-dev amd64 1.0.2g-1ubuntu4.20 [1347 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libssl-doc all 1.0.2g-1ubuntu4.20 [1077 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 3600 kB in 0s (10.9 MB/s)
+Selecting previously unselected package libonig2:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 19921 files and directories currently installed.)
+Preparing to unpack .../libonig2_5.9.6-1ubuntu0.1_amd64.deb ...
+Unpacking libonig2:amd64 (5.9.6-1ubuntu0.1) ...
+Selecting previously unselected package libonig-dev.
+Preparing to unpack .../libonig-dev_5.9.6-1ubuntu0.1_amd64.deb ...
+Unpacking libonig-dev (5.9.6-1ubuntu0.1) ...
+Selecting previously unselected package libpcre2-16-0:amd64.
+Preparing to unpack .../libpcre2-16-0_10.21-1_amd64.deb ...
+Unpacking libpcre2-16-0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-32-0:amd64.
+Preparing to unpack .../libpcre2-32-0_10.21-1_amd64.deb ...
+Unpacking libpcre2-32-0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-8-0:amd64.
+Preparing to unpack .../libpcre2-8-0_10.21-1_amd64.deb ...
+Unpacking libpcre2-8-0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-posix0:amd64.
+Preparing to unpack .../libpcre2-posix0_10.21-1_amd64.deb ...
+Unpacking libpcre2-posix0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-dev:amd64.
+Preparing to unpack .../libpcre2-dev_10.21-1_amd64.deb ...
+Unpacking libpcre2-dev:amd64 (10.21-1) ...
+Selecting previously unselected package libssl-dev:amd64.
+Preparing to unpack .../libssl-dev_1.0.2g-1ubuntu4.20_amd64.deb ...
+Unpacking libssl-dev:amd64 (1.0.2g-1ubuntu4.20) ...
+Selecting previously unselected package libssl-doc.
+Preparing to unpack .../libssl-doc_1.0.2g-1ubuntu4.20_all.deb ...
+Unpacking libssl-doc (1.0.2g-1ubuntu4.20) ...
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+Setting up libonig2:amd64 (5.9.6-1ubuntu0.1) ...
+Setting up libonig-dev (5.9.6-1ubuntu0.1) ...
+Setting up libpcre2-16-0:amd64 (10.21-1) ...
+Setting up libpcre2-32-0:amd64 (10.21-1) ...
+Setting up libpcre2-8-0:amd64 (10.21-1) ...
+Setting up libpcre2-posix0:amd64 (10.21-1) ...
+Setting up libpcre2-dev:amd64 (10.21-1) ...
+Setting up libssl-dev:amd64 (1.0.2g-1ubuntu4.20) ...
+Setting up libssl-doc (1.0.2g-1ubuntu4.20) ...
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+cmake is already the newest version (3.5.1-1ubuntu3).
+zlib1g-dev is already the newest version (1:1.2.8.dfsg-2ubuntu4.3).
+0 upgraded, 0 newly installed, 0 to remove and 2 not upgraded.
+=== RUN FULL via /home/fix-run.sh (tee log) ===
+#!/bin/bash
+set -e
+
+cd /home/ponyc
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make
+make test
+
+    =========================================
+当前目录：/home
+当前目录内容：add_certificate_for_c.sh check_git_changes.sh fix-run.sh fix.patch ponyc prepare.sh run.sh test-run.sh test.patch
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  wget
+0 upgraded, 1 newly installed, 0 to remove and 2 not upgraded.
+Need to get 299 kB of archives.
+After this operation, 905 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 wget amd64 1.17.1-1ubuntu1.5 [299 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 299 kB in 0s (1457 kB/s)
+Selecting previously unselected package wget.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 21834 files and directories currently installed.)
+Preparing to unpack .../wget_1.17.1-1ubuntu1.5_amd64.deb ...
+Unpacking wget (1.17.1-1ubuntu1.5) ...
+Setting up wget (1.17.1-1ubuntu1.5) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libgpm2 libmpdec2 libpython3.5 libpython3.5-minimal libpython3.5-stdlib
+  vim-common vim-runtime
+Suggested packages:
+  gpm ctags vim-doc vim-scripts vim-gnome-py2 | vim-gtk-py2 | vim-gtk3-py2
+  | vim-athena-py2 | vim-nox-py2
+The following NEW packages will be installed:
+  libgpm2 libmpdec2 libpython3.5 libpython3.5-minimal libpython3.5-stdlib vim
+  vim-common vim-runtime
+0 upgraded, 8 newly installed, 0 to remove and 2 not upgraded.
+Need to get 10.4 MB of archives.
+After this operation, 49.3 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial/main amd64 libgpm2 amd64 1.20.4-6.1 [16.5 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu xenial/main amd64 libmpdec2 amd64 2.4.2-1 [82.6 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libpython3.5-minimal amd64 3.5.2-2ubuntu0~16.04.13 [524 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libpython3.5-stdlib amd64 3.5.2-2ubuntu0~16.04.13 [2135 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 vim-common amd64 2:7.4.1689-3ubuntu1.5 [104 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libpython3.5 amd64 3.5.2-2ubuntu0~16.04.13 [1360 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 vim-runtime all 2:7.4.1689-3ubuntu1.5 [5169 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 vim amd64 2:7.4.1689-3ubuntu1.5 [1036 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 10.4 MB in 0s (22.6 MB/s)
+Selecting previously unselected package libgpm2:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 21845 files and directories currently installed.)
+Preparing to unpack .../libgpm2_1.20.4-6.1_amd64.deb ...
+Unpacking libgpm2:amd64 (1.20.4-6.1) ...
+Selecting previously unselected package libmpdec2:amd64.
+Preparing to unpack .../libmpdec2_2.4.2-1_amd64.deb ...
+Unpacking libmpdec2:amd64 (2.4.2-1) ...
+Selecting previously unselected package libpython3.5-minimal:amd64.
+Preparing to unpack .../libpython3.5-minimal_3.5.2-2ubuntu0~16.04.13_amd64.deb ...
+Unpacking libpython3.5-minimal:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Selecting previously unselected package libpython3.5-stdlib:amd64.
+Preparing to unpack .../libpython3.5-stdlib_3.5.2-2ubuntu0~16.04.13_amd64.deb ...
+Unpacking libpython3.5-stdlib:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Selecting previously unselected package vim-common.
+Preparing to unpack .../vim-common_2%3a7.4.1689-3ubuntu1.5_amd64.deb ...
+Unpacking vim-common (2:7.4.1689-3ubuntu1.5) ...
+Selecting previously unselected package libpython3.5:amd64.
+Preparing to unpack .../libpython3.5_3.5.2-2ubuntu0~16.04.13_amd64.deb ...
+Unpacking libpython3.5:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Selecting previously unselected package vim-runtime.
+Preparing to unpack .../vim-runtime_2%3a7.4.1689-3ubuntu1.5_all.deb ...
+Adding 'diversion of /usr/share/vim/vim74/doc/help.txt to /usr/share/vim/vim74/doc/help.txt.vim-tiny by vim-runtime'
+Adding 'diversion of /usr/share/vim/vim74/doc/tags to /usr/share/vim/vim74/doc/tags.vim-tiny by vim-runtime'
+Unpacking vim-runtime (2:7.4.1689-3ubuntu1.5) ...
+Selecting previously unselected package vim.
+Preparing to unpack .../vim_2%3a7.4.1689-3ubuntu1.5_amd64.deb ...
+Unpacking vim (2:7.4.1689-3ubuntu1.5) ...
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+Processing triggers for mime-support (3.59ubuntu1) ...
+Setting up libgpm2:amd64 (1.20.4-6.1) ...
+Setting up libmpdec2:amd64 (2.4.2-1) ...
+Setting up libpython3.5-minimal:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Setting up libpython3.5-stdlib:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Setting up vim-common (2:7.4.1689-3ubuntu1.5) ...
+Setting up libpython3.5:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Setting up vim-runtime (2:7.4.1689-3ubuntu1.5) ...
+Setting up vim (2:7.4.1689-3ubuntu1.5) ...
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vim (vim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vimdiff (vimdiff) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rvim (rvim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rview (rview) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vi (vi) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/view (view) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/ex (ex) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/editor (editor) in auto mode
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  curl
+0 upgraded, 1 newly installed, 0 to remove and 2 not upgraded.
+Need to get 139 kB of archives.
+After this operation, 340 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 curl amd64 7.47.0-1ubuntu2.19 [139 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 139 kB in 0s (827 kB/s)
+Selecting previously unselected package curl.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 24445 files and directories currently installed.)
+Preparing to unpack .../curl_7.47.0-1ubuntu2.19_amd64.deb ...
+Unpacking curl (7.47.0-1ubuntu2.19) ...
+Setting up curl (7.47.0-1ubuntu2.19) ...
+=== 配置证书 (abcert) ===
+[abcert][INFO] Created temporary directory .tmp.pems.mVjPXT39
+[abcert][INFO] Operating system: Ubuntu 16.04.7 LTS
+[abcert][INFO] Installing certificates
+'.tmp.pems.mVjPXT39/HWBPITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWBPITEnterpriseCA1.crt'
+'.tmp.pems.mVjPXT39/HWITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWITEnterpriseCA1.crt'
+'.tmp.pems.mVjPXT39/HuaweiBPITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiBPITRootCA.crt'
+'.tmp.pems.mVjPXT39/HuaweiITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiITRootCA.crt'
+'.tmp.pems.mVjPXT39/HuaweiWebSecureInternetGatewayCA.pem' -> '/usr/local/share/ca-certificates/HuaweiWebSecureInternetGatewayCA.crt'
+Updating certificates in /etc/ssl/certs...
+5 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+[abcert][INFO] Removed .tmp.pems.mVjPXT39
+abcert 安装完成
+================git=====================
+http.version=HTTP/1.1
+http.postbuffer=524288000
+http.timeout=600
+================git=====================
+================env=====================
+HTTPS_PROXY=http://test:test@proxysg.huawei.com:8080/
+no_proxy=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+HOSTNAME=358c7109f0c9
+HOME=/root
+OLDPWD=/home
+NO_PROXY=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+https_proxy=http://test:test@proxysg.huawei.com:8080/
+http_proxy=http://test:test@proxysg.huawei.com:8080/
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+GIT_SSL_NO_VERIFY=true
+LANG=C.UTF-8
+DEBIAN_FRONTEND=noninteractive
+LC_ALL=C.UTF-8
+PWD=/tmp/tmp.OjcITJg4Kp/abcert_install
+HTTP_PROXY=http://test:test@proxysg.huawei.com:8080/
+================env=====================
+#!/bin/bash
+# set -e
+
+cd /home/ponyc
+git ls-files --others --exclude-standard | xargs -I {} mv {} {}.bak
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make
+make -j8 test
+
+    =========================================
+gc.c
+trace.c
+actormap.c
+cycle.c
+serialise.c
+delta.c
+objectmap.c
+options.c
+actor.c
+messageq.c
+mpmcq.c
+start.c
+scheduler.c
+cpu.c
+fun.c
+stack.c
+hash.c
+list.c
+posix_except.c
+paths.c
+directory.c
+stat.c
+ssl.c
+stdfd.c
+lsda.c
+time.c
+socket.c
+threads.c
+alloc.c
+heap.c
+pagemap.c
+pool.c
+epoll.c
+asio.c
+event.c
+Linking libponyrt
+assemble.c
+viewpoint.c
+alias.c
+matchtype.c
+safeto.c
+typeparam.c
+sanitise.c
+compattype.c
+lookup.c
+cap.c
+subtype.c
+reify.c
+reach.c
+paint.c
+ponyc.c
+buildflagset.c
+use.c
+platformfuns.c
+ifdef.c
+package.c
+program.c
+fun.c
+call.c
+control.c
+paths.c
+ffi.c
+postfix.c
+array.c
+call.c
+literal.c
+operator.c
+reference.c
+control.c
+lambda.c
+match.c
+finalisers.c
+docgen.c
+flatten.c
+expr.c
+import.c
+verify.c
+names.c
+pass.c
+traits.c
+scope.c
+syntax.c
+sugar.c
+casemethod.c
+frame.c
+source.c
+lexint.c
+bnfprint.c
+symtab.c
+printbuf.c
+stringtab.c
+parserapi.c
+parser.c
+treecheck.c
+lexer.c
+ast.c
+token.c
+id.c
+error.c
+gentrace.c
+genobj.c
+genfun.c
+gendesc.c
+gendebug.cc
+genexpr.c
+codegen.c
+genmatch.c
+genoperator.c
+genopt.cc
+genreference.c
+genheader.c
+host.cc
+genserialise.c
+gencontrol.c
+genexe.c
+genident.c
+genprim.c
+gencall.c
+genbox.c
+genname.c
+gentype.c
+genlib.c
+Linking libponyc
+gc.c
+trace.c
+actormap.c
+cycle.c
+serialise.c
+delta.c
+objectmap.c
+options.c
+actor.c
+messageq.c
+mpmcq.c
+start.c
+scheduler.c
+cpu.c
+fun.c
+stack.c
+hash.c
+list.c
+posix_except.c
+paths.c
+directory.c
+stat.c
+ssl.c
+stdfd.c
+lsda.c
+time.c
+socket.c
+threads.c
+alloc.c
+heap.c
+pagemap.c
+pool.c
+epoll.c
+asio.c
+event.c
+Linking libponyrt-pic
+gtest_main.cc
+gtest-all.cc
+Linking libgtest
+main.c
+Linking ponyc
+use.cc
+option_parser.cc
+util.cc
+ffi.cc
+finalisers.cc
+codegen.cc
+chain.cc
+local_inference.cc
+sugar_traits.cc
+annotations.cc
+paint.cc
+verify.cc
+literal_inference.cc
+parse_expr.cc
+lexer.cc
+id.cc
+sugar_expr.cc
+parse_entity.cc
+sugar.cc
+program.cc
+buildflagset.cc
+symtab.cc
+recover.cc
+type_check_bind.cc
+token.cc
+matchtype.cc
+flatten.cc
+badpony.cc
+scope.cc
+type_check_subtype.cc
+traits.cc
+lexint.cc
+dontcare.cc
+literal_limits.cc
+Linking libponyc.tests
+hash.cc
+list.cc
+fun.cc
+pool.cc
+pagemap.cc
+heap.cc
+Linking libponyrt.tests
+Running main() from gtest_main.cc
+[==========] Running 836 tests from 31 test cases.
+[----------] Global test environment set-up.
+[----------] 10 tests from UseTest
+[ RUN      ] UseTest.Basic
+[       OK ] UseTest.Basic (2 ms)
+[ RUN      ] UseTest.Alias
+[       OK ] UseTest.Alias (1 ms)
+[ RUN      ] UseTest.LegalAliasOptional
+[       OK ] UseTest.LegalAliasOptional (1 ms)
+[ RUN      ] UseTest.IllegalAlias
+[       OK ] UseTest.IllegalAlias (0 ms)
+[ RUN      ] UseTest.SchemeNotFound
+[       OK ] UseTest.SchemeNotFound (1 ms)
+[ RUN      ] UseTest.SchemeCaseSensitive
+[       OK ] UseTest.SchemeCaseSensitive (0 ms)
+[ RUN      ] UseTest.FalseReturnPassedThrough
+[       OK ] UseTest.FalseReturnPassedThrough (1 ms)
+[ RUN      ] UseTest.IllegalCondition
+[       OK ] UseTest.IllegalCondition (1 ms)
+[ RUN      ] UseTest.TrueConditionPasses
+[       OK ] UseTest.TrueConditionPasses (0 ms)
+[ RUN      ] UseTest.FalseConditionFails
+[       OK ] UseTest.FalseConditionFails (1 ms)
+[----------] 10 tests from UseTest (8 ms total)
+
+[----------] 21 tests from FFITest
+[ RUN      ] FFITest.NoDeclaration
+[       OK ] FFITest.NoDeclaration (2 ms)
+[ RUN      ] FFITest.NoDeclarationArg
+[       OK ] FFITest.NoDeclarationArg (2 ms)
+[ RUN      ] FFITest.NoDeclarationMultipleArgs
+[       OK ] FFITest.NoDeclarationMultipleArgs (2 ms)
+[ RUN      ] FFITest.NoDeclarationNoReturn
+[       OK ] FFITest.NoDeclarationNoReturn (2 ms)
+[ RUN      ] FFITest.NoDeclarationMultipleReturn
+[       OK ] FFITest.NoDeclarationMultipleReturn (0 ms)
+[ RUN      ] FFITest.NoDeclarationLiteralIntArg
+[       OK ] FFITest.NoDeclarationLiteralIntArg (2 ms)
+[ RUN      ] FFITest.Declaration
+[       OK ] FFITest.Declaration (2 ms)
+[ RUN      ] FFITest.DeclarationArgs
+[       OK ] FFITest.DeclarationArgs (2 ms)
+[ RUN      ] FFITest.DeclarationBadArg
+[       OK ] FFITest.DeclarationBadArg (2 ms)
+[ RUN      ] FFITest.DeclarationTooFewArgs
+[       OK ] FFITest.DeclarationTooFewArgs (2 ms)
+[ RUN      ] FFITest.DeclarationTooManyArgs
+[       OK ] FFITest.DeclarationTooManyArgs (2 ms)
+[ RUN      ] FFITest.DeclarationWithReturn
+[       OK ] FFITest.DeclarationWithReturn (2 ms)
+[ RUN      ] FFITest.DeclarationWithDifferentReturn
+[       OK ] FFITest.DeclarationWithDifferentReturn (2 ms)
+[ RUN      ] FFITest.DeclarationVoidStarPointer
+[       OK ] FFITest.DeclarationVoidStarPointer (2 ms)
+[ RUN      ] FFITest.DeclarationVoidStarUSize
+[       OK ] FFITest.DeclarationVoidStarUSize (1 ms)
+[ RUN      ] FFITest.DeclarationVoidStarNotPointer
+[       OK ] FFITest.DeclarationVoidStarNotPointer (1 ms)
+[ RUN      ] FFITest.DeclarationEllipsisNoArgs
+[       OK ] FFITest.DeclarationEllipsisNoArgs (2 ms)
+[ RUN      ] FFITest.DeclarationEllipsisOneArg
+[       OK ] FFITest.DeclarationEllipsisOneArg (2 ms)
+[ RUN      ] FFITest.DeclarationEllipsisMultipleArgs
+[       OK ] FFITest.DeclarationEllipsisMultipleArgs (2 ms)
+[ RUN      ] FFITest.DeclarationEllipsisNotFirst
+[       OK ] FFITest.DeclarationEllipsisNotFirst (2 ms)
+[ RUN      ] FFITest.DeclarationEllipsisNotLast
+[       OK ] FFITest.DeclarationEllipsisNotLast (1 ms)
+[----------] 21 tests from FFITest (38 ms total)
+
+[----------] 8 tests from FinalisersTest
+[ RUN      ] FinalisersTest.FinalCanCreatePrimitive
+[       OK ] FinalisersTest.FinalCanCreatePrimitive (2 ms)
+[ RUN      ] FinalisersTest.FinalCannotCreateActor
+[       OK ] FinalisersTest.FinalCannotCreateActor (2 ms)
+[ RUN      ] FinalisersTest.FinalCannotCreateActorInBranch
+[       OK ] FinalisersTest.FinalCannotCreateActorInBranch (3 ms)
+[ RUN      ] FinalisersTest.FinalCannotCreateActorInTryBlock
+[       OK ] FinalisersTest.FinalCannotCreateActorInTryBlock (2 ms)
+[ RUN      ] FinalisersTest.FinalCannotCallBehaviour
+[       OK ] FinalisersTest.FinalCannotCallBehaviour (2 ms)
+[ RUN      ] FinalisersTest.FinalCannotCallBehaviourInBranch
+[       OK ] FinalisersTest.FinalCannotCallBehaviourInBranch (2 ms)
+[ RUN      ] FinalisersTest.FinalCannotCallBehaviourInTryElseBlock
+[       OK ] FinalisersTest.FinalCannotCallBehaviourInTryElseBlock (2 ms)
+[ RUN      ] FinalisersTest.FinalCannotCallChainedBehaviour
+[       OK ] FinalisersTest.FinalCannotCallChainedBehaviour (2 ms)
+[----------] 8 tests from FinalisersTest (17 ms total)
+
+[----------] 4 tests from CodegenTest
+[ RUN      ] CodegenTest.PackedStructIsPacked
+[       OK ] CodegenTest.PackedStructIsPacked (3 ms)
+[ RUN      ] CodegenTest.NonPackedStructIsntPacked
+[       OK ] CodegenTest.NonPackedStructIsntPacked (3 ms)
+[ RUN      ] CodegenTest.ClassCannotBePacked
+test/libponyc/util.cc:447: Failure
+Expected: ((void*)__null) != (program), actual: NULL vs NULL
+test/libponyc/util.cc:294: Failure
+Expected: build_package(pass, src, _first_pkg_path, true, __null) doesn't generate new fatal failures in the current thread.
+  Actual: it does.
+test/libponyc/codegen.cc:75: Failure
+Expected: test_compile(src, "ir") doesn't generate new fatal failures in the current thread.
+  Actual: it does.
+[  FAILED  ] CodegenTest.ClassCannotBePacked (1 ms)
+[ RUN      ] CodegenTest.ActorCannotBePacked
+test/libponyc/util.cc:447: Failure
+Expected: ((void*)__null) != (program), actual: NULL vs NULL
+test/libponyc/util.cc:294: Failure
+Expected: build_package(pass, src, _first_pkg_path, true, __null) doesn't generate new fatal failures in the current thread.
+  Actual: it does.
+test/libponyc/codegen.cc:97: Failure
+Expected: test_compile(src, "ir") doesn't generate new fatal failures in the current thread.
+  Actual: it does.
+[  FAILED  ] CodegenTest.ActorCannotBePacked (1 ms)
+[----------] 4 tests from CodegenTest (8 ms total)
+
+[----------] 6 tests from ChainTest
+[ RUN      ] ChainTest.Chain_AliasRefcap
+[       OK ] ChainTest.Chain_AliasRefcap (2 ms)
+[ RUN      ] ChainTest.Chain_UniqueRefcap
+[       OK ] ChainTest.Chain_UniqueRefcap (2 ms)
+[ RUN      ] ChainTest.Chain_UniqueEphRecoverCall
+[       OK ] ChainTest.Chain_UniqueEphRecoverCall (2 ms)
+[ RUN      ] ChainTest.Chain_UniqueEphSubtypeMethodCap
+[       OK ] ChainTest.Chain_UniqueEphSubtypeMethodCap (2 ms)
+[ RUN      ] ChainTest.Chain_UniqueEphSameMethodCap
+[       OK ] ChainTest.Chain_UniqueEphSameMethodCap (2 ms)
+[ RUN      ] ChainTest.Chain_UniqueEphNoRecoverCall
+[       OK ] ChainTest.Chain_UniqueEphNoRecoverCall (2 ms)
+[----------] 6 tests from ChainTest (12 ms total)
+
+[----------] 8 tests from LocalInferTest
+[ RUN      ] LocalInferTest.Simple
+[       OK ] LocalInferTest.Simple (4 ms)
+[ RUN      ] LocalInferTest.Tuple
+[       OK ] LocalInferTest.Tuple (4 ms)
+[ RUN      ] LocalInferTest.NestedTuple
+[       OK ] LocalInferTest.NestedTuple (4 ms)
+[ RUN      ] LocalInferTest.DontCare
+[       OK ] LocalInferTest.DontCare (4 ms)
+[ RUN      ] LocalInferTest.Union
+[       OK ] LocalInferTest.Union (4 ms)
+[ RUN      ] LocalInferTest.UnionOfTuples
+[       OK ] LocalInferTest.UnionOfTuples (2 ms)
+[ RUN      ] LocalInferTest.VarAndLet
+[       OK ] LocalInferTest.VarAndLet (4 ms)
+[ RUN      ] LocalInferTest.DeclAndNot
+[       OK ] LocalInferTest.DeclAndNot (4 ms)
+[----------] 8 tests from LocalInferTest (30 ms total)
+
+[----------] 19 tests from SugarTraitTest
+[ RUN      ] SugarTraitTest.FieldDelegate
+[       OK ] SugarTraitTest.FieldDelegate (2 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateTypeCannotBeConrete
+[       OK ] SugarTraitTest.FieldDelegateTypeCannotBeConrete (1 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateTypeCanBeUnimplementedInterface
+[       OK ] SugarTraitTest.FieldDelegateTypeCanBeUnimplementedInterface (2 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateTypeCanBeUnimplementedTrait
+[       OK ] SugarTraitTest.FieldDelegateTypeCanBeUnimplementedTrait (2 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateParamsReturn
+[       OK ] SugarTraitTest.FieldDelegateParamsReturn (2 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateMultipleMethods
+[       OK ] SugarTraitTest.FieldDelegateMultipleMethods (3 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateMaskedMethods
+[       OK ] SugarTraitTest.FieldDelegateMaskedMethods (3 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateDuplicateMethodsAddedOnce
+[       OK ] SugarTraitTest.FieldDelegateDuplicateMethodsAddedOnce (2 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateClashingMethodsFail
+[       OK ] SugarTraitTest.FieldDelegateClashingMethodsFail (2 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateMultipleDelegations
+[       OK ] SugarTraitTest.FieldDelegateMultipleDelegations (3 ms)
+[ RUN      ] SugarTraitTest.FieldDelegateClashingDelegationsFail
+[       OK ] SugarTraitTest.FieldDelegateClashingDelegationsFail (1 ms)
+[ RUN      ] SugarTraitTest.FieldDelegatePolymorphicTrait
+[       OK ] SugarTraitTest.FieldDelegatePolymorphicTrait (2 ms)
+[ RUN      ] SugarTraitTest.FieldDelegatePolymorphicTraitMustMatch
+[       OK ] SugarTraitTest.FieldDelegatePolymorphicTraitMustMatch (1 ms)
+[ RUN      ] SugarTraitTest.FieldDelegatePolymorphicMethod
+[       OK ] SugarTraitTest.FieldDelegatePolymorphicMethod (3 ms)
+[ RUN      ] SugarTraitTest.PrimitiveEqAdded
+[       OK ] SugarTraitTest.PrimitiveEqAdded (2 ms)
+[ RUN      ] SugarTraitTest.PrimitiveEqAddedWithTypeArgs
+[       OK ] SugarTraitTest.PrimitiveEqAddedWithTypeArgs (3 ms)
+[ RUN      ] SugarTraitTest.PrimitiveEqNotAddedIfAlreadyPresent
+[       OK ] SugarTraitTest.PrimitiveEqNotAddedIfAlreadyPresent (2 ms)
+[ RUN      ] SugarTraitTest.PrimitiveNeNotAddedIfAlreadyPresent
+[       OK ] SugarTraitTest.PrimitiveNeNotAddedIfAlreadyPresent (3 ms)
+[ RUN      ] SugarTraitTest.PrimitiveEqNotAddedIfInheritted
+[       OK ] SugarTraitTest.PrimitiveEqNotAddedIfInheritted (2 ms)
+[----------] 19 tests from SugarTraitTest (41 ms total)
+
+[----------] 12 tests from AnnotationsTest
+[ RUN      ] AnnotationsTest.AnnotateTypes
+[       OK ] AnnotationsTest.AnnotateTypes (1 ms)
+[ RUN      ] AnnotationsTest.AnnotateMethods
+[       OK ] AnnotationsTest.AnnotateMethods (0 ms)
+[ RUN      ] AnnotationsTest.AnnotateCompoundExpr
+[       OK ] AnnotationsTest.AnnotateCompoundExpr (1 ms)
+[ RUN      ] AnnotationsTest.UnterminatedAnnotationError
+[       OK ] AnnotationsTest.UnterminatedAnnotationError (0 ms)
+[ RUN      ] AnnotationsTest.InvalidAnnotationError
+[       OK ] AnnotationsTest.InvalidAnnotationError (1 ms)
+[ RUN      ] AnnotationsTest.AnnotationsArePresent
+[       OK ] AnnotationsTest.AnnotationsArePresent (0 ms)
+[ RUN      ] AnnotationsTest.AnnotateSugar
+[       OK ] AnnotationsTest.AnnotateSugar (1 ms)
+[ RUN      ] AnnotationsTest.AnnotateLambda
+[       OK ] AnnotationsTest.AnnotateLambda (2 ms)
+[ RUN      ] AnnotationsTest.PackedAnnotationOnStruct
+[       OK ] AnnotationsTest.PackedAnnotationOnStruct (1 ms)
+[ RUN      ] AnnotationsTest.PackedAnnotationOnNonStructError
+[       OK ] AnnotationsTest.PackedAnnotationOnNonStructError (0 ms)
+[ RUN      ] AnnotationsTest.PackedAnnotationOnPrimitiveError
+[       OK ] AnnotationsTest.PackedAnnotationOnPrimitiveError (1 ms)
+[ RUN      ] AnnotationsTest.PackedAnnotationOnActorError
+[       OK ] AnnotationsTest.PackedAnnotationOnActorError (0 ms)
+[----------] 12 tests from AnnotationsTest (8 ms total)
+
+[----------] 5 tests from PaintTest
+[ RUN      ] PaintTest.SingleTypeSingleFunction
+[       OK ] PaintTest.SingleTypeSingleFunction (0 ms)
+[ RUN      ] PaintTest.MultiTypeMultiFunction
+[       OK ] PaintTest.MultiTypeMultiFunction (0 ms)
+[ RUN      ] PaintTest.ThreeTypeTwoFunctionForcedSparse
+[       OK ] PaintTest.ThreeTypeTwoFunctionForcedSparse (0 ms)
+[ RUN      ] PaintTest.MultiNoCollision
+[       OK ] PaintTest.MultiNoCollision (0 ms)
+[ RUN      ] PaintTest.MultiComplex
+[       OK ] PaintTest.MultiComplex (0 ms)
+[----------] 5 tests from PaintTest (0 ms total)
+
+[----------] 43 tests from VerifyTest
+[ RUN      ] VerifyTest.MainActorFunCreate
+[       OK ] VerifyTest.MainActorFunCreate (2 ms)
+[ RUN      ] VerifyTest.MainActorNewCreateTypeParams
+[       OK ] VerifyTest.MainActorNewCreateTypeParams (2 ms)
+[ RUN      ] VerifyTest.MainActorNewCreateTwoParams
+[       OK ] VerifyTest.MainActorNewCreateTwoParams (2 ms)
+[ RUN      ] VerifyTest.MainActorNewCreateParamWrongType
+[       OK ] VerifyTest.MainActorNewCreateParamWrongType (2 ms)
+[ RUN      ] VerifyTest.MainActorNoConstructor
+[       OK ] VerifyTest.MainActorNoConstructor (2 ms)
+[ RUN      ] VerifyTest.PrimitiveWithTypeParamsInit
+[       OK ] VerifyTest.PrimitiveWithTypeParamsInit (2 ms)
+[ RUN      ] VerifyTest.PrimitiveNewInit
+[       OK ] VerifyTest.PrimitiveNewInit (2 ms)
+[ RUN      ] VerifyTest.PrimitiveFunRefInit
+[       OK ] VerifyTest.PrimitiveFunRefInit (3 ms)
+[ RUN      ] VerifyTest.PrimitiveInitWithTypeParams
+[       OK ] VerifyTest.PrimitiveInitWithTypeParams (2 ms)
+[ RUN      ] VerifyTest.PrimitiveInitWithParams
+[       OK ] VerifyTest.PrimitiveInitWithParams (2 ms)
+[ RUN      ] VerifyTest.PrimitiveInitReturnBool
+[       OK ] VerifyTest.PrimitiveInitReturnBool (2 ms)
+[ RUN      ] VerifyTest.PrimitiveInitPartial
+[       OK ] VerifyTest.PrimitiveInitPartial (2 ms)
+[ RUN      ] VerifyTest.PrimitiveWithTypeParamsFinal
+[       OK ] VerifyTest.PrimitiveWithTypeParamsFinal (2 ms)
+[ RUN      ] VerifyTest.ClassWithTypeParamsFinal
+[       OK ] VerifyTest.ClassWithTypeParamsFinal (2 ms)
+[ RUN      ] VerifyTest.ActorBeFinal
+[       OK ] VerifyTest.ActorBeFinal (2 ms)
+[ RUN      ] VerifyTest.ClassFunRefFinal
+[       OK ] VerifyTest.ClassFunRefFinal (2 ms)
+[ RUN      ] VerifyTest.ClassFinalWithTypeParams
+[       OK ] VerifyTest.ClassFinalWithTypeParams (2 ms)
+[ RUN      ] VerifyTest.ClassFinalWithParams
+[       OK ] VerifyTest.ClassFinalWithParams (2 ms)
+[ RUN      ] VerifyTest.ClassFinalReturnBool
+[       OK ] VerifyTest.ClassFinalReturnBool (2 ms)
+[ RUN      ] VerifyTest.ClassFinalPartial
+[       OK ] VerifyTest.ClassFinalPartial (2 ms)
+[ RUN      ] VerifyTest.TryNoError
+[       OK ] VerifyTest.TryNoError (2 ms)
+[ RUN      ] VerifyTest.TryError
+[       OK ] VerifyTest.TryError (3 ms)
+[ RUN      ] VerifyTest.TryTryElseError
+[       OK ] VerifyTest.TryTryElseError (2 ms)
+[ RUN      ] VerifyTest.TryBranchedError
+[       OK ] VerifyTest.TryBranchedError (2 ms)
+[ RUN      ] VerifyTest.TryCallPartialFunction
+[       OK ] VerifyTest.TryCallPartialFunction (2 ms)
+[ RUN      ] VerifyTest.TryCallCurriedPartialFunction
+[       OK ] VerifyTest.TryCallCurriedPartialFunction (2 ms)
+[ RUN      ] VerifyTest.TryCallChainedPartialFunction
+[       OK ] VerifyTest.TryCallChainedPartialFunction (2 ms)
+[ RUN      ] VerifyTest.PartialFunctionNoError
+[       OK ] VerifyTest.PartialFunctionNoError (2 ms)
+[ RUN      ] VerifyTest.PartialFunctionError
+[       OK ] VerifyTest.PartialFunctionError (2 ms)
+[ RUN      ] VerifyTest.PartialFunctionBranchedError
+[       OK ] VerifyTest.PartialFunctionBranchedError (2 ms)
+[ RUN      ] VerifyTest.PartialFunctionCallPartialFunction
+[       OK ] VerifyTest.PartialFunctionCallPartialFunction (2 ms)
+[ RUN      ] VerifyTest.PartialFunctionCallCurriedPartialFunction
+[       OK ] VerifyTest.PartialFunctionCallCurriedPartialFunction (2 ms)
+[ RUN      ] VerifyTest.NonPartialFunctionError
+[       OK ] VerifyTest.NonPartialFunctionError (2 ms)
+[ RUN      ] VerifyTest.ErroringBehaviourError
+[       OK ] VerifyTest.ErroringBehaviourError (2 ms)
+[ RUN      ] VerifyTest.ErroringActorConstructorError
+[       OK ] VerifyTest.ErroringActorConstructorError (2 ms)
+[ RUN      ] VerifyTest.TraitPartialFunctionNoError
+[       OK ] VerifyTest.TraitPartialFunctionNoError (2 ms)
+[ RUN      ] VerifyTest.TraitNonPartialFunctionError
+[       OK ] VerifyTest.TraitNonPartialFunctionError (2 ms)
+[ RUN      ] VerifyTest.InterfacePartialFunctionNoError
+[       OK ] VerifyTest.InterfacePartialFunctionNoError (2 ms)
+[ RUN      ] VerifyTest.InterfaceNonPartialFunctionError
+[       OK ] VerifyTest.InterfaceNonPartialFunctionError (2 ms)
+[ RUN      ] VerifyTest.FFICallPartial
+[       OK ] VerifyTest.FFICallPartial (3 ms)
+[ RUN      ] VerifyTest.FFICallPartialWithPartialDeclaration
+[       OK ] VerifyTest.FFICallPartialWithPartialDeclaration (2 ms)
+[ RUN      ] VerifyTest.FFICallWithPartialDeclaration
+[       OK ] VerifyTest.FFICallWithPartialDeclaration (2 ms)
+[ RUN      ] VerifyTest.FFICallPartialWithNonPartialDeclaration
+[       OK ] VerifyTest.FFICallPartialWithNonPartialDeclaration (2 ms)
+[----------] 43 tests from VerifyTest (90 ms total)
+
+[----------] 66 tests from LiteralTest
+[ RUN      ] LiteralTest.CantInfer_Op_IsLiterals
+[       OK ] LiteralTest.CantInfer_Op_IsLiterals (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Op_IsntLiterals
+[       OK ] LiteralTest.CantInfer_Op_IsntLiterals (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Op_ExprIsLiteral
+[       OK ] LiteralTest.CantInfer_Op_ExprIsLiteral (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Op_IntAndFloat
+[       OK ] LiteralTest.CantInfer_Op_IntAndFloat (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Op_FloatAndInt
+[       OK ] LiteralTest.CantInfer_Op_FloatAndInt (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Op_FloatAndIntReturningFloat
+[       OK ] LiteralTest.CantInfer_Op_FloatAndIntReturningFloat (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Op_IntAndFloatReturningFloat
+[       OK ] LiteralTest.CantInfer_Op_IntAndFloatReturningFloat (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Op_EqualsLiterals
+[       OK ] LiteralTest.CantInfer_Op_EqualsLiterals (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_FloatLiteralFromIntType
+[       OK ] LiteralTest.CantInfer_Let_FloatLiteralFromIntType (5 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_NonNumericType
+[       OK ] LiteralTest.CantInfer_Let_NonNumericType (3 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_NoType
+[       OK ] LiteralTest.CantInfer_Let_NoType (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_AmbiguousUnion1
+[       OK ] LiteralTest.CantInfer_Let_AmbiguousUnion1 (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_AmbiguousUnion2
+[       OK ] LiteralTest.CantInfer_Let_AmbiguousUnion2 (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_EmptyIntersection
+[       OK ] LiteralTest.CantInfer_Let_EmptyIntersection (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_InsufficientlySpecifiedGeneric
+[       OK ] LiteralTest.CantInfer_Let_InsufficientlySpecifiedGeneric (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Let_GenericSubtype
+[       OK ] LiteralTest.CantInfer_Let_GenericSubtype (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Parameter_GenericSubtype
+[       OK ] LiteralTest.CantInfer_Parameter_GenericSubtype (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Parameter_AmbiguousUnion
+[       OK ] LiteralTest.CantInfer_Parameter_AmbiguousUnion (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Return_InvalidUnion
+[       OK ] LiteralTest.CantInfer_Return_InvalidUnion (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Array_UnambiguousUnion
+[       OK ] LiteralTest.CantInfer_Array_UnambiguousUnion (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Match_LiteralMatchValue
+[       OK ] LiteralTest.CantInfer_Match_LiteralMatchValue (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Match_InvalidElse
+[       OK ] LiteralTest.CantInfer_Match_InvalidElse (2 ms)
+[ RUN      ] LiteralTest.CantInfer_Literal_Unused
+[       OK ] LiteralTest.CantInfer_Literal_Unused (2 ms)
+[ RUN      ] LiteralTest.CantInfer_While_InvalidReturnValue
+[       OK ] LiteralTest.CantInfer_While_InvalidReturnValue (0 ms)
+[ RUN      ] LiteralTest.CantInfer_While_InvalidElseValue
+[       OK ] LiteralTest.CantInfer_While_InvalidElseValue (1 ms)
+[ RUN      ] LiteralTest.Let_AllNumericTypes
+[       OK ] LiteralTest.Let_AllNumericTypes (28 ms)
+[ RUN      ] LiteralTest.Let_UnambiguousUnion
+[       OK ] LiteralTest.Let_UnambiguousUnion (2 ms)
+[ RUN      ] LiteralTest.Let_UnionSameType
+[       OK ] LiteralTest.Let_UnionSameType (2 ms)
+[ RUN      ] LiteralTest.Let_SufficientlySpecifiedGeneric
+[       OK ] LiteralTest.Let_SufficientlySpecifiedGeneric (2 ms)
+[ RUN      ] LiteralTest.Let_Tuple
+[       OK ] LiteralTest.Let_Tuple (2 ms)
+[ RUN      ] LiteralTest.Let_NestedTuple
+[       OK ] LiteralTest.Let_NestedTuple (2 ms)
+[ RUN      ] LiteralTest.Let_TupleOfGeneric
+[       OK ] LiteralTest.Let_TupleOfGeneric (2 ms)
+[ RUN      ] LiteralTest.Let_TupleOfGenericOfGeneric
+[       OK ] LiteralTest.Let_TupleOfGenericOfGeneric (2 ms)
+[ RUN      ] LiteralTest.Parameter_Simple
+[       OK ] LiteralTest.Parameter_Simple (2 ms)
+[ RUN      ] LiteralTest.Parameter_SecondParameter
+[       OK ] LiteralTest.Parameter_SecondParameter (2 ms)
+[ RUN      ] LiteralTest.Parameter_Tuple
+[       OK ] LiteralTest.Parameter_Tuple (2 ms)
+[ RUN      ] LiteralTest.Parameter_NestedTuple
+[       OK ] LiteralTest.Parameter_NestedTuple (2 ms)
+[ RUN      ] LiteralTest.Parameter_Union
+[       OK ] LiteralTest.Parameter_Union (2 ms)
+[ RUN      ] LiteralTest.Parameter_TupleOfUnions
+[       OK ] LiteralTest.Parameter_TupleOfUnions (2 ms)
+[ RUN      ] LiteralTest.Parameter_Generic
+[       OK ] LiteralTest.Parameter_Generic (2 ms)
+[ RUN      ] LiteralTest.Parameter_TupleOfUnionOfGeneric
+[       OK ] LiteralTest.Parameter_TupleOfUnionOfGeneric (2 ms)
+[ RUN      ] LiteralTest.Return_Simple
+[       OK ] LiteralTest.Return_Simple (2 ms)
+[ RUN      ] LiteralTest.Return_TupleOfUnionOfGeneric
+[       OK ] LiteralTest.Return_TupleOfUnionOfGeneric (2 ms)
+[ RUN      ] LiteralTest.Return_UnionOfTuple
+[       OK ] LiteralTest.Return_UnionOfTuple (1 ms)
+[ RUN      ] LiteralTest.UseReturn_Simple
+[       OK ] LiteralTest.UseReturn_Simple (2 ms)
+[ RUN      ] LiteralTest.UseReturn_Tuple
+[       OK ] LiteralTest.UseReturn_Tuple (2 ms)
+[ RUN      ] LiteralTest.Type_Simple
+[       OK ] LiteralTest.Type_Simple (2 ms)
+[ RUN      ] LiteralTest.Array_Simple
+[       OK ] LiteralTest.Array_Simple (2 ms)
+[ RUN      ] LiteralTest.Array_Parameter
+[       OK ] LiteralTest.Array_Parameter (2 ms)
+[ RUN      ] LiteralTest.Array_ParameterOfUnionOfArray
+[       OK ] LiteralTest.Array_ParameterOfUnionOfArray (2 ms)
+[ RUN      ] LiteralTest.Array_ParameterOfArrayOfUnion
+[       OK ] LiteralTest.Array_ParameterOfArrayOfUnion (2 ms)
+[ RUN      ] LiteralTest.Op_MulLiterals
+[       OK ] LiteralTest.Op_MulLiterals (2 ms)
+[ RUN      ] LiteralTest.Op_XorLiterals
+[       OK ] LiteralTest.Op_XorLiterals (2 ms)
+[ RUN      ] LiteralTest.Op_VarOrLiteral
+[       OK ] LiteralTest.Op_VarOrLiteral (2 ms)
+[ RUN      ] LiteralTest.Op_VarEqualsLiteral
+[       OK ] LiteralTest.Op_VarEqualsLiteral (2 ms)
+[ RUN      ] LiteralTest.Op_LiteralEqualsVar
+[       OK ] LiteralTest.Op_LiteralEqualsVar (2 ms)
+[ RUN      ] LiteralTest.Op_ParameterOfTupleOfAnd
+[       OK ] LiteralTest.Op_ParameterOfTupleOfAnd (2 ms)
+[ RUN      ] LiteralTest.If_Simple
+[       OK ] LiteralTest.If_Simple (2 ms)
+[ RUN      ] LiteralTest.Match_ResultInt
+[       OK ] LiteralTest.Match_ResultInt (2 ms)
+[ RUN      ] LiteralTest.Match_ResultFloat
+[       OK ] LiteralTest.Match_ResultFloat (2 ms)
+[ RUN      ] LiteralTest.Match_PatternTuple
+[       OK ] LiteralTest.Match_PatternTuple (2 ms)
+[ RUN      ] LiteralTest.Try_ErrorBodyElseLiteral
+[       OK ] LiteralTest.Try_ErrorBodyElseLiteral (2 ms)
+[ RUN      ] LiteralTest.Try_ExpressionBody
+[       OK ] LiteralTest.Try_ExpressionBody (2 ms)
+[ RUN      ] LiteralTest.While_TupleResultBreakHasValue
+[       OK ] LiteralTest.While_TupleResultBreakHasValue (2 ms)
+[ RUN      ] LiteralTest.While_TupleResultBreakHasNoValue
+[       OK ] LiteralTest.While_TupleResultBreakHasNoValue (2 ms)
+[ RUN      ] LiteralTest.For_Simple
+[       OK ] LiteralTest.For_Simple (2 ms)
+[----------] 66 tests from LiteralTest (158 ms total)
+
+[----------] 14 tests from ParseExprTest
+[ RUN      ] ParseExprTest.Lambda
+[       OK ] ParseExprTest.Lambda (0 ms)
+[ RUN      ] ParseExprTest.LambdaCap
+[       OK ] ParseExprTest.LambdaCap (1 ms)
+[ RUN      ] ParseExprTest.LambdaCaptureVariable
+[       OK ] ParseExprTest.LambdaCaptureVariable (0 ms)
+[ RUN      ] ParseExprTest.LambdaCaptureExpression
+[       OK ] ParseExprTest.LambdaCaptureExpression (1 ms)
+[ RUN      ] ParseExprTest.LambdaCaptureExpressionAndType
+[       OK ] ParseExprTest.LambdaCaptureExpressionAndType (1 ms)
+[ RUN      ] ParseExprTest.LambdaCaptureTypeWithoutExpressionFail
+[       OK ] ParseExprTest.LambdaCaptureTypeWithoutExpressionFail (0 ms)
+[ RUN      ] ParseExprTest.LambdaOldSyntax
+[       OK ] ParseExprTest.LambdaOldSyntax (1 ms)
+[ RUN      ] ParseExprTest.CompileErrorAllowedAsIfdefClause
+[       OK ] ParseExprTest.CompileErrorAllowedAsIfdefClause (0 ms)
+[ RUN      ] ParseExprTest.CompileErrorNeedsReason
+[       OK ] ParseExprTest.CompileErrorNeedsReason (1 ms)
+[ RUN      ] ParseExprTest.CompileErrorReasonMustBeAString
+[       OK ] ParseExprTest.CompileErrorReasonMustBeAString (0 ms)
+[ RUN      ] ParseExprTest.ExpressionNotAllowedBeforeCompileError
+[       OK ] ParseExprTest.ExpressionNotAllowedBeforeCompileError (1 ms)
+[ RUN      ] ParseExprTest.ExpressionNotAllowedAfterCompileError
+[       OK ] ParseExprTest.ExpressionNotAllowedAfterCompileError (0 ms)
+[ RUN      ] ParseExprTest.CompileErrorAllowedAsIfdefElseClause
+[       OK ] ParseExprTest.CompileErrorAllowedAsIfdefElseClause (1 ms)
+[ RUN      ] ParseExprTest.CompileErrorNotAllowedOutsideIfdef
+[       OK ] ParseExprTest.CompileErrorNotAllowedOutsideIfdef (0 ms)
+[----------] 14 tests from ParseExprTest (7 ms total)
+
+[----------] 103 tests from LexerTest
+[ RUN      ] LexerTest.Id
+[       OK ] LexerTest.Id (0 ms)
+[ RUN      ] LexerTest.IdStartingWithKeyword
+[       OK ] LexerTest.IdStartingWithKeyword (0 ms)
+[ RUN      ] LexerTest.Keyword
+[       OK ] LexerTest.Keyword (0 ms)
+[ RUN      ] LexerTest.Symbol1Char
+[       OK ] LexerTest.Symbol1Char (0 ms)
+[ RUN      ] LexerTest.Symbol2CharStartingWith1CharSymbol
+[       OK ] LexerTest.Symbol2CharStartingWith1CharSymbol (0 ms)
+[ RUN      ] LexerTest.Symbol3CharStartingWith1CharSymbol
+[       OK ] LexerTest.Symbol3CharStartingWith1CharSymbol (0 ms)
+[ RUN      ] LexerTest.SymbolNewAtStart
+[       OK ] LexerTest.SymbolNewAtStart (0 ms)
+[ RUN      ] LexerTest.SymbolNewAfterWhitespace
+[       OK ] LexerTest.SymbolNewAfterWhitespace (0 ms)
+[ RUN      ] LexerTest.SymbolNewAfterNewline
+[       OK ] LexerTest.SymbolNewAfterNewline (0 ms)
+[ RUN      ] LexerTest.SymbolNotNewAfterOther
+[       OK ] LexerTest.SymbolNotNewAfterOther (0 ms)
+[ RUN      ] LexerTest.EofIfEmpty
+[       OK ] LexerTest.EofIfEmpty (0 ms)
+[ RUN      ] LexerTest.BadChar
+[       OK ] LexerTest.BadChar (0 ms)
+[ RUN      ] LexerTest.Lparen
+[       OK ] LexerTest.Lparen (0 ms)
+[ RUN      ] LexerTest.LparenNew
+[       OK ] LexerTest.LparenNew (0 ms)
+[ RUN      ] LexerTest.LparenAfterBlockComment
+[       OK ] LexerTest.LparenAfterBlockComment (0 ms)
+[ RUN      ] LexerTest.Lsquare
+[       OK ] LexerTest.Lsquare (0 ms)
+[ RUN      ] LexerTest.LsquareNew
+[       OK ] LexerTest.LsquareNew (0 ms)
+[ RUN      ] LexerTest.LsquareAfterBlockComment
+[       OK ] LexerTest.LsquareAfterBlockComment (0 ms)
+[ RUN      ] LexerTest.Minus
+[       OK ] LexerTest.Minus (0 ms)
+[ RUN      ] LexerTest.MinusNew
+[       OK ] LexerTest.MinusNew (0 ms)
+[ RUN      ] LexerTest.MinusAfterBlockComment
+[       OK ] LexerTest.MinusAfterBlockComment (0 ms)
+[ RUN      ] LexerTest.String
+[       OK ] LexerTest.String (0 ms)
+[ RUN      ] LexerTest.StringEnds
+[       OK ] LexerTest.StringEnds (0 ms)
+[ RUN      ] LexerTest.StringEscapedDoubleQuote
+[       OK ] LexerTest.StringEscapedDoubleQuote (0 ms)
+[ RUN      ] LexerTest.StringEscapedSlashAtEnd
+[       OK ] LexerTest.StringEscapedSlashAtEnd (0 ms)
+[ RUN      ] LexerTest.StringHexEscape
+[       OK ] LexerTest.StringHexEscape (0 ms)
+[ RUN      ] LexerTest.StringUnicode4Escape
+[       OK ] LexerTest.StringUnicode4Escape (0 ms)
+[ RUN      ] LexerTest.StringUnicode6Escape
+[       OK ] LexerTest.StringUnicode6Escape (0 ms)
+[ RUN      ] LexerTest.TripleString
+[       OK ] LexerTest.TripleString (0 ms)
+[ RUN      ] LexerTest.TripleStringEnds
+[       OK ] LexerTest.TripleStringEnds (0 ms)
+[ RUN      ] LexerTest.TripleStringContainingDoubleQuote
+[       OK ] LexerTest.TripleStringContainingDoubleQuote (0 ms)
+[ RUN      ] LexerTest.TripleStringContaining2DoubleQuotes
+[       OK ] LexerTest.TripleStringContaining2DoubleQuotes (0 ms)
+[ RUN      ] LexerTest.TripleStringEndingWithExtraDoubleQuotes
+[       OK ] LexerTest.TripleStringEndingWithExtraDoubleQuotes (0 ms)
+[ RUN      ] LexerTest.TripleStringEndingWith3ExtraDoubleQuotes
+[       OK ] LexerTest.TripleStringEndingWith3ExtraDoubleQuotes (0 ms)
+[ RUN      ] LexerTest.TripleStringEndingWith4ExtraDoubleQuotes
+[       OK ] LexerTest.TripleStringEndingWith4ExtraDoubleQuotes (0 ms)
+[ RUN      ] LexerTest.TripleStringMultipleLines
+[       OK ] LexerTest.TripleStringMultipleLines (0 ms)
+[ RUN      ] LexerTest.TripleStringMultipleLinesBlocksNewline
+[       OK ] LexerTest.TripleStringMultipleLinesBlocksNewline (0 ms)
+[ RUN      ] LexerTest.TripleStringEmpty
+[       OK ] LexerTest.TripleStringEmpty (0 ms)
+[ RUN      ] LexerTest.TripleStringContainingEscape
+[       OK ] LexerTest.TripleStringContainingEscape (0 ms)
+[ RUN      ] LexerTest.TripleStringStripsEqualLeadingWhitespace
+[       OK ] LexerTest.TripleStringStripsEqualLeadingWhitespace (0 ms)
+[ RUN      ] LexerTest.TripleStringStripsIncreasingLeadingWhitespace
+[       OK ] LexerTest.TripleStringStripsIncreasingLeadingWhitespace (0 ms)
+[ RUN      ] LexerTest.TripleStringStripsDecreasingLeadingWhitespace
+[       OK ] LexerTest.TripleStringStripsDecreasingLeadingWhitespace (0 ms)
+[ RUN      ] LexerTest.TripleStringStripsVariableLeadingWhitespace
+[       OK ] LexerTest.TripleStringStripsVariableLeadingWhitespace (0 ms)
+[ RUN      ] LexerTest.TripleStringStripsVariableLeadingWhitespaceWithBlankLines
+[       OK ] LexerTest.TripleStringStripsVariableLeadingWhitespaceWithBlankLines (0 ms)
+[ RUN      ] LexerTest.TripleStringWithLeadingEmptyLine
+[       OK ] LexerTest.TripleStringWithLeadingEmptyLine (0 ms)
+[ RUN      ] LexerTest.TripleStringWithNonLeadingEmptyLine
+[       OK ] LexerTest.TripleStringWithNonLeadingEmptyLine (0 ms)
+[ RUN      ] LexerTest.TripleStringUnterminated
+[       OK ] LexerTest.TripleStringUnterminated (0 ms)
+[ RUN      ] LexerTest.TripleStringUnterminatedEndWithDoubleQuote
+[       OK ] LexerTest.TripleStringUnterminatedEndWithDoubleQuote (0 ms)
+[ RUN      ] LexerTest.TripleStringUnterminatedEndWith2DoubleQuotes
+[       OK ] LexerTest.TripleStringUnterminatedEndWith2DoubleQuotes (0 ms)
+[ RUN      ] LexerTest.EmptyStringAtEndOfSource
+[       OK ] LexerTest.EmptyStringAtEndOfSource (0 ms)
+[ RUN      ] LexerTest.KeywordAfterError
+[       OK ] LexerTest.KeywordAfterError (0 ms)
+[ RUN      ] LexerTest.IdAfterError
+[       OK ] LexerTest.IdAfterError (0 ms)
+[ RUN      ] LexerTest.OperatorAfterError
+[       OK ] LexerTest.OperatorAfterError (0 ms)
+[ RUN      ] LexerTest.IntegerAfterError
+[       OK ] LexerTest.IntegerAfterError (0 ms)
+[ RUN      ] LexerTest.MultipleAfterError
+[       OK ] LexerTest.MultipleAfterError (0 ms)
+[ RUN      ] LexerTest.Int0
+[       OK ] LexerTest.Int0 (0 ms)
+[ RUN      ] LexerTest.Int0Finishes
+[       OK ] LexerTest.Int0Finishes (0 ms)
+[ RUN      ] LexerTest.IntDecimal
+[       OK ] LexerTest.IntDecimal (0 ms)
+[ RUN      ] LexerTest.IntDecimalWithSeparators
+[       OK ] LexerTest.IntDecimalWithSeparators (0 ms)
+[ RUN      ] LexerTest.IntDecimalWithTrailingSeparator
+[       OK ] LexerTest.IntDecimalWithTrailingSeparator (0 ms)
+[ RUN      ] LexerTest.IntDecimalDot
+[       OK ] LexerTest.IntDecimalDot (0 ms)
+[ RUN      ] LexerTest.IntDecimalBadChar
+[       OK ] LexerTest.IntDecimalBadChar (0 ms)
+[ RUN      ] LexerTest.IntBinary
+[       OK ] LexerTest.IntBinary (0 ms)
+[ RUN      ] LexerTest.IntBinaryWithSeparators
+[       OK ] LexerTest.IntBinaryWithSeparators (0 ms)
+[ RUN      ] LexerTest.IntBinaryIncomplete
+[       OK ] LexerTest.IntBinaryIncomplete (0 ms)
+[ RUN      ] LexerTest.IntBinaryBadChar
+[       OK ] LexerTest.IntBinaryBadChar (0 ms)
+[ RUN      ] LexerTest.IntHex
+[       OK ] LexerTest.IntHex (0 ms)
+[ RUN      ] LexerTest.IntHexWithSeparator
+[       OK ] LexerTest.IntHexWithSeparator (0 ms)
+[ RUN      ] LexerTest.IntHexIncomplete
+[       OK ] LexerTest.IntHexIncomplete (0 ms)
+[ RUN      ] LexerTest.IntHexBadChar
+[       OK ] LexerTest.IntHexBadChar (0 ms)
+[ RUN      ] LexerTest.IntHexNoOverflow
+[       OK ] LexerTest.IntHexNoOverflow (0 ms)
+[ RUN      ] LexerTest.IntHexOverflow
+[       OK ] LexerTest.IntHexOverflow (0 ms)
+[ RUN      ] LexerTest.IntHexDigitOverflow
+[       OK ] LexerTest.IntHexDigitOverflow (0 ms)
+[ RUN      ] LexerTest.IntNoOctal
+[       OK ] LexerTest.IntNoOctal (0 ms)
+[ RUN      ] LexerTest.FloatDotOnly
+[       OK ] LexerTest.FloatDotOnly (0 ms)
+[ RUN      ] LexerTest.FloatEOnly
+[       OK ] LexerTest.FloatEOnly (0 ms)
+[ RUN      ] LexerTest.FloatNegativeE
+[       OK ] LexerTest.FloatNegativeE (0 ms)
+[ RUN      ] LexerTest.FloatPositiveE
+[       OK ] LexerTest.FloatPositiveE (0 ms)
+[ RUN      ] LexerTest.FloatDotAndE
+[       OK ] LexerTest.FloatDotAndE (0 ms)
+[ RUN      ] LexerTest.FloatDotAndNegativeE
+[       OK ] LexerTest.FloatDotAndNegativeE (0 ms)
+[ RUN      ] LexerTest.FloatLeading0
+[       OK ] LexerTest.FloatLeading0 (0 ms)
+[ RUN      ] LexerTest.FloatExpLeading0
+[       OK ] LexerTest.FloatExpLeading0 (0 ms)
+[ RUN      ] LexerTest.FloatIllegalExp
+[       OK ] LexerTest.FloatIllegalExp (0 ms)
+[ RUN      ] LexerTest.LineComment
+[       OK ] LexerTest.LineComment (0 ms)
+[ RUN      ] LexerTest.LineCommentWith3Slashes
+[       OK ] LexerTest.LineCommentWith3Slashes (0 ms)
+[ RUN      ] LexerTest.LineCommentContainingBlockCommentStart
+[       OK ] LexerTest.LineCommentContainingBlockCommentStart (0 ms)
+[ RUN      ] LexerTest.LineCommentEndingWithSlash
+[       OK ] LexerTest.LineCommentEndingWithSlash (0 ms)
+[ RUN      ] LexerTest.BlockComment
+[       OK ] LexerTest.BlockComment (0 ms)
+[ RUN      ] LexerTest.BlockCommentOverMultipleLines
+[       OK ] LexerTest.BlockCommentOverMultipleLines (0 ms)
+[ RUN      ] LexerTest.BlockCommentStartingWith2Stars
+[       OK ] LexerTest.BlockCommentStartingWith2Stars (0 ms)
+[ RUN      ] LexerTest.BlockCommentEndingWith2Stars
+[       OK ] LexerTest.BlockCommentEndingWith2Stars (0 ms)
+[ RUN      ] LexerTest.BlockCommentNested
+[       OK ] LexerTest.BlockCommentNested (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedStartingWith2Slashes
+[       OK ] LexerTest.BlockCommentNestedStartingWith2Slashes (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedStartingWith2Stars
+[       OK ] LexerTest.BlockCommentNestedStartingWith2Stars (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedEndingWith2Stars
+[       OK ] LexerTest.BlockCommentNestedEndingWith2Stars (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedEndingWith2Slashes
+[       OK ] LexerTest.BlockCommentNestedEndingWith2Slashes (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedInnerEmpty
+[       OK ] LexerTest.BlockCommentNestedInnerEmpty (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedInner3Stars
+[       OK ] LexerTest.BlockCommentNestedInner3Stars (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedStartsNoWhitespace
+[       OK ] LexerTest.BlockCommentNestedStartsNoWhitespace (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedEndsNoWhitespace
+[       OK ] LexerTest.BlockCommentNestedEndsNoWhitespace (0 ms)
+[ RUN      ] LexerTest.BlockCommentContainsLineComment
+[       OK ] LexerTest.BlockCommentContainsLineComment (0 ms)
+[ RUN      ] LexerTest.BlockCommentNestedDeeper
+[       OK ] LexerTest.BlockCommentNestedDeeper (0 ms)
+[ RUN      ] LexerTest.Print
+[       OK ] LexerTest.Print (0 ms)
+[----------] 103 tests from LexerTest (1 ms total)
+
+[----------] 15 tests from IdTest
+[ RUN      ] IdTest.LeadingUnderscore
+[       OK ] IdTest.LeadingUnderscore (0 ms)
+[ RUN      ] IdTest.StartUpperCase
+[       OK ] IdTest.StartUpperCase (0 ms)
+[ RUN      ] IdTest.StartLowerCase
+[       OK ] IdTest.StartLowerCase (0 ms)
+[ RUN      ] IdTest.StartAnyCase
+[       OK ] IdTest.StartAnyCase (0 ms)
+[ RUN      ] IdTest.ContainUnderscore
+[       OK ] IdTest.ContainUnderscore (0 ms)
+[ RUN      ] IdTest.DoubleUnderscore
+[       OK ] IdTest.DoubleUnderscore (0 ms)
+[ RUN      ] IdTest.TripleUnderscore
+[       OK ] IdTest.TripleUnderscore (0 ms)
+[ RUN      ] IdTest.TrailingUnderscore
+[       OK ] IdTest.TrailingUnderscore (0 ms)
+[ RUN      ] IdTest.Prime
+[       OK ] IdTest.Prime (0 ms)
+[ RUN      ] IdTest.Dontcare
+[       OK ] IdTest.Dontcare (0 ms)
+[ RUN      ] IdTest.PrivateName
+[       OK ] IdTest.PrivateName (0 ms)
+[ RUN      ] IdTest.TypeName
+[       OK ] IdTest.TypeName (0 ms)
+[ RUN      ] IdTest.FFIType
+[       OK ] IdTest.FFIType (0 ms)
+[ RUN      ] IdTest.InternalTypeName
+[       OK ] IdTest.InternalTypeName (0 ms)
+[ RUN      ] IdTest.DontcareName
+[       OK ] IdTest.DontcareName (0 ms)
+[----------] 15 tests from IdTest (0 ms total)
+
+[----------] 27 tests from SugarExprTest
+[ RUN      ] SugarExprTest.PartialMinimal
+[       OK ] SugarExprTest.PartialMinimal (4 ms)
+[ RUN      ] SugarExprTest.PartialReceiverCapability
+[       OK ] SugarExprTest.PartialReceiverCapability (4 ms)
+[ RUN      ] SugarExprTest.PartialReceiverCapabilityFail
+[       OK ] SugarExprTest.PartialReceiverCapabilityFail (2 ms)
+[ RUN      ] SugarExprTest.PartialMemberAccessFail
+[       OK ] SugarExprTest.PartialMemberAccessFail (2 ms)
+[ RUN      ] SugarExprTest.PartialTupleElementAccessFail
+[       OK ] SugarExprTest.PartialTupleElementAccessFail (2 ms)
+[ RUN      ] SugarExprTest.PartialSomeArgs
+[       OK ] SugarExprTest.PartialSomeArgs (5 ms)
+[ RUN      ] SugarExprTest.PartialAllArgs
+[       OK ] SugarExprTest.PartialAllArgs (4 ms)
+[ RUN      ] SugarExprTest.PartialDefaultArgs
+[       OK ] SugarExprTest.PartialDefaultArgs (5 ms)
+[ RUN      ] SugarExprTest.PartialResult
+[       OK ] SugarExprTest.PartialResult (4 ms)
+[ RUN      ] SugarExprTest.PartialBehaviour
+[       OK ] SugarExprTest.PartialBehaviour (4 ms)
+[ RUN      ] SugarExprTest.PartialRaisesError
+[       OK ] SugarExprTest.PartialRaisesError (4 ms)
+[ RUN      ] SugarExprTest.PartialParameterTypeParameters
+[       OK ] SugarExprTest.PartialParameterTypeParameters (5 ms)
+[ RUN      ] SugarExprTest.PartialReceiverTypeParameters
+[       OK ] SugarExprTest.PartialReceiverTypeParameters (4 ms)
+[ RUN      ] SugarExprTest.PartialFunctionTypeParameter
+[       OK ] SugarExprTest.PartialFunctionTypeParameter (5 ms)
+[ RUN      ] SugarExprTest.LambdaMinimal
+[       OK ] SugarExprTest.LambdaMinimal (4 ms)
+[ RUN      ] SugarExprTest.LambdaFull
+[       OK ] SugarExprTest.LambdaFull (4 ms)
+[ RUN      ] SugarExprTest.LambdaThrow
+[       OK ] SugarExprTest.LambdaThrow (4 ms)
+[ RUN      ] SugarExprTest.LambdaWithTypeArgs
+[       OK ] SugarExprTest.LambdaWithTypeArgs (4 ms)
+[ RUN      ] SugarExprTest.LambdaCaptureLocalLet
+[       OK ] SugarExprTest.LambdaCaptureLocalLet (5 ms)
+[ RUN      ] SugarExprTest.LambdaCaptureLocalVar
+[       OK ] SugarExprTest.LambdaCaptureLocalVar (4 ms)
+[ RUN      ] SugarExprTest.LambdaCaptureParameter
+[       OK ] SugarExprTest.LambdaCaptureParameter (4 ms)
+[ RUN      ] SugarExprTest.LambdaCaptureFieldLet
+[       OK ] SugarExprTest.LambdaCaptureFieldLet (4 ms)
+[ RUN      ] SugarExprTest.LambdaCaptureFieldVar
+[       OK ] SugarExprTest.LambdaCaptureFieldVar (4 ms)
+[ RUN      ] SugarExprTest.LambdaNamed
+[       OK ] SugarExprTest.LambdaNamed (4 ms)
+[ RUN      ] SugarExprTest.Location
+[       OK ] SugarExprTest.Location (4 ms)
+[ RUN      ] SugarExprTest.LocationDefaultArg
+[       OK ] SugarExprTest.LocationDefaultArg (4 ms)
+[ RUN      ] SugarExprTest.ObjectLiteralReferencingTypeParameters
+[       OK ] SugarExprTest.ObjectLiteralReferencingTypeParameters (4 ms)
+[----------] 27 tests from SugarExprTest (108 ms total)
+
+[----------] 110 tests from ParseEntityTest
+[ RUN      ] ParseEntityTest.Rubbish
+[       OK ] ParseEntityTest.Rubbish (0 ms)
+[ RUN      ] ParseEntityTest.Empty
+[       OK ] ParseEntityTest.Empty (0 ms)
+[ RUN      ] ParseEntityTest.ActorMinimal
+[       OK ] ParseEntityTest.ActorMinimal (0 ms)
+[ RUN      ] ParseEntityTest.ActorCApi
+[       OK ] ParseEntityTest.ActorCApi (1 ms)
+[ RUN      ] ParseEntityTest.ActorMaximal
+[       OK ] ParseEntityTest.ActorMaximal (1 ms)
+[ RUN      ] ParseEntityTest.ActorCanBeCalledMain
+[       OK ] ParseEntityTest.ActorCanBeCalledMain (0 ms)
+[ RUN      ] ParseEntityTest.ActorCannotSpecifyCapability
+[       OK ] ParseEntityTest.ActorCannotSpecifyCapability (0 ms)
+[ RUN      ] ParseEntityTest.ActorCannotBeGenericAndCApi
+[       OK ] ParseEntityTest.ActorCannotBeGenericAndCApi (1 ms)
+[ RUN      ] ParseEntityTest.ActorCannotBeDontcare
+[       OK ] ParseEntityTest.ActorCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.ClassMinimal
+[       OK ] ParseEntityTest.ClassMinimal (1 ms)
+[ RUN      ] ParseEntityTest.ClassMaximal
+[       OK ] ParseEntityTest.ClassMaximal (0 ms)
+[ RUN      ] ParseEntityTest.ClassCannotBeCalledMain
+[       OK ] ParseEntityTest.ClassCannotBeCalledMain (1 ms)
+[ RUN      ] ParseEntityTest.ClassCannotHaveBehaviour
+[       OK ] ParseEntityTest.ClassCannotHaveBehaviour (0 ms)
+[ RUN      ] ParseEntityTest.ClassCannotBeCApi
+[       OK ] ParseEntityTest.ClassCannotBeCApi (1 ms)
+[ RUN      ] ParseEntityTest.ClassCannotBeDontcare
+[       OK ] ParseEntityTest.ClassCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.PrimitiveMinimal
+[       OK ] ParseEntityTest.PrimitiveMinimal (1 ms)
+[ RUN      ] ParseEntityTest.PrimitiveMaximal
+[       OK ] ParseEntityTest.PrimitiveMaximal (0 ms)
+[ RUN      ] ParseEntityTest.PrimitiveCannotBeCalledMain
+[       OK ] ParseEntityTest.PrimitiveCannotBeCalledMain (1 ms)
+[ RUN      ] ParseEntityTest.PrimitiveCannotHaveFields
+[       OK ] ParseEntityTest.PrimitiveCannotHaveFields (0 ms)
+[ RUN      ] ParseEntityTest.PrimitiveCannotSpecifyCapability
+[       OK ] ParseEntityTest.PrimitiveCannotSpecifyCapability (1 ms)
+[ RUN      ] ParseEntityTest.PrimitiveCannotHaveBehaviour
+[       OK ] ParseEntityTest.PrimitiveCannotHaveBehaviour (0 ms)
+[ RUN      ] ParseEntityTest.PrimitiveCannotBeCApi
+[       OK ] ParseEntityTest.PrimitiveCannotBeCApi (1 ms)
+[ RUN      ] ParseEntityTest.PrimitiveCannotBeDontcare
+[       OK ] ParseEntityTest.PrimitiveCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.TraitMinimal
+[       OK ] ParseEntityTest.TraitMinimal (1 ms)
+[ RUN      ] ParseEntityTest.TraitMaximal
+[       OK ] ParseEntityTest.TraitMaximal (0 ms)
+[ RUN      ] ParseEntityTest.TraitCannotBeCalledMain
+[       OK ] ParseEntityTest.TraitCannotBeCalledMain (1 ms)
+[ RUN      ] ParseEntityTest.TraitCannotHaveFields
+[       OK ] ParseEntityTest.TraitCannotHaveFields (0 ms)
+[ RUN      ] ParseEntityTest.TraitCannotHaveConstructor
+[       OK ] ParseEntityTest.TraitCannotHaveConstructor (1 ms)
+[ RUN      ] ParseEntityTest.TraitCannotBeCApi
+[       OK ] ParseEntityTest.TraitCannotBeCApi (0 ms)
+[ RUN      ] ParseEntityTest.TraitCannotBeDontcare
+[       OK ] ParseEntityTest.TraitCannotBeDontcare (1 ms)
+[ RUN      ] ParseEntityTest.InterfaceMinimal
+[       OK ] ParseEntityTest.InterfaceMinimal (0 ms)
+[ RUN      ] ParseEntityTest.InterfaceMaximal
+[       OK ] ParseEntityTest.InterfaceMaximal (1 ms)
+[ RUN      ] ParseEntityTest.InterfaceCannotBeCalledMain
+[       OK ] ParseEntityTest.InterfaceCannotBeCalledMain (0 ms)
+[ RUN      ] ParseEntityTest.InterfaceCannotHaveFields
+[       OK ] ParseEntityTest.InterfaceCannotHaveFields (1 ms)
+[ RUN      ] ParseEntityTest.InterfaceCannotHaveConstructor
+[       OK ] ParseEntityTest.InterfaceCannotHaveConstructor (0 ms)
+[ RUN      ] ParseEntityTest.InterfaceCannotBeCApi
+[       OK ] ParseEntityTest.InterfaceCannotBeCApi (1 ms)
+[ RUN      ] ParseEntityTest.InterfaceCannotBeDontcare
+[       OK ] ParseEntityTest.InterfaceCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.Alias
+[       OK ] ParseEntityTest.Alias (1 ms)
+[ RUN      ] ParseEntityTest.AliasMustHaveType
+[       OK ] ParseEntityTest.AliasMustHaveType (0 ms)
+[ RUN      ] ParseEntityTest.AliasCannotBeDontcare
+[       OK ] ParseEntityTest.AliasCannotBeDontcare (1 ms)
+[ RUN      ] ParseEntityTest.FunctionMinimal
+[       OK ] ParseEntityTest.FunctionMinimal (0 ms)
+[ RUN      ] ParseEntityTest.FunctionMaximal
+[       OK ] ParseEntityTest.FunctionMaximal (1 ms)
+[ RUN      ] ParseEntityTest.FunctionCannotHaveEllipsis
+[       OK ] ParseEntityTest.FunctionCannotHaveEllipsis (0 ms)
+[ RUN      ] ParseEntityTest.TraitFunctionBodiesAreOptional
+[       OK ] ParseEntityTest.TraitFunctionBodiesAreOptional (1 ms)
+[ RUN      ] ParseEntityTest.InterfaceFunctionBodiesAreOptional
+[       OK ] ParseEntityTest.InterfaceFunctionBodiesAreOptional (0 ms)
+[ RUN      ] ParseEntityTest.ClassFunctionMustHaveBody
+[       OK ] ParseEntityTest.ClassFunctionMustHaveBody (1 ms)
+[ RUN      ] ParseEntityTest.ClassFunctionCannotBeCCallable
+[       OK ] ParseEntityTest.ClassFunctionCannotBeCCallable (0 ms)
+[ RUN      ] ParseEntityTest.PrimitiveFunctionCannotBeCCallable
+[       OK ] ParseEntityTest.PrimitiveFunctionCannotBeCCallable (1 ms)
+[ RUN      ] ParseEntityTest.TraitFunctionCannotBeCCallable
+[       OK ] ParseEntityTest.TraitFunctionCannotBeCCallable (0 ms)
+[ RUN      ] ParseEntityTest.InterfaceFunctionCannotBeCCallable
+[       OK ] ParseEntityTest.InterfaceFunctionCannotBeCCallable (1 ms)
+[ RUN      ] ParseEntityTest.FunctionCannotBeDontcare
+[       OK ] ParseEntityTest.FunctionCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.Behaviour
+[       OK ] ParseEntityTest.Behaviour (0 ms)
+[ RUN      ] ParseEntityTest.BehaviourCannotHaveCapability
+[       OK ] ParseEntityTest.BehaviourCannotHaveCapability (0 ms)
+[ RUN      ] ParseEntityTest.BehaviourCannotHaveEllipsis
+[       OK ] ParseEntityTest.BehaviourCannotHaveEllipsis (0 ms)
+[ RUN      ] ParseEntityTest.BehaviourCannotHaveReturnType
+[       OK ] ParseEntityTest.BehaviourCannotHaveReturnType (1 ms)
+[ RUN      ] ParseEntityTest.BehaviourCannotBePartial
+[       OK ] ParseEntityTest.BehaviourCannotBePartial (0 ms)
+[ RUN      ] ParseEntityTest.ActorBehaviourMustHaveBody
+[       OK ] ParseEntityTest.ActorBehaviourMustHaveBody (1 ms)
+[ RUN      ] ParseEntityTest.TraitBehaviourBodiesAreOptional
+[       OK ] ParseEntityTest.TraitBehaviourBodiesAreOptional (0 ms)
+[ RUN      ] ParseEntityTest.InterfaceBehaviourBodiesAreOptional
+[       OK ] ParseEntityTest.InterfaceBehaviourBodiesAreOptional (1 ms)
+[ RUN      ] ParseEntityTest.TraitBehaviourCannotBeCCallable
+[       OK ] ParseEntityTest.TraitBehaviourCannotBeCCallable (0 ms)
+[ RUN      ] ParseEntityTest.InterfaceBehaviourCannotBeCCallable
+[       OK ] ParseEntityTest.InterfaceBehaviourCannotBeCCallable (1 ms)
+[ RUN      ] ParseEntityTest.BehaviourCannotBeDontcare
+[       OK ] ParseEntityTest.BehaviourCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.ConstructorMinimal
+[       OK ] ParseEntityTest.ConstructorMinimal (1 ms)
+[ RUN      ] ParseEntityTest.ConstructorMaximal
+[       OK ] ParseEntityTest.ConstructorMaximal (0 ms)
+[ RUN      ] ParseEntityTest.PrimitiveConstructorCannotHaveCapability
+[       OK ] ParseEntityTest.PrimitiveConstructorCannotHaveCapability (1 ms)
+[ RUN      ] ParseEntityTest.ActorConstructorCannotHaveCapability
+[       OK ] ParseEntityTest.ActorConstructorCannotHaveCapability (0 ms)
+[ RUN      ] ParseEntityTest.ConstructorCannotHaveEllipsis
+[       OK ] ParseEntityTest.ConstructorCannotHaveEllipsis (1 ms)
+[ RUN      ] ParseEntityTest.ConstructorCannotHaveReturnType
+[       OK ] ParseEntityTest.ConstructorCannotHaveReturnType (0 ms)
+[ RUN      ] ParseEntityTest.ActorConstructorCannotBePartial
+[       OK ] ParseEntityTest.ActorConstructorCannotBePartial (1 ms)
+[ RUN      ] ParseEntityTest.ConstructorMustHaveBody
+[       OK ] ParseEntityTest.ConstructorMustHaveBody (0 ms)
+[ RUN      ] ParseEntityTest.ConstructorCannotBeDontcare
+[       OK ] ParseEntityTest.ConstructorCannotBeDontcare (1 ms)
+[ RUN      ] ParseEntityTest.DoubleArrowMissing
+[       OK ] ParseEntityTest.DoubleArrowMissing (0 ms)
+[ RUN      ] ParseEntityTest.DoubleArrowWithoutBody
+[       OK ] ParseEntityTest.DoubleArrowWithoutBody (1 ms)
+[ RUN      ] ParseEntityTest.FieldMustHaveType
+[       OK ] ParseEntityTest.FieldMustHaveType (0 ms)
+[ RUN      ] ParseEntityTest.LetFieldMustHaveType
+[       OK ] ParseEntityTest.LetFieldMustHaveType (1 ms)
+[ RUN      ] ParseEntityTest.FieldDelegate
+[       OK ] ParseEntityTest.FieldDelegate (0 ms)
+[ RUN      ] ParseEntityTest.FieldDelegateCanBeIntersect
+[       OK ] ParseEntityTest.FieldDelegateCanBeIntersect (1 ms)
+[ RUN      ] ParseEntityTest.FieldDelegateCannotBeUnion
+[       OK ] ParseEntityTest.FieldDelegateCannotBeUnion (0 ms)
+[ RUN      ] ParseEntityTest.FieldDelegateCannotBeTuple
+[       OK ] ParseEntityTest.FieldDelegateCannotBeTuple (1 ms)
+[ RUN      ] ParseEntityTest.FieldDelegateCannotBeArrow
+[       OK ] ParseEntityTest.FieldDelegateCannotBeArrow (0 ms)
+[ RUN      ] ParseEntityTest.FieldDelegateCannotHaveCapability
+[       OK ] ParseEntityTest.FieldDelegateCannotHaveCapability (1 ms)
+[ RUN      ] ParseEntityTest.FieldCannotBeDontcare
+[       OK ] ParseEntityTest.FieldCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.ProvidesListCanBeIntersect
+[       OK ] ParseEntityTest.ProvidesListCanBeIntersect (1 ms)
+[ RUN      ] ParseEntityTest.ProvidesListCannotBeUnion
+[       OK ] ParseEntityTest.ProvidesListCannotBeUnion (0 ms)
+[ RUN      ] ParseEntityTest.ProvidesListCannotBeTuple
+[       OK ] ParseEntityTest.ProvidesListCannotBeTuple (1 ms)
+[ RUN      ] ParseEntityTest.ProvidesListCannotBeArrow
+[       OK ] ParseEntityTest.ProvidesListCannotBeArrow (0 ms)
+[ RUN      ] ParseEntityTest.ProvidesListCannotHaveCapability
+[       OK ] ParseEntityTest.ProvidesListCannotHaveCapability (1 ms)
+[ RUN      ] ParseEntityTest.UseUri
+[       OK ] ParseEntityTest.UseUri (0 ms)
+[ RUN      ] ParseEntityTest.UseFfi
+[       OK ] ParseEntityTest.UseFfi (1 ms)
+[ RUN      ] ParseEntityTest.UseMustBeBeforeClass
+[       OK ] ParseEntityTest.UseMustBeBeforeClass (0 ms)
+[ RUN      ] ParseEntityTest.UseFfiMustHaveReturnType
+[       OK ] ParseEntityTest.UseFfiMustHaveReturnType (1 ms)
+[ RUN      ] ParseEntityTest.UseFfiMustHaveOnlyOneReturnType
+[       OK ] ParseEntityTest.UseFfiMustHaveOnlyOneReturnType (0 ms)
+[ RUN      ] ParseEntityTest.UseFfiCannotHaveDefaultArguments
+[       OK ] ParseEntityTest.UseFfiCannotHaveDefaultArguments (1 ms)
+[ RUN      ] ParseEntityTest.UseFfiEllipsisMustBeLast
+[       OK ] ParseEntityTest.UseFfiEllipsisMustBeLast (0 ms)
+[ RUN      ] ParseEntityTest.UseGuardsAreExpressions
+[       OK ] ParseEntityTest.UseGuardsAreExpressions (1 ms)
+[ RUN      ] ParseEntityTest.UseGuardsDoNotAllowOperatorPrecedence
+[       OK ] ParseEntityTest.UseGuardsDoNotAllowOperatorPrecedence (1 ms)
+[ RUN      ] ParseEntityTest.UseGuardsUserAndPlatformFlagsCanCollide
+[       OK ] ParseEntityTest.UseGuardsUserAndPlatformFlagsCanCollide (1 ms)
+[ RUN      ] ParseEntityTest.UseGuardsOutlawedFlagName
+[       OK ] ParseEntityTest.UseGuardsOutlawedFlagName (1 ms)
+[ RUN      ] ParseEntityTest.UserFlagInCondition
+[       OK ] ParseEntityTest.UserFlagInCondition (0 ms)
+[ RUN      ] ParseEntityTest.UnquotedUserFlagInCondition
+[       OK ] ParseEntityTest.UnquotedUserFlagInCondition (0 ms)
+[ RUN      ] ParseEntityTest.OsNameCaseSensitiveInConditionRight
+[       OK ] ParseEntityTest.OsNameCaseSensitiveInConditionRight (0 ms)
+[ RUN      ] ParseEntityTest.OsNameCaseSensitiveInConditionWrong
+[       OK ] ParseEntityTest.OsNameCaseSensitiveInConditionWrong (1 ms)
+[ RUN      ] ParseEntityTest.UseUriCannotBeDontcare
+[       OK ] ParseEntityTest.UseUriCannotBeDontcare (0 ms)
+[ RUN      ] ParseEntityTest.CompileIntrinsicAllowedAsFunctionBody
+[       OK ] ParseEntityTest.CompileIntrinsicAllowedAsFunctionBody (1 ms)
+[ RUN      ] ParseEntityTest.DocstringAllowedBeforeCompileIntrinsic
+[       OK ] ParseEntityTest.DocstringAllowedBeforeCompileIntrinsic (0 ms)
+[ RUN      ] ParseEntityTest.TwoDocstringsNotAllowedBeforeCompileIntrinsic
+[       OK ] ParseEntityTest.TwoDocstringsNotAllowedBeforeCompileIntrinsic (1 ms)
+[ RUN      ] ParseEntityTest.NonDocExpressionNotAllowedBeforeCompileIntrinsic
+[       OK ] ParseEntityTest.NonDocExpressionNotAllowedBeforeCompileIntrinsic (0 ms)
+[ RUN      ] ParseEntityTest.DocstringNotAllowedAfterCompileIntrinsic
+[       OK ] ParseEntityTest.DocstringNotAllowedAfterCompileIntrinsic (1 ms)
+[ RUN      ] ParseEntityTest.NonDocExpressionNotAllowedAfterCompileIntrinsic
+[       OK ] ParseEntityTest.NonDocExpressionNotAllowedAfterCompileIntrinsic (0 ms)
+[ RUN      ] ParseEntityTest.CompileIntrinsicNotAllowedInControlStructure
+[       OK ] ParseEntityTest.CompileIntrinsicNotAllowedInControlStructure (1 ms)
+[----------] 110 tests from ParseEntityTest (56 ms total)
+
+[----------] 139 tests from SugarTest
+[ RUN      ] SugarTest.DataType
+[       OK ] SugarTest.DataType (1 ms)
+[ RUN      ] SugarTest.ClassWithoutCreate
+[       OK ] SugarTest.ClassWithoutCreate (1 ms)
+[ RUN      ] SugarTest.ClassWithCreateConstructor
+[       OK ] SugarTest.ClassWithCreateConstructor (1 ms)
+[ RUN      ] SugarTest.ClassWithConstructor
+[       OK ] SugarTest.ClassWithConstructor (1 ms)
+[ RUN      ] SugarTest.ClassWithCreateFunction
+[       OK ] SugarTest.ClassWithCreateFunction (2 ms)
+[ RUN      ] SugarTest.ClassWithoutFieldOrCreate
+[       OK ] SugarTest.ClassWithoutFieldOrCreate (1 ms)
+[ RUN      ] SugarTest.ClassWithoutDefCap
+[       OK ] SugarTest.ClassWithoutDefCap (1 ms)
+[ RUN      ] SugarTest.ActorWithInitialisedField
+[       OK ] SugarTest.ActorWithInitialisedField (1 ms)
+[ RUN      ] SugarTest.ActorWithCreateConstructor
+[       OK ] SugarTest.ActorWithCreateConstructor (1 ms)
+[ RUN      ] SugarTest.ActorWithConstructor
+[       OK ] SugarTest.ActorWithConstructor (1 ms)
+[ RUN      ] SugarTest.ActorWithCreateFunction
+[       OK ] SugarTest.ActorWithCreateFunction (1 ms)
+[ RUN      ] SugarTest.ActorWithCreateBehaviour
+[       OK ] SugarTest.ActorWithCreateBehaviour (1 ms)
+[ RUN      ] SugarTest.ActorWithoutFieldOrCreate
+[       OK ] SugarTest.ActorWithoutFieldOrCreate (2 ms)
+[ RUN      ] SugarTest.ActorWithoutDefCap
+[       OK ] SugarTest.ActorWithoutDefCap (1 ms)
+[ RUN      ] SugarTest.TraitWithCap
+[       OK ] SugarTest.TraitWithCap (0 ms)
+[ RUN      ] SugarTest.TraitWithoutCap
+[       OK ] SugarTest.TraitWithoutCap (1 ms)
+[ RUN      ] SugarTest.TypeParamWithConstraint
+[       OK ] SugarTest.TypeParamWithConstraint (1 ms)
+[ RUN      ] SugarTest.TypeParamWithoutConstraint
+[       OK ] SugarTest.TypeParamWithoutConstraint (1 ms)
+[ RUN      ] SugarTest.ConstructorNoReturnType
+[       OK ] SugarTest.ConstructorNoReturnType (1 ms)
+[ RUN      ] SugarTest.ConstructorInActor
+[       OK ] SugarTest.ConstructorInActor (1 ms)
+[ RUN      ] SugarTest.ConstructorInDataType
+[       OK ] SugarTest.ConstructorInDataType (2 ms)
+[ RUN      ] SugarTest.ConstructorInGenericClass
+[       OK ] SugarTest.ConstructorInGenericClass (1 ms)
+[ RUN      ] SugarTest.BehaviourReturnType
+[       OK ] SugarTest.BehaviourReturnType (1 ms)
+[ RUN      ] SugarTest.FunctionComplete
+[       OK ] SugarTest.FunctionComplete (0 ms)
+[ RUN      ] SugarTest.FunctionNoReturnNoBody
+[       OK ] SugarTest.FunctionNoReturnNoBody (1 ms)
+[ RUN      ] SugarTest.FunctionNoReturnBody
+[       OK ] SugarTest.FunctionNoReturnBody (2 ms)
+[ RUN      ] SugarTest.FunctionParamMustBeId
+[       OK ] SugarTest.FunctionParamMustBeId (2 ms)
+[ RUN      ] SugarTest.FunctionParamTypeRequired
+[       OK ] SugarTest.FunctionParamTypeRequired (1 ms)
+[ RUN      ] SugarTest.FunctionGuardsNotAllowed
+[       OK ] SugarTest.FunctionGuardsNotAllowed (1 ms)
+[ RUN      ] SugarTest.IfWithoutElse
+[       OK ] SugarTest.IfWithoutElse (1 ms)
+[ RUN      ] SugarTest.IfWithElse
+[       OK ] SugarTest.IfWithElse (1 ms)
+[ RUN      ] SugarTest.WhileWithoutElse
+[       OK ] SugarTest.WhileWithoutElse (1 ms)
+[ RUN      ] SugarTest.WhileWithElse
+[       OK ] SugarTest.WhileWithElse (1 ms)
+[ RUN      ] SugarTest.TryWithElseAndThen
+[       OK ] SugarTest.TryWithElseAndThen (0 ms)
+[ RUN      ] SugarTest.TryWithoutElseOrThen
+[       OK ] SugarTest.TryWithoutElseOrThen (1 ms)
+[ RUN      ] SugarTest.TryWithoutElse
+[       OK ] SugarTest.TryWithoutElse (1 ms)
+[ RUN      ] SugarTest.TryWithoutThen
+[       OK ] SugarTest.TryWithoutThen (2 ms)
+[ RUN      ] SugarTest.ForWithoutElse
+[       OK ] SugarTest.ForWithoutElse (1 ms)
+[ RUN      ] SugarTest.ForWithElse
+[       OK ] SugarTest.ForWithElse (1 ms)
+[ RUN      ] SugarTest.MultiIteratorFor
+[       OK ] SugarTest.MultiIteratorFor (1 ms)
+[ RUN      ] SugarTest.CaseWithBody
+[       OK ] SugarTest.CaseWithBody (1 ms)
+[ RUN      ] SugarTest.CaseWithBodyAndFollowingCase
+[       OK ] SugarTest.CaseWithBodyAndFollowingCase (0 ms)
+[ RUN      ] SugarTest.CaseWithNoBody
+[       OK ] SugarTest.CaseWithNoBody (2 ms)
+[ RUN      ] SugarTest.CaseWithNoBodyMultiple
+[       OK ] SugarTest.CaseWithNoBodyMultiple (1 ms)
+[ RUN      ] SugarTest.CasePatternCapture
+[       OK ] SugarTest.CasePatternCapture (1 ms)
+[ RUN      ] SugarTest.CasePatternCaptureVar
+[       OK ] SugarTest.CasePatternCaptureVar (1 ms)
+[ RUN      ] SugarTest.CasePatternCaptureInTuple
+[       OK ] SugarTest.CasePatternCaptureInTuple (1 ms)
+[ RUN      ] SugarTest.CasePatternCaptureInNestedTuple
+[       OK ] SugarTest.CasePatternCaptureInNestedTuple (1 ms)
+[ RUN      ] SugarTest.CasePatternCaptureNoType
+[       OK ] SugarTest.CasePatternCaptureNoType (1 ms)
+[ RUN      ] SugarTest.CasePatternCaptureTupleType
+[       OK ] SugarTest.CasePatternCaptureTupleType (0 ms)
+[ RUN      ] SugarTest.CasePatternNotCaptureInSequence
+[       OK ] SugarTest.CasePatternNotCaptureInSequence (1 ms)
+[ RUN      ] SugarTest.MatchWithNoElse
+[       OK ] SugarTest.MatchWithNoElse (2 ms)
+[ RUN      ] SugarTest.UpdateLhsNotCall
+[       OK ] SugarTest.UpdateLhsNotCall (0 ms)
+[ RUN      ] SugarTest.UpdateNoArgs
+[       OK ] SugarTest.UpdateNoArgs (1 ms)
+[ RUN      ] SugarTest.UpdateWithArgs
+[       OK ] SugarTest.UpdateWithArgs (2 ms)
+[ RUN      ] SugarTest.Add
+[       OK ] SugarTest.Add (1 ms)
+[ RUN      ] SugarTest.Sub
+[       OK ] SugarTest.Sub (1 ms)
+[ RUN      ] SugarTest.Multiply
+[       OK ] SugarTest.Multiply (1 ms)
+[ RUN      ] SugarTest.Divide
+[       OK ] SugarTest.Divide (1 ms)
+[ RUN      ] SugarTest.Mod
+[       OK ] SugarTest.Mod (1 ms)
+[ RUN      ] SugarTest.UnaryMinus
+[       OK ] SugarTest.UnaryMinus (1 ms)
+[ RUN      ] SugarTest.ShiftLeft
+[       OK ] SugarTest.ShiftLeft (2 ms)
+[ RUN      ] SugarTest.ShiftRight
+[       OK ] SugarTest.ShiftRight (1 ms)
+[ RUN      ] SugarTest.And
+[       OK ] SugarTest.And (1 ms)
+[ RUN      ] SugarTest.Or
+[       OK ] SugarTest.Or (1 ms)
+[ RUN      ] SugarTest.Xor
+[       OK ] SugarTest.Xor (1 ms)
+[ RUN      ] SugarTest.Not
+[       OK ] SugarTest.Not (1 ms)
+[ RUN      ] SugarTest.Eq
+[       OK ] SugarTest.Eq (1 ms)
+[ RUN      ] SugarTest.Ne
+[       OK ] SugarTest.Ne (2 ms)
+[ RUN      ] SugarTest.Lt
+[       OK ] SugarTest.Lt (1 ms)
+[ RUN      ] SugarTest.Le
+[       OK ] SugarTest.Le (1 ms)
+[ RUN      ] SugarTest.Gt
+[       OK ] SugarTest.Gt (1 ms)
+[ RUN      ] SugarTest.Ge
+[       OK ] SugarTest.Ge (1 ms)
+[ RUN      ] SugarTest.As
+[       OK ] SugarTest.As (1 ms)
+[ RUN      ] SugarTest.AsTuple
+[       OK ] SugarTest.AsTuple (2 ms)
+[ RUN      ] SugarTest.AsNestedTuple
+[       OK ] SugarTest.AsNestedTuple (1 ms)
+[ RUN      ] SugarTest.AsDontCare
+[       OK ] SugarTest.AsDontCare (0 ms)
+[ RUN      ] SugarTest.AsDontCare2Tuple
+[       OK ] SugarTest.AsDontCare2Tuple (2 ms)
+[ RUN      ] SugarTest.AsDontCareMultiTuple
+[       OK ] SugarTest.AsDontCareMultiTuple (1 ms)
+[ RUN      ] SugarTest.ObjectSimple
+[       OK ] SugarTest.ObjectSimple (1 ms)
+[ RUN      ] SugarTest.ObjectWithField
+[       OK ] SugarTest.ObjectWithField (1 ms)
+[ RUN      ] SugarTest.ObjectWithBehaviour
+[       OK ] SugarTest.ObjectWithBehaviour (2 ms)
+[ RUN      ] SugarTest.ObjectBox
+[       OK ] SugarTest.ObjectBox (1 ms)
+[ RUN      ] SugarTest.ObjectRef
+[       OK ] SugarTest.ObjectRef (1 ms)
+[ RUN      ] SugarTest.ObjectTagWithBehaviour
+[       OK ] SugarTest.ObjectTagWithBehaviour (1 ms)
+[ RUN      ] SugarTest.ObjectRefWithBehaviour
+[       OK ] SugarTest.ObjectRefWithBehaviour (1 ms)
+[ RUN      ] SugarTest.LambdaTypeSimple
+[       OK ] SugarTest.LambdaTypeSimple (1 ms)
+[ RUN      ] SugarTest.LambdaTypeNamed
+[       OK ] SugarTest.LambdaTypeNamed (1 ms)
+[ RUN      ] SugarTest.LambdaTypeParamsAndReturn
+[       OK ] SugarTest.LambdaTypeParamsAndReturn (1 ms)
+[ RUN      ] SugarTest.LambdaTypeFunTypeParams
+[       OK ] SugarTest.LambdaTypeFunTypeParams (1 ms)
+[ RUN      ] SugarTest.LambdaTypeCapAndError
+[       OK ] SugarTest.LambdaTypeCapAndError (1 ms)
+[ RUN      ] SugarTest.LambdaTypeScopeTypeParams
+[       OK ] SugarTest.LambdaTypeScopeTypeParams (2 ms)
+[ RUN      ] SugarTest.LambdaTypeScopeTypeParamsInFlet
+[       OK ] SugarTest.LambdaTypeScopeTypeParamsInFlet (1 ms)
+[ RUN      ] SugarTest.LambdaTypeSimpleAliased
+[       OK ] SugarTest.LambdaTypeSimpleAliased (1 ms)
+[ RUN      ] SugarTest.UseGuardNormalises
+[       OK ] SugarTest.UseGuardNormalises (1 ms)
+[ RUN      ] SugarTest.UseGuardNeverTrue
+[       OK ] SugarTest.UseGuardNeverTrue (1 ms)
+[ RUN      ] SugarTest.UseGuardAlwaysTrue
+[       OK ] SugarTest.UseGuardAlwaysTrue (0 ms)
+[ RUN      ] SugarTest.UseGuardUserFlagNormalises
+[       OK ] SugarTest.UseGuardUserFlagNormalises (1 ms)
+[ RUN      ] SugarTest.IfdefElseCondition
+[       OK ] SugarTest.IfdefElseCondition (2 ms)
+[ RUN      ] SugarTest.IfdefSugarElse
+[       OK ] SugarTest.IfdefSugarElse (1 ms)
+[ RUN      ] SugarTest.NestedIfdefCondition
+[       OK ] SugarTest.NestedIfdefCondition (1 ms)
+[ RUN      ] SugarTest.IfdefElseConditionNeverTrue
+[       OK ] SugarTest.IfdefElseConditionNeverTrue (1 ms)
+[ RUN      ] SugarTest.IfdefElseConditionAlwaysTrue
+[       OK ] SugarTest.IfdefElseConditionAlwaysTrue (0 ms)
+[ RUN      ] SugarTest.NestedIfdefElseConditionNeverTrue
+[       OK ] SugarTest.NestedIfdefElseConditionNeverTrue (1 ms)
+[ RUN      ] SugarTest.NestedIfdefElseConditionAlwaysTrue
+[       OK ] SugarTest.NestedIfdefElseConditionAlwaysTrue (0 ms)
+[ RUN      ] SugarTest.IfdefPosix
+[       OK ] SugarTest.IfdefPosix (1 ms)
+[ RUN      ] SugarTest.CaseFunction
+[       OK ] SugarTest.CaseFunction (1 ms)
+[ RUN      ] SugarTest.CaseFunctionPlusOtherFun
+[       OK ] SugarTest.CaseFunctionPlusOtherFun (1 ms)
+[ RUN      ] SugarTest.CaseFunction2InOneClassPlusOtherFun
+[       OK ] SugarTest.CaseFunction2InOneClassPlusOtherFun (2 ms)
+[ RUN      ] SugarTest.CaseFunctionParamNamedTwice
+[       OK ] SugarTest.CaseFunctionParamNamedTwice (1 ms)
+[ RUN      ] SugarTest.CaseFunction2Params
+[       OK ] SugarTest.CaseFunction2Params (1 ms)
+[ RUN      ] SugarTest.CaseFunctionParamTypeUnion
+[       OK ] SugarTest.CaseFunctionParamTypeUnion (2 ms)
+[ RUN      ] SugarTest.CaseFunctionReturnUnion
+[       OK ] SugarTest.CaseFunctionReturnUnion (1 ms)
+[ RUN      ] SugarTest.CaseFunctionCap
+[       OK ] SugarTest.CaseFunctionCap (1 ms)
+[ RUN      ] SugarTest.CaseFunctionCapClash
+[       OK ] SugarTest.CaseFunctionCapClash (1 ms)
+[ RUN      ] SugarTest.CaseFunctionOneErrors
+[       OK ] SugarTest.CaseFunctionOneErrors (1 ms)
+[ RUN      ] SugarTest.CaseFunctionAllError
+[       OK ] SugarTest.CaseFunctionAllError (1 ms)
+[ RUN      ] SugarTest.CaseFunctionParamCountClash
+[       OK ] SugarTest.CaseFunctionParamCountClash (1 ms)
+[ RUN      ] SugarTest.CaseFunctionNoParams
+[       OK ] SugarTest.CaseFunctionNoParams (0 ms)
+[ RUN      ] SugarTest.CaseFunctionParamNameClash
+[       OK ] SugarTest.CaseFunctionParamNameClash (1 ms)
+[ RUN      ] SugarTest.CaseFunctionParamNotNamed
+[       OK ] SugarTest.CaseFunctionParamNotNamed (0 ms)
+[ RUN      ] SugarTest.CaseFunctionValuePlusTypeBad
+[       OK ] SugarTest.CaseFunctionValuePlusTypeBad (1 ms)
+[ RUN      ] SugarTest.CaseFunctionValuePlusDefaultArgBad
+[       OK ] SugarTest.CaseFunctionValuePlusDefaultArgBad (1 ms)
+[ RUN      ] SugarTest.CaseFunctionDontCare
+[       OK ] SugarTest.CaseFunctionDontCare (1 ms)
+[ RUN      ] SugarTest.CaseFunctionGuard
+[       OK ] SugarTest.CaseFunctionGuard (1 ms)
+[ RUN      ] SugarTest.CaseFunctionDefaultValue
+[       OK ] SugarTest.CaseFunctionDefaultValue (1 ms)
+[ RUN      ] SugarTest.CaseFunctionDefaultValueClash
+[       OK ] SugarTest.CaseFunctionDefaultValueClash (1 ms)
+[ RUN      ] SugarTest.CaseBehaviour
+[       OK ] SugarTest.CaseBehaviour (1 ms)
+[ RUN      ] SugarTest.CaseFunctionBehaviourClash
+[       OK ] SugarTest.CaseFunctionBehaviourClash (1 ms)
+[ RUN      ] SugarTest.CaseFunctionConstructorsFail
+[       OK ] SugarTest.CaseFunctionConstructorsFail (0 ms)
+[ RUN      ] SugarTest.CaseFunctionTypeParam
+[       OK ] SugarTest.CaseFunctionTypeParam (1 ms)
+[ RUN      ] SugarTest.CaseFunction2TypeParams
+[       OK ] SugarTest.CaseFunction2TypeParams (2 ms)
+[ RUN      ] SugarTest.CaseFunctionTypeParamConstraint
+[       OK ] SugarTest.CaseFunctionTypeParamConstraint (1 ms)
+[ RUN      ] SugarTest.CaseFunctionTypeParamConstraintIntersect
+[       OK ] SugarTest.CaseFunctionTypeParamConstraintIntersect (1 ms)
+[ RUN      ] SugarTest.CaseFunctionTypeParamCountClash
+[       OK ] SugarTest.CaseFunctionTypeParamCountClash (1 ms)
+[ RUN      ] SugarTest.CaseFunctionTypeParamNameClash
+[       OK ] SugarTest.CaseFunctionTypeParamNameClash (0 ms)
+[ RUN      ] SugarTest.CaseFunctionDefaultTypeParam
+[       OK ] SugarTest.CaseFunctionDefaultTypeParam (2 ms)
+[ RUN      ] SugarTest.CaseFunctionDefaultTypeParamClash
+[       OK ] SugarTest.CaseFunctionDefaultTypeParamClash (0 ms)
+[ RUN      ] SugarTest.AsOperatorWithLambdaType
+[       OK ] SugarTest.AsOperatorWithLambdaType (1 ms)
+[----------] 139 tests from SugarTest (145 ms total)
+
+[----------] 9 tests from ProgramTest
+[ RUN      ] ProgramTest.PackageID
+[       OK ] ProgramTest.PackageID (0 ms)
+[ RUN      ] ProgramTest.NoLibs
+[       OK ] ProgramTest.NoLibs (0 ms)
+[ RUN      ] ProgramTest.OneLib
+[       OK ] ProgramTest.OneLib (0 ms)
+[ RUN      ] ProgramTest.OneLibWithAmbles
+[       OK ] ProgramTest.OneLibWithAmbles (0 ms)
+[ RUN      ] ProgramTest.MultipleLibs
+[       OK ] ProgramTest.MultipleLibs (0 ms)
+[ RUN      ] ProgramTest.MultipleLibsWithAmbles
+[       OK ] ProgramTest.MultipleLibsWithAmbles (0 ms)
+[ RUN      ] ProgramTest.RepeatedLibs
+[       OK ] ProgramTest.RepeatedLibs (0 ms)
+[ RUN      ] ProgramTest.BadLibName
+[       OK ] ProgramTest.BadLibName (0 ms)
+[ RUN      ] ProgramTest.LibPaths
+[       OK ] ProgramTest.LibPaths (0 ms)
+[----------] 9 tests from ProgramTest (0 ms total)
+
+[----------] 10 tests from BuildFlagSetTest
+[ RUN      ] BuildFlagSetTest.PrintEmpty
+[       OK ] BuildFlagSetTest.PrintEmpty (0 ms)
+[ RUN      ] BuildFlagSetTest.EmptyHas1Config
+[       OK ] BuildFlagSetTest.EmptyHas1Config (0 ms)
+[ RUN      ] BuildFlagSetTest.Flag
+[       OK ] BuildFlagSetTest.Flag (0 ms)
+[ RUN      ] BuildFlagSetTest.PlatformOS
+[       OK ] BuildFlagSetTest.PlatformOS (0 ms)
+[ RUN      ] BuildFlagSetTest.MultipleFlags
+[       OK ] BuildFlagSetTest.MultipleFlags (0 ms)
+[ RUN      ] BuildFlagSetTest.UserFlagNoneDefined
+[       OK ] BuildFlagSetTest.UserFlagNoneDefined (0 ms)
+[ RUN      ] BuildFlagSetTest.UserFlagDefined
+[       OK ] BuildFlagSetTest.UserFlagDefined (0 ms)
+[ RUN      ] BuildFlagSetTest.UserFlagNotDefined
+[       OK ] BuildFlagSetTest.UserFlagNotDefined (0 ms)
+[ RUN      ] BuildFlagSetTest.UserFlagCaseSensitive
+[       OK ] BuildFlagSetTest.UserFlagCaseSensitive (0 ms)
+[ RUN      ] BuildFlagSetTest.UserFlagMultiple
+[       OK ] BuildFlagSetTest.UserFlagMultiple (0 ms)
+[----------] 10 tests from BuildFlagSetTest (0 ms total)
+
+[----------] 7 tests from SymtabTest
+[ RUN      ] SymtabTest.AddGet
+[       OK ] SymtabTest.AddGet (0 ms)
+[ RUN      ] SymtabTest.InitiallyNotPresent
+[       OK ] SymtabTest.InitiallyNotPresent (0 ms)
+[ RUN      ] SymtabTest.RepeatAddBlocked
+[       OK ] SymtabTest.RepeatAddBlocked (0 ms)
+[ RUN      ] SymtabTest.AddAfterGetFail
+[       OK ] SymtabTest.AddAfterGetFail (0 ms)
+[ RUN      ] SymtabTest.Multiple
+[       OK ] SymtabTest.Multiple (0 ms)
+[ RUN      ] SymtabTest.TwoTables
+[       OK ] SymtabTest.TwoTables (0 ms)
+[ RUN      ] SymtabTest.Merge
+[       OK ] SymtabTest.Merge (0 ms)
+[----------] 7 tests from SymtabTest (0 ms total)
+
+[----------] 36 tests from RecoverTest
+[ RUN      ] RecoverTest.CanRecover_NewRefToIso
+[       OK ] RecoverTest.CanRecover_NewRefToIso (2 ms)
+[ RUN      ] RecoverTest.CanRecover_NewRefToVal
+[       OK ] RecoverTest.CanRecover_NewRefToVal (2 ms)
+[ RUN      ] RecoverTest.CantRecover_NewValToIso
+[       OK ] RecoverTest.CantRecover_NewValToIso (2 ms)
+[ RUN      ] RecoverTest.CantRecover_NewTagToVal
+[       OK ] RecoverTest.CantRecover_NewTagToVal (2 ms)
+[ RUN      ] RecoverTest.CanSee_LetLocalRefAsTag
+[       OK ] RecoverTest.CanSee_LetLocalRefAsTag (2 ms)
+[ RUN      ] RecoverTest.CanAccess_LetLocalVal
+[       OK ] RecoverTest.CanAccess_LetLocalVal (2 ms)
+[ RUN      ] RecoverTest.CanAccess_LetLocalConsumedIso
+[       OK ] RecoverTest.CanAccess_LetLocalConsumedIso (2 ms)
+[ RUN      ] RecoverTest.CanSee_VarLocalRefAsTag
+[       OK ] RecoverTest.CanSee_VarLocalRefAsTag (2 ms)
+[ RUN      ] RecoverTest.CanAccess_VarLocalVal
+[       OK ] RecoverTest.CanAccess_VarLocalVal (2 ms)
+[ RUN      ] RecoverTest.CanAccess_VarLocalConsumedIso
+[       OK ] RecoverTest.CanAccess_VarLocalConsumedIso (2 ms)
+[ RUN      ] RecoverTest.CanSee_ParamRefAsTag
+[       OK ] RecoverTest.CanSee_ParamRefAsTag (2 ms)
+[ RUN      ] RecoverTest.CanAccess_ParamVal
+[       OK ] RecoverTest.CanAccess_ParamVal (2 ms)
+[ RUN      ] RecoverTest.CanAccess_ParamConsumedIso
+[       OK ] RecoverTest.CanAccess_ParamConsumedIso (2 ms)
+[ RUN      ] RecoverTest.CanAccess_LetFieldVal
+[       OK ] RecoverTest.CanAccess_LetFieldVal (2 ms)
+[ RUN      ] RecoverTest.CanAccess_VarFieldVal
+[       OK ] RecoverTest.CanAccess_VarFieldVal (2 ms)
+[ RUN      ] RecoverTest.CanAccess_EmbedFieldVal
+[       OK ] RecoverTest.CanAccess_EmbedFieldVal (2 ms)
+[ RUN      ] RecoverTest.CanAccess_FunReturnVal
+[       OK ] RecoverTest.CanAccess_FunReturnVal (2 ms)
+[ RUN      ] RecoverTest.CanAccess_FieldExplicitThis
+[       OK ] RecoverTest.CanAccess_FieldExplicitThis (2 ms)
+[ RUN      ] RecoverTest.CantAccess_NonSendableField
+[       OK ] RecoverTest.CantAccess_NonSendableField (2 ms)
+[ RUN      ] RecoverTest.CantAccess_AssignedField
+[       OK ] RecoverTest.CantAccess_AssignedField (2 ms)
+[ RUN      ] RecoverTest.CantAccess_ThisOriginallyTagField
+[       OK ] RecoverTest.CantAccess_ThisOriginallyTagField (2 ms)
+[ RUN      ] RecoverTest.CantAccess_LocalOriginallyTagField
+[       OK ] RecoverTest.CantAccess_LocalOriginallyTagField (2 ms)
+[ RUN      ] RecoverTest.CantAccess_ParamOriginallyTagField
+[       OK ] RecoverTest.CantAccess_ParamOriginallyTagField (2 ms)
+[ RUN      ] RecoverTest.CanAccess_LocalSendableField
+[       OK ] RecoverTest.CanAccess_LocalSendableField (2 ms)
+[ RUN      ] RecoverTest.CanAccess_ParamSendableField
+[       OK ] RecoverTest.CanAccess_ParamSendableField (2 ms)
+[ RUN      ] RecoverTest.CanAccess_MutableMethod
+[       OK ] RecoverTest.CanAccess_MutableMethod (2 ms)
+[ RUN      ] RecoverTest.CantAccess_MethodArgNonSendable
+[       OK ] RecoverTest.CantAccess_MethodArgNonSendable (2 ms)
+[ RUN      ] RecoverTest.CantAccess_MethodReturnNonSendable
+[       OK ] RecoverTest.CantAccess_MethodReturnNonSendable (2 ms)
+[ RUN      ] RecoverTest.CanDoPartialApplication_TagWithLowerToTag
+[       OK ] RecoverTest.CanDoPartialApplication_TagWithLowerToTag (2 ms)
+[ RUN      ] RecoverTest.CantDoPartialApplication_RefWithLowerToTag
+[       OK ] RecoverTest.CantDoPartialApplication_RefWithLowerToTag (2 ms)
+[ RUN      ] RecoverTest.CanRecover_TupleMutableAlias
+[       OK ] RecoverTest.CanRecover_TupleMutableAlias (2 ms)
+[ RUN      ] RecoverTest.CantRecover_TupleMutableLift
+[       OK ] RecoverTest.CantRecover_TupleMutableLift (2 ms)
+[ RUN      ] RecoverTest.CanRecover_TupleMutableToImmutable
+[       OK ] RecoverTest.CanRecover_TupleMutableToImmutable (2 ms)
+[ RUN      ] RecoverTest.CanRecover_TupleInUnionNoInnerLift
+[       OK ] RecoverTest.CanRecover_TupleInUnionNoInnerLift (2 ms)
+[ RUN      ] RecoverTest.CantRecover_TupleInUnionInnerLift
+[       OK ] RecoverTest.CantRecover_TupleInUnionInnerLift (2 ms)
+[ RUN      ] RecoverTest.CantAccess_NonSendableLocalAssigned
+[       OK ] RecoverTest.CantAccess_NonSendableLocalAssigned (1 ms)
+[----------] 36 tests from RecoverTest (72 ms total)
+
+[----------] 1 test from BindTest
+[ RUN      ] BindTest.RecursiveConstraintIsUnbound
+[       OK ] BindTest.RecursiveConstraintIsUnbound (1 ms)
+[----------] 1 test from BindTest (1 ms total)
+
+[----------] 4 tests from TokenTest
+[ RUN      ] TokenTest.PrintEscapedString
+[       OK ] TokenTest.PrintEscapedString (0 ms)
+[ RUN      ] TokenTest.PrintEscapedStringContainingDoubleQuotes
+[       OK ] TokenTest.PrintEscapedStringContainingDoubleQuotes (0 ms)
+[ RUN      ] TokenTest.PrintEscapedStringContainingBackslashes
+[       OK ] TokenTest.PrintEscapedStringContainingBackslashes (0 ms)
+[ RUN      ] TokenTest.PrintEscapedStringContainingNullBytes
+[       OK ] TokenTest.PrintEscapedStringContainingNullBytes (0 ms)
+[----------] 4 tests from TokenTest (0 ms total)
+
+[----------] 7 tests from MatchTypeTest
+[ RUN      ] MatchTypeTest.SimpleTypes
+[       OK ] MatchTypeTest.SimpleTypes (2 ms)
+[ RUN      ] MatchTypeTest.CompoundOperand
+[       OK ] MatchTypeTest.CompoundOperand (2 ms)
+[ RUN      ] MatchTypeTest.CompoundPattern
+[       OK ] MatchTypeTest.CompoundPattern (2 ms)
+[ RUN      ] MatchTypeTest.BothCompound
+[       OK ] MatchTypeTest.BothCompound (2 ms)
+[ RUN      ] MatchTypeTest.Tuples
+[       OK ] MatchTypeTest.Tuples (3 ms)
+[ RUN      ] MatchTypeTest.Capabilities
+[       OK ] MatchTypeTest.Capabilities (2 ms)
+[ RUN      ] MatchTypeTest.TypeParams
+[       OK ] MatchTypeTest.TypeParams (2 ms)
+[----------] 7 tests from MatchTypeTest (15 ms total)
+
+[----------] 23 tests from BadPonyTest
+[ RUN      ] BadPonyTest.ClassInOtherClassProvidesList
+[       OK ] BadPonyTest.ClassInOtherClassProvidesList (1 ms)
+[ RUN      ] BadPonyTest.TypeParamMissingForTypeInProvidesList
+[       OK ] BadPonyTest.TypeParamMissingForTypeInProvidesList (1 ms)
+[ RUN      ] BadPonyTest.TupleIndexIsZero
+[       OK ] BadPonyTest.TupleIndexIsZero (1 ms)
+[ RUN      ] BadPonyTest.TupleIndexIsOutOfRange
+[       OK ] BadPonyTest.TupleIndexIsOutOfRange (1 ms)
+[ RUN      ] BadPonyTest.InvalidLambdaReturnType
+[       OK ] BadPonyTest.InvalidLambdaReturnType (1 ms)
+[ RUN      ] BadPonyTest.InvalidMethodReturnType
+[       OK ] BadPonyTest.InvalidMethodReturnType (1 ms)
+[ RUN      ] BadPonyTest.ObjectLiteralUninitializedField
+[       OK ] BadPonyTest.ObjectLiteralUninitializedField (0 ms)
+[ RUN      ] BadPonyTest.LambdaCaptureVariableBeforeDeclarationWithTypeInferenceExpressionFail
+[       OK ] BadPonyTest.LambdaCaptureVariableBeforeDeclarationWithTypeInferenceExpressionFail (1 ms)
+[ RUN      ] BadPonyTest.ExportedActorWithVariadicReturnTypeContainingNone
+[       OK ] BadPonyTest.ExportedActorWithVariadicReturnTypeContainingNone (3 ms)
+[ RUN      ] BadPonyTest.TypeAliasRecursionThroughTypeParameterInTuple
+[       OK ] BadPonyTest.TypeAliasRecursionThroughTypeParameterInTuple (1 ms)
+[ RUN      ] BadPonyTest.ParenthesisedReturn
+[       OK ] BadPonyTest.ParenthesisedReturn (1 ms)
+[ RUN      ] BadPonyTest.ParenthesisedReturn2
+[       OK ] BadPonyTest.ParenthesisedReturn2 (1 ms)
+[ RUN      ] BadPonyTest.MatchUncalledMethod
+[       OK ] BadPonyTest.MatchUncalledMethod (2 ms)
+[ RUN      ] BadPonyTest.TupleFieldReassign
+[       OK ] BadPonyTest.TupleFieldReassign (2 ms)
+[ RUN      ] BadPonyTest.WithBlockTypeInference
+[       OK ] BadPonyTest.WithBlockTypeInference (2 ms)
+[ RUN      ] BadPonyTest.EmbedNestedTuple
+[       OK ] BadPonyTest.EmbedNestedTuple (2 ms)
+[ RUN      ] BadPonyTest.CircularTypeInfer
+[       OK ] BadPonyTest.CircularTypeInfer (2 ms)
+[ RUN      ] BadPonyTest.CallConstructorOnTypeIntersection
+[       OK ] BadPonyTest.CallConstructorOnTypeIntersection (2 ms)
+[ RUN      ] BadPonyTest.AssignToFieldOfIso
+[       OK ] BadPonyTest.AssignToFieldOfIso (2 ms)
+[ RUN      ] BadPonyTest.IndexArrayWithBrackets
+[       OK ] BadPonyTest.IndexArrayWithBrackets (0 ms)
+[ RUN      ] BadPonyTest.MatchUnionOfDifferentCaps
+[       OK ] BadPonyTest.MatchUnionOfDifferentCaps (2 ms)
+[ RUN      ] BadPonyTest.ShadowingBuiltinTypeParameter
+[       OK ] BadPonyTest.ShadowingBuiltinTypeParameter (1 ms)
+[ RUN      ] BadPonyTest.ShadowingTypeParameterInSameFile
+[       OK ] BadPonyTest.ShadowingTypeParameterInSameFile (1 ms)
+[----------] 23 tests from BadPonyTest (32 ms total)
+
+[----------] 21 tests from ScopeTest
+[ RUN      ] ScopeTest.Actor
+[       OK ] ScopeTest.Actor (0 ms)
+[ RUN      ] ScopeTest.Class
+[       OK ] ScopeTest.Class (1 ms)
+[ RUN      ] ScopeTest.Primitive
+[       OK ] ScopeTest.Primitive (1 ms)
+[ RUN      ] ScopeTest.Trait
+[       OK ] ScopeTest.Trait (0 ms)
+[ RUN      ] ScopeTest.Interface
+[       OK ] ScopeTest.Interface (1 ms)
+[ RUN      ] ScopeTest.TypeAlias
+[       OK ] ScopeTest.TypeAlias (1 ms)
+[ RUN      ] ScopeTest.VarField
+[       OK ] ScopeTest.VarField (0 ms)
+[ RUN      ] ScopeTest.LetField
+[       OK ] ScopeTest.LetField (1 ms)
+[ RUN      ] ScopeTest.Be
+[       OK ] ScopeTest.Be (1 ms)
+[ RUN      ] ScopeTest.New
+[       OK ] ScopeTest.New (0 ms)
+[ RUN      ] ScopeTest.Fun
+[       OK ] ScopeTest.Fun (1 ms)
+[ RUN      ] ScopeTest.FunParam
+[       OK ] ScopeTest.FunParam (1 ms)
+[ RUN      ] ScopeTest.TypeParam
+[       OK ] ScopeTest.TypeParam (0 ms)
+[ RUN      ] ScopeTest.Local
+[       OK ] ScopeTest.Local (1 ms)
+[ RUN      ] ScopeTest.MultipleLocals
+[       OK ] ScopeTest.MultipleLocals (1 ms)
+[ RUN      ] ScopeTest.NestedLocals
+[       OK ] ScopeTest.NestedLocals (0 ms)
+[ RUN      ] ScopeTest.SameScopeNameClash
+[       OK ] ScopeTest.SameScopeNameClash (2 ms)
+[ RUN      ] ScopeTest.ParentScopeNameClash
+[       OK ] ScopeTest.ParentScopeNameClash (1 ms)
+[ RUN      ] ScopeTest.SiblingScopeNoClash
+[       OK ] ScopeTest.SiblingScopeNoClash (1 ms)
+[ RUN      ] ScopeTest.Package
+[       OK ] ScopeTest.Package (0 ms)
+[ RUN      ] ScopeTest.CanShadowDontcare
+[       OK ] ScopeTest.CanShadowDontcare (1 ms)
+[----------] 21 tests from ScopeTest (15 ms total)
+
+[----------] 26 tests from SubTypeTest
+[ RUN      ] SubTypeTest.IsSubTypeClassTrait
+[       OK ] SubTypeTest.IsSubTypeClassTrait (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeClassInterface
+[       OK ] SubTypeTest.IsSubTypeClassInterface (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeClassClass
+[       OK ] SubTypeTest.IsSubTypeClassClass (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeTraitTrait
+[       OK ] SubTypeTest.IsSubTypeTraitTrait (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeInterfaceInterface
+[       OK ] SubTypeTest.IsSubTypeInterfaceInterface (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeTraitInterface
+[       OK ] SubTypeTest.IsSubTypeTraitInterface (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypePrimitivePrimitive
+[       OK ] SubTypeTest.IsSubTypePrimitivePrimitive (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypePrimitiveTrait
+[       OK ] SubTypeTest.IsSubTypePrimitiveTrait (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeUnion
+[       OK ] SubTypeTest.IsSubTypeUnion (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeIntersect
+[       OK ] SubTypeTest.IsSubTypeIntersect (3 ms)
+[ RUN      ] SubTypeTest.IsSubTypeIntersectInterface
+[       OK ] SubTypeTest.IsSubTypeIntersectInterface (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeIntersectOfUnion
+[       OK ] SubTypeTest.IsSubTypeIntersectOfUnion (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeTuple
+[       OK ] SubTypeTest.IsSubTypeTuple (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeUnionOfTuple
+[       OK ] SubTypeTest.IsSubTypeUnionOfTuple (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeCap
+[       OK ] SubTypeTest.IsSubTypeCap (2 ms)
+[ RUN      ] SubTypeTest.IsEqType
+[       OK ] SubTypeTest.IsEqType (2 ms)
+[ RUN      ] SubTypeTest.IsEqTypeCap
+[       OK ] SubTypeTest.IsEqTypeCap (2 ms)
+[ RUN      ] SubTypeTest.IsNone
+[       OK ] SubTypeTest.IsNone (2 ms)
+[ RUN      ] SubTypeTest.IsBool
+[       OK ] SubTypeTest.IsBool (2 ms)
+[ RUN      ] SubTypeTest.IsFloat
+[       OK ] SubTypeTest.IsFloat (2 ms)
+[ RUN      ] SubTypeTest.IsInteger
+[       OK ] SubTypeTest.IsInteger (2 ms)
+[ RUN      ] SubTypeTest.IsMachineWord
+[       OK ] SubTypeTest.IsMachineWord (3 ms)
+[ RUN      ] SubTypeTest.IsConcrete
+[       OK ] SubTypeTest.IsConcrete (2 ms)
+[ RUN      ] SubTypeTest.IsSubTypeArrow
+[       OK ] SubTypeTest.IsSubTypeArrow (2 ms)
+[ RUN      ] SubTypeTest.IsFunTagSubBe
+[       OK ] SubTypeTest.IsFunTagSubBe (2 ms)
+[ RUN      ] SubTypeTest.IsBeSubFunTag
+[       OK ] SubTypeTest.IsBeSubFunTag (2 ms)
+[----------] 26 tests from SubTypeTest (54 ms total)
+
+[----------] 38 tests from TraitsTest
+[ RUN      ] TraitsTest.InheritMethod
+[       OK ] TraitsTest.InheritMethod (4 ms)
+[ RUN      ] TraitsTest.TransitiveTraits
+[       OK ] TraitsTest.TransitiveTraits (4 ms)
+[ RUN      ] TraitsTest.CannotProvideClass
+[       OK ] TraitsTest.CannotProvideClass (1 ms)
+[ RUN      ] TraitsTest.SingleTraitLoop
+[       OK ] TraitsTest.SingleTraitLoop (1 ms)
+[ RUN      ] TraitsTest.MultiTraitLoop
+[       OK ] TraitsTest.MultiTraitLoop (2 ms)
+[ RUN      ] TraitsTest.TraitAndClassNamesDontClash
+[       OK ] TraitsTest.TraitAndClassNamesDontClash (1 ms)
+[ RUN      ] TraitsTest.TraitMethodAndCLassFieldNamesDoClash
+[       OK ] TraitsTest.TraitMethodAndCLassFieldNamesDoClash (2 ms)
+[ RUN      ] TraitsTest.MultiInheritNoLocal
+[       OK ] TraitsTest.MultiInheritNoLocal (4 ms)
+[ RUN      ] TraitsTest.MultiInheritNoLocalParamTypeFail
+[       OK ] TraitsTest.MultiInheritNoLocalParamTypeFail (0 ms)
+[ RUN      ] TraitsTest.MultiInheritNoLocalParamNameFail
+[       OK ] TraitsTest.MultiInheritNoLocalParamNameFail (1 ms)
+[ RUN      ] TraitsTest.MultiInheritNoLocalParamDefaultValueFail
+[       OK ] TraitsTest.MultiInheritNoLocalParamDefaultValueFail (0 ms)
+[ RUN      ] TraitsTest.MultiInheritNoLocalReturnTypeFail
+[       OK ] TraitsTest.MultiInheritNoLocalReturnTypeFail (1 ms)
+[ RUN      ] TraitsTest.MultiInheritNoLocalErrorsFail
+[       OK ] TraitsTest.MultiInheritNoLocalErrorsFail (0 ms)
+[ RUN      ] TraitsTest.MultiInheritNoLocalCapFail
+[       OK ] TraitsTest.MultiInheritNoLocalCapFail (1 ms)
+[ RUN      ] TraitsTest.ParamWrongTypeFail
+[       OK ] TraitsTest.ParamWrongTypeFail (2 ms)
+[ RUN      ] TraitsTest.ReturnWrongTypeFail
+[       OK ] TraitsTest.ReturnWrongTypeFail (1 ms)
+[ RUN      ] TraitsTest.ParamContravariance
+[       OK ] TraitsTest.ParamContravariance (2 ms)
+[ RUN      ] TraitsTest.ParamCovarianceFail
+[       OK ] TraitsTest.ParamCovarianceFail (2 ms)
+[ RUN      ] TraitsTest.MultiParamContravariance
+[       OK ] TraitsTest.MultiParamContravariance (2 ms)
+[ RUN      ] TraitsTest.MultiParamCovarianceFail
+[       OK ] TraitsTest.MultiParamCovarianceFail (2 ms)
+[ RUN      ] TraitsTest.IndependentParamContravariance
+[       OK ] TraitsTest.IndependentParamContravariance (2 ms)
+[ RUN      ] TraitsTest.ReturnCovariance
+[       OK ] TraitsTest.ReturnCovariance (2 ms)
+[ RUN      ] TraitsTest.ReturnContravarianceFail
+[       OK ] TraitsTest.ReturnContravarianceFail (2 ms)
+[ RUN      ] TraitsTest.ClassGetsTraitBody
+[       OK ] TraitsTest.ClassGetsTraitBody (4 ms)
+[ RUN      ] TraitsTest.ClassBodyNotOverriddenByTrait
+[       OK ] TraitsTest.ClassBodyNotOverriddenByTrait (2 ms)
+[ RUN      ] TraitsTest.NoBodyFail
+[       OK ] TraitsTest.NoBodyFail (1 ms)
+[ RUN      ] TraitsTest.AmbiguousBodyTrait
+[       OK ] TraitsTest.AmbiguousBodyTrait (4 ms)
+[ RUN      ] TraitsTest.AmbiguousBodyClassFail
+[       OK ] TraitsTest.AmbiguousBodyClassFail (1 ms)
+[ RUN      ] TraitsTest.AmbiguousBodyPropogates
+[       OK ] TraitsTest.AmbiguousBodyPropogates (1 ms)
+[ RUN      ] TraitsTest.ParentOverridesGrandparentBody
+[       OK ] TraitsTest.ParentOverridesGrandparentBody (4 ms)
+[ RUN      ] TraitsTest.DiamondInheritance
+[       OK ] TraitsTest.DiamondInheritance (5 ms)
+[ RUN      ] TraitsTest.ClassInheritFunction
+[       OK ] TraitsTest.ClassInheritFunction (1 ms)
+[ RUN      ] TraitsTest.ClassInheritBehaviourFail
+[       OK ] TraitsTest.ClassInheritBehaviourFail (2 ms)
+[ RUN      ] TraitsTest.PrimitiveInheritFunction
+[       OK ] TraitsTest.PrimitiveInheritFunction (1 ms)
+[ RUN      ] TraitsTest.PrimitiveInheritBehaviourFail
+[       OK ] TraitsTest.PrimitiveInheritBehaviourFail (2 ms)
+[ RUN      ] TraitsTest.ActorInheritFunction
+[       OK ] TraitsTest.ActorInheritFunction (1 ms)
+[ RUN      ] TraitsTest.ActorInheritBehaviour
+[       OK ] TraitsTest.ActorInheritBehaviour (2 ms)
+[ RUN      ] TraitsTest.LetInFunction
+[       OK ] TraitsTest.LetInFunction (2 ms)
+[----------] 38 tests from TraitsTest (72 ms total)
+
+[----------] 17 tests from LexIntTest
+[ RUN      ] LexIntTest.LexIntCmp
+[       OK ] LexIntTest.LexIntCmp (0 ms)
+[ RUN      ] LexIntTest.LexIntCmp64
+[       OK ] LexIntTest.LexIntCmp64 (0 ms)
+[ RUN      ] LexIntTest.LexIntShiftLeft
+[       OK ] LexIntTest.LexIntShiftLeft (0 ms)
+[ RUN      ] LexIntTest.LexIntShiftRight
+[       OK ] LexIntTest.LexIntShiftRight (0 ms)
+[ RUN      ] LexIntTest.LexIntTestBit
+[       OK ] LexIntTest.LexIntTestBit (0 ms)
+[ RUN      ] LexIntTest.LexIntSetBit
+[       OK ] LexIntTest.LexIntSetBit (0 ms)
+[ RUN      ] LexIntTest.LexIntAdd
+[       OK ] LexIntTest.LexIntAdd (0 ms)
+[ RUN      ] LexIntTest.LexIntAdd64
+[       OK ] LexIntTest.LexIntAdd64 (0 ms)
+[ RUN      ] LexIntTest.LexIntSub
+[       OK ] LexIntTest.LexIntSub (0 ms)
+[ RUN      ] LexIntTest.LexIntSub64
+[       OK ] LexIntTest.LexIntSub64 (0 ms)
+[ RUN      ] LexIntTest.LexIntMul64
+[       OK ] LexIntTest.LexIntMul64 (0 ms)
+[ RUN      ] LexIntTest.LexIntDiv64
+[       OK ] LexIntTest.LexIntDiv64 (0 ms)
+[ RUN      ] LexIntTest.LexIntChar
+[       OK ] LexIntTest.LexIntChar (0 ms)
+[ RUN      ] LexIntTest.LexIntAccumBase10
+[       OK ] LexIntTest.LexIntAccumBase10 (0 ms)
+[ RUN      ] LexIntTest.LexIntAccumBase16
+[       OK ] LexIntTest.LexIntAccumBase16 (0 ms)
+[ RUN      ] LexIntTest.LexIntAccumBase2
+[       OK ] LexIntTest.LexIntAccumBase2 (0 ms)
+[ RUN      ] LexIntTest.LexIntCastDouble
+[       OK ] LexIntTest.LexIntCastDouble (0 ms)
+[----------] 17 tests from LexIntTest (0 ms total)
+
+[----------] 12 tests from DontcareTest
+[ RUN      ] DontcareTest.TypeCantBeDontcare
+[       OK ] DontcareTest.TypeCantBeDontcare (1 ms)
+[ RUN      ] DontcareTest.ComplexTypeCantBeDontcare
+[       OK ] DontcareTest.ComplexTypeCantBeDontcare (1 ms)
+[ RUN      ] DontcareTest.CanAssignToDontcare
+[       OK ] DontcareTest.CanAssignToDontcare (2 ms)
+[ RUN      ] DontcareTest.CanAssignToDontcareDeclInfer
+[       OK ] DontcareTest.CanAssignToDontcareDeclInfer (3 ms)
+[ RUN      ] DontcareTest.CanAssignToDontcareDeclWithType
+[       OK ] DontcareTest.CanAssignToDontcareDeclWithType (2 ms)
+[ RUN      ] DontcareTest.CannotAssignFromDontcare
+[       OK ] DontcareTest.CannotAssignFromDontcare (2 ms)
+[ RUN      ] DontcareTest.CannotChainAssignDontcare
+[       OK ] DontcareTest.CannotChainAssignDontcare (2 ms)
+[ RUN      ] DontcareTest.CannotCallMethodOnDontcare
+[       OK ] DontcareTest.CannotCallMethodOnDontcare (2 ms)
+[ RUN      ] DontcareTest.CanUseDontcareNamedCapture
+[       OK ] DontcareTest.CanUseDontcareNamedCapture (2 ms)
+[ RUN      ] DontcareTest.CannotUseDontcareNamedCaptureNoType
+[       OK ] DontcareTest.CannotUseDontcareNamedCaptureNoType (1 ms)
+[ RUN      ] DontcareTest.CanUseDontcareInTupleLHS
+[       OK ] DontcareTest.CanUseDontcareInTupleLHS (2 ms)
+[ RUN      ] DontcareTest.CannotUseDontcareInTupleRHS
+[       OK ] DontcareTest.CannotUseDontcareInTupleRHS (2 ms)
+[----------] 12 tests from DontcareTest (22 ms total)
+
+[----------] 15 tests from LiteralLimitTest
+[ RUN      ] LiteralLimitTest.U8Max
+[       OK ] LiteralLimitTest.U8Max (4 ms)
+[ RUN      ] LiteralLimitTest.I8Max
+[       OK ] LiteralLimitTest.I8Max (4 ms)
+[ RUN      ] LiteralLimitTest.I8Min
+[       OK ] LiteralLimitTest.I8Min (4 ms)
+[ RUN      ] LiteralLimitTest.U16Max
+[       OK ] LiteralLimitTest.U16Max (4 ms)
+[ RUN      ] LiteralLimitTest.I16Max
+[       OK ] LiteralLimitTest.I16Max (4 ms)
+[ RUN      ] LiteralLimitTest.I16Min
+[       OK ] LiteralLimitTest.I16Min (4 ms)
+[ RUN      ] LiteralLimitTest.U32Max
+[       OK ] LiteralLimitTest.U32Max (4 ms)
+[ RUN      ] LiteralLimitTest.I32Max
+[       OK ] LiteralLimitTest.I32Max (4 ms)
+[ RUN      ] LiteralLimitTest.I32Min
+[       OK ] LiteralLimitTest.I32Min (3 ms)
+[ RUN      ] LiteralLimitTest.U64Max
+[       OK ] LiteralLimitTest.U64Max (4 ms)
+[ RUN      ] LiteralLimitTest.I64Max
+[       OK ] LiteralLimitTest.I64Max (4 ms)
+[ RUN      ] LiteralLimitTest.I64Min
+[       OK ] LiteralLimitTest.I64Min (4 ms)
+[ RUN      ] LiteralLimitTest.U128Max
+[       OK ] LiteralLimitTest.U128Max (3 ms)
+[ RUN      ] LiteralLimitTest.I128Max
+[       OK ] LiteralLimitTest.I128Max (4 ms)
+[ RUN      ] LiteralLimitTest.I128Min
+[       OK ] LiteralLimitTest.I128Min (4 ms)
+[----------] 15 tests from LiteralLimitTest (58 ms total)
+
+[----------] Global test environment tear-down
+[==========] 836 tests from 31 test cases ran. (1069 ms total)
+[  PASSED  ] 834 tests.
+[  FAILED  ] 2 tests, listed below:
+[  FAILED  ] CodegenTest.ClassCannotBePacked
+[  FAILED  ] CodegenTest.ActorCannotBePacked
+
+ 2 FAILED TESTS
+Makefile:648: recipe for target 'test' failed
+make: *** [test] Error 1

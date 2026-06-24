@@ -1,0 +1,14 @@
+diff --git a/src/builtin.jq b/src/builtin.jq
+index aac22cb..2bf2e1a 100644
+--- a/src/builtin.jq
++++ b/src/builtin.jq
+@@ -163,7 +163,8 @@ def any(condition): any(.[]; condition);
+ def all: all(.[]; .);
+ def any: any(.[]; .);
+ def last(g): reduce g as $item (null; $item);
+-def nth($n; g): if $n < 0 then error("nth doesn't support negative indices") else last(limit($n + 1; g)) end;
++def drop($n; g): foreach g as $_ ($n; .-1; . < 0 or empty|$_);
++def nth($n; g): if $n < 0 then error("nth doesn't support negative indices") else first(drop($n; g), null) end;
+ def first: .[0];
+ def last: .[-1];
+ def nth($n): .[$n];

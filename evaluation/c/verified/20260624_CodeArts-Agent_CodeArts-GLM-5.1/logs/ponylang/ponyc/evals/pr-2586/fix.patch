@@ -1,0 +1,24 @@
+diff --git a/src/libponyc/pass/sugar.c b/src/libponyc/pass/sugar.c
+index 26c0b15..813d265 100644
+--- a/src/libponyc/pass/sugar.c
++++ b/src/libponyc/pass/sugar.c
+@@ -151,6 +151,9 @@ static ast_result_t sugar_module(pass_opt_t* opt, ast_t* ast)
+ }
+ 
+ 
++static void sugar_docstring(ast_t* ast);
++
++
+ static ast_result_t sugar_entity(pass_opt_t* opt, ast_t* ast, bool add_create,
+   token_id def_def_cap)
+ {
+@@ -211,6 +214,9 @@ static ast_result_t sugar_entity(pass_opt_t* opt, ast_t* ast, bool add_create,
+       {
+         case TK_NEW:
+         {
++          // Detect docstrings before adding field initialisers.
++          sugar_docstring(member);
++
+           AST_GET_CHILDREN(member, n_cap, n_id, n_typeparam, n_params,
+             n_result, n_partial, n_body);
+ 

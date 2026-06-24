@@ -1,0 +1,14 @@
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 6405da60..1c55a274 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -482,7 +482,8 @@ ZSTDLIB_API unsigned long long ZSTD_findDecompressedSize(const void* src, size_t
+ /*! ZSTD_frameHeaderSize() :
+ *   `src` should point to the start of a ZSTD frame
+ *   `srcSize` must be >= ZSTD_frameHeaderSize_prefix.
+-*   @return : size of the Frame Header */
++*   @return : size of the Frame Header,
++*             or an error code, which can be tested with ZSTD_isError() */
+ ZSTDLIB_API size_t ZSTD_frameHeaderSize(const void* src, size_t srcSize);
+ 
+ 

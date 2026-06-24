@@ -1,0 +1,47 @@
+diff --git a/src/libponyc/expr/operator.c b/src/libponyc/expr/operator.c
+index e3dc3ddb..4786d6ce 100644
+--- a/src/libponyc/expr/operator.c
++++ b/src/libponyc/expr/operator.c
+@@ -482,8 +482,40 @@ bool expr_assign(pass_opt_t* opt, ast_t* ast)
+ 
+     ast_error(opt->check.errors, ast,
+       "not safe to write right side to left side");
+-    ast_error_continue(opt->check.errors, wl_type, "right side type: %s",
+-      ast_print_type(wl_type));
++
++    switch(ast_id(left))
++    {
++      case TK_FVARREF:
++      case TK_FLETREF:
++      case TK_EMBEDREF:
++      {
++        AST_GET_CHILDREN(left, origin, field);
++        ast_t* origin_type = ast_type(origin);
++
++        if(origin_type != NULL)
++        {
++          ast_error_continue(opt->check.errors, origin,
++            "left side receiver type: %s", ast_print_type(origin_type));
++        }
++
++        ast_t* f_type = ast_type(field);
++
++        if(f_type != NULL)
++        {
++          ast_error_continue(opt->check.errors, field,
++            "left side field type: %s", ast_print_type(f_type));
++        }
++        break;
++      }
++
++      default:
++        ast_error_continue(opt->check.errors, left,
++          "left side type: %s", ast_print_type(l_type));
++        break;
++    }
++
++    ast_error_continue(opt->check.errors, right,
++      "right side type: %s", ast_print_type(r_type));
+     ast_free_unattached(wl_type);
+     return false;
+   }

@@ -1,0 +1,50 @@
+diff --git a/src/libponyc/codegen/genfun.c b/src/libponyc/codegen/genfun.c
+index c274ba8a..c0e86600 100644
+--- a/src/libponyc/codegen/genfun.c
++++ b/src/libponyc/codegen/genfun.c
+@@ -545,17 +545,20 @@ static bool genfun_new(compile_t* c, reach_type_t* t, reach_method_t* m)
+   if(value == NULL)
+     return false;
+ 
+-  // Return 'this'.
+-  if(c_t->primitive == NULL)
+-    value = LLVMGetParam(c_m->func, 0);
++  if(value != GEN_NOVALUE)
++  {
++    // Return 'this'.
++    if(c_t->primitive == NULL)
++      value = LLVMGetParam(c_m->func, 0);
+ 
+-  codegen_scope_lifetime_end(c);
+-  codegen_debugloc(c, ast_childlast(body));
+-  if(t->underlying == TK_CLASS)
+-    LLVMBuildRetVoid(c->builder);
+-  else
+-    LLVMBuildRet(c->builder, value);
+-  codegen_debugloc(c, NULL);
++    codegen_scope_lifetime_end(c);
++    codegen_debugloc(c, ast_childlast(body));
++    if(t->underlying == TK_CLASS)
++      LLVMBuildRetVoid(c->builder);
++    else
++      LLVMBuildRet(c->builder, value);
++    codegen_debugloc(c, NULL);
++  }
+ 
+   codegen_finishfun(c);
+ 
+@@ -581,8 +584,12 @@ static bool genfun_newbe(compile_t* c, reach_type_t* t, reach_method_t* m)
+   if(value == NULL)
+     return false;
+ 
+-  codegen_scope_lifetime_end(c);
+-  LLVMBuildRetVoid(c->builder);
++  if(value != GEN_NOVALUE)
++  {
++    codegen_scope_lifetime_end(c);
++    LLVMBuildRetVoid(c->builder);
++  }
++
+   codegen_finishfun(c);
+ 
+   // Generate the sender.

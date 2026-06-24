@@ -1,0 +1,576 @@
+检测到 Ubuntu 20 系统
+进入ubuntu其他系统
+替换系统源完成
+==============================================================================
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal InRelease [265 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu focal-updates InRelease [128 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu focal-backports InRelease [128 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu focal-security InRelease [128 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu focal/restricted amd64 Packages [33.4 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 Packages [1275 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu focal/multiverse amd64 Packages [177 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 Packages [11.3 MB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu focal-updates/multiverse amd64 Packages [36.2 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu focal-updates/restricted amd64 Packages [4904 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu focal-updates/universe amd64 Packages [1588 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 Packages [4850 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu focal-backports/universe amd64 Packages [28.4 kB]
+Get:14 http://mirrors.tools.huawei.com/ubuntu focal-backports/main amd64 Packages [54.7 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu focal-security/multiverse amd64 Packages [32.5 kB]
+Get:16 http://mirrors.tools.huawei.com/ubuntu focal-security/main amd64 Packages [4366 kB]
+Get:17 http://mirrors.tools.huawei.com/ubuntu focal-security/universe amd64 Packages [1300 kB]
+Get:18 http://mirrors.tools.huawei.com/ubuntu focal-security/restricted amd64 Packages [4710 kB]
+Fetched 35.3 MB in 2s (14.4 MB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+patch is already the newest version (2.7.6-6).
+patch set to manually installed.
+build-essential is already the newest version (12.8ubuntu1.1).
+zlib1g-dev is already the newest version (1:1.2.11.dfsg-2ubuntu1.5).
+zlib1g-dev set to manually installed.
+The following additional packages will be installed:
+  autogen-doc guile-2.2-libs libgc1c2 libltdl7 libonig5 libopts25
+  libopts25-dev libpcre2-16-0 libpcre2-32-0 libpcre2-posix2
+Suggested packages:
+  ncurses-doc libssl-doc
+The following NEW packages will be installed:
+  autogen autogen-doc guile-2.2-libs libgc1c2 libltdl7 libncurses-dev
+  libonig-dev libonig5 libopts25 libopts25-dev libpcre2-16-0 libpcre2-32-0
+  libpcre2-dev libpcre2-posix2 libssl-dev
+0 upgraded, 15 newly installed, 0 to remove and 48 not upgraded.
+Need to get 9952 kB of archives.
+After this operation, 65.8 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libgc1c2 amd64 1:7.6.4-0.4ubuntu1 [83.9 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libltdl7 amd64 2.4.6-14 [38.5 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 guile-2.2-libs amd64 2.2.7+1-4 [4962 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libopts25 amd64 1:5.18.16-3 [59.4 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libopts25-dev amd64 1:5.18.16-3 [96.0 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 autogen amd64 1:5.18.16-3 [559 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 autogen-doc all 1:5.18.16-3 [1002 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libncurses-dev amd64 6.2-0ubuntu2.1 [340 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libonig5 amd64 6.9.4-1 [142 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu focal/universe amd64 libonig-dev amd64 6.9.4-1 [54.2 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-16-0 amd64 10.34-7ubuntu0.1 [181 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-32-0 amd64 10.34-7ubuntu0.1 [170 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-posix2 amd64 10.34-7ubuntu0.1 [5988 B]
+Get:14 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libpcre2-dev amd64 10.34-7ubuntu0.1 [672 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libssl-dev amd64 1.1.1f-1ubuntu2.24 [1586 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 9952 kB in 1s (19.2 MB/s)
+Selecting previously unselected package libgc1c2:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 21871 files and directories currently installed.)
+Preparing to unpack .../00-libgc1c2_1%3a7.6.4-0.4ubuntu1_amd64.deb ...
+Unpacking libgc1c2:amd64 (1:7.6.4-0.4ubuntu1) ...
+Selecting previously unselected package libltdl7:amd64.
+Preparing to unpack .../01-libltdl7_2.4.6-14_amd64.deb ...
+Unpacking libltdl7:amd64 (2.4.6-14) ...
+Selecting previously unselected package guile-2.2-libs:amd64.
+Preparing to unpack .../02-guile-2.2-libs_2.2.7+1-4_amd64.deb ...
+Unpacking guile-2.2-libs:amd64 (2.2.7+1-4) ...
+Selecting previously unselected package libopts25:amd64.
+Preparing to unpack .../03-libopts25_1%3a5.18.16-3_amd64.deb ...
+Unpacking libopts25:amd64 (1:5.18.16-3) ...
+Selecting previously unselected package libopts25-dev:amd64.
+Preparing to unpack .../04-libopts25-dev_1%3a5.18.16-3_amd64.deb ...
+Unpacking libopts25-dev:amd64 (1:5.18.16-3) ...
+Selecting previously unselected package autogen.
+Preparing to unpack .../05-autogen_1%3a5.18.16-3_amd64.deb ...
+Unpacking autogen (1:5.18.16-3) ...
+Replaced by files in installed package libopts25-dev:amd64 (1:5.18.16-3) ...
+Selecting previously unselected package autogen-doc.
+Preparing to unpack .../06-autogen-doc_1%3a5.18.16-3_all.deb ...
+Unpacking autogen-doc (1:5.18.16-3) ...
+Selecting previously unselected package libncurses-dev:amd64.
+Preparing to unpack .../07-libncurses-dev_6.2-0ubuntu2.1_amd64.deb ...
+Unpacking libncurses-dev:amd64 (6.2-0ubuntu2.1) ...
+Selecting previously unselected package libonig5:amd64.
+Preparing to unpack .../08-libonig5_6.9.4-1_amd64.deb ...
+Unpacking libonig5:amd64 (6.9.4-1) ...
+Selecting previously unselected package libonig-dev.
+Preparing to unpack .../09-libonig-dev_6.9.4-1_amd64.deb ...
+Unpacking libonig-dev (6.9.4-1) ...
+Selecting previously unselected package libpcre2-16-0:amd64.
+Preparing to unpack .../10-libpcre2-16-0_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-16-0:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libpcre2-32-0:amd64.
+Preparing to unpack .../11-libpcre2-32-0_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-32-0:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libpcre2-posix2:amd64.
+Preparing to unpack .../12-libpcre2-posix2_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-posix2:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libpcre2-dev:amd64.
+Preparing to unpack .../13-libpcre2-dev_10.34-7ubuntu0.1_amd64.deb ...
+Unpacking libpcre2-dev:amd64 (10.34-7ubuntu0.1) ...
+Selecting previously unselected package libssl-dev:amd64.
+Preparing to unpack .../14-libssl-dev_1.1.1f-1ubuntu2.24_amd64.deb ...
+Unpacking libssl-dev:amd64 (1.1.1f-1ubuntu2.24) ...
+Setting up libncurses-dev:amd64 (6.2-0ubuntu2.1) ...
+Setting up libgc1c2:amd64 (1:7.6.4-0.4ubuntu1) ...
+Setting up libopts25:amd64 (1:5.18.16-3) ...
+Setting up libpcre2-16-0:amd64 (10.34-7ubuntu0.1) ...
+Setting up autogen-doc (1:5.18.16-3) ...
+Setting up libpcre2-32-0:amd64 (10.34-7ubuntu0.1) ...
+Setting up libssl-dev:amd64 (1.1.1f-1ubuntu2.24) ...
+Setting up libpcre2-posix2:amd64 (10.34-7ubuntu0.1) ...
+Setting up libltdl7:amd64 (2.4.6-14) ...
+Setting up libonig5:amd64 (6.9.4-1) ...
+Setting up guile-2.2-libs:amd64 (2.2.7+1-4) ...
+Setting up libpcre2-dev:amd64 (10.34-7ubuntu0.1) ...
+Setting up libopts25-dev:amd64 (1:5.18.16-3) ...
+Setting up libonig-dev (6.9.4-1) ...
+Setting up autogen (1:5.18.16-3) ...
+Processing triggers for libc-bin (2.31-0ubuntu9.16) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+cmake is already the newest version (3.16.3-1ubuntu1.20.04.1).
+zlib1g-dev is already the newest version (1:1.2.11.dfsg-2ubuntu1.5).
+0 upgraded, 0 newly installed, 0 to remove and 48 not upgraded.
+=== RUN FULL via /home/fix-run.sh (tee log) ===
+#!/bin/bash
+set -e
+
+cd /home/zstd
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make 
+make test
+
+=========================================
+当前目录：/home
+当前目录内容：add_certificate_for_c.sh check_git_changes.sh fix-run.sh fix.patch prepare.sh run.sh test-run.sh test.patch zstd
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  wget
+0 upgraded, 1 newly installed, 0 to remove and 48 not upgraded.
+Need to get 349 kB of archives.
+After this operation, 1012 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 wget amd64 1.20.3-1ubuntu2.1 [349 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 349 kB in 0s (1615 kB/s)
+Selecting previously unselected package wget.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 23540 files and directories currently installed.)
+Preparing to unpack .../wget_1.20.3-1ubuntu2.1_amd64.deb ...
+Unpacking wget (1.20.3-1ubuntu2.1) ...
+Setting up wget (1.20.3-1ubuntu2.1) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  alsa-topology-conf alsa-ucm-conf libasound2 libasound2-data libcanberra0
+  libgpm2 libogg0 libtdb1 libvorbis0a libvorbisfile3 sound-theme-freedesktop
+  vim-common vim-runtime xxd
+Suggested packages:
+  libasound2-plugins alsa-utils libcanberra-gtk0 libcanberra-pulse gpm ctags
+  vim-doc vim-scripts
+The following NEW packages will be installed:
+  alsa-topology-conf alsa-ucm-conf libasound2 libasound2-data libcanberra0
+  libgpm2 libogg0 libtdb1 libvorbis0a libvorbisfile3 sound-theme-freedesktop
+  vim vim-common vim-runtime xxd
+0 upgraded, 15 newly installed, 0 to remove and 48 not upgraded.
+Need to get 8249 kB of archives.
+After this operation, 38.3 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 xxd amd64 2:8.1.2269-1ubuntu5.32 [50.0 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 vim-common all 2:8.1.2269-1ubuntu5.32 [84.9 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 alsa-topology-conf all 1.2.2-1 [7364 B]
+Get:4 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 alsa-ucm-conf all 1.2.2-1ubuntu0.13 [27.0 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libasound2-data all 1.2.2-2.1ubuntu2.5 [20.1 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libasound2 amd64 1.2.2-2.1ubuntu2.5 [335 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 libtdb1 amd64 1.4.5-0ubuntu0.20.04.1 [44.2 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libogg0 amd64 1.3.4-0ubuntu1 [24.0 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libvorbis0a amd64 1.3.6-2ubuntu1 [87.0 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libvorbisfile3 amd64 1.3.6-2ubuntu1 [16.1 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 sound-theme-freedesktop all 0.8-2ubuntu1 [384 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libcanberra0 amd64 0.30-7ubuntu1 [38.1 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu focal/main amd64 libgpm2 amd64 1.20.7-5 [15.1 kB]
+Get:14 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 vim-runtime all 2:8.1.2269-1ubuntu5.32 [5876 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 vim amd64 2:8.1.2269-1ubuntu5.32 [1241 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 8249 kB in 2s (4570 kB/s)
+Selecting previously unselected package xxd.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 23551 files and directories currently installed.)
+Preparing to unpack .../00-xxd_2%3a8.1.2269-1ubuntu5.32_amd64.deb ...
+Unpacking xxd (2:8.1.2269-1ubuntu5.32) ...
+Selecting previously unselected package vim-common.
+Preparing to unpack .../01-vim-common_2%3a8.1.2269-1ubuntu5.32_all.deb ...
+Unpacking vim-common (2:8.1.2269-1ubuntu5.32) ...
+Selecting previously unselected package alsa-topology-conf.
+Preparing to unpack .../02-alsa-topology-conf_1.2.2-1_all.deb ...
+Unpacking alsa-topology-conf (1.2.2-1) ...
+Selecting previously unselected package alsa-ucm-conf.
+Preparing to unpack .../03-alsa-ucm-conf_1.2.2-1ubuntu0.13_all.deb ...
+Unpacking alsa-ucm-conf (1.2.2-1ubuntu0.13) ...
+Selecting previously unselected package libasound2-data.
+Preparing to unpack .../04-libasound2-data_1.2.2-2.1ubuntu2.5_all.deb ...
+Unpacking libasound2-data (1.2.2-2.1ubuntu2.5) ...
+Selecting previously unselected package libasound2:amd64.
+Preparing to unpack .../05-libasound2_1.2.2-2.1ubuntu2.5_amd64.deb ...
+Unpacking libasound2:amd64 (1.2.2-2.1ubuntu2.5) ...
+Selecting previously unselected package libtdb1:amd64.
+Preparing to unpack .../06-libtdb1_1.4.5-0ubuntu0.20.04.1_amd64.deb ...
+Unpacking libtdb1:amd64 (1.4.5-0ubuntu0.20.04.1) ...
+Selecting previously unselected package libogg0:amd64.
+Preparing to unpack .../07-libogg0_1.3.4-0ubuntu1_amd64.deb ...
+Unpacking libogg0:amd64 (1.3.4-0ubuntu1) ...
+Selecting previously unselected package libvorbis0a:amd64.
+Preparing to unpack .../08-libvorbis0a_1.3.6-2ubuntu1_amd64.deb ...
+Unpacking libvorbis0a:amd64 (1.3.6-2ubuntu1) ...
+Selecting previously unselected package libvorbisfile3:amd64.
+Preparing to unpack .../09-libvorbisfile3_1.3.6-2ubuntu1_amd64.deb ...
+Unpacking libvorbisfile3:amd64 (1.3.6-2ubuntu1) ...
+Selecting previously unselected package sound-theme-freedesktop.
+Preparing to unpack .../10-sound-theme-freedesktop_0.8-2ubuntu1_all.deb ...
+Unpacking sound-theme-freedesktop (0.8-2ubuntu1) ...
+Selecting previously unselected package libcanberra0:amd64.
+Preparing to unpack .../11-libcanberra0_0.30-7ubuntu1_amd64.deb ...
+Unpacking libcanberra0:amd64 (0.30-7ubuntu1) ...
+Selecting previously unselected package libgpm2:amd64.
+Preparing to unpack .../12-libgpm2_1.20.7-5_amd64.deb ...
+Unpacking libgpm2:amd64 (1.20.7-5) ...
+Selecting previously unselected package vim-runtime.
+Preparing to unpack .../13-vim-runtime_2%3a8.1.2269-1ubuntu5.32_all.deb ...
+Adding 'diversion of /usr/share/vim/vim81/doc/help.txt to /usr/share/vim/vim81/doc/help.txt.vim-tiny by vim-runtime'
+Adding 'diversion of /usr/share/vim/vim81/doc/tags to /usr/share/vim/vim81/doc/tags.vim-tiny by vim-runtime'
+Unpacking vim-runtime (2:8.1.2269-1ubuntu5.32) ...
+Selecting previously unselected package vim.
+Preparing to unpack .../14-vim_2%3a8.1.2269-1ubuntu5.32_amd64.deb ...
+Unpacking vim (2:8.1.2269-1ubuntu5.32) ...
+Setting up libgpm2:amd64 (1.20.7-5) ...
+Setting up libogg0:amd64 (1.3.4-0ubuntu1) ...
+Setting up alsa-ucm-conf (1.2.2-1ubuntu0.13) ...
+Setting up libtdb1:amd64 (1.4.5-0ubuntu0.20.04.1) ...
+Setting up xxd (2:8.1.2269-1ubuntu5.32) ...
+Setting up libasound2-data (1.2.2-2.1ubuntu2.5) ...
+Setting up vim-common (2:8.1.2269-1ubuntu5.32) ...
+Setting up libvorbis0a:amd64 (1.3.6-2ubuntu1) ...
+Setting up alsa-topology-conf (1.2.2-1) ...
+Setting up sound-theme-freedesktop (0.8-2ubuntu1) ...
+Setting up libasound2:amd64 (1.2.2-2.1ubuntu2.5) ...
+Setting up vim-runtime (2:8.1.2269-1ubuntu5.32) ...
+Setting up libvorbisfile3:amd64 (1.3.6-2ubuntu1) ...
+Setting up libcanberra0:amd64 (0.30-7ubuntu1) ...
+Setting up vim (2:8.1.2269-1ubuntu5.32) ...
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vim (vim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vimdiff (vimdiff) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rvim (rvim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rview (rview) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vi (vi) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/vi.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/vi.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/vi.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/vi.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/vi.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/vi.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/vi.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/vi.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group vi) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/view (view) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/view.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/view.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/view.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/view.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/view.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/view.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/view.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/view.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group view) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/ex (ex) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/ex.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/ex.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/ex.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/ex.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/ex.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/ex.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/ex.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/ex.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group ex) doesn't exist
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/editor (editor) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/da/man1/editor.1.gz because associated file /usr/share/man/da/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/de/man1/editor.1.gz because associated file /usr/share/man/de/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/fr/man1/editor.1.gz because associated file /usr/share/man/fr/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/it/man1/editor.1.gz because associated file /usr/share/man/it/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ja/man1/editor.1.gz because associated file /usr/share/man/ja/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/pl/man1/editor.1.gz because associated file /usr/share/man/pl/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/ru/man1/editor.1.gz because associated file /usr/share/man/ru/man1/vim.1.gz (of link group editor) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/editor.1.gz because associated file /usr/share/man/man1/vim.1.gz (of link group editor) doesn't exist
+Processing triggers for libc-bin (2.31-0ubuntu9.16) ...
+Processing triggers for mime-support (3.64ubuntu1) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  curl
+0 upgraded, 1 newly installed, 0 to remove and 48 not upgraded.
+Need to get 162 kB of archives.
+After this operation, 414 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu focal-updates/main amd64 curl amd64 7.68.0-1ubuntu2.25 [162 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 162 kB in 0s (885 kB/s)
+Selecting previously unselected package curl.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 25901 files and directories currently installed.)
+Preparing to unpack .../curl_7.68.0-1ubuntu2.25_amd64.deb ...
+Unpacking curl (7.68.0-1ubuntu2.25) ...
+Setting up curl (7.68.0-1ubuntu2.25) ...
+=== 配置证书 (abcert) ===
+[abcert][INFO] Created temporary directory .tmp.pems.KWQXbdo0
+[abcert][INFO] Operating system: Ubuntu 20.04.6 LTS
+[abcert][INFO] Installing certificates
+'.tmp.pems.KWQXbdo0/HWBPITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWBPITEnterpriseCA1.crt'
+'.tmp.pems.KWQXbdo0/HWITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWITEnterpriseCA1.crt'
+'.tmp.pems.KWQXbdo0/HuaweiBPITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiBPITRootCA.crt'
+'.tmp.pems.KWQXbdo0/HuaweiITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiITRootCA.crt'
+'.tmp.pems.KWQXbdo0/HuaweiWebSecureInternetGatewayCA.pem' -> '/usr/local/share/ca-certificates/HuaweiWebSecureInternetGatewayCA.crt'
+Updating certificates in /etc/ssl/certs...
+rehash: warning: skipping ca-certificates.crt,it does not contain exactly one certificate or CRL
+5 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+[abcert][INFO] Removed .tmp.pems.KWQXbdo0
+abcert 安装完成
+================git=====================
+http.version=HTTP/1.1
+http.postbuffer=524288000
+http.timeout=600
+================git=====================
+================env=====================
+HTTPS_PROXY=http://test:test@proxysg.huawei.com:8080/
+no_proxy=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+HOSTNAME=84fbb7679670
+HOME=/root
+OLDPWD=/home
+NO_PROXY=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+https_proxy=http://test:test@proxysg.huawei.com:8080/
+http_proxy=http://test:test@proxysg.huawei.com:8080/
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+GIT_SSL_NO_VERIFY=true
+LANG=C.UTF-8
+DEBIAN_FRONTEND=noninteractive
+LC_ALL=C.UTF-8
+PWD=/tmp/tmp.ejY0quANbX/abcert_install
+HTTP_PROXY=http://test:test@proxysg.huawei.com:8080/
+================env=====================
+#!/bin/bash
+# set -e
+
+cd /home/zstd
+git ls-files --others --exclude-standard | xargs -I {} mv {} {}.bak
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make -j8
+make -j8 test
+
+=========================================
+make[1]: Entering directory '/home/zstd/lib'
+make[1]: Entering directory '/home/zstd/programs'
+make[2]: Entering directory '/home/zstd/lib'
+make[2]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
+make[2]: Entering directory '/home/zstd/lib'
+make[2]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/debug.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/debug.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/entropy_common.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/entropy_common.o
+make[2]: Entering directory '/home/zstd/programs'
+make[2]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/error_private.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/error_private.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/fse_decompress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/fse_decompress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/debug.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/entropy_common.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/error_private.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/fse_decompress.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/pool.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/pool.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/threading.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/xxhash.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/threading.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/xxhash.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_common.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_common.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/fse_compress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/pool.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/fse_compress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/threading.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/xxhash.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/hist.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_common.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/hist.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/fse_compress.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/huf_compress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/huf_compress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/hist.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_compress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/huf_compress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_compress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_compress.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_compress_literals.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_compress_sequences.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_compress_superblock.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_double_fast.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_compress_literals.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_compress_sequences.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_compress_literals.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_compress_sequences.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_compress_superblock.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_compress_superblock.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_double_fast.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_double_fast.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_fast.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_fast.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_fast.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_lazy.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_lazy.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_lazy.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_ldm.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_opt.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_ldm.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_ldm.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_opt.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_opt.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstdmt_compress.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/huf_decompress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstdmt_compress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstdmt_compress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/huf_decompress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/huf_decompress.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_ddict.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_decompress.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_decompress_block.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_ddict.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_decompress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_ddict.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_decompress.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_decompress_block.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zbuff_common.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zbuff_compress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_decompress_block.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zbuff_decompress.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/cover.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/divsufsort.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/cover.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zbuff_common.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zbuff_compress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zbuff_decompress.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/cover.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/divsufsort.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/divsufsort.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/fastcover.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zdict.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/fastcover.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_v05.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zdict.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/fastcover.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zdict.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_v05.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_v05.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_v06.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_v06.o
+CC obj/conf_2c4cce56e07d576a865fce347f466405/dynamic/zstd_v07.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_v06.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd_v07.o
+CC obj/conf_18b924dcec50930e52560598df2e62ae/static/zstd_v07.o
+compiling dynamic library 1.4.8
+creating versioned links
+make[2]: Leaving directory '/home/zstd/lib'
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/dibio.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/fileio.o
+compiling static library
+make[2]: Leaving directory '/home/zstd/lib'
+release build completed
+make[1]: Leaving directory '/home/zstd/lib'
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/benchzstd.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/timefn.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstdcli.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/datagen.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/util.o
+CC obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/benchfn.o
+==> building with threading support
+==> building zstd with .gz compression support
+==> no liblzma, building zstd without .xz/.lzma support
+==> no liblz4, building zstd without .lz4 support
+LINK obj/conf_9432a4ed69540547ec5d5f0eb1469f2b/zstd
+zstd build completed
+make[2]: Leaving directory '/home/zstd/programs'
+make[1]: Leaving directory '/home/zstd/programs'
+DEBUGLEVEL=1 MOREFLAGS="-g -Werror" make -j -C programs allVariants
+make[1]: warning: -j0 forced in submake: resetting jobserver mode.
+make[1]: Entering directory '/home/zstd/programs'
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/debug.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/entropy_common.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/error_private.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/fse_decompress.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/pool.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/threading.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/xxhash.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_common.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/fse_compress.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/hist.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/huf_compress.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_compress.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_compress_literals.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_compress_sequences.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_compress_superblock.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_double_fast.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_fast.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_lazy.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_ldm.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_opt.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstdmt_compress.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/huf_decompress.o
+../lib/compress/zstd_compress.c: In function ‘ZSTD_adjustCParams_internal’:
+../lib/compress/zstd_compress.c:1187:15: error: unused variable ‘minSrcSize’ [-Werror=unused-variable]
+ 1187 |     const U64 minSrcSize = 513; /* (1<<9) + 1 */
+      |               ^~~~~~~~~~
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_ddict.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_decompress.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_decompress_block.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/cover.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/divsufsort.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/fastcover.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zdict.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_v07.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_v05.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_v06.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/dibio.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/fileio.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/benchzstd.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/timefn.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/zstdcli.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/datagen.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/util.o
+CC obj/conf_5278cec1e78c027e4b2561eec0698c65/benchfn.o
+cc1: all warnings being treated as errors
+make[2]: *** [Makefile:392: obj/conf_5278cec1e78c027e4b2561eec0698c65/zstd_compress.o] Error 1
+make[2]: *** Waiting for unfinished jobs....
+../lib/compress/zstd_compress.c: In function ‘ZSTD_adjustCParams_internal’:
+../lib/compress/zstd_compress.c:1187:15: error: unused variable ‘minSrcSize’ [-Werror=unused-variable]
+ 1187 |     const U64 minSrcSize = 513; /* (1<<9) + 1 */
+      |               ^~~~~~~~~~
+../lib/compress/zstd_compress.c: In function ‘ZSTD_adjustCParams_internal’:
+../lib/compress/zstd_compress.c:1187:15: error: unused variable ‘minSrcSize’ [-Werror=unused-variable]
+ 1187 |     const U64 minSrcSize = 513; /* (1<<9) + 1 */
+      |               ^~~~~~~~~~
+cc1: all warnings being treated as errors
+cc1: all warnings being treated as errors
+make[1]: *** [Makefile:224: zstd] Error 2
+make[1]: *** Waiting for unfinished jobs....
+../lib/compress/zstd_compress.c: In function ‘ZSTD_adjustCParams_internal’:
+../lib/compress/zstd_compress.c:1187:15: error: unused variable ‘minSrcSize’ [-Werror=unused-variable]
+ 1187 |     const U64 minSrcSize = 513; /* (1<<9) + 1 */
+      |               ^~~~~~~~~~
+cc1: all warnings being treated as errors
+make[1]: *** [Makefile:328: zstd-compress] Error 1
+make[1]: *** [Makefile:333: zstd-dictBuilder] Error 1
+make[1]: *** [Makefile:274: zstd-nolegacy] Error 1
+make[1]: Leaving directory '/home/zstd/programs'
+make: *** [Makefile:83: test] Error 2

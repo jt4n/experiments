@@ -1,0 +1,18 @@
+diff --git a/src/jv.c b/src/jv.c
+index 159b3f2..b75dbfd 100644
+--- a/src/jv.c
++++ b/src/jv.c
+@@ -1365,7 +1365,12 @@ jv jv_string_implode(jv j) {
+ 
+   for (i = 0; i < len; i++) {
+     jv n = jv_array_get(jv_copy(j), i);
+-    assert(JVP_HAS_KIND(n, JV_KIND_NUMBER));
++    if (jv_get_kind(n) != JV_KIND_NUMBER) {
++      jv_free(n);
++      jv_free(j);
++      jv_free(s);
++      return jv_invalid_with_msg(jv_string("implode requires array of numbers"));
++    }
+     int nv = jv_number_value(n);
+     jv_free(n);
+     if (nv > 0x10FFFF)

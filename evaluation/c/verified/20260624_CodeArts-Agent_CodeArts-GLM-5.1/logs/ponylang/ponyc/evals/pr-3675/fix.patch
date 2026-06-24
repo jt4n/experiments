@@ -1,0 +1,36 @@
+diff --git a/packages/builtin/array.pony b/packages/builtin/array.pony
+index 1b1f75cf..3792590b 100644
+--- a/packages/builtin/array.pony
++++ b/packages/builtin/array.pony
+@@ -124,17 +124,23 @@ class Array[A] is Seq[A]
+   new from_cpointer(ptr: Pointer[A], len: USize, alloc: USize = 0) =>
+     """
+     Create an array from a C-style pointer and length. The contents are not
+-    copied.
++    copied. If a null pointer is given then an empty array is returned.
+     """
+-    _size = len
+-
+-    if alloc > len then
+-      _alloc = alloc
++    if ptr.is_null() then
++      _size = 0
++      _alloc = 0
++      _ptr = Pointer[A]
+     else
+-      _alloc = len
+-    end
++      _size = len
+ 
+-    _ptr = ptr
++      if alloc > len then
++        _alloc = alloc
++      else
++        _alloc = len
++      end
++
++      _ptr = ptr
++    end
+ 
+   fun _copy_to(
+     ptr: Pointer[this->A!],

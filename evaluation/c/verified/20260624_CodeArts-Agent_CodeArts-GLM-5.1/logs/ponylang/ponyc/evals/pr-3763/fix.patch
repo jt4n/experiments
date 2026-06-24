@@ -1,0 +1,27 @@
+diff --git a/src/libponyc/pass/scope.c b/src/libponyc/pass/scope.c
+index 73f332c0..e9803db7 100644
+--- a/src/libponyc/pass/scope.c
++++ b/src/libponyc/pass/scope.c
+@@ -209,6 +209,22 @@ static ast_result_t scope_iftype(pass_opt_t* opt, ast_t* ast)
+ 
+   AST_GET_CHILDREN(ast, subtype, supertype, body, typeparam_store);
+ 
++  if(ast_id(typeparam_store) != TK_NONE)
++  {
++    // The scope pass has already been run on this iftype. This can happen when
++    // a lambda containing an iftype is expanded, causing the scope pass to be
++    // re-run on the same AST subtree. The typeparams are already set, so we
++    // need to re-record the scope pass on them to prevent the type parameters
++    // from being declared twice.
++    ast_pass_record(typeparam_store, PASS_SCOPE);
++
++    for(ast_t* p = ast_child(typeparam_store); p != NULL;
++      p = ast_sibling(p))
++      ast_pass_record(p, PASS_SCOPE);
++
++    return AST_OK;
++  }
++
+   ast_t* typeparams = ast_from(ast, TK_TYPEPARAMS);
+ 
+   switch(ast_id(subtype))
