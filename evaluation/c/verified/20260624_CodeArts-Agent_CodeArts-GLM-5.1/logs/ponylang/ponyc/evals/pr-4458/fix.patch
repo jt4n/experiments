@@ -1,0 +1,88 @@
+diff --git a/src/libponyc/type/alias.c b/src/libponyc/type/alias.c
+index 6c7ad9c1..784bfe2f 100644
+--- a/src/libponyc/type/alias.c
++++ b/src/libponyc/type/alias.c
+@@ -115,7 +115,6 @@ static ast_t* recover_single(ast_t* type, token_id rcap,
+       break;
+ 
+     case TK_VAL:
+-    case TK_BOX:
+     case TK_CAP_READ:
+       // These recover as val, so mutable rcaps are not acceptable.
+       if(rcap == TK_NONE)
+@@ -133,14 +132,45 @@ static ast_t* recover_single(ast_t* type, token_id rcap,
+           return NULL;
+ 
+         case TK_VAL:
+-          if((tuple_elem_recover != NULL) && (tcap != TK_VAL))
+-          {
+-            if(*tuple_elem_recover == RECOVERY_MUTABLE)
+-              return NULL;
++          break;
+ 
+-            *tuple_elem_recover = RECOVERY_IMMUTABLE;
+-          }
++        case TK_BOX:
++        case TK_TAG:
++        case TK_CAP_SHARE:
++          break;
++
++        default:
++          pony_assert(0);
++          return NULL;
++      }
++      break;
++
++    case TK_BOX:
++      // box recovers as val, but recovering to val is not allowed if the box
++      // may have mutable aliases outside the recover block. If the box is
++      // ephemeral, it has no aliases and can be recovered to val.
++      if(rcap == TK_NONE)
++        rcap = TK_VAL;
++
++      switch(rcap)
++      {
++        case TK_ISO:
++        case TK_TRN:
++        case TK_REF:
++        case TK_CAP_READ:
++        case TK_CAP_SEND:
++        case TK_CAP_ALIAS:
++        case TK_CAP_ANY:
++          return NULL;
++
++        case TK_VAL:
++        {
++          ast_t* eph = ast_sibling(cap);
++
++          if(ast_id(eph) != TK_EPHEMERAL)
++            return NULL;
+           break;
++        }
+ 
+         case TK_BOX:
+         case TK_TAG:
+diff --git a/test/libponyc/recover.cc b/test/libponyc/recover.cc
+index 54d80e4c..42ebd3a6 100644
+--- a/test/libponyc/recover.cc
++++ b/test/libponyc/recover.cc
+@@ -880,6 +880,19 @@ TEST_F(RecoverTest, CantAutoRecover_CtorArgWithNonSendableArg)
+   TEST_ERRORS_1(src, "argument not assignable to parameter");
+ }
+ 
++TEST_F(RecoverTest, CantRecover_BoxFieldToVal)
++{
++  const char* src =
++    "class Foo\n"
++    "  let s: String box\n"
++    "  new create(s': String box) =>\n"
++    "    s = s'\n"
++    "  fun get_s(): String val =>\n"
++    "    recover val s end";
++
++  TEST_ERRORS_1(src, "can't recover to this capability");
++}
++
+ TEST_F(RecoverTest, CantAutoRecover_CtorAssignmentWithNonSendableArg)
+ {
+   const char* src =

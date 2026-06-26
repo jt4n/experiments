@@ -1,0 +1,191 @@
+diff --git a/src/libponyc/expr/ffi.c b/src/libponyc/expr/ffi.c
+index ee72b1f..ef7005b 100644
+--- a/src/libponyc/expr/ffi.c
++++ b/src/libponyc/expr/ffi.c
+@@ -139,6 +139,77 @@ static bool declared_ffi(pass_opt_t* opt, ast_t* call, ast_t* decl)
+   return true;
+ }
+ 
++static bool undeclared_ffi(pass_opt_t* opt, ast_t* call, ast_t* decl)
++{
++  pony_assert(call != NULL);
++  pony_assert(decl != NULL);
++  pony_assert(ast_id(decl) == TK_FFICALL);
++
++  AST_GET_CHILDREN(call, call_name, call_ret_typeargs, call_args,
++    call_named_args, call_error);
++  AST_GET_CHILDREN(decl, decl_name, decl_ret_typeargs, decl_args,
++    decl_named_args, decl_error);
++
++  ast_t* call_ret_type = ast_child(call_ret_typeargs);
++  ast_t* decl_ret_type = ast_child(decl_ret_typeargs);
++
++  errorframe_t info = NULL;
++  if((call_ret_type != NULL) &&
++    !is_eqtype(call_ret_type, decl_ret_type, &info, opt))
++  {
++    errorframe_t frame = NULL;
++    ast_error_frame(&frame, call_ret_type,
++      "FFI call return type does not match previous call");
++    errorframe_append(&frame, &info);
++    errorframe_report(&frame, opt->check.errors);
++    return false;
++  }
++
++  ast_t* call_arg = ast_child(call_args);
++  ast_t* decl_arg = ast_child(decl_args);
++
++  while((call_arg != NULL) && (decl_arg != NULL))
++  {
++    ast_t* call_arg_type = ast_type(call_arg);
++    ast_t* decl_arg_type = ast_type(decl_arg);
++
++    if((call_arg_type != NULL) && (decl_arg_type != NULL))
++    {
++      errorframe_t info2 = NULL;
++      if(!is_eqtype(call_arg_type, decl_arg_type, &info2, opt))
++      {
++        errorframe_t frame = NULL;
++        ast_error_frame(&frame, call_arg,
++          "FFI call argument type does not match previous call");
++        errorframe_append(&frame, &info2);
++        errorframe_report(&frame, opt->check.errors);
++        return false;
++      }
++    }
++
++    call_arg = ast_sibling(call_arg);
++    decl_arg = ast_sibling(decl_arg);
++  }
++
++  if(call_arg != NULL)
++  {
++    ast_error(opt->check.errors, call_arg,
++      "FFI call has more arguments than previous call");
++    return false;
++  }
++
++  if(decl_arg != NULL)
++  {
++    ast_error(opt->check.errors, call_named_args,
++      "FFI call has fewer arguments than previous call");
++    return false;
++  }
++
++  ast_setdata(call, decl);
++  ast_settype(call, decl_ret_type);
++  return true;
++}
++
+ bool expr_ffi(pass_opt_t* opt, ast_t* ast)
+ {
+   AST_GET_CHILDREN(ast, name, return_typeargs, args, namedargs, question);
+@@ -148,10 +219,15 @@ bool expr_ffi(pass_opt_t* opt, ast_t* ast)
+   if(!ffi_get_decl(&opt->check, ast, &decl, opt))
+     return false;
+ 
+-  if(decl != NULL)  // We have a declaration
+-    return declared_ffi(opt, ast, decl);
++  if(decl != NULL)
++  {
++    if(ast_id(decl) == TK_FFIDECL)
++      return declared_ffi(opt, ast, decl);
++
++    return undeclared_ffi(opt, ast, decl);
++  }
+ 
+-  // We do not have a declaration
++  // We do not have a declaration and this is the first undeclared call
+   for(ast_t* arg = ast_child(args); arg != NULL; arg = ast_sibling(arg))
+   {
+     ast_t* a_type = ast_type(arg);
+@@ -195,6 +271,7 @@ bool expr_ffi(pass_opt_t* opt, ast_t* ast)
+   }
+ 
+   ast_settype(ast, return_type);
++  ast_setdata(ast, ast);
+ 
+   return true;
+ }
+diff --git a/src/libponyc/pkg/ifdef.c b/src/libponyc/pkg/ifdef.c
+index e28dcf0..9755bab 100644
+--- a/src/libponyc/pkg/ifdef.c
++++ b/src/libponyc/pkg/ifdef.c
+@@ -481,10 +481,25 @@ bool ffi_get_decl(typecheck_t* t, ast_t* ast, ast_t** out_decl,
+       return false;
+     }
+ 
+-    // Store declaration found for next time, including if we found nothing.
+-    symtab_add(symtab, ffi_name, decl, SYM_FFIDECL);
++    // Store declaration found for next time. If there is no declaration,
++    // store the FFI call itself so that we can check subsequent undeclared
++    // calls against it. Return NULL to indicate no declaration was found.
++    ast_t* store_decl = decl;
++    if(store_decl == NULL)
++      store_decl = ast;
++
++    symtab_add(symtab, ffi_name, store_decl, SYM_FFIDECL);
++  }
++
++  // If the stored declaration is actually a previous FFI call (not a real
++  // declaration), return it only if it's not the current call.
++  if((decl == NULL) ||
++    ((ast_id(decl) == TK_FFICALL) && (decl == ast)))
++  {
++    *out_decl = NULL;
++  } else {
++    *out_decl = decl;
+   }
+ 
+-  *out_decl = decl;
+   return true;
+ }
+diff --git a/src/libponyc/verify/call.c b/src/libponyc/verify/call.c
+index cfcc173..9395136 100644
+--- a/src/libponyc/verify/call.c
++++ b/src/libponyc/verify/call.c
+@@ -83,8 +83,7 @@ static bool check_partial_ffi_call(pass_opt_t* opt, ast_t* ast)
+   if(decl == NULL) {
+     if(ast_id(call_error) == TK_QUESTION)
+       ast_seterror(ast);
+-  } else {
+-    pony_assert(ast_id(decl) == TK_FFIDECL);
++  } else if(ast_id(decl) == TK_FFIDECL) {
+     AST_GET_CHILDREN(decl, decl_name, decl_ret_typeargs, params, named_params,
+       decl_error);
+ 
+@@ -111,6 +110,34 @@ static bool check_partial_ffi_call(pass_opt_t* opt, ast_t* ast)
+         return false;
+       }
+     }
++  } else {
++    // decl is a previous undeclared FFI call. Check partiality matches.
++    pony_assert(ast_id(decl) == TK_FFICALL);
++    AST_GET_CHILDREN(decl, decl_name, decl_ret_typeargs, decl_args,
++      decl_named_args, decl_error);
++
++    if(ast_id(decl_error) == TK_QUESTION)
++    {
++      ast_seterror(ast);
++
++      if(ast_id(call_error) != TK_QUESTION) {
++        ast_error(opt->check.errors, call_error,
++          "call is not partial but the previous FFI call is - " \
++          "a question mark is required after this call");
++        ast_error_continue(opt->check.errors, decl_error,
++          "previous call is here");
++        return false;
++      }
++    } else {
++      if(ast_id(call_error) == TK_QUESTION) {
++        ast_error(opt->check.errors, call_error,
++          "call is partial but the previous FFI call is not - " \
++          "this question mark should be removed");
++        ast_error_continue(opt->check.errors, decl_error,
++          "previous call is here");
++        return false;
++      }
++    }
+   }
+ 
+   return true;

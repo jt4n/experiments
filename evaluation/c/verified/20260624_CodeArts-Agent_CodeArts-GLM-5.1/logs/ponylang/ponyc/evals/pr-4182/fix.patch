@@ -1,0 +1,95 @@
+diff --git a/src/libponyc/pass/refer.c b/src/libponyc/pass/refer.c
+index bb1d520e..90114790 100644
+--- a/src/libponyc/pass/refer.c
++++ b/src/libponyc/pass/refer.c
+@@ -1371,20 +1371,43 @@ static bool refer_seq(pass_opt_t* opt, ast_t* ast)
+   return true;
+ }
+ 
++static bool typeref_is_new_object(ast_t* ast)
++{
++  if(ast_id(ast) != TK_TYPEREF)
++    return false;
++
++  ast_t* type = (ast_t*) ast_data(ast);
++  return ast_id(type) != TK_PRIMITIVE;
++}
++
+ static bool valid_is_comparand(pass_opt_t* opt, ast_t* ast)
+ {
+   ast_t* type;
+   switch(ast_id(ast))
+   {
+     case TK_TYPEREF:
+-      type = (ast_t*) ast_data(ast);
+-      if(ast_id(type) != TK_PRIMITIVE)
++      if(typeref_is_new_object(ast))
+       {
+         ast_error(opt->check.errors, ast, "identity comparison with a new object"
+         " will always be false");
+         return false;
+       }
+       return true;
++    case TK_CALL:
++    {
++      AST_GET_CHILDREN(ast, receiver, positional, named, question);
++      if(ast_id(receiver) == TK_DOT)
++      {
++        AST_GET_CHILDREN(receiver, left, right);
++        if(typeref_is_new_object(left))
++        {
++          ast_error(opt->check.errors, ast, "identity comparison with a new object"
++            " will always be false");
++          return false;
++        }
++      }
++      return true;
++    }
+     case TK_SEQ:
+       type = ast_child(ast);
+       while(type != NULL)
+diff --git a/test/libponyc/badpony.cc b/test/libponyc/badpony.cc
+index 0dba544b..d2d93dfa 100644
+--- a/test/libponyc/badpony.cc
++++ b/test/libponyc/badpony.cc
+@@ -1087,6 +1087,40 @@ TEST_F(BadPonyTest, IsComparingCreateSugar)
+   }
+ }
+ 
++TEST_F(BadPonyTest, IsComparingCreateExplicit)
++{
++  // From issue #2024 - explicit C.create() should also be caught
++  const char* src =
++    "primitive P\n"
++    "class C\n"
++
++    "actor Main\n"
++    "  new create(env: Env) =>\n"
++    // invalid
++    "    C.create() is C.create()\n"
++    "    C.create() is P.create()\n"
++    "    P.create() is C.create()\n"
++    "    C is C.create()\n"
++    "    C.create() is C\n"
++    "    C.create() isnt C.create()\n"
++    "    C.create() isnt P.create()\n"
++    "    P.create() isnt C.create()\n"
++    "    C isnt C.create()\n"
++    "    C.create() isnt C\n"
++    // valid
++    "    P.create() is P.create()\n"
++    "    P is P.create()\n"
++    "    P.create() is P\n"
++    "    P.create() isnt P.create()\n"
++    "    P isnt P.create()\n"
++    "    P.create() isnt P";
++  {
++    const char* err = "identity comparison with a new object will always be false";
++    const char* errs[] = {err, err, err, err, err, err, err, err, err, err, NULL};
++    DO(test_expected_errors(src, "refer", errs));
++  }
++}
++
+ TEST_F(BadPonyTest, TypeErrorDuringArrayLiteralInference)
+ {
+   // From issue 2602

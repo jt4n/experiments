@@ -1,0 +1,269 @@
+diff --git a/doc/zstd_manual.html b/doc/zstd_manual.html
+index c7962e7d..e123c1cd 100644
+--- a/doc/zstd_manual.html
++++ b/doc/zstd_manual.html
+@@ -933,7 +933,7 @@ size_t ZSTD_estimateDCtxSize(void);
+   It will also consider src size to be arbitrarily "large", which is worst case.
+   If srcSize is known to always be small, ZSTD_estimateCCtxSize_usingCParams() can provide a tighter estimation.
+   ZSTD_estimateCCtxSize_usingCParams() can be used in tandem with ZSTD_getCParams() to create cParams from compressionLevel.
+-  ZSTD_estimateCCtxSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParam_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
++  ZSTD_estimateCCtxSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParams_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
+   Note : CCtx size estimation is only correct for single-threaded compression. 
+ </p></pre><BR>
+ 
+@@ -946,7 +946,7 @@ size_t ZSTD_estimateDStreamSize_fromFrame(const void* src, size_t srcSize);
+   It will also consider src size to be arbitrarily "large", which is worst case.
+   If srcSize is known to always be small, ZSTD_estimateCStreamSize_usingCParams() can provide a tighter estimation.
+   ZSTD_estimateCStreamSize_usingCParams() can be used in tandem with ZSTD_getCParams() to create cParams from compressionLevel.
+-  ZSTD_estimateCStreamSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParam_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
++  ZSTD_estimateCStreamSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParams_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
+   Note : CStream size estimation is only correct for single-threaded compression.
+   ZSTD_DStream memory budget depends on window Size.
+   This information can be passed manually, using ZSTD_estimateDStreamSize,
+@@ -1076,7 +1076,7 @@ static ZSTD_customMem const ZSTD_defaultCMem = { NULL, NULL, NULL };  </b>/**< t
+ size_t ZSTD_freeCCtxParams(ZSTD_CCtx_params* params);
+ </b><p>  Quick howto :
+   - ZSTD_createCCtxParams() : Create a ZSTD_CCtx_params structure
+-  - ZSTD_CCtxParam_setParameter() : Push parameters one by one into
++  - ZSTD_CCtxParams_setParameter() : Push parameters one by one into
+                                     an existing ZSTD_CCtx_params structure.
+                                     This is similar to
+                                     ZSTD_CCtx_setParameter().
+@@ -1109,7 +1109,7 @@ size_t ZSTD_freeCCtxParams(ZSTD_CCtx_params* params);
+  
+ </p></pre><BR>
+ 
+-<pre><b>size_t ZSTD_CCtxParam_setParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int value);
++<pre><b>size_t ZSTD_CCtxParams_setParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int value);
+ </b><p>  Similar to ZSTD_CCtx_setParameter.
+   Set one compression parameter, selected by enum ZSTD_cParameter.
+   Parameters must be applied to a ZSTD_CCtx using ZSTD_CCtx_setParametersUsingCCtxParams().
+@@ -1117,7 +1117,7 @@ size_t ZSTD_freeCCtxParams(ZSTD_CCtx_params* params);
+  
+ </p></pre><BR>
+ 
+-<pre><b>size_t ZSTD_CCtxParam_getParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int* value);
++<pre><b>size_t ZSTD_CCtxParams_getParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int* value);
+ </b><p> Similar to ZSTD_CCtx_getParameter.
+  Get the requested value of one compression parameter, selected by enum ZSTD_cParameter.
+  @result : 0, or an error code (which can be tested with ZSTD_isError()).
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index 1429b84f..9bb566ae 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -494,13 +494,13 @@ size_t ZSTD_CCtx_setParameter(ZSTD_CCtx* cctx, ZSTD_cParameter param, int value)
+ 
+     default: RETURN_ERROR(parameter_unsupported);
+     }
+-    return ZSTD_CCtxParam_setParameter(&cctx->requestedParams, param, value);
++    return ZSTD_CCtxParams_setParameter(&cctx->requestedParams, param, value);
+ }
+ 
+-size_t ZSTD_CCtxParam_setParameter(ZSTD_CCtx_params* CCtxParams,
++size_t ZSTD_CCtxParams_setParameter(ZSTD_CCtx_params* CCtxParams,
+                                    ZSTD_cParameter param, int value)
+ {
+-    DEBUGLOG(4, "ZSTD_CCtxParam_setParameter (%i, %i)", (int)param, value);
++    DEBUGLOG(4, "ZSTD_CCtxParams_setParameter (%i, %i)", (int)param, value);
+     switch(param)
+     {
+     case ZSTD_c_format :
+@@ -670,10 +670,10 @@ size_t ZSTD_CCtxParam_setParameter(ZSTD_CCtx_params* CCtxParams,
+ 
+ size_t ZSTD_CCtx_getParameter(ZSTD_CCtx* cctx, ZSTD_cParameter param, int* value)
+ {
+-    return ZSTD_CCtxParam_getParameter(&cctx->requestedParams, param, value);
++    return ZSTD_CCtxParams_getParameter(&cctx->requestedParams, param, value);
+ }
+ 
+-size_t ZSTD_CCtxParam_getParameter(
++size_t ZSTD_CCtxParams_getParameter(
+         ZSTD_CCtx_params* CCtxParams, ZSTD_cParameter param, int* value)
+ {
+     switch(param)
+diff --git a/lib/compress/zstdmt_compress.c b/lib/compress/zstdmt_compress.c
+index 419352e7..dab3a950 100644
+--- a/lib/compress/zstdmt_compress.c
++++ b/lib/compress/zstdmt_compress.c
+@@ -672,7 +672,7 @@ static void ZSTDMT_compressionJob(void* jobDescription)
+         if (ZSTD_isError(initError)) JOB_ERROR(initError);
+     } else {  /* srcStart points at reloaded section */
+         U64 const pledgedSrcSize = job->firstJob ? job->fullFrameSize : job->src.size;
+-        {   size_t const forceWindowError = ZSTD_CCtxParam_setParameter(&jobParams, ZSTD_c_forceMaxWindow, !job->firstJob);
++        {   size_t const forceWindowError = ZSTD_CCtxParams_setParameter(&jobParams, ZSTD_c_forceMaxWindow, !job->firstJob);
+             if (ZSTD_isError(forceWindowError)) JOB_ERROR(forceWindowError);
+         }
+         {   size_t const initError = ZSTD_compressBegin_advanced_internal(cctx,
+@@ -864,7 +864,7 @@ static size_t ZSTDMT_expandJobsTable (ZSTDMT_CCtx* mtctx, U32 nbWorkers) {
+  * Internal use only */
+ size_t ZSTDMT_CCtxParam_setNbWorkers(ZSTD_CCtx_params* params, unsigned nbWorkers)
+ {
+-    return ZSTD_CCtxParam_setParameter(params, ZSTD_c_nbWorkers, (int)nbWorkers);
++    return ZSTD_CCtxParams_setParameter(params, ZSTD_c_nbWorkers, (int)nbWorkers);
+ }
+ 
+ ZSTDMT_CCtx* ZSTDMT_createCCtx_advanced(unsigned nbWorkers, ZSTD_customMem cMem)
+@@ -982,13 +982,13 @@ ZSTDMT_CCtxParam_setMTCtxParameter(ZSTD_CCtx_params* params,
+     {
+     case ZSTDMT_p_jobSize :
+         DEBUGLOG(4, "ZSTDMT_CCtxParam_setMTCtxParameter : set jobSize to %i", value);
+-        return ZSTD_CCtxParam_setParameter(params, ZSTD_c_jobSize, value);
++        return ZSTD_CCtxParams_setParameter(params, ZSTD_c_jobSize, value);
+     case ZSTDMT_p_overlapLog :
+         DEBUGLOG(4, "ZSTDMT_p_overlapLog : %i", value);
+-        return ZSTD_CCtxParam_setParameter(params, ZSTD_c_overlapLog, value);
++        return ZSTD_CCtxParams_setParameter(params, ZSTD_c_overlapLog, value);
+     case ZSTDMT_p_rsyncable :
+         DEBUGLOG(4, "ZSTD_p_rsyncable : %i", value);
+-        return ZSTD_CCtxParam_setParameter(params, ZSTD_c_rsyncable, value);
++        return ZSTD_CCtxParams_setParameter(params, ZSTD_c_rsyncable, value);
+     default :
+         return ERROR(parameter_unsupported);
+     }
+@@ -1004,11 +1004,11 @@ size_t ZSTDMT_getMTCtxParameter(ZSTDMT_CCtx* mtctx, ZSTDMT_parameter parameter,
+ {
+     switch (parameter) {
+     case ZSTDMT_p_jobSize:
+-        return ZSTD_CCtxParam_getParameter(&mtctx->params, ZSTD_c_jobSize, value);
++        return ZSTD_CCtxParams_getParameter(&mtctx->params, ZSTD_c_jobSize, value);
+     case ZSTDMT_p_overlapLog:
+-        return ZSTD_CCtxParam_getParameter(&mtctx->params, ZSTD_c_overlapLog, value);
++        return ZSTD_CCtxParams_getParameter(&mtctx->params, ZSTD_c_overlapLog, value);
+     case ZSTDMT_p_rsyncable:
+-        return ZSTD_CCtxParam_getParameter(&mtctx->params, ZSTD_c_rsyncable, value);
++        return ZSTD_CCtxParams_getParameter(&mtctx->params, ZSTD_c_rsyncable, value);
+     default:
+         return ERROR(parameter_unsupported);
+     }
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 03ba1e2d..4b474bd1 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -1121,7 +1121,7 @@ ZSTDLIB_API size_t ZSTD_frameHeaderSize(const void* src, size_t srcSize);
+  *  It will also consider src size to be arbitrarily "large", which is worst case.
+  *  If srcSize is known to always be small, ZSTD_estimateCCtxSize_usingCParams() can provide a tighter estimation.
+  *  ZSTD_estimateCCtxSize_usingCParams() can be used in tandem with ZSTD_getCParams() to create cParams from compressionLevel.
+- *  ZSTD_estimateCCtxSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParam_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
++ *  ZSTD_estimateCCtxSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParams_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
+  *  Note : CCtx size estimation is only correct for single-threaded compression. */
+ ZSTDLIB_API size_t ZSTD_estimateCCtxSize(int compressionLevel);
+ ZSTDLIB_API size_t ZSTD_estimateCCtxSize_usingCParams(ZSTD_compressionParameters cParams);
+@@ -1133,7 +1133,7 @@ ZSTDLIB_API size_t ZSTD_estimateDCtxSize(void);
+  *  It will also consider src size to be arbitrarily "large", which is worst case.
+  *  If srcSize is known to always be small, ZSTD_estimateCStreamSize_usingCParams() can provide a tighter estimation.
+  *  ZSTD_estimateCStreamSize_usingCParams() can be used in tandem with ZSTD_getCParams() to create cParams from compressionLevel.
+- *  ZSTD_estimateCStreamSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParam_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
++ *  ZSTD_estimateCStreamSize_usingCCtxParams() can be used in tandem with ZSTD_CCtxParams_setParameter(). Only single-threaded compression is supported. This function will return an error code if ZSTD_c_nbWorkers is >= 1.
+  *  Note : CStream size estimation is only correct for single-threaded compression.
+  *  ZSTD_DStream memory budget depends on window Size.
+  *  This information can be passed manually, using ZSTD_estimateDStreamSize,
+@@ -1346,7 +1346,7 @@ ZSTDLIB_API size_t ZSTD_CCtx_getParameter(ZSTD_CCtx* cctx, ZSTD_cParameter param
+ /*! ZSTD_CCtx_params :
+  *  Quick howto :
+  *  - ZSTD_createCCtxParams() : Create a ZSTD_CCtx_params structure
+- *  - ZSTD_CCtxParam_setParameter() : Push parameters one by one into
++ *  - ZSTD_CCtxParams_setParameter() : Push parameters one by one into
+  *                                    an existing ZSTD_CCtx_params structure.
+  *                                    This is similar to
+  *                                    ZSTD_CCtx_setParameter().
+@@ -1380,20 +1380,20 @@ ZSTDLIB_API size_t ZSTD_CCtxParams_init(ZSTD_CCtx_params* cctxParams, int compre
+  */
+ ZSTDLIB_API size_t ZSTD_CCtxParams_init_advanced(ZSTD_CCtx_params* cctxParams, ZSTD_parameters params);
+ 
+-/*! ZSTD_CCtxParam_setParameter() :
++/*! ZSTD_CCtxParams_setParameter() :
+  *  Similar to ZSTD_CCtx_setParameter.
+  *  Set one compression parameter, selected by enum ZSTD_cParameter.
+  *  Parameters must be applied to a ZSTD_CCtx using ZSTD_CCtx_setParametersUsingCCtxParams().
+  * @result : 0, or an error code (which can be tested with ZSTD_isError()).
+  */
+-ZSTDLIB_API size_t ZSTD_CCtxParam_setParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int value);
++ZSTDLIB_API size_t ZSTD_CCtxParams_setParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int value);
+ 
+-/*! ZSTD_CCtxParam_getParameter() :
++/*! ZSTD_CCtxParams_getParameter() :
+  * Similar to ZSTD_CCtx_getParameter.
+  * Get the requested value of one compression parameter, selected by enum ZSTD_cParameter.
+  * @result : 0, or an error code (which can be tested with ZSTD_isError()).
+  */
+-ZSTDLIB_API size_t ZSTD_CCtxParam_getParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int* value);
++ZSTDLIB_API size_t ZSTD_CCtxParams_getParameter(ZSTD_CCtx_params* params, ZSTD_cParameter param, int* value);
+ 
+ /*! ZSTD_CCtx_setParametersUsingCCtxParams() :
+  *  Apply a set of ZSTD_CCtx_params to the compression context.
+@@ -1780,6 +1780,9 @@ ZSTDLIB_API size_t ZSTD_decompressBlock(ZSTD_DCtx* dctx, void* dst, size_t dstCa
+ ZSTDLIB_API size_t ZSTD_insertBlock    (ZSTD_DCtx* dctx, const void* blockStart, size_t blockSize);  /**< insert uncompressed block into `dctx` history. Useful for multi-blocks decompression. */
+ 
+ 
++#define ZSTD_CCtxParam_setParameter ZSTD_CCtxParams_setParameter
++#define ZSTD_CCtxParam_getParameter ZSTD_CCtxParams_getParameter
++
+ #endif   /* ZSTD_H_ZSTD_STATIC_LINKING_ONLY */
+ 
+ #if defined (__cplusplus)
+diff --git a/tests/fuzzer.c b/tests/fuzzer.c
+index e9da862b..9aed11e3 100644
+--- a/tests/fuzzer.c
++++ b/tests/fuzzer.c
+@@ -849,22 +849,22 @@ static int basicUnitTests(U32 seed, double compressibility)
+     {   ZSTD_CCtx_params* params = ZSTD_createCCtxParams();
+         int value;
+         /* Check that the overlap log and job size are unset. */
+-        CHECK( ZSTD_CCtxParam_getParameter(params, ZSTD_c_overlapLog, &value) );
++        CHECK( ZSTD_CCtxParams_getParameter(params, ZSTD_c_overlapLog, &value) );
+         CHECK_EQ(value, 0);
+-        CHECK( ZSTD_CCtxParam_getParameter(params, ZSTD_c_jobSize, &value) );
++        CHECK( ZSTD_CCtxParams_getParameter(params, ZSTD_c_jobSize, &value) );
+         CHECK_EQ(value, 0);
+         /* Set and check the overlap log and job size. */
+-        CHECK( ZSTD_CCtxParam_setParameter(params, ZSTD_c_overlapLog, 5) );
+-        CHECK( ZSTD_CCtxParam_setParameter(params, ZSTD_c_jobSize, 2 MB) );
+-        CHECK( ZSTD_CCtxParam_getParameter(params, ZSTD_c_overlapLog, &value) );
++        CHECK( ZSTD_CCtxParams_setParameter(params, ZSTD_c_overlapLog, 5) );
++        CHECK( ZSTD_CCtxParams_setParameter(params, ZSTD_c_jobSize, 2 MB) );
++        CHECK( ZSTD_CCtxParams_getParameter(params, ZSTD_c_overlapLog, &value) );
+         CHECK_EQ(value, 5);
+-        CHECK( ZSTD_CCtxParam_getParameter(params, ZSTD_c_jobSize, &value) );
++        CHECK( ZSTD_CCtxParams_getParameter(params, ZSTD_c_jobSize, &value) );
+         CHECK_EQ(value, 2 MB);
+         /* Set the number of worksers and check the overlap log and job size. */
+-        CHECK( ZSTD_CCtxParam_setParameter(params, ZSTD_c_nbWorkers, 2) );
+-        CHECK( ZSTD_CCtxParam_getParameter(params, ZSTD_c_overlapLog, &value) );
++        CHECK( ZSTD_CCtxParams_setParameter(params, ZSTD_c_nbWorkers, 2) );
++        CHECK( ZSTD_CCtxParams_getParameter(params, ZSTD_c_overlapLog, &value) );
+         CHECK_EQ(value, 5);
+-        CHECK( ZSTD_CCtxParam_getParameter(params, ZSTD_c_jobSize, &value) );
++        CHECK( ZSTD_CCtxParams_getParameter(params, ZSTD_c_jobSize, &value) );
+         CHECK_EQ(value, 2 MB);
+         ZSTD_freeCCtxParams(params);
+ 
+diff --git a/tests/roundTripCrash.c b/tests/roundTripCrash.c
+index 3f4ace8c..3de59331 100644
+--- a/tests/roundTripCrash.c
++++ b/tests/roundTripCrash.c
+@@ -93,9 +93,9 @@ static size_t cctxParamRoundTripTest(void* resultBuff, size_t resultBuffCapacity
+     int const cLevel = h32 % maxClevel;
+ 
+     /* Set parameters */
+-    CHECK_Z( ZSTD_CCtxParam_setParameter(cctxParams, ZSTD_c_compressionLevel, cLevel) );
+-    CHECK_Z( ZSTD_CCtxParam_setParameter(cctxParams, ZSTD_c_nbWorkers, 2) );
+-    CHECK_Z( ZSTD_CCtxParam_setParameter(cctxParams, ZSTD_c_overlapLog, 5) );
++    CHECK_Z( ZSTD_CCtxParams_setParameter(cctxParams, ZSTD_c_compressionLevel, cLevel) );
++    CHECK_Z( ZSTD_CCtxParams_setParameter(cctxParams, ZSTD_c_nbWorkers, 2) );
++    CHECK_Z( ZSTD_CCtxParams_setParameter(cctxParams, ZSTD_c_overlapLog, 5) );
+ 
+ 
+     /* Apply parameters */
+diff --git a/tests/zstreamtest.c b/tests/zstreamtest.c
+index ac300890..6d3cbffb 100644
+--- a/tests/zstreamtest.c
++++ b/tests/zstreamtest.c
+@@ -1703,7 +1703,7 @@ static size_t setCCtxParameter(ZSTD_CCtx* zc, ZSTD_CCtx_params* cctxParams,
+                                int useOpaqueAPI)
+ {
+     if (useOpaqueAPI) {
+-        return ZSTD_CCtxParam_setParameter(cctxParams, param, value);
++        return ZSTD_CCtxParams_setParameter(cctxParams, param, value);
+     } else {
+         return ZSTD_CCtx_setParameter(zc, param, value);
+     }

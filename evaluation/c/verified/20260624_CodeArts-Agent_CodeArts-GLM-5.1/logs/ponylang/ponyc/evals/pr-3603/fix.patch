@@ -1,0 +1,105 @@
+diff --git a/a.out b/a.out
+new file mode 100644
+index 00000000..e69de29b
+diff --git a/packages/itertools/_test.pony b/packages/itertools/_test.pony
+index 2776161b..4484889a 100644
+--- a/packages/itertools/_test.pony
++++ b/packages/itertools/_test.pony
+@@ -29,6 +29,8 @@ actor Main is TestList
+     test(_TestIterTake)
+     test(_TestIterTakeWhile)
+     test(_TestIterZip)
++    test(_TestIterMaybe)
++    test(_TestIterNextOr)
+ 
+ class iso _TestIterChain is UnitTest
+   fun name(): String => "itertools/Iter.chain"
+@@ -523,3 +525,31 @@ class iso _TestIterZip is UnitTest
+     h.assert_array_eq[F32](expected3, actual3)
+     h.assert_array_eq[I32](expected4, actual4)
+     h.assert_array_eq[USize](expected5, actual5)
++
++class iso _TestIterMaybe is UnitTest
++  fun name(): String => "itertools/Iter.maybe"
++
++  fun apply(h: TestHelper) ? =>
++    let some_val: (U64 | None) = 42
++    let none_val: (U64 | None) = None
++
++    let iter1 = Iter[U64].maybe(some_val)
++    h.assert_true(iter1.has_next())
++    h.assert_eq[U64](42, iter1.next()?)
++    h.assert_false(iter1.has_next())
++
++    let iter2 = Iter[U64].maybe(none_val)
++    h.assert_false(iter2.has_next())
++
++class iso _TestIterNextOr is UnitTest
++  fun name(): String => "itertools/Iter.next_or"
++
++  fun apply(h: TestHelper) =>
++    let some_val: (U64 | None) = 42
++    let none_val: (U64 | None) = None
++
++    h.assert_eq[U64](42, Iter[U64].maybe(some_val).next_or(0))
++    h.assert_eq[U64](0, Iter[U64].maybe(none_val).next_or(0))
++
++    h.assert_eq[U64](1, Iter[U64]([as U64: 1; 2; 3].values()).next_or(0))
++    h.assert_eq[U64](0, Iter[U64](Array[U64].values()).next_or(0))
+diff --git a/packages/itertools/iter.pony b/packages/itertools/iter.pony
+index c0e8d478..c83b3c9b 100644
+--- a/packages/itertools/iter.pony
++++ b/packages/itertools/iter.pony
+@@ -69,6 +69,27 @@ class Iter[A] is Iterator[A]
+           error
+       end
+ 
++  new maybe(value: (A | None)) =>
++    """
++    Create an iterator that yields the given value if it is not None.
++
++    ## Example
++
++    ```pony
++    let x: (U64 | None) = 42
++    Iter[U64].maybe(x)
++    ```
++    `42`
++    """
++    _iter =
++      object is Iterator[A]
++        var _value: (A | None) = consume value
++
++        fun ref has_next(): Bool => _value isnt None
++
++        fun ref next(): A ? => (_value = None) as A
++      end
++
+   new repeat_value(value: A) =>
+     """
+     Create an iterator that returns the given value forever.
+@@ -576,6 +597,24 @@ class Iter[A] is Iterator[A]
+     """
+     map_stateful[B]({(a: A!): B^ ? => f(a) ? })
+ 
++  fun ref next_or(default: A): A =>
++    """
++    Return the next value, or the given default.
++
++    ## Example
++
++    ```pony
++    let x: (U64 | None) = 42
++    Iter[U64].maybe(x).next_or(0)
++    ```
++    `42`
++    """
++    if has_next() then
++      try next()? else default end
++    else
++      default
++    end
++
+   fun ref nth(n: USize): A ? =>
+     """
+     Return the nth value of the iterator.

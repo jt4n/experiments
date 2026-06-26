@@ -1,0 +1,98 @@
+diff --git a/src/libponyc/type/alias.c b/src/libponyc/type/alias.c
+index 195cc88..494782b 100644
+--- a/src/libponyc/type/alias.c
++++ b/src/libponyc/type/alias.c
+@@ -211,7 +211,7 @@ static ast_t* consume_single(ast_t* type, token_id ccap)
+     default: {}
+   }
+ 
+-  if(!is_cap_sub_cap(tcap, TK_NONE, ccap, TK_NONE))
++  if(!is_cap_sub_cap(tcap, TK_NONE, ccap, TK_NONE) && (tcap != ccap))
+   {
+     ast_free_unattached(type);
+     return NULL;
+diff --git a/src/libponyc/type/cap.c b/src/libponyc/type/cap.c
+index d7a7748..b9773bc 100644
+--- a/src/libponyc/type/cap.c
++++ b/src/libponyc/type/cap.c
+@@ -70,9 +70,29 @@ bool is_cap_sub_cap(token_id sub, token_id subalias, token_id super,
+       return false;
+   }
+ 
+-  if((sub == super) || (super == TK_TAG))
++  if(super == TK_TAG)
+     return true;
+ 
++  // A concrete capability is a subtype of itself, but a generic capability is
++  // not a subtype of itself, because not every possible instantiation of a
++  // generic capability is a subtype of every other possible instantiation.
++  if(sub == super)
++  {
++    switch(sub)
++    {
++      case TK_ISO:
++      case TK_TRN:
++      case TK_REF:
++      case TK_VAL:
++      case TK_BOX:
++      case TK_TAG:
++      case TK_AT:
++        return true;
++
++      default: {}
++    }
++  }
++
+   // Every possible instantiation of sub must be a subtype of every possible
+   // instantiation of super.
+   switch(sub)
+diff --git a/src/libponyc/type/matchtype.c b/src/libponyc/type/matchtype.c
+index 8b9e312..6ec7983 100644
+--- a/src/libponyc/type/matchtype.c
++++ b/src/libponyc/type/matchtype.c
+@@ -468,9 +468,12 @@ static matchtype_t is_nominal_match_entity(ast_t* operand, ast_t* pattern,
+   }
+ 
+   // If the operand does provide the pattern, but the operand refcap can't
+-  // match the pattern refcap, deny the match.
+-  if(!is_cap_sub_cap(ast_id(o_cap), ast_id(o_eph),
+-    ast_id(p_cap), ast_id(p_eph)))
++  // match the pattern refcap, deny the match. If both caps are the same
++  // (including generic caps), the match is accepted because both sides
++  // agree on the capability set.
++  if((ast_id(o_cap) != ast_id(p_cap)) &&
++    !is_cap_sub_cap(ast_id(o_cap), ast_id(o_eph),
++      ast_id(p_cap), ast_id(p_eph)))
+   {
+     if(errorf != NULL)
+     {
+@@ -542,9 +545,12 @@ static matchtype_t is_entity_match_trait(ast_t* operand, ast_t* pattern,
+   }
+ 
+   // If the operand does provide the pattern, but the operand refcap can't
+-  // match the pattern refcap, deny the match.
+-  if(!is_cap_sub_cap(ast_id(o_cap), ast_id(o_eph),
+-    ast_id(p_cap), ast_id(p_eph)))
++  // match the pattern refcap, deny the match. If both caps are the same
++  // (including generic caps), the match is accepted because both sides
++  // agree on the capability set.
++  if((ast_id(o_cap) != ast_id(p_cap)) &&
++    !is_cap_sub_cap(ast_id(o_cap), ast_id(o_eph),
++      ast_id(p_cap), ast_id(p_eph)))
+   {
+     if(errorf != NULL)
+     {
+@@ -572,8 +578,11 @@ static matchtype_t is_trait_match_trait(ast_t* operand, ast_t* pattern,
+   AST_GET_CHILDREN(pattern, p_pkg, p_id, p_typeargs, p_cap, p_eph);
+ 
+   // If the operand refcap can't match the pattern refcap, deny the match.
+-  if(!is_cap_sub_cap(ast_id(o_cap), ast_id(o_eph),
+-    ast_id(p_cap), ast_id(p_eph)))
++  // If both caps are the same (including generic caps), the match is accepted
++  // because both sides agree on the capability set.
++  if((ast_id(o_cap) != ast_id(p_cap)) &&
++    !is_cap_sub_cap(ast_id(o_cap), ast_id(o_eph),
++      ast_id(p_cap), ast_id(p_eph)))
+   {
+     if(errorf != NULL)
+     {

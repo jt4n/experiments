@@ -1,0 +1,16 @@
+diff --git a/src/libponyc/codegen/genreference.c b/src/libponyc/codegen/genreference.c
+index 36bbbfd..88cf5a2 100644
+--- a/src/libponyc/codegen/genreference.c
++++ b/src/libponyc/codegen/genreference.c
+@@ -209,8 +209,9 @@ LLVMValueRef gen_tuple(compile_t* c, ast_t* ast)
+ 
+     // We'll have an undefined element if one of our source elements is a
+     // variable declaration. This is ok, since the tuple value will never be
+-    // used.
+-    if(value == GEN_NOVALUE)
++    // used. Similarly, if a child is not needed (e.g. a nested tuple with
++    // variable declarations), the tuple value will never be used.
++    if(value == GEN_NOVALUE || value == GEN_NOTNEEDED)
+     {
+       ponyint_pool_free_size(buf_size, elements);
+       return GEN_NOTNEEDED;

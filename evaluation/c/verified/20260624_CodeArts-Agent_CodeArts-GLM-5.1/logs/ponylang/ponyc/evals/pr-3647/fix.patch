@@ -1,0 +1,55 @@
+diff --git a/src/libponyc/pass/refer.c b/src/libponyc/pass/refer.c
+index 50cff982..0dc194a4 100644
+--- a/src/libponyc/pass/refer.c
++++ b/src/libponyc/pass/refer.c
+@@ -1116,6 +1116,36 @@ static void set_flag_recursive(ast_t* outer, uint32_t flag)
+   }
+ }
+ 
++static bool is_dot_chain_consume_target(ast_t* ast)
++{
++  pony_assert(ast_id(ast) == TK_DOT);
++
++  ast_t* temp_ast = ast;
++
++  while(ast_id(temp_ast) == TK_DOT)
++  {
++    AST_GET_CHILDREN(temp_ast, left, right);
++
++    switch(ast_id(left))
++    {
++      case TK_THIS:
++      case TK_VARREF:
++      case TK_LETREF:
++      case TK_PARAMREF:
++        return true;
++
++      case TK_DOT:
++        temp_ast = left;
++        break;
++
++      default:
++        return false;
++    }
++  }
++
++  return false;
++}
++
+ static bool refer_consume(pass_opt_t* opt, ast_t* ast)
+ {
+   pony_assert(ast_id(ast) == TK_CONSUME);
+@@ -1169,6 +1199,13 @@ static bool refer_consume(pass_opt_t* opt, ast_t* ast)
+       }
+       else
+       {
++        if(!is_dot_chain_consume_target(term))
++        {
++          ast_error(opt->check.errors, ast,
++            "consume must take 'this', a local, or a parameter");
++          return false;
++        }
++
+         // get fully qualified string identifier without `this`
+         // and def of the root object
+         name = generate_multi_dot_name(term, &def);

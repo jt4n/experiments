@@ -1,0 +1,510 @@
+检测到 Ubuntu 16 系统
+进入ubuntu其他系统
+替换系统源完成
+==============================================================================
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial InRelease [247 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu xenial-updates InRelease [106 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu xenial-backports InRelease [106 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu xenial-security InRelease [106 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu xenial/main amd64 Packages [1558 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu xenial/restricted amd64 Packages [14.1 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 Packages [9827 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu xenial/multiverse amd64 Packages [176 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 Packages [1596 kB]
+Get:10 http://mirrors.tools.huawei.com/ubuntu xenial-updates/restricted amd64 Packages [15.8 kB]
+Get:11 http://mirrors.tools.huawei.com/ubuntu xenial-updates/universe amd64 Packages [1471 kB]
+Get:12 http://mirrors.tools.huawei.com/ubuntu xenial-updates/multiverse amd64 Packages [24.9 kB]
+Get:13 http://mirrors.tools.huawei.com/ubuntu xenial-backports/main amd64 Packages [11.3 kB]
+Get:14 http://mirrors.tools.huawei.com/ubuntu xenial-backports/universe amd64 Packages [12.8 kB]
+Get:15 http://mirrors.tools.huawei.com/ubuntu xenial-security/main amd64 Packages [1142 kB]
+Get:16 http://mirrors.tools.huawei.com/ubuntu xenial-security/restricted amd64 Packages [15.3 kB]
+Get:17 http://mirrors.tools.huawei.com/ubuntu xenial-security/universe amd64 Packages [920 kB]
+Get:18 http://mirrors.tools.huawei.com/ubuntu xenial-security/multiverse amd64 Packages [8787 B]
+Fetched 17.4 MB in 1s (12.4 MB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+build-essential is already the newest version (12.1ubuntu2).
+libncurses5-dev is already the newest version (6.0+20160213-1ubuntu1).
+patch is already the newest version (2.7.5-1ubuntu0.16.04.2).
+patch set to manually installed.
+zlib1g-dev is already the newest version (1:1.2.8.dfsg-2ubuntu4.3).
+The following additional packages will be installed:
+  libonig2 libpcre2-16-0 libpcre2-32-0 libpcre2-8-0 libpcre2-posix0 libssl-doc
+The following NEW packages will be installed:
+  libonig-dev libonig2 libpcre2-16-0 libpcre2-32-0 libpcre2-8-0 libpcre2-dev
+  libpcre2-posix0 libssl-dev libssl-doc
+0 upgraded, 9 newly installed, 0 to remove and 2 not upgraded.
+Need to get 3600 kB of archives.
+After this operation, 14.4 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial-updates/universe amd64 libonig2 amd64 5.9.6-1ubuntu0.1 [86.7 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu xenial-updates/universe amd64 libonig-dev amd64 5.9.6-1ubuntu0.1 [48.1 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-16-0 amd64 10.21-1 [157 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-32-0 amd64 10.21-1 [147 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-8-0 amd64 10.21-1 [165 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-posix0 amd64 10.21-1 [5632 B]
+Get:7 http://mirrors.tools.huawei.com/ubuntu xenial/universe amd64 libpcre2-dev amd64 10.21-1 [566 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libssl-dev amd64 1.0.2g-1ubuntu4.20 [1347 kB]
+Get:9 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libssl-doc all 1.0.2g-1ubuntu4.20 [1077 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 3600 kB in 0s (9644 kB/s)
+Selecting previously unselected package libonig2:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 19921 files and directories currently installed.)
+Preparing to unpack .../libonig2_5.9.6-1ubuntu0.1_amd64.deb ...
+Unpacking libonig2:amd64 (5.9.6-1ubuntu0.1) ...
+Selecting previously unselected package libonig-dev.
+Preparing to unpack .../libonig-dev_5.9.6-1ubuntu0.1_amd64.deb ...
+Unpacking libonig-dev (5.9.6-1ubuntu0.1) ...
+Selecting previously unselected package libpcre2-16-0:amd64.
+Preparing to unpack .../libpcre2-16-0_10.21-1_amd64.deb ...
+Unpacking libpcre2-16-0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-32-0:amd64.
+Preparing to unpack .../libpcre2-32-0_10.21-1_amd64.deb ...
+Unpacking libpcre2-32-0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-8-0:amd64.
+Preparing to unpack .../libpcre2-8-0_10.21-1_amd64.deb ...
+Unpacking libpcre2-8-0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-posix0:amd64.
+Preparing to unpack .../libpcre2-posix0_10.21-1_amd64.deb ...
+Unpacking libpcre2-posix0:amd64 (10.21-1) ...
+Selecting previously unselected package libpcre2-dev:amd64.
+Preparing to unpack .../libpcre2-dev_10.21-1_amd64.deb ...
+Unpacking libpcre2-dev:amd64 (10.21-1) ...
+Selecting previously unselected package libssl-dev:amd64.
+Preparing to unpack .../libssl-dev_1.0.2g-1ubuntu4.20_amd64.deb ...
+Unpacking libssl-dev:amd64 (1.0.2g-1ubuntu4.20) ...
+Selecting previously unselected package libssl-doc.
+Preparing to unpack .../libssl-doc_1.0.2g-1ubuntu4.20_all.deb ...
+Unpacking libssl-doc (1.0.2g-1ubuntu4.20) ...
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+Setting up libonig2:amd64 (5.9.6-1ubuntu0.1) ...
+Setting up libonig-dev (5.9.6-1ubuntu0.1) ...
+Setting up libpcre2-16-0:amd64 (10.21-1) ...
+Setting up libpcre2-32-0:amd64 (10.21-1) ...
+Setting up libpcre2-8-0:amd64 (10.21-1) ...
+Setting up libpcre2-posix0:amd64 (10.21-1) ...
+Setting up libpcre2-dev:amd64 (10.21-1) ...
+Setting up libssl-dev:amd64 (1.0.2g-1ubuntu4.20) ...
+Setting up libssl-doc (1.0.2g-1ubuntu4.20) ...
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+cmake is already the newest version (3.5.1-1ubuntu3).
+zlib1g-dev is already the newest version (1:1.2.8.dfsg-2ubuntu4.3).
+0 upgraded, 0 newly installed, 0 to remove and 2 not upgraded.
+=== RUN FULL via /home/fix-run.sh (tee log) ===
+#!/bin/bash
+set -e
+
+cd /home/ponyc
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make
+make test
+
+    =========================================
+当前目录：/home
+当前目录内容：add_certificate_for_c.sh check_git_changes.sh fix-run.sh fix.patch ponyc prepare.sh run.sh test-run.sh test.patch
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  wget
+0 upgraded, 1 newly installed, 0 to remove and 2 not upgraded.
+Need to get 299 kB of archives.
+After this operation, 905 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 wget amd64 1.17.1-1ubuntu1.5 [299 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 299 kB in 0s (1556 kB/s)
+Selecting previously unselected package wget.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 21834 files and directories currently installed.)
+Preparing to unpack .../wget_1.17.1-1ubuntu1.5_amd64.deb ...
+Unpacking wget (1.17.1-1ubuntu1.5) ...
+Setting up wget (1.17.1-1ubuntu1.5) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  libgpm2 libmpdec2 libpython3.5 libpython3.5-minimal libpython3.5-stdlib
+  vim-common vim-runtime
+Suggested packages:
+  gpm ctags vim-doc vim-scripts vim-gnome-py2 | vim-gtk-py2 | vim-gtk3-py2
+  | vim-athena-py2 | vim-nox-py2
+The following NEW packages will be installed:
+  libgpm2 libmpdec2 libpython3.5 libpython3.5-minimal libpython3.5-stdlib vim
+  vim-common vim-runtime
+0 upgraded, 8 newly installed, 0 to remove and 2 not upgraded.
+Need to get 10.4 MB of archives.
+After this operation, 49.3 MB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial/main amd64 libgpm2 amd64 1.20.4-6.1 [16.5 kB]
+Get:2 http://mirrors.tools.huawei.com/ubuntu xenial/main amd64 libmpdec2 amd64 2.4.2-1 [82.6 kB]
+Get:3 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libpython3.5-minimal amd64 3.5.2-2ubuntu0~16.04.13 [524 kB]
+Get:4 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libpython3.5-stdlib amd64 3.5.2-2ubuntu0~16.04.13 [2135 kB]
+Get:5 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 vim-common amd64 2:7.4.1689-3ubuntu1.5 [104 kB]
+Get:6 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 libpython3.5 amd64 3.5.2-2ubuntu0~16.04.13 [1360 kB]
+Get:7 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 vim-runtime all 2:7.4.1689-3ubuntu1.5 [5169 kB]
+Get:8 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 vim amd64 2:7.4.1689-3ubuntu1.5 [1036 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 10.4 MB in 0s (19.5 MB/s)
+Selecting previously unselected package libgpm2:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 21845 files and directories currently installed.)
+Preparing to unpack .../libgpm2_1.20.4-6.1_amd64.deb ...
+Unpacking libgpm2:amd64 (1.20.4-6.1) ...
+Selecting previously unselected package libmpdec2:amd64.
+Preparing to unpack .../libmpdec2_2.4.2-1_amd64.deb ...
+Unpacking libmpdec2:amd64 (2.4.2-1) ...
+Selecting previously unselected package libpython3.5-minimal:amd64.
+Preparing to unpack .../libpython3.5-minimal_3.5.2-2ubuntu0~16.04.13_amd64.deb ...
+Unpacking libpython3.5-minimal:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Selecting previously unselected package libpython3.5-stdlib:amd64.
+Preparing to unpack .../libpython3.5-stdlib_3.5.2-2ubuntu0~16.04.13_amd64.deb ...
+Unpacking libpython3.5-stdlib:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Selecting previously unselected package vim-common.
+Preparing to unpack .../vim-common_2%3a7.4.1689-3ubuntu1.5_amd64.deb ...
+Unpacking vim-common (2:7.4.1689-3ubuntu1.5) ...
+Selecting previously unselected package libpython3.5:amd64.
+Preparing to unpack .../libpython3.5_3.5.2-2ubuntu0~16.04.13_amd64.deb ...
+Unpacking libpython3.5:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Selecting previously unselected package vim-runtime.
+Preparing to unpack .../vim-runtime_2%3a7.4.1689-3ubuntu1.5_all.deb ...
+Adding 'diversion of /usr/share/vim/vim74/doc/help.txt to /usr/share/vim/vim74/doc/help.txt.vim-tiny by vim-runtime'
+Adding 'diversion of /usr/share/vim/vim74/doc/tags to /usr/share/vim/vim74/doc/tags.vim-tiny by vim-runtime'
+Unpacking vim-runtime (2:7.4.1689-3ubuntu1.5) ...
+Selecting previously unselected package vim.
+Preparing to unpack .../vim_2%3a7.4.1689-3ubuntu1.5_amd64.deb ...
+Unpacking vim (2:7.4.1689-3ubuntu1.5) ...
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+Processing triggers for mime-support (3.59ubuntu1) ...
+Setting up libgpm2:amd64 (1.20.4-6.1) ...
+Setting up libmpdec2:amd64 (2.4.2-1) ...
+Setting up libpython3.5-minimal:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Setting up libpython3.5-stdlib:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Setting up vim-common (2:7.4.1689-3ubuntu1.5) ...
+Setting up libpython3.5:amd64 (3.5.2-2ubuntu0~16.04.13) ...
+Setting up vim-runtime (2:7.4.1689-3ubuntu1.5) ...
+Setting up vim (2:7.4.1689-3ubuntu1.5) ...
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vim (vim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vimdiff (vimdiff) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rvim (rvim) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/rview (rview) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/vi (vi) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/view (view) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/ex (ex) in auto mode
+update-alternatives: using /usr/bin/vim.basic to provide /usr/bin/editor (editor) in auto mode
+Processing triggers for libc-bin (2.23-0ubuntu11.3) ...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  curl
+0 upgraded, 1 newly installed, 0 to remove and 2 not upgraded.
+Need to get 139 kB of archives.
+After this operation, 340 kB of additional disk space will be used.
+Get:1 http://mirrors.tools.huawei.com/ubuntu xenial-updates/main amd64 curl amd64 7.47.0-1ubuntu2.19 [139 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 139 kB in 0s (796 kB/s)
+Selecting previously unselected package curl.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 24445 files and directories currently installed.)
+Preparing to unpack .../curl_7.47.0-1ubuntu2.19_amd64.deb ...
+Unpacking curl (7.47.0-1ubuntu2.19) ...
+Setting up curl (7.47.0-1ubuntu2.19) ...
+=== 配置证书 (abcert) ===
+[abcert][INFO] Created temporary directory .tmp.pems.yUsnWx0C
+[abcert][INFO] Operating system: Ubuntu 16.04.7 LTS
+[abcert][INFO] Installing certificates
+'.tmp.pems.yUsnWx0C/HWBPITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWBPITEnterpriseCA1.crt'
+'.tmp.pems.yUsnWx0C/HWITEnterpriseCA1.pem' -> '/usr/local/share/ca-certificates/HWITEnterpriseCA1.crt'
+'.tmp.pems.yUsnWx0C/HuaweiBPITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiBPITRootCA.crt'
+'.tmp.pems.yUsnWx0C/HuaweiITRootCA.pem' -> '/usr/local/share/ca-certificates/HuaweiITRootCA.crt'
+'.tmp.pems.yUsnWx0C/HuaweiWebSecureInternetGatewayCA.pem' -> '/usr/local/share/ca-certificates/HuaweiWebSecureInternetGatewayCA.crt'
+Updating certificates in /etc/ssl/certs...
+5 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+[abcert][INFO] Removed .tmp.pems.yUsnWx0C
+abcert 安装完成
+================git=====================
+http.version=HTTP/1.1
+http.postbuffer=524288000
+http.timeout=600
+================git=====================
+================env=====================
+HTTPS_PROXY=http://test:test@proxysg.huawei.com:8080/
+no_proxy=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+HOSTNAME=0f46a3f3bd33
+HOME=/root
+OLDPWD=/home
+NO_PROXY=127.0.0.1,.huawei.com,localhost,local,.local,10.173.93.185,7.242.105.181,7.150.10.43
+SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+https_proxy=http://test:test@proxysg.huawei.com:8080/
+http_proxy=http://test:test@proxysg.huawei.com:8080/
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+GIT_SSL_NO_VERIFY=true
+LANG=C.UTF-8
+DEBIAN_FRONTEND=noninteractive
+LC_ALL=C.UTF-8
+PWD=/tmp/tmp.LhxHCJ93Jh/abcert_install
+HTTP_PROXY=http://test:test@proxysg.huawei.com:8080/
+================env=====================
+#!/bin/bash
+# set -e
+
+cd /home/ponyc
+git ls-files --others --exclude-standard | xargs -I {} mv {} {}.bak
+git apply --whitespace=nowarn /home/test.patch /home/fix.patch
+make
+make -j8 test
+
+    =========================================
+gc.c
+trace.c
+actormap.c
+cycle.c
+serialise.c
+delta.c
+objectmap.c
+options.c
+actor.c
+messageq.c
+mpmcq.c
+start.c
+scheduler.c
+cpu.c
+fun.c
+stack.c
+hash.c
+list.c
+posix_except.c
+io.c
+paths.c
+directory.c
+stat.c
+ssl.c
+stdfd.c
+lsda.c
+time.c
+socket.c
+ponyassert.c
+threads.c
+alloc.c
+heap.c
+pagemap.c
+pool.c
+epoll.c
+asio.c
+event.c
+Linking libponyrt
+assemble.c
+viewpoint.c
+alias.c
+matchtype.c
+safeto.c
+typeparam.c
+sanitise.c
+compattype.c
+lookup.c
+cap.c
+subtype.c
+reify.c
+reach.c
+paint.c
+subtype.c
+ponyc.c
+buildflagset.c
+use.c
+platformfuns.c
+ifdef.c
+package.c
+program.c
+fun.c
+call.c
+control.c
+paths.c
+ffi.c
+postfix.c
+array.c
+call.c
+literal.c
+operator.c
+reference.c
+control.c
+lambda.c
+match.c
+finalisers.c
+serialisers.c
+docgen.c
+flatten.c
+expr.c
+import.c
+refer.c
+verify.c
+names.c
+pass.c
+traits.c
+scope.c
+syntax.c
+sugar.c
+casemethod.c
+frame.c
+source.c
+lexint.c
+bnfprint.c
+symtab.c
+printbuf.c
+stringtab.c
+parserapi.c
+parser.c
+treecheck.c
+lexer.c
+ast.c
+token.c
+id.c
+error.c
+gentrace.c
+genobj.c
+genfun.c
+gendesc.c
+gendebug.cc
+genexpr.c
+codegen.c
+genmatch.c
+genoperator.c
+genopt.cc
+genreference.c
+genheader.c
+host.cc
+genserialise.c
+gencontrol.c
+genexe.c
+genident.c
+genprim.c
+gencall.c
+genbox.c
+genname.c
+gentype.c
+genlib.c
+genjit.c
+Linking libponyc
+gc.c
+trace.c
+actormap.c
+cycle.c
+serialise.c
+delta.c
+objectmap.c
+options.c
+actor.c
+messageq.c
+mpmcq.c
+start.c
+scheduler.c
+cpu.c
+fun.c
+stack.c
+hash.c
+list.c
+posix_except.c
+io.c
+paths.c
+directory.c
+stat.c
+ssl.c
+stdfd.c
+lsda.c
+time.c
+socket.c
+ponyassert.c
+threads.c
+alloc.c
+heap.c
+pagemap.c
+pool.c
+epoll.c
+asio.c
+event.c
+Linking libponyrt-pic
+gtest-all.cc
+Linking libgtest
+gbenchmark_main.cc
+gbenchmark-all.cc
+Linking libgbenchmark
+main.c
+Linking ponyc
+use.cc
+option_parser.cc
+util.cc
+compiler_serialisation.cc
+ffi.cc
+reach.cc
+finalisers.cc
+codegen.cc
+chain.cc
+local_inference.cc
+sugar_traits.cc
+array.cc
+annotations.cc
+paint.cc
+verify.cc
+In file included from lib/gtest/gtest/gtest.h:58:0,
+                 from test/libponyc/verify.cc:1:
+test/libponyc/verify.cc:669:8: error: redefinition of ‘class VerifyTest_PartialTraitCall_Test’
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:642:8: error: previous definition of ‘class VerifyTest_PartialTraitCall_Test’
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:669:1: error: redefinition of ‘testing::TestInfo* const VerifyTest_PartialTraitCall_Test::test_info_’
+ TEST_F(VerifyTest, PartialTraitCall)
+ ^
+test/libponyc/verify.cc:642:8: note: ‘testing::TestInfo* const VerifyTest_PartialTraitCall_Test::test_info_’ previously declared here
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:669:8: error: redefinition of ‘void VerifyTest_PartialTraitCall_Test::TestBody()’
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:642:8: note: ‘virtual void VerifyTest_PartialTraitCall_Test::TestBody()’ previously defined here
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+Makefile:733: recipe for target 'build/release/obj/tests/libponyc/verify.o' failed
+make: *** [build/release/obj/tests/libponyc/verify.o] Error 1
+verify.cc
+literal_inference.cc
+parse_expr.cc
+lexer.cc
+id.cc
+sugar_expr.cc
+codegen_ffi.cc
+parse_entity.cc
+In file included from lib/gtest/gtest/gtest.h:58:0,
+                 from test/libponyc/verify.cc:1:
+test/libponyc/verify.cc:669:8: error: redefinition of ‘class VerifyTest_PartialTraitCall_Test’
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:642:8: error: previous definition of ‘class VerifyTest_PartialTraitCall_Test’
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:669:1: error: redefinition of ‘testing::TestInfo* const VerifyTest_PartialTraitCall_Test::test_info_’
+ TEST_F(VerifyTest, PartialTraitCall)
+ ^
+test/libponyc/verify.cc:642:8: note: ‘testing::TestInfo* const VerifyTest_PartialTraitCall_Test::test_info_’ previously declared here
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:669:8: error: redefinition of ‘void VerifyTest_PartialTraitCall_Test::TestBody()’
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+test/libponyc/verify.cc:642:8: note: ‘virtual void VerifyTest_PartialTraitCall_Test::TestBody()’ previously defined here
+ TEST_F(VerifyTest, PartialTraitCall)
+        ^
+make: *** [build/release/obj/tests/libponyc/verify.o] Error 1
+make: *** Waiting for unfinished jobs....
+Makefile:733: recipe for target 'build/release/obj/tests/libponyc/verify.o' failed

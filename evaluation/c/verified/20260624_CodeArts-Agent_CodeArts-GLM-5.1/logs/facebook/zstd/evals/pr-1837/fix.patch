@@ -1,0 +1,13 @@
+diff --git a/lib/decompress/zstd_decompress.c b/lib/decompress/zstd_decompress.c
+index 751060b2..836e6096 100644
+--- a/lib/decompress/zstd_decompress.c
++++ b/lib/decompress/zstd_decompress.c
+@@ -633,7 +633,7 @@ static size_t ZSTD_decompressFrame(ZSTD_DCtx* dctx,
+         srcSize_wrong);
+ 
+     /* Frame Header */
+-    {   size_t const frameHeaderSize = ZSTD_frameHeaderSize(ip, ZSTD_FRAMEHEADERSIZE_PREFIX);
++    {           size_t const frameHeaderSize = ZSTD_frameHeaderSize_internal(ip, ZSTD_FRAMEHEADERSIZE_PREFIX, dctx->format);
+         if (ZSTD_isError(frameHeaderSize)) return frameHeaderSize;
+         RETURN_ERROR_IF(remainingSrcSize < frameHeaderSize+ZSTD_blockHeaderSize,
+                         srcSize_wrong);

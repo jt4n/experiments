@@ -1,0 +1,90 @@
+diff --git a/programs/fileio.c b/programs/fileio.c
+index 873013a5..3ecf1e63 100644
+--- a/programs/fileio.c
++++ b/programs/fileio.c
+@@ -1186,18 +1186,22 @@ FIO_compressFilename_internal(FIO_prefs_t* const prefs,
+     U64 readsize = 0;
+     U64 compressedfilesize = 0;
+     U64 const fileSize = UTIL_getFileSize(srcFileName);
+-    DISPLAYLEVEL(5, "%s: %u bytes \n", srcFileName, (unsigned)fileSize);
++    U64 const srcFileSize =
++        (fileSize == UTIL_FILESIZE_UNKNOWN && ress.srcFile != NULL)
++            ? UTIL_getFileSize_fromFile(ress.srcFile)
++            : fileSize;
++    DISPLAYLEVEL(5, "%s: %u bytes \n", srcFileName, (unsigned)srcFileSize);
+ 
+     /* compression format selection */
+     switch (prefs->compressionType) {
+         default:
+         case FIO_zstdCompression:
+-            compressedfilesize = FIO_compressZstdFrame(prefs, &ress, srcFileName, fileSize, compressionLevel, &readsize);
++            compressedfilesize = FIO_compressZstdFrame(prefs, &ress, srcFileName, srcFileSize, compressionLevel, &readsize);
+             break;
+ 
+         case FIO_gzipCompression:
+ #ifdef ZSTD_GZCOMPRESS
+-            compressedfilesize = FIO_compressGzFrame(&ress, srcFileName, fileSize, compressionLevel, &readsize);
++            compressedfilesize = FIO_compressGzFrame(&ress, srcFileName, srcFileSize, compressionLevel, &readsize);
+ #else
+             (void)compressionLevel;
+             EXM_THROW(20, "zstd: %s: file cannot be compressed as gzip (zstd compiled without ZSTD_GZCOMPRESS) -- ignored \n",
+@@ -1208,7 +1212,7 @@ FIO_compressFilename_internal(FIO_prefs_t* const prefs,
+         case FIO_xzCompression:
+         case FIO_lzmaCompression:
+ #ifdef ZSTD_LZMACOMPRESS
+-            compressedfilesize = FIO_compressLzmaFrame(&ress, srcFileName, fileSize, compressionLevel, &readsize, prefs->compressionType==FIO_lzmaCompression);
++            compressedfilesize = FIO_compressLzmaFrame(&ress, srcFileName, srcFileSize, compressionLevel, &readsize, prefs->compressionType==FIO_lzmaCompression);
+ #else
+             (void)compressionLevel;
+             EXM_THROW(20, "zstd: %s: file cannot be compressed as xz/lzma (zstd compiled without ZSTD_LZMACOMPRESS) -- ignored \n",
+@@ -1218,7 +1222,7 @@ FIO_compressFilename_internal(FIO_prefs_t* const prefs,
+ 
+         case FIO_lz4Compression:
+ #ifdef ZSTD_LZ4COMPRESS
+-            compressedfilesize = FIO_compressLz4Frame(&ress, srcFileName, fileSize, compressionLevel, prefs->checksumFlag, &readsize);
++            compressedfilesize = FIO_compressLz4Frame(&ress, srcFileName, srcFileSize, compressionLevel, prefs->checksumFlag, &readsize);
+ #else
+             (void)compressionLevel;
+             EXM_THROW(20, "zstd: %s: file cannot be compressed as lz4 (zstd compiled without ZSTD_LZ4COMPRESS) -- ignored \n",
+diff --git a/programs/util.c b/programs/util.c
+index 347e7698..33291595 100644
+--- a/programs/util.c
++++ b/programs/util.c
+@@ -138,6 +138,25 @@ U64 UTIL_getFileSize(const char* infilename)
+     }
+ }
+ 
++U64 UTIL_getFileSize_fromFile(FILE* file)
++{
++    int r;
++#if defined(_MSC_VER)
++    struct __stat64 statbuf;
++    r = _fstat64(_fileno(file), &statbuf);
++    if (r || !(statbuf.st_mode & S_IFREG)) return UTIL_FILESIZE_UNKNOWN;
++#elif defined(__MINGW32__) && defined (__MSVCRT__)
++    struct _stati64 statbuf;
++    r = _fstati64(_fileno(file), &statbuf);
++    if (r || !(statbuf.st_mode & S_IFREG)) return UTIL_FILESIZE_UNKNOWN;
++#else
++    struct stat statbuf;
++    r = fstat(fileno(file), &statbuf);
++    if (r || !S_ISREG(statbuf.st_mode)) return UTIL_FILESIZE_UNKNOWN;
++#endif
++    return (U64)statbuf.st_size;
++}
++
+ 
+ U64 UTIL_getTotalFileSize(const char* const * const fileNamesTable, unsigned nbFiles)
+ {
+diff --git a/programs/util.h b/programs/util.h
+index d6e5bb55..c807267b 100644
+--- a/programs/util.h
++++ b/programs/util.h
+@@ -133,6 +133,7 @@ int UTIL_isSameFile(const char* file1, const char* file2);
+ U32 UTIL_isLink(const char* infilename);
+ #define UTIL_FILESIZE_UNKNOWN  ((U64)(-1))
+ U64 UTIL_getFileSize(const char* infilename);
++U64 UTIL_getFileSize_fromFile(FILE* file);
+ 
+ U64 UTIL_getTotalFileSize(const char* const * const fileNamesTable, unsigned nbFiles);
+ 

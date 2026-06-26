@@ -1,0 +1,22 @@
+diff --git a/programs/fileio.c b/programs/fileio.c
+index 16518131..9e93f586 100644
+--- a/programs/fileio.c
++++ b/programs/fileio.c
+@@ -2353,7 +2353,7 @@ static int FIO_decompressFrames(FIO_ctx_t* const fCtx,
+         }
+         readSomething = 1;   /* there is at least 1 byte in srcFile */
+         if (ress.readCtx->srcBufferLoaded < toRead) { /* not enough input to check magic number */
+-            if ((prefs->overwrite) && !strcmp (dstFileName, stdoutmark)) {  /* pass-through mode */
++            if (prefs->overwrite) {  /* pass-through mode */
+                 return FIO_passThrough(&ress);
+             }
+             DISPLAYLEVEL(1, "zstd: %s: unknown header \n", srcFileName);
+@@ -2391,7 +2391,7 @@ static int FIO_decompressFrames(FIO_ctx_t* const fCtx,
+             DISPLAYLEVEL(1, "zstd: %s: lz4 file cannot be uncompressed (zstd compiled without HAVE_LZ4) -- ignored \n", srcFileName);
+             return 1;
+ #endif
+-        } else if ((prefs->overwrite) && !strcmp (dstFileName, stdoutmark)) {  /* pass-through mode */
++        } else if (prefs->overwrite) {  /* pass-through mode */
+             return FIO_passThrough(&ress);
+         } else {
+             DISPLAYLEVEL(1, "zstd: %s: unsupported format \n", srcFileName);

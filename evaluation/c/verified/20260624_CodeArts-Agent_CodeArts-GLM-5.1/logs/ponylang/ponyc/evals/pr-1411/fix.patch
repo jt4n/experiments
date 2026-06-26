@@ -1,0 +1,349 @@
+diff --git a/src/libponyc/ast/ast.c b/src/libponyc/ast/ast.c
+index 043bd37..344e0d8 100644
+--- a/src/libponyc/ast/ast.c
++++ b/src/libponyc/ast/ast.c
+@@ -40,7 +40,7 @@ enum
+   AST_ORPHAN = 0x10,
+   AST_INHERIT_FLAGS = (AST_FLAG_CAN_ERROR | AST_FLAG_CAN_SEND |
+     AST_FLAG_MIGHT_SEND | AST_FLAG_RECURSE_1 | AST_FLAG_RECURSE_2),
+-  AST_ALL_FLAGS = 0x7FFFF
++  AST_ALL_FLAGS = 0xFFFFF
+ };
+ 
+ 
+diff --git a/src/libponyc/ast/ast.h b/src/libponyc/ast/ast.h
+index 0aa6d45..756b9c8 100644
+--- a/src/libponyc/ast/ast.h
++++ b/src/libponyc/ast/ast.h
+@@ -43,6 +43,7 @@ enum
+   AST_FLAG_RECURSE_2    = 0x10000,
+   AST_FLAG_DONE_2       = 0x20000,
+   AST_FLAG_ERROR_2      = 0x40000,
++  AST_FLAG_CHAIN        = 0x80000,
+ };
+ 
+ 
+diff --git a/src/libponyc/ast/lexer.c b/src/libponyc/ast/lexer.c
+index b44507a..dfa5cb5 100644
+--- a/src/libponyc/ast/lexer.c
++++ b/src/libponyc/ast/lexer.c
+@@ -68,6 +68,7 @@ static const lextoken_t symbols[] =
+   { "]", TK_RSQUARE },
+   { ",", TK_COMMA },
+ 
++  { ".>", TK_CHAIN },
+   { ".", TK_DOT },
+   { "~", TK_TILDE },
+   { ":", TK_COLON },
+@@ -279,6 +280,7 @@ static const lextoken_t abstract[] =
+   { "beapp", TK_BEAPP },
+   { "funapp", TK_FUNAPP },
+ 
++  { "chain", TK_CHAIN },
+   { "\\n", TK_NEWLINE },
+   {NULL, (token_id)0}
+ };
+diff --git a/src/libponyc/ast/parser.c b/src/libponyc/ast/parser.c
+index fbf4e7c..11c9669 100644
+--- a/src/libponyc/ast/parser.c
++++ b/src/libponyc/ast/parser.c
+@@ -480,6 +480,13 @@ DEF(dot);
+   TOKEN("member name", TK_ID);
+   DONE();
+ 
++// CHAIN ID
++DEF(chain);
++  INFIX_BUILD();
++  TOKEN(NULL, TK_CHAIN);
++  TOKEN("method name", TK_ID);
++  DONE();
++
+ // TILDE ID
+ DEF(tilde);
+   INFIX_BUILD();
+@@ -504,16 +511,16 @@ DEF(call);
+   TERMINATE("call arguments", TK_RPAREN);
+   DONE();
+ 
+-// atom {dot | tilde | qualify | call}
++// atom {dot | chain | tilde | qualify | call}
+ DEF(postfix);
+   RULE("value", atom);
+-  SEQ("postfix expression", dot, tilde, qualify, call);
++  SEQ("postfix expression", dot, chain, tilde, qualify, call);
+   DONE();
+ 
+-// atom {dot | tilde | qualify | call}
++// atom {dot | chain | tilde | qualify | call}
+ DEF(nextpostfix);
+   RULE("value", nextatom);
+-  SEQ("postfix expression", dot, tilde, qualify, call);
++  SEQ("postfix expression", dot, chain, tilde, qualify, call);
+   DONE();
+ 
+ // (VAR | LET | EMBED | $LET) ID [COLON type]
+diff --git a/src/libponyc/ast/token.h b/src/libponyc/ast/token.h
+index a846a25..4b9aa41 100644
+--- a/src/libponyc/ast/token.h
++++ b/src/libponyc/ast/token.h
+@@ -40,6 +40,7 @@ typedef enum token_id
+   TK_ARROW,
+   TK_DBLARROW,
+   TK_DOT,
++  TK_CHAIN,
+   TK_TILDE,
+   TK_COLON,
+   TK_SEMI,
+diff --git a/src/libponyc/ast/treecheckdef.h b/src/libponyc/ast/treecheckdef.h
+index 161fa9a..2aa5380 100644
+--- a/src/libponyc/ast/treecheckdef.h
++++ b/src/libponyc/ast/treecheckdef.h
+@@ -134,7 +134,7 @@ RULE(compile_error,
+   TK_COMPILE_ERROR);
+ 
+ GROUP(expr,
+-  local, infix, asop, tuple, consume, recover, prefix, dot, tilde,
++  local, infix, asop, tuple, consume, recover, prefix, dot, chain, tilde,
+   qualify, call, ffi_call, match_capture,
+   if_expr, ifdef, whileloop, repeat, for_loop, with, match, try_expr, lambda,
+   array_literal, object_literal, int_literal, float_literal, string,
+@@ -197,6 +197,12 @@ RULE(dot,
+   CHILD(id, int_literal, type_args),
+   TK_DOT);
+ 
++RULE(chain,
++  HAS_TYPE(type)
++  CHILD(expr)
++  CHILD(id),
++  TK_CHAIN);
++
+ RULE(tilde,
+   HAS_TYPE(type)
+   CHILD(expr)
+diff --git a/src/libponyc/codegen/gencall.c b/src/libponyc/codegen/gencall.c
+index 70e3d6f..21f910d 100644
+--- a/src/libponyc/codegen/gencall.c
++++ b/src/libponyc/codegen/gencall.c
+@@ -700,6 +700,10 @@ LLVMValueRef gen_call(compile_t* c, ast_t* ast)
+      (t->underlying == TK_CLASS))
+     r = args[0];
+ 
++  // Chain calls return the receiver, not the call result.
++  if(ast_checkflag(ast, AST_FLAG_CHAIN))
++    r = args[0];
++
+   ponyint_pool_free_size(buf_size, args);
+   ponyint_pool_free_size(buf_size, params);
+   return r;
+diff --git a/src/libponyc/expr/call.c b/src/libponyc/expr/call.c
+index f4b4865..ecb710a 100644
+--- a/src/libponyc/expr/call.c
++++ b/src/libponyc/expr/call.c
+@@ -459,7 +459,21 @@ static bool method_call(pass_opt_t* opt, ast_t* ast)
+     return false;
+ 
+   AST_GET_CHILDREN(type, cap, typeparams, params, result);
+-  ast_settype(ast, result);
++
++  if(ast_checkflag(lhs, AST_FLAG_CHAIN))
++  {
++    ast_setflag(ast, AST_FLAG_CHAIN);
++    ast_t* receiver = ast_child(lhs);
++    ast_t* r_type = ast_type(receiver);
++
++    if(is_typecheck_error(r_type))
++      return false;
++
++    ast_t* chained = chain_type(r_type, cap);
++    ast_settype(ast, chained);
++  } else {
++    ast_settype(ast, result);
++  }
+ 
+   return true;
+ }
+diff --git a/src/libponyc/expr/literal.c b/src/libponyc/expr/literal.c
+index b1298bf..f36d1c2 100644
+--- a/src/libponyc/expr/literal.c
++++ b/src/libponyc/expr/literal.c
+@@ -844,7 +844,8 @@ static bool unify(ast_t* ast, pass_opt_t* opt, bool report_errors)
+ bool literal_member_access(ast_t* ast, pass_opt_t* opt)
+ {
+   assert(ast != NULL);
+-  assert(ast_id(ast) == TK_DOT || ast_id(ast) == TK_TILDE);
++  assert(ast_id(ast) == TK_DOT || ast_id(ast) == TK_TILDE ||
++    ast_id(ast) == TK_CHAIN);
+ 
+   AST_GET_CHILDREN(ast, receiver, name_node);
+ 
+diff --git a/src/libponyc/expr/postfix.c b/src/libponyc/expr/postfix.c
+index 9bf956f..690c889 100644
+--- a/src/libponyc/expr/postfix.c
++++ b/src/libponyc/expr/postfix.c
+@@ -591,6 +591,40 @@ bool expr_dot(pass_opt_t* opt, ast_t** astp)
+   return dot_or_tilde(opt, astp);
+ }
+ 
++bool expr_chain(pass_opt_t* opt, ast_t** astp)
++{
++  if(!dot_or_tilde(opt, astp))
++    return false;
++
++  ast_t* ast = *astp;
++
++  switch(ast_id(ast))
++  {
++    case TK_NEWREF:
++    case TK_NEWBEREF:
++    case TK_BEREF:
++    case TK_FUNREF:
++      ast_setflag(ast, AST_FLAG_CHAIN);
++      return true;
++
++    case TK_FVARREF:
++    case TK_FLETREF:
++    case TK_EMBEDREF:
++      ast_error(opt->check.errors, ast,
++        "a chain call can only be used with a method, not a field");
++      return false;
++
++    case TK_TYPEREF:
++      ast_error(opt->check.errors, ast,
++        "a chain call can only be used with a method, not a type");
++      return false;
++
++    default: {}
++  }
++
++  return true;
++}
++
+ bool expr_tilde(pass_opt_t* opt, ast_t** astp)
+ {
+   if(!dot_or_tilde(opt, astp))
+diff --git a/src/libponyc/expr/postfix.h b/src/libponyc/expr/postfix.h
+index c66ca0d..a6bc7b0 100644
+--- a/src/libponyc/expr/postfix.h
++++ b/src/libponyc/expr/postfix.h
+@@ -9,6 +9,7 @@ PONY_EXTERN_C_BEGIN
+ 
+ bool expr_qualify(pass_opt_t* opt, ast_t** astp);
+ bool expr_dot(pass_opt_t* opt, ast_t** astp);
++bool expr_chain(pass_opt_t* opt, ast_t** astp);
+ bool expr_tilde(pass_opt_t* opt, ast_t** astp);
+ 
+ PONY_EXTERN_C_END
+diff --git a/src/libponyc/pass/expr.c b/src/libponyc/pass/expr.c
+index cdc2370..a4d9f06 100644
+--- a/src/libponyc/pass/expr.c
++++ b/src/libponyc/pass/expr.c
+@@ -257,6 +257,7 @@ ast_result_t pass_expr(ast_t** astp, pass_opt_t* options)
+     case TK_CONSUME:    r = expr_consume(options, ast); break;
+     case TK_RECOVER:    r = expr_recover(options, ast); break;
+     case TK_DOT:        r = expr_dot(options, astp); break;
++    case TK_CHAIN:      r = expr_chain(options, astp); break;
+     case TK_TILDE:      r = expr_tilde(options, astp); break;
+     case TK_QUALIFY:    r = expr_qualify(options, astp); break;
+     case TK_CALL:       r = expr_call(options, astp); break;
+diff --git a/src/libponyc/type/alias.c b/src/libponyc/type/alias.c
+index 4585c50..4700f4f 100644
+--- a/src/libponyc/type/alias.c
++++ b/src/libponyc/type/alias.c
+@@ -418,6 +418,84 @@ ast_t* recover_type(ast_t* type, token_id cap)
+   return NULL;
+ }
+ 
++ast_t* chain_type(ast_t* type, ast_t* cap)
++{
++  ast_t* r_cap = cap_fetch(type);
++  ast_t* r_eph = ast_sibling(r_cap);
++  token_id tcap = ast_id(r_cap);
++  token_id teph = ast_id(r_eph);
++  token_id mcap = ast_id(cap);
++
++  bool can_alias_as_self = true;
++
++  switch(tcap)
++  {
++    case TK_ISO:
++    case TK_TRN:
++    case TK_CAP_SEND:
++    case TK_CAP_ANY:
++      can_alias_as_self = false;
++      break;
++
++    default:
++      break;
++  }
++
++  if(teph == TK_EPHEMERAL)
++    can_alias_as_self = false;
++
++  if(can_alias_as_self)
++  {
++    return ast_dup(type);
++  }
++
++  if(teph != TK_EPHEMERAL)
++  {
++    switch(tcap)
++    {
++      case TK_ISO:
++      case TK_TRN:
++      case TK_CAP_SEND:
++        return ast_dup(type);
++
++      default: {}
++    }
++  }
++
++  token_id noneph_cap = tcap;
++
++  switch(tcap)
++  {
++    case TK_CAP_SEND:
++      noneph_cap = TK_ISO;
++      break;
++
++    default: {}
++  }
++
++  bool noneph_sub_cap = is_cap_sub_cap(noneph_cap, TK_NONE, mcap, TK_NONE);
++
++  if(mcap == noneph_cap)
++  {
++    return alias(type);
++  }
++
++  type = ast_dup(type);
++  r_cap = cap_fetch(type);
++  r_eph = ast_sibling(r_cap);
++
++  if(noneph_sub_cap)
++  {
++    ast_setid(r_eph, TK_EPHEMERAL);
++    return type;
++  }
++
++  ast_setid(r_cap, mcap);
++  ast_setid(r_eph, TK_NONE);
++  return type;
++}
++
++
+ bool sendable(ast_t* type)
+ {
+   switch(ast_id(type))
+diff --git a/src/libponyc/type/alias.h b/src/libponyc/type/alias.h
+index 47d9d6a..0efcbca 100644
+--- a/src/libponyc/type/alias.h
++++ b/src/libponyc/type/alias.h
+@@ -17,6 +17,8 @@ ast_t* consume_type(ast_t* type, token_id cap);
+ 
+ ast_t* recover_type(ast_t* type, token_id cap);
+ 
++ast_t* chain_type(ast_t* type, ast_t* cap);
++
+ bool sendable(ast_t* type);
+ 
+ bool immutable_or_opaque(ast_t* type);

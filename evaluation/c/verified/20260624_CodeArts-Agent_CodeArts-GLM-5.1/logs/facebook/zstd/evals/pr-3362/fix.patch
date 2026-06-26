@@ -1,0 +1,14 @@
+diff --git a/lib/zstd.h b/lib/zstd.h
+index 1dff31b4..69afac95 100644
+--- a/lib/zstd.h
++++ b/lib/zstd.h
+@@ -203,6 +203,9 @@ ZSTDLIB_API size_t ZSTD_findFrameCompressedSize(const void* src, size_t srcSize)
+ /*======  Helper functions  ======*/
+ #define ZSTD_COMPRESSBOUND(srcSize)   ((srcSize) + ((srcSize)>>8) + (((srcSize) < (128<<10)) ? (((128<<10) - (srcSize)) >> 11) /* margin, from 64 to 0 */ : 0))  /* this formula ensures that bound(A) + bound(B) <= bound(A+B) as long as A and B >= 128 KB */
+ ZSTDLIB_API size_t      ZSTD_compressBound(size_t srcSize); /*!< maximum compressed size in worst case single-pass scenario */
++/*! note : this function can overflow on 32-bit systems when @srcSize >= 0xFF00FF01.
++    In that case, the return value will be smaller than @srcSize.
++    Callers can detect overflow by checking if the return value is < @srcSize. */
+ ZSTDLIB_API unsigned    ZSTD_isError(size_t code);          /*!< tells if a `size_t` function result is an error code */
+ ZSTDLIB_API const char* ZSTD_getErrorName(size_t code);     /*!< provides readable string from an error code */
+ ZSTDLIB_API int         ZSTD_minCLevel(void);               /*!< minimum negative compression level allowed, requires v1.4.0+ */

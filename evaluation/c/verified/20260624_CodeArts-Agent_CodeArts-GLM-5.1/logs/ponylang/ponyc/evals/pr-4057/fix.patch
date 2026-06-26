@@ -1,0 +1,39 @@
+diff --git a/src/libponyc/codegen/genmatch.c b/src/libponyc/codegen/genmatch.c
+index 45821bd9..9ecbcc6d 100644
+--- a/src/libponyc/codegen/genmatch.c
++++ b/src/libponyc/codegen/genmatch.c
+@@ -64,8 +64,22 @@ static ast_t* eq_param_type(compile_t* c, ast_t* pattern)
+     c->opt);
+   deferred_reification_t* fun = lookup(NULL, pattern, pattern_type, c->str_eq);
+ 
++  if(fun == NULL)
++  {
++    ast_free_unattached(pattern_type);
++    return NULL;
++  }
++
+   AST_GET_CHILDREN(fun->ast, cap, id, typeparams, params, result, partial);
+   ast_t* param = ast_child(params);
++
++  if(param == NULL)
++  {
++    ast_free_unattached(pattern_type);
++    deferred_reify_free(fun);
++    return NULL;
++  }
++
+   ast_t* type = ast_childidx(param, 1);
+ 
+   ast_t* r_type = deferred_reify(fun, type, c->opt);
+@@ -822,7 +836,10 @@ LLVMValueRef gen_match(compile_t* c, ast_t* ast)
+     if(match != MATCHTYPE_ACCEPT)
+     {
+       // If there's no possible match, jump directly to the next block.
+-      LLVMBuildBr(c->builder, next_block);
++      if(next_block != NULL)
++        LLVMBuildBr(c->builder, next_block);
++      else
++        LLVMBuildUnreachable(c->builder);
+     } else {
+       // Check the pattern.
+       ok = static_match(c, match_value, match_type, pattern, next_block);

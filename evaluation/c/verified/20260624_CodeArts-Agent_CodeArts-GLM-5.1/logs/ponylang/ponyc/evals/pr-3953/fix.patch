@@ -1,0 +1,165 @@
+diff --git a/src/libponyc/pass/syntax.c b/src/libponyc/pass/syntax.c
+index 6e303b64..81a826cd 100644
+--- a/src/libponyc/pass/syntax.c
++++ b/src/libponyc/pass/syntax.c
+@@ -145,6 +145,60 @@ static bool is_expr_infix(token_id id)
+ }
+ 
+ 
++static bool type_contains_ephemeral(ast_t* type)
++{
++  switch(ast_id(type))
++  {
++    case TK_NOMINAL:
++    case TK_TYPEPARAMREF:
++    {
++      ast_t* eph = ast_childidx(type, ast_id(type) == TK_NOMINAL ? 4 : 2);
++      return ast_id(eph) == TK_EPHEMERAL;
++    }
++
++    case TK_UNIONTYPE:
++    case TK_ISECTTYPE:
++    case TK_TUPLETYPE:
++    {
++      for(ast_t* child = ast_child(type); child != NULL;
++        child = ast_sibling(child))
++      {
++        if(type_contains_ephemeral(child))
++          return true;
++      }
++      return false;
++    }
++
++    case TK_ARROW:
++      return type_contains_ephemeral(ast_childidx(type, 1));
++
++    case TK_LAMBDATYPE:
++    case TK_BARELAMBDATYPE:
++    {
++      ast_t* eph = ast_childidx(type, 7);
++      return ast_id(eph) == TK_EPHEMERAL;
++    }
++
++    default: {}
++  }
++
++  return false;
++}
++
++static ast_result_t syntax_check_assignable_type(pass_opt_t* opt, ast_t* type,
++  const char* desc)
++{
++  if(type_contains_ephemeral(type))
++  {
++    ast_error(opt->check.errors, type,
++      "can't use an ephemeral type for a %s", desc);
++    return AST_ERROR;
++  }
++
++  return AST_OK;
++}
++
++
+ // Check whether the given node is a valid provides type
+ static bool check_provides_type(pass_opt_t* opt, ast_t* type,
+   const char* description)
+@@ -315,6 +369,12 @@ static bool check_members(pass_opt_t* opt, ast_t* members, int entity_def_index)
+         if(!check_id_field(opt, ast_child(member)))
+           r = false;
+ 
++        if(syntax_check_assignable_type(opt, ast_childidx(member, 1),
++          "field") == AST_ERROR)
++        {
++          r = false;
++        }
++
+         break;
+       }
+ 
+@@ -823,22 +883,47 @@ static ast_result_t syntax_semi(pass_opt_t* opt, ast_t* ast)
+ 
+ static ast_result_t syntax_local(pass_opt_t* opt, ast_t* ast)
+ {
++  ast_result_t r = AST_OK;
++
+   if(!check_id_local(opt, ast_child(ast)))
+-    return AST_ERROR;
++    r = AST_ERROR;
+ 
+-  return AST_OK;
++  ast_t* type = ast_childidx(ast, 1);
++  if(ast_id(type) != TK_NONE)
++  {
++    ast_result_t r2 = syntax_check_assignable_type(opt, type,
++      "local variable");
++    if(r2 > r)
++      r = r2;
++  }
++
++  return r;
+ }
+ 
+ 
+ static ast_result_t syntax_embed(pass_opt_t* opt, ast_t* ast)
+ {
++  ast_result_t r = AST_OK;
++
+   if(ast_id(ast_parent(ast)) != TK_MEMBERS)
+   {
+     ast_error(opt->check.errors, ast, "Local variables cannot be embedded");
+-    return AST_ERROR;
++    r = AST_ERROR;
+   }
+ 
+-  return AST_OK;
++  if(syntax_check_assignable_type(opt, ast_childidx(ast, 1),
++    "embed field") == AST_ERROR)
++  {
++    r = AST_ERROR;
++  }
++
++  return r;
++}
++
++
++static ast_result_t syntax_param(pass_opt_t* opt, ast_t* ast)
++{
++  return syntax_check_assignable_type(opt, ast_childidx(ast, 1), "parameter");
+ }
+ 
+ 
+@@ -985,15 +1070,24 @@ static ast_result_t syntax_use(pass_opt_t* opt, ast_t* ast)
+ static ast_result_t syntax_lambda_capture(pass_opt_t* opt, ast_t* ast)
+ {
+   AST_GET_CHILDREN(ast, name, type, value);
++  ast_result_t r = AST_OK;
+ 
+   if(ast_id(type) != TK_NONE && ast_id(value) == TK_NONE)
+   {
+     ast_error(opt->check.errors, ast, "value missing for lambda expression "
+       "capture (cannot specify type without value)");
+-    return AST_ERROR;
++    r = AST_ERROR;
+   }
+ 
+-  return AST_OK;
++  if(ast_id(type) != TK_NONE)
++  {
++    ast_result_t r2 = syntax_check_assignable_type(opt, type,
++      "lambda capture");
++    if(r2 > r)
++      r = r2;
++  }
++
++  return r;
+ }
+ 
+ 
+@@ -1439,6 +1533,7 @@ ast_result_t pass_syntax(ast_t** astp, pass_opt_t* options)
+     case TK_LET:
+     case TK_VAR:        r = syntax_local(options, ast); break;
+     case TK_EMBED:      r = syntax_embed(options, ast); break;
++    case TK_PARAM:      r = syntax_param(options, ast); break;
+     case TK_TYPEPARAM:  r = syntax_type_param(options, ast); break;
+     case TK_IFDEF:      r = syntax_ifdef(options, ast); break;
+     case TK_USE:        r = syntax_use(options, ast); break;

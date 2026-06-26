@@ -1,0 +1,30 @@
+diff --git a/src/libponyc/type/typeparam.c b/src/libponyc/type/typeparam.c
+index cb0e7619..6e35c150 100644
+--- a/src/libponyc/type/typeparam.c
++++ b/src/libponyc/type/typeparam.c
+@@ -331,10 +331,13 @@ static token_id cap_from_constraint(ast_t* type)
+     case TK_NOMINAL:
+       return cap_single(type);
+ 
++    case TK_TUPLETYPE:
++    case TK_ARROW:
++      return TK_CAP_ANY;
++
+     default: {}
+   }
+ 
+-  // Tuples and arrows can't be used as constraints.
+   pony_assert(0);
+   return TK_NONE;
+ }
+@@ -468,6 +471,10 @@ static bool apply_cap(ast_t* type, token_id tcap, token_id teph)
+     case TK_TYPEPARAMREF:
+       return apply_cap_to_single(type, tcap, teph);
+ 
++    case TK_TUPLETYPE:
++    case TK_ARROW:
++      return false;
++
+     default: {}
+   }
+ 

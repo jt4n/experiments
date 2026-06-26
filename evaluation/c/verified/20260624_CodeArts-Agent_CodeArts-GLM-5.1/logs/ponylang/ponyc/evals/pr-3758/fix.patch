@@ -1,0 +1,29 @@
+diff --git a/src/libponyc/pass/expr.c b/src/libponyc/pass/expr.c
+index b1a9eef7..2b4f59cf 100644
+--- a/src/libponyc/pass/expr.c
++++ b/src/libponyc/pass/expr.c
+@@ -525,8 +525,22 @@ ast_result_t pass_pre_expr(ast_t** astp, pass_opt_t* options)
+   {
+     case TK_ARRAY: return expr_pre_array(options, astp);
+     case TK_USE:
+-      // Don't look in use commands to avoid false type errors from the guard
+-      return AST_IGNORE;
++    {
++      // Don't process the guard to avoid false type errors, but do process
++      // the rest of the use command (including FFI declarations) so that
++      // type constraints (such as NullablePointer[A] requiring a struct) are
++      // checked.
++      ast_t* guard = ast_childidx(ast, 2);
++      if(ast_id(guard) != TK_NONE)
++        ast_setflag(guard, AST_FLAG_PRESERVE);
++
++      // Don't process the URI string in package use commands.
++      ast_t* spec = ast_childidx(ast, 1);
++      if(ast_id(spec) == TK_STRING)
++        ast_setflag(spec, AST_FLAG_PRESERVE);
++
++      return AST_OK;
++    }
+ 
+     default: {}
+   }

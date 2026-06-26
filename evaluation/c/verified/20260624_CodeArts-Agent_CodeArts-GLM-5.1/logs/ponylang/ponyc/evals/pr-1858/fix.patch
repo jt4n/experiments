@@ -1,0 +1,818 @@
+diff --git a/bare_test.pony b/bare_test.pony
+new file mode 100644
+index 0000000..1c3c412
+--- /dev/null
++++ b/bare_test.pony
+@@ -0,0 +1,5 @@
++actor Main
++  new create(env: Env) =>
++    let fn = @{(): U32 => 42 }
++    let r = fn()
++    env.out.print(r.string())
+diff --git a/src/libponyc/ast/parser.c b/src/libponyc/ast/parser.c
+index 58df820..77bdc3f 100644
+--- a/src/libponyc/ast/parser.c
++++ b/src/libponyc/ast/parser.c
+@@ -242,9 +242,27 @@ DEF(lambdatype);
+   OPT TOKEN(NULL, TK_EPHEMERAL, TK_ALIASED);
+   DONE();
+ 
+-// (thistype | cap | typeexpr | nominal | lambdatype)
++// AT LBRACE [CAP] [ID] [typeparams] (LPAREN | LPAREN_NEW) [typelist] RPAREN
++// [COLON type] [QUESTION] RBRACE [CAP] [EPHEMERAL | ALIASED]
++DEF(barelambdatype);
++  AST_NODE(TK_BARELAMBDATYPE);
++  SKIP(NULL, TK_AT);
++  SKIP(NULL, TK_LBRACE);
++  OPT RULE("capability", cap);
++  OPT TOKEN("function name", TK_ID);
++  OPT RULE("type parameters", typeparams);
++  SKIP(NULL, TK_LPAREN, TK_LPAREN_NEW);
++  OPT RULE("parameters", typelist);
++  SKIP(NULL, TK_RPAREN);
++  IF(TK_COLON, RULE("return type", type));
++  OPT TOKEN(NULL, TK_QUESTION);
++  SKIP(NULL, TK_RBRACE);
++  OPT TOKEN(NULL, TK_EPHEMERAL, TK_ALIASED);
++  DONE();
++
++// (thistype | cap | typeexpr | nominal | lambdatype | barelambdatype)
+ DEF(atomtype);
+-  RULE("type", thistype, cap, groupedtype, nominal, lambdatype);
++  RULE("type", thistype, cap, groupedtype, nominal, lambdatype, barelambdatype);
+   DONE();
+ 
+ // ARROW type
+@@ -380,6 +398,30 @@ DEF(lambda);
+   SET_CHILD_FLAG(7, AST_FLAG_PRESERVE); // Body
+   DONE();
+ 
++// AT LBRACE [annotations] [ID] [typeparams] (LPAREN | LPAREN_NEW) [params]
++// RPAREN [COLON type] [QUESTION] ARROW rawseq RBRACE
++DEF(barelambda);
++  PRINT_INLINE();
++  AST_NODE(TK_BARELAMBDA);
++  SKIP(NULL, TK_AT);
++  SKIP(NULL, TK_LBRACE);
++  ANNOTATE(annotations);
++  OPT TOKEN("function name", TK_ID);
++  OPT RULE("type parameters", typeparams);
++  SKIP(NULL, TK_LPAREN, TK_LPAREN_NEW);
++  OPT RULE("parameters", params);
++  SKIP(NULL, TK_RPAREN);
++  IF(TK_COLON, RULE("return type", type));
++  OPT TOKEN(NULL, TK_QUESTION);
++  SKIP(NULL, TK_DBLARROW);
++  RULE("lambda body", rawseq);
++  TERMINATE("bare lambda expression", TK_RBRACE);
++  SET_CHILD_FLAG(1, AST_FLAG_PRESERVE); // Type parameters
++  SET_CHILD_FLAG(2, AST_FLAG_PRESERVE); // Parameters
++  SET_CHILD_FLAG(4, AST_FLAG_PRESERVE); // Return type
++  SET_CHILD_FLAG(6, AST_FLAG_PRESERVE); // Body
++  DONE();
++
+ // AS type ':'
+ DEF(arraytype);
+   PRINT_INLINE();
+@@ -455,11 +497,31 @@ DEF(location);
+   TOKEN(NULL, TK_LOCATION);
+   DONE();
+ 
+-// AT (ID | STRING) typeargs (LPAREN | LPAREN_NEW) [positional] RPAREN
+-// [QUESTION]
++// LBRACE ... RBRACE  (after AT has been consumed by atexpr)
++DEF(barelambda);
++  PRINT_INLINE();
++  AST_NODE(TK_BARELAMBDA);
++  ANNOTATE(annotations);
++  OPT TOKEN("function name", TK_ID);
++  OPT RULE("type parameters", typeparams);
++  SKIP(NULL, TK_LPAREN, TK_LPAREN_NEW);
++  OPT RULE("parameters", params);
++  SKIP(NULL, TK_RPAREN);
++  IF(TK_COLON, RULE("return type", type));
++  OPT TOKEN(NULL, TK_QUESTION);
++  SKIP(NULL, TK_DBLARROW);
++  RULE("lambda body", rawseq);
++  TERMINATE("bare lambda expression", TK_RBRACE);
++  SET_CHILD_FLAG(1, AST_FLAG_PRESERVE); // Type parameters
++  SET_CHILD_FLAG(2, AST_FLAG_PRESERVE); // Parameters
++  SET_CHILD_FLAG(4, AST_FLAG_PRESERVE); // Return type
++  SET_CHILD_FLAG(6, AST_FLAG_PRESERVE); // Body
++  DONE();
++
++// (ID | STRING) typeargs (LPAREN | LPAREN_NEW) [positional] RPAREN
++// [QUESTION]  (after AT has been consumed by atexpr)
+ DEF(ffi);
+   PRINT_INLINE();
+-  TOKEN(NULL, TK_AT);
+   MAP_ID(TK_AT, TK_FFICALL);
+   TOKEN("ffi name", TK_ID, TK_STRING);
+   OPT RULE("return type", typeargs);
+@@ -470,16 +532,26 @@ DEF(ffi);
+   OPT TOKEN(NULL, TK_QUESTION);
+   DONE();
+ 
+-// ref | this | literal | tuple | array | object | lambda | ffi | location
++// AT => barelambda | ffi
++DEF(atexpr);
++  PRINT_INLINE();
++  TOKEN(NULL, TK_AT);
++  IFELSE(TK_LBRACE,
++    RULE("bare lambda", barelambda),
++    RULE("ffi call", ffi)
++  )
++  DONE();
++
++// ref | this | literal | tuple | array | object | lambda | atexpr | location
+ DEF(atom);
+   RULE("value", ref, thisliteral, literal, groupedexpr, array, object, lambda,
+-    oldlambda, ffi, location);
++    oldlambda, atexpr, location);
+   DONE();
+ 
+-// ref | this | literal | tuple | array | object | lambda | ffi | location
++// ref | this | literal | tuple | array | object | lambda | atexpr | location
+ DEF(nextatom);
+   RULE("value", ref, thisliteral, literal, nextgroupedexpr, nextarray, object,
+-    lambda, oldlambda, ffi, location);
++    lambda, oldlambda, atexpr, location);
+   DONE();
+ 
+ // DOT ID
+@@ -1061,13 +1133,15 @@ DEF(annotatedseq);
+   SCOPE();
+   DONE();
+ 
+-// (FUN | BE | NEW) [annotations] [CAP] ID [typeparams] (LPAREN | LPAREN_NEW)
++// (FUN | BE | NEW) [annotations] [CAP | AT] ID [typeparams] (LPAREN | LPAREN_NEW)
+ // [params] RPAREN [COLON type] [QUESTION] [ARROW rawseq]
+ DEF(method);
+   TOKEN(NULL, TK_FUN, TK_BE, TK_NEW);
+   ANNOTATE(annotations);
+   SCOPE();
+-  OPT RULE("capability", cap);
++  IFELSE(TK_AT,
++    MAP_ID(TK_AT, TK_AT),
++    OPT RULE("capability", cap));
+   TOKEN("method name", TK_ID);
+   OPT RULE("type parameters", typeparams);
+   SKIP(NULL, TK_LPAREN, TK_LPAREN_NEW);
+diff --git a/src/libponyc/ast/token.h b/src/libponyc/ast/token.h
+index af4d3b5..4285bcb 100644
+--- a/src/libponyc/ast/token.h
++++ b/src/libponyc/ast/token.h
+@@ -109,6 +109,7 @@ typedef enum token_id
+   TK_ACTOR,
+   TK_OBJECT,
+   TK_LAMBDA,
++  TK_BARELAMBDA,
+ 
+   TK_AS,
+   TK_IS,
+@@ -195,6 +196,7 @@ typedef enum token_id
+   TK_THISTYPE,
+   TK_FUNTYPE,
+   TK_LAMBDATYPE,
++  TK_BARELAMBDATYPE,
+   TK_DONTCARETYPE,
+   TK_INFERTYPE,
+   TK_ERRORTYPE,
+diff --git a/src/libponyc/ast/treecheckdef.h b/src/libponyc/ast/treecheckdef.h
+index 9bb4fdd..d4e7240 100644
+--- a/src/libponyc/ast/treecheckdef.h
++++ b/src/libponyc/ast/treecheckdef.h
+@@ -136,7 +136,7 @@ GROUP(expr,
+   local, infix, asop, tuple, consume, recover, prefix, dot, tilde,
+   qualify, call, ffi_call, match_capture,
+   if_expr, ifdef, whileloop, repeat, for_loop, with, match, try_expr, lambda,
+-  array_literal, object_literal, int_literal, float_literal, string,
++  bare_lambda, array_literal, object_literal, int_literal, float_literal, string,
+   bool_literal, id, rawseq, package_ref, location,
+   this_ref, ref, fun_ref, type_ref, field_ref, tuple_elem_ref, local_ref);
+ 
+@@ -343,6 +343,16 @@ RULE(lambda,
+   CHILD(cap, none, question), // Type reference cap (? indicates old syntax)
+   TK_LAMBDA);
+ 
++RULE(bare_lambda,
++  HAS_TYPE(type)
++  CHILD(id, none)
++  CHILD(type_params, none)
++  CHILD(params, none)
++  CHILD(type, none) // Return
++  CHILD(question, none)
++  CHILD(rawseq),
++  TK_BARELAMBDA);
++
+ RULE(lambda_captures, ONE_OR_MORE(lambda_capture), TK_LAMBDACAPTURES);
+ 
+ RULE(lambda_capture,
+@@ -407,7 +417,7 @@ RULE(local_ref,
+ GROUP(type,
+   type_infix, type_tuple, type_arrow, type_this, cap, nominal,
+   type_param_ref, dontcare_type, fun_type, error_type, lambda_type,
+-  literal_type, opliteral_type, control_type);
++  bare_lambda_type, literal_type, opliteral_type, control_type);
+ 
+ RULE(type_infix, ONE_OR_MORE(type), TK_UNIONTYPE, TK_ISECTTYPE);
+ 
+@@ -436,6 +446,16 @@ RULE(lambda_type,
+   CHILD(aliased, ephemeral, none),
+   TK_LAMBDATYPE);
+ 
++RULE(bare_lambda_type,
++  CHILD(cap, none)  // Apply function cap
++  CHILD(id, none)
++  CHILD(type_params, none)
++  CHILD(type_list, none)  // Params
++  CHILD(type, none) // Return type
++  CHILD(question, none)
++  CHILD(aliased, ephemeral, none),
++  TK_BARELAMBDATYPE);
++
+ RULE(type_list, ONE_OR_MORE(type), TK_PARAMS);
+ 
+ RULE(nominal,
+@@ -458,7 +478,7 @@ RULE(type_param_ref,
+ RULE(at, LEAF, TK_AT);
+ RULE(bool_literal, HAS_TYPE(type), TK_TRUE, TK_FALSE);
+ RULE(aliased, LEAF, TK_ALIASED);
+-RULE(cap, LEAF, TK_ISO, TK_TRN, TK_REF, TK_VAL, TK_BOX, TK_TAG);
++RULE(cap, LEAF, TK_ISO, TK_TRN, TK_REF, TK_VAL, TK_BOX, TK_TAG, TK_AT);
+ RULE(control_type, LEAF, TK_IF, TK_CASES, TK_COMPILE_INTRINSIC,
+   TK_COMPILE_ERROR, TK_RETURN, TK_BREAK, TK_CONTINUE, TK_ERROR);
+ RULE(dontcare_type, LEAF, TK_DONTCARETYPE);
+diff --git a/src/libponyc/codegen/gencall.c b/src/libponyc/codegen/gencall.c
+index 8eb286c..a00624a 100644
+--- a/src/libponyc/codegen/gencall.c
++++ b/src/libponyc/codegen/gencall.c
+@@ -330,7 +330,22 @@ LLVMValueRef gen_funptr(compile_t* c, ast_t* ast)
+   const char* name = ast_name(method);
+   token_id cap = cap_dispatch(type);
+   reach_method_t* m = reach_method(t, cap, name, typeargs);
+-  LLVMValueRef funptr = dispatch_function(c, t, m, value);
++
++  LLVMValueRef funptr;
++
++  // Check if this is a bare method.
++  AST_GET_CHILDREN(m->r_fun, m_cap, m_id, m_typeparams, m_params, m_result,
++    m_can_error, m_body);
++
++  if(ast_id(m_cap) == TK_AT)
++  {
++    // Bare method: function pointer is the method itself.
++    funptr = m->func;
++    LLVMSetFunctionCallConv(funptr, LLVMCCallConv);
++    LLVMSetLinkage(funptr, LLVMExternalLinkage);
++  } else {
++    funptr = dispatch_function(c, t, m, value);
++  }
+ 
+   if(c->linkage != LLVMExternalLinkage)
+   {
+@@ -701,7 +716,23 @@ LLVMValueRef gen_call(compile_t* c, ast_t* ast)
+   // Static or virtual dispatch.
+   token_id cap = cap_dispatch(type);
+   reach_method_t* m = reach_method(t, cap, method_name, typeargs);
+-  LLVMValueRef func = dispatch_function(c, t, m, args[0]);
++
++  // Check if this is a bare method call (no receiver).
++  AST_GET_CHILDREN(m->r_fun, m_cap, m_id, m_typeparams, m_params, m_result,
++    m_can_error, m_body);
++  bool bare_call = (ast_id(m_cap) == TK_AT);
++
++  LLVMValueRef func;
++
++  if(bare_call)
++  {
++    // Bare method: get the function pointer without a receiver.
++    func = m->func;
++    LLVMSetFunctionCallConv(func, LLVMCCallConv);
++    LLVMSetLinkage(func, LLVMExternalLinkage);
++  } else {
++    func = dispatch_function(c, t, m, args[0]);
++  }
+ 
+   bool is_message = false;
+ 
+@@ -728,20 +759,50 @@ LLVMValueRef gen_call(compile_t* c, ast_t* ast)
+ 
+   // Cast the arguments to the parameter types.
+   LLVMTypeRef f_type = LLVMGetElementType(LLVMTypeOf(func));
+-  LLVMTypeRef* params = (LLVMTypeRef*)ponyint_pool_alloc_size(buf_size);
++  size_t param_count = LLVMCountParamTypes(f_type);
++  size_t param_buf_size = param_count * sizeof(LLVMTypeRef);
++  LLVMTypeRef* params = (LLVMTypeRef*)ponyint_pool_alloc_size(param_buf_size);
+   LLVMGetParamTypes(f_type, params);
+ 
+-  arg = ast_child(positional);
+-  i = 1;
+-
+   LLVMValueRef r = NULL;
+ 
+-  if(is_message)
++  if(bare_call)
++  {
++    // Bare method call: no receiver, just the arguments.
++    size_t bare_buf_size = m->param_count * sizeof(LLVMValueRef);
++    LLVMValueRef* bare_args = (LLVMValueRef*)ponyint_pool_alloc_size(
++      bare_buf_size);
++
++    arg = ast_child(positional);
++    for(int j = 0; arg != NULL; j++)
++    {
++      bare_args[j] = gen_assign_cast(c, params[j], args[j + 1],
++        ast_type(arg));
++      arg = ast_sibling(arg);
++    }
++
++    if(func != NULL)
++    {
++      codegen_debugloc(c, ast);
++
++      if(ast_canerror(ast) && (c->frame->invoke_target != NULL))
++        r = invoke_fun(c, func, bare_args, (int)m->param_count, "", true);
++      else
++        r = codegen_call(c, func, bare_args, (int)m->param_count);
++
++      codegen_debugloc(c, NULL);
++    }
++
++    ponyint_pool_free_size(bare_buf_size, bare_args);
++  }
++  else if(is_message)
+   {
+     // If we're sending a message, trace and send here instead of calling the
+     // sender to trace the most specific types possible.
+     LLVMValueRef* cast_args = (LLVMValueRef*)ponyint_pool_alloc_size(buf_size);
+     cast_args[0] = args[0];
++    arg = ast_child(positional);
++    i = 1;
+     while(arg != NULL)
+     {
+       cast_args[i] = gen_assign_cast(c, params[i], args[i], ast_type(arg));
+@@ -768,6 +829,8 @@ LLVMValueRef gen_call(compile_t* c, ast_t* ast)
+     }
+     ponyint_pool_free_size(buf_size, cast_args);
+   } else {
++    arg = ast_child(positional);
++    i = 1;
+     while(arg != NULL)
+     {
+       args[i] = gen_assign_cast(c, params[i], args[i], ast_type(arg));
+@@ -806,7 +869,7 @@ LLVMValueRef gen_call(compile_t* c, ast_t* ast)
+     r = args[0];
+ 
+   ponyint_pool_free_size(buf_size, args);
+-  ponyint_pool_free_size(buf_size, params);
++  ponyint_pool_free_size(param_buf_size, params);
+   return r;
+ }
+ 
+diff --git a/src/libponyc/codegen/genfun.c b/src/libponyc/codegen/genfun.c
+index 135c497..b81092c 100644
+--- a/src/libponyc/codegen/genfun.c
++++ b/src/libponyc/codegen/genfun.c
+@@ -50,33 +50,51 @@ static void name_param(compile_t* c, reach_type_t* t,
+ static void name_params(compile_t* c, reach_type_t* t, reach_method_t* m,
+   ast_t* params, LLVMValueRef func)
+ {
+-  // Name the receiver 'this'.
+-  name_param(c, t, m, func, c->str_this, 0, ast_line(params), ast_pos(params));
++  AST_GET_CHILDREN(m->r_fun, cap, id, typeparams, r_params, result, can_error,
++    body);
++
++  // Bare methods have no receiver.
++  if(ast_id(cap) != TK_AT)
++  {
++    // Name the receiver 'this'.
++    name_param(c, t, m, func, c->str_this, 0, ast_line(params),
++      ast_pos(params));
++  }
+ 
+   // Name each parameter.
+   ast_t* param = ast_child(params);
+ 
++  size_t offset = (ast_id(cap) == TK_AT) ? 0 : 1;
++
+   for(size_t i = 0; i < m->param_count; i++)
+   {
+     name_param(c, m->params[i].type, m, func, ast_name(ast_child(param)),
+-      (unsigned)i + 1, ast_line(param), ast_pos(param));
++      (unsigned)(i + offset), ast_line(param), ast_pos(param));
+     param = ast_sibling(param);
+   }
+ }
+ 
+ static void make_signature(compile_t* c, reach_type_t* t, reach_method_t* m)
+ {
+-  // Count the parameters, including the receiver.
+-  size_t count = m->param_count + 1;
++  AST_GET_CHILDREN(m->r_fun, cap, id, typeparams, params, result, can_error,
++    body);
++
++  bool bare = (ast_id(cap) == TK_AT);
++
++  // Count the parameters, including the receiver (unless bare).
++  size_t count = m->param_count + (bare ? 0 : 1);
+   size_t tparam_size = count * sizeof(LLVMTypeRef);
+   LLVMTypeRef* tparams = (LLVMTypeRef*)ponyint_pool_alloc_size(tparam_size);
+ 
+-  // Get a type for the receiver.
+-  tparams[0] = t->use_type;
++  size_t index = 0;
++
++  // Get a type for the receiver (unless bare).
++  if(!bare)
++    tparams[index++] = t->use_type;
+ 
+   // Get a type for each parameter.
+   for(size_t i = 0; i < m->param_count; i++)
+-    tparams[i + 1] = m->params[i].type->use_type;
++    tparams[index + i] = m->params[i].type->use_type;
+ 
+   // Generate the function type. Class constructors return void to avoid
+   // clobbering nocapture information.
+@@ -95,16 +113,22 @@ static void make_function_debug(compile_t* c, reach_type_t* t,
+   AST_GET_CHILDREN(m->r_fun, cap, id, typeparams, params, result, can_error,
+     body);
+ 
+-  // Count the parameters, including the receiver and the result.
+-  size_t count = m->param_count + 2;
++  bool bare = (ast_id(cap) == TK_AT);
++
++  // Count the parameters, including the receiver and the result (unless bare).
++  size_t count = m->param_count + (bare ? 1 : 2);
+   size_t md_size = count * sizeof(reach_type_t*);
+   LLVMMetadataRef* md = (LLVMMetadataRef*)ponyint_pool_alloc_size(md_size);
+ 
+   md[0] = m->result->di_type;
+-  md[1] = t->di_type;
++
++  if(!bare)
++    md[1] = t->di_type;
++
++  size_t offset = bare ? 1 : 2;
+ 
+   for(size_t i = 0; i < m->param_count; i++)
+-    md[i + 2] = m->params[i].type->di_type;
++    md[i + offset] = m->params[i].type->di_type;
+ 
+   m->di_file = t->di_file;
+ 
+diff --git a/src/libponyc/expr/lambda.c b/src/libponyc/expr/lambda.c
+index 296a712..5f1f1ea 100644
+--- a/src/libponyc/expr/lambda.c
++++ b/src/libponyc/expr/lambda.c
+@@ -195,6 +195,88 @@ bool expr_lambda(pass_opt_t* opt, ast_t** astp)
+ }
+ 
+ 
++bool expr_barelambda(pass_opt_t* opt, ast_t** astp)
++{
++  pony_assert(astp != NULL);
++  ast_t* ast = *astp;
++  pony_assert(ast != NULL);
++
++  AST_GET_CHILDREN(ast, name, t_params, params, ret_type, raises, body);
++  ast_t* annotation = ast_consumeannotation(ast);
++
++  ast_t* members = ast_from(ast, TK_MEMBERS);
++  ast_t* last_member = NULL;
++
++  // Stop the various elements being marked as preserve
++  ast_clearflag(t_params, AST_FLAG_PRESERVE);
++  ast_clearflag(params, AST_FLAG_PRESERVE);
++  ast_clearflag(ret_type, AST_FLAG_PRESERVE);
++  ast_clearflag(body, AST_FLAG_PRESERVE);
++
++  const char* fn_name = "apply";
++
++  if(ast_id(name) == TK_ID)
++    fn_name = ast_name(name);
++
++  // Make the apply function with TK_AT as receiver capability (bare)
++  BUILD(apply, ast,
++    NODE(TK_FUN, AST_SCOPE
++      ANNOTATE(annotation)
++      NODE(TK_AT)
++      ID(fn_name)
++      TREE(t_params)
++      TREE(params)
++      TREE(ret_type)
++      TREE(raises)
++      TREE(body)
++      NONE    // Doc string
++      NONE)); // Guard
++
++  ast_list_append(members, &last_member, apply);
++  ast_setflag(members, AST_FLAG_PRESERVE);
++
++  printbuf_t* buf = printbuf_new();
++  printbuf(buf, "@{(");
++  bool first = true;
++
++  for(ast_t* p = ast_child(params); p != NULL; p = ast_sibling(p))
++  {
++    if(first)
++      first = false;
++    else
++      printbuf(buf, ", ");
++
++    printbuf(buf, "%s", ast_print_type(ast_childidx(p, 1)));
++  }
++
++  printbuf(buf, ")");
++
++  if(ast_id(ret_type) != TK_NONE)
++    printbuf(buf, ": %s", ast_print_type(ret_type));
++
++  if(ast_id(raises) != TK_NONE)
++    printbuf(buf, " ?");
++
++  printbuf(buf, "}");
++
++  // Replace bare lambda with object literal
++  // Bare lambdas are always val
++  REPLACE(astp,
++    NODE(TK_OBJECT, DATA(stringtab(buf->m))
++      NODE(TK_VAL)
++      NONE  // Provides list
++      TREE(members)));
++
++  printbuf_free(buf);
++
++  // Catch up passes
++  if(ast_visit(astp, pass_syntax, NULL, opt, PASS_SYNTAX) != AST_OK)
++    return false;
++
++  return ast_passes_subtree(astp, opt, PASS_EXPR);
++}
++
++
+ static bool capture_from_reference(pass_opt_t* opt, ast_t* ctx, ast_t* ast,
+   ast_t* captures, ast_t** last_capture)
+ {
+diff --git a/src/libponyc/expr/lambda.h b/src/libponyc/expr/lambda.h
+index f14544a..c840935 100644
+--- a/src/libponyc/expr/lambda.h
++++ b/src/libponyc/expr/lambda.h
+@@ -9,6 +9,8 @@ PONY_EXTERN_C_BEGIN
+ 
+ bool expr_lambda(pass_opt_t* opt, ast_t** astp);
+ 
++bool expr_barelambda(pass_opt_t* opt, ast_t** astp);
++
+ bool expr_object(pass_opt_t* opt, ast_t** astp);
+ 
+ PONY_EXTERN_C_END
+diff --git a/src/libponyc/expr/reference.c b/src/libponyc/expr/reference.c
+index 221a26b..9edd678 100644
+--- a/src/libponyc/expr/reference.c
++++ b/src/libponyc/expr/reference.c
+@@ -581,6 +581,14 @@ bool expr_this(pass_opt_t* opt, ast_t* ast)
+ 
+   token_id cap = cap_for_this(&opt->check);
+ 
++  // Bare methods have no receiver, so 'this' cannot be used.
++  if(cap == TK_AT)
++  {
++    ast_error(opt->check.errors, ast,
++      "can't reference 'this' in a bare method");
++    return false;
++  }
++
+   if(!cap_sendable(cap) && (opt->check.frame->recover != NULL))
+   {
+     ast_t* parent = ast_parent(ast);
+diff --git a/src/libponyc/pass/expr.c b/src/libponyc/pass/expr.c
+index 217a7c5..28df762 100644
+--- a/src/libponyc/pass/expr.c
++++ b/src/libponyc/pass/expr.c
+@@ -293,6 +293,11 @@ ast_result_t pass_expr(ast_t** astp, pass_opt_t* options)
+         return AST_FATAL;
+       break;
+ 
++    case TK_BARELAMBDA:
++      if(!expr_barelambda(options, astp))
++        return AST_FATAL;
++      break;
++
+     case TK_INT:
+       // Integer literals can be integers or floats
+       make_literal_type(ast);
+diff --git a/src/libponyc/pass/sugar.c b/src/libponyc/pass/sugar.c
+index a36529f..e4ba52c 100644
+--- a/src/libponyc/pass/sugar.c
++++ b/src/libponyc/pass/sugar.c
+@@ -1129,6 +1129,118 @@ static ast_result_t sugar_lambdatype(pass_opt_t* opt, ast_t** astp)
+ }
+ 
+ 
++static ast_result_t sugar_barelambdatype(pass_opt_t* opt, ast_t** astp)
++{
++  pony_assert(astp != NULL);
++  ast_t* ast = *astp;
++  pony_assert(ast != NULL);
++
++  AST_EXTRACT_CHILDREN(ast, apply_cap, apply_name, apply_t_params, params,
++    ret_type, error, ephemeral);
++
++  const char* i_name = package_hygienic_id(&opt->check);
++
++  ast_t* interface_t_params;
++  ast_t* t_args;
++  collect_type_params(ast, NULL, &t_args);
++
++  // We will replace @{..} with $0
++  REPLACE(astp,
++    NODE(TK_NOMINAL,
++      NONE  // Package
++      ID(i_name)
++      TREE(t_args)
++      NONE  // Cap - bare lambdas are always val
++      TREE(ephemeral)));
++
++  ast = *astp;
++
++  // Fetch the interface type parameters after we replace the ast, so that if
++  // we are an interface type parameter, we get ourselves as the constraint.
++  collect_type_params(ast, &interface_t_params, NULL);
++
++  printbuf_t* buf = printbuf_new();
++
++  printbuf(buf, "@{(");
++
++  // Convert parameter type list to a normal parameter list.
++  int p_no = 1;
++  for(ast_t* p = ast_child(params); p != NULL; p = ast_sibling(p))
++  {
++    if(p_no > 1)
++      printbuf(buf, ", ");
++
++    printbuf(buf, "%s", ast_print_type(p));
++
++    char name[12];
++    snprintf(name, sizeof(name), "p%d", p_no);
++
++    REPLACE(&p,
++      NODE(TK_PARAM,
++        ID(name)
++        TREE(p)
++        NONE));
++
++    p_no++;
++  }
++
++  printbuf(buf, ")");
++
++  if(ast_id(ret_type) != TK_NONE)
++    printbuf(buf, ": %s", ast_print_type(ret_type));
++
++  if(ast_id(error) != TK_NONE)
++    printbuf(buf, " ?");
++
++  printbuf(buf, "}");
++
++  const char* fn_name = "apply";
++
++  if(ast_id(apply_name) == TK_ID)
++    fn_name = ast_name(apply_name);
++
++  // Attach the nice name to the original lambda.
++  ast_setdata(ast_childidx(ast, 1), (void*)stringtab(buf->m));
++
++  // Create a new anonymous type.
++  // The apply method has TK_AT as its receiver capability to indicate it's bare.
++  BUILD(def, ast,
++    NODE(TK_INTERFACE, AST_SCOPE
++      NICE_ID(i_name, buf->m)
++      TREE(interface_t_params)
++      NONE  // Cap
++      NONE  // Provides
++      NODE(TK_MEMBERS,
++        NODE(TK_FUN, AST_SCOPE
++          NODE(TK_AT)
++          ID(fn_name)
++          TREE(apply_t_params)
++          TREE(params)
++          TREE(ret_type)
++          TREE(error)
++          NONE  // Body
++          NONE  // Doc string
++          NONE))// Guard
++      NONE    // @
++      NONE)); // Doc string
++
++  printbuf_free(buf);
++
++  // Add new type to current module and bring it up to date with passes.
++  ast_t* module = ast_nearest(ast, TK_MODULE);
++  ast_append(module, def);
++
++  if(!ast_passes_type(&def, opt, opt->program_pass))
++    return AST_FATAL;
++
++  // Sugar the call.
++  if(!ast_passes_subtree(astp, opt, PASS_SUGAR))
++    return AST_FATAL;
++
++  return AST_OK;
++}
++
++
+ ast_t* expand_location(ast_t* location)
+ {
+   pony_assert(location != NULL);
+@@ -1274,6 +1386,7 @@ ast_result_t pass_sugar(ast_t** astp, pass_opt_t* options)
+     case TK_USE:              return sugar_use(options, ast);
+     case TK_SEMI:             return sugar_semi(options, astp);
+     case TK_LAMBDATYPE:       return sugar_lambdatype(options, astp);
++    case TK_BARELAMBDATYPE:   return sugar_barelambdatype(options, astp);
+     case TK_LOCATION:         return sugar_location(options, astp);
+     default:                  return AST_OK;
+   }
+diff --git a/src/libponyc/pass/syntax.c b/src/libponyc/pass/syntax.c
+index 1b04c5c..171ae25 100644
+--- a/src/libponyc/pass/syntax.c
++++ b/src/libponyc/pass/syntax.c
+@@ -1050,6 +1050,33 @@ static ast_result_t syntax_lambda(pass_opt_t* opt, ast_t* ast)
+ }
+ 
+ 
++static ast_result_t syntax_barelambda(pass_opt_t* opt, ast_t* ast)
++{
++  pony_assert(ast_id(ast) == TK_BARELAMBDA);
++  AST_GET_CHILDREN(ast, name, t_params, params, ret_type, raises, body);
++
++  switch(ast_id(ret_type))
++  {
++    case TK_ISO:
++    case TK_TRN:
++    case TK_REF:
++    case TK_VAL:
++    case TK_BOX:
++    case TK_TAG:
++    {
++      ast_error(opt->check.errors, ret_type, "bare lambda return type: %s",
++        ast_print_type(ret_type));
++      ast_error_continue(opt->check.errors, ret_type, "bare lambda return type "
++        "cannot be capability");
++      return AST_ERROR;
++    }
++    default: {}
++  }
++
++  return AST_OK;
++}
++
++
+ static ast_result_t syntax_object(pass_opt_t* opt, ast_t* ast)
+ {
+   pony_assert(ast_id(ast) == TK_OBJECT);
+@@ -1116,6 +1143,10 @@ static ast_result_t syntax_cap(pass_opt_t* opt, ast_t* ast)
+     default: {}
+   }
+ 
++  // Allow TK_AT (bare) as a capability in any context where cap is allowed
++  if(ast_id(ast) == TK_AT)
++    return AST_OK;
++
+   ast_error(opt->check.errors, ast, "a type cannot be only a capability");
+   return AST_ERROR;
+ }
+@@ -1188,8 +1219,9 @@ ast_result_t pass_syntax(ast_t** astp, pass_opt_t* options)
+     case TK_BOX:
+     case TK_TAG:        r = syntax_cap(options, ast); break;
+ 
+-    case TK_LAMBDA:     r = syntax_lambda(options, ast); break;
+-    case TK_OBJECT:     r = syntax_object(options, ast); break;
++    case TK_LAMBDA:       r = syntax_lambda(options, ast); break;
++    case TK_BARELAMBDA:   r = syntax_barelambda(options, ast); break;
++    case TK_OBJECT:       r = syntax_object(options, ast); break;
+     case TK_FUN:        r = syntax_fun(options, ast); break;
+ 
+     case TK_CAP_READ:
+diff --git a/src/libponyc/type/cap.c b/src/libponyc/type/cap.c
+index 6c21119..e15b2d8 100644
+--- a/src/libponyc/type/cap.c
++++ b/src/libponyc/type/cap.c
+@@ -717,7 +717,16 @@ token_id cap_for_this(typecheck_t* t)
+ 
+   // If it's a function, get the capability from the signature.
+   if(ast_id(t->frame->method) == TK_FUN)
+-    return ast_id(ast_child(t->frame->method));
++  {
++    token_id cap = ast_id(ast_child(t->frame->method));
++
++    // Bare methods have TK_AT as their capability, which means no receiver.
++    // This should already have been checked to not reference 'this'.
++    if(cap == TK_AT)
++      return TK_AT;
++
++    return cap;
++  }
+ 
+   // If it's a behaviour or a constructor, it's a ref.
+   return TK_REF;

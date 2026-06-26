@@ -1,0 +1,4040 @@
+diff --git a/examples/ponycheck/.gitignore b/examples/ponycheck/.gitignore
+new file mode 100644
+index 00000000..a879eed8
+--- /dev/null
++++ b/examples/ponycheck/.gitignore
+@@ -0,0 +1 @@
++ponycheck
+diff --git a/examples/ponycheck/README.md b/examples/ponycheck/README.md
+new file mode 100644
+index 00000000..1a28532a
+--- /dev/null
++++ b/examples/ponycheck/README.md
+@@ -0,0 +1,50 @@
++# ponycheck
++
++A program showing use of the `ponycheck` package for property based testing.
++
++## How to Compile
++
++With a minimal Pony installation, in the same directory as this README file run `ponyc`. You should see content building the necessary packages, which ends with:
++
++```console
++...
++Generating
++ Reachability
++ Selector painting
++ Data prototypes
++ Data types
++ Function prototypes
++ Functions
++ Descriptors
++Optimising
++Writing ./ponycheck.o
++Linking ./ponycheck
++```
++
++## How to Run
++
++Once `ponycheck` has been compiled, in the same directory as this README file run `./ponycheck`. You should see output from the property based tests:
++
++```console
++$ ./ponycheck
++---- list/reverse: passed
++---- list/reverse/one: passed
++---- list/properties: passed
++----
++---- 3 tests. 3 passed. 0 failed.
++```
++
++## Program Modifications
++
++Modify the program to add a new property. For example, add a property that checks that sorting a list twice results in the same list:
++
++```pony
++class _SortIdempotentProperty is Property1[Array[USize]]
++  fun name(): String => "sort/idempotent"
++
++  fun gen(): Generator[Array[USize]] =>
++    Generators.seq_of[USize, Array[USize]](Generators.usize())
++
++  fun ref property(arg1: Array[USize], ph: PropertyHelper) =>
++    ph.assert_array_eq[USize](arg1.sort(), arg1.sort().sort())
++```
+diff --git a/examples/ponycheck/list_reverse.pony b/examples/ponycheck/list_reverse.pony
+new file mode 100644
+index 00000000..dbba339e
+--- /dev/null
++++ b/examples/ponycheck/list_reverse.pony
+@@ -0,0 +1,40 @@
++use "ponytest"
++use "ponycheck"
++
++
++class _ListReverseProperty is Property1[Array[USize]]
++  fun name(): String => "list/reverse"
++
++  fun gen(): Generator[Array[USize]] =>
++    Generators.seq_of[USize, Array[USize]](Generators.usize())
++
++  fun ref property(arg1: Array[USize], ph: PropertyHelper) =>
++    ph.assert_array_eq[USize](arg1, arg1.reverse().reverse())
++
++class _ListReverseOneProperty is Property1[Array[USize]]
++  fun name(): String => "list/reverse/one"
++
++  fun gen(): Generator[Array[USize]] =>
++    Generators.seq_of[USize, Array[USize]](Generators.usize() where min=1, max=1)
++
++  fun ref property(arg1: Array[USize], ph: PropertyHelper) =>
++    ph.assert_eq[USize](arg1.size(), 1)
++    ph.assert_array_eq[USize](arg1, arg1.reverse())
++
++class _ListReverseMultipleProperties is UnitTest
++  fun name(): String => "list/properties"
++
++  fun apply(h: TestHelper) ? =>
++    let g = Generators
++
++    let gen1 = recover val g.seq_of[USize, Array[USize]](g.usize()) end
++    Ponycheck.for_all[Array[USize]](gen1, h)(
++      {(arg1, ph) =>
++        ph.assert_array_eq[USize](arg1, arg1.reverse().reverse())
++      })?
++
++    let gen2 = recover val g.seq_of[USize, Array[USize]](g.usize(), 1, 1) end
++    Ponycheck.for_all[Array[USize]](gen2, h)(
++      {(arg1, ph) =>
++        ph.assert_array_eq[USize](arg1, arg1.reverse())
++      })?
+diff --git a/examples/ponycheck/main.pony b/examples/ponycheck/main.pony
+new file mode 100644
+index 00000000..6afc8b11
+--- /dev/null
++++ b/examples/ponycheck/main.pony
+@@ -0,0 +1,13 @@
++use "ponytest"
++use "ponycheck"
++
++actor Main is TestList
++  new create(env: Env) =>
++    PonyTest(env, this)
++
++  new make() => None
++
++  fun tag tests(test: PonyTest) =>
++    test(Property1UnitTest[Array[USize]](_ListReverseProperty))
++    test(Property1UnitTest[Array[USize]](_ListReverseOneProperty))
++    test(_ListReverseMultipleProperties)
+diff --git a/packages/ponycheck/_test.pony b/packages/ponycheck/_test.pony
+new file mode 100644
+index 00000000..461a2e8b
+--- /dev/null
++++ b/packages/ponycheck/_test.pony
+@@ -0,0 +1,1365 @@
++use "ponytest"
++
++use "collections"
++use "itertools"
++use "random"
++use "time"
++
++actor \nodoc\ Main is TestList
++  new create(env: Env) => PonyTest(env, this)
++
++  new make() => None
++
++  fun tag tests(test: PonyTest) =>
++    test(_GenRndTest)
++    test(_GenFilterTest)
++    test(_GenUnionTest)
++    test(_GenFrequencyTest)
++    test(_GenFrequencySafeTest)
++    test(_GenOneOfTest)
++    test(_GenOneOfSafeTest)
++    test(_SeqOfTest)
++    test(_IsoSeqOfTest)
++    test(_SetOfTest)
++    test(_SetOfMaxTest)
++    test(_SetOfEmptyTest)
++    test(_SetIsOfIdentityTest)
++    test(_MapOfEmptyTest)
++    test(_MapOfMaxTest)
++    test(_MapOfIdentityTest)
++    test(_MapIsOfEmptyTest)
++    test(_MapIsOfMaxTest)
++    test(_MapIsOfIdentityTest)
++
++    test(_StringifyTest)
++
++    test(_SuccessfulPropertyTest)
++    test(Property1UnitTest[U8](_SuccessfulProperty))
++    test(_FailingPropertyTest)
++    test(_ErroringPropertyTest)
++    test(Property2UnitTest[U8, U8](_SuccessfulProperty2))
++    test(_SuccessfulProperty2Test)
++    test(Property3UnitTest[U8, U8, U8](_SuccessfulProperty3))
++    test(_SuccessfulProperty3Test)
++    test(Property4UnitTest[U8, U8, U8, U8](_SuccessfulProperty4))
++    test(_SuccessfulProperty4Test)
++
++    test(_ForAllTest)
++    test(_MultipleForAllTest)
++    test(_ForAll2Test)
++    test(_ForAll3Test)
++    test(_ForAll4Test)
++
++    test(_ASCIIRangeTest)
++    test(_UTF32CodePointStringTest)
++    test(_SignedShrinkTest)
++    test(_UnsignedShrinkTest)
++    test(_ASCIIStringShrinkTest)
++    test(_MinASCIIStringShrinkTest)
++    test(_UnicodeStringShrinkTest)
++    test(_MinUnicodeStringShrinkTest)
++    test(_FilterMapShrinkTest)
++    test(_RunnerInfiniteShrinkTest)
++    test(_RunnerReportFailedSampleTest)
++    test(_RunnerErroringGeneratorTest)
++    test(_RunnerSometimesErroringGeneratorTest)
++    test(_RunnerAsyncPropertyCompleteTest)
++    test(_RunnerAsyncPropertyCompleteFalseTest)
++    test(_RunnerAsyncFailTest)
++    test(_RunnerAsyncCompleteActionTest)
++    test(_RunnerAsyncCompleteMultiActionTest)
++    test(_RunnerAsyncCompleteMultiSucceedActionTest)
++    test(_RunnerAsyncMultiCompleteSucceedTest)
++    test(_RunnerAsyncMultiCompleteFailTest)
++
++    test(_SuccessfulIntPropertyTest)
++    test(IntUnitTest(_SuccessfulIntProperty))
++    test(_SuccessfulIntPairPropertyTest)
++    test(IntPairUnitTest(_SuccessfulIntPairProperty))
++
++    test(Property1UnitTest[(U8, U8)](_RandomnessProperty[U8, _RandomCaseU8]("U8")))
++    test(Property1UnitTest[(I8, I8)](_RandomnessProperty[I8, _RandomCaseI8]("I8")))
++    test(Property1UnitTest[(U16, U16)](_RandomnessProperty[U16, _RandomCaseU16]("U16")))
++    test(Property1UnitTest[(I16, I16)](_RandomnessProperty[I16, _RandomCaseI16]("I16")))
++    test(Property1UnitTest[(U32, U32)](_RandomnessProperty[U32, _RandomCaseU32]("U32")))
++    test(Property1UnitTest[(I32, I32)](_RandomnessProperty[I32, _RandomCaseI32]("I32")))
++    test(Property1UnitTest[(U64, U64)](_RandomnessProperty[U64, _RandomCaseU64]("U64")))
++    test(Property1UnitTest[(I64, I64)](_RandomnessProperty[I64, _RandomCaseI64]("I64")))
++    test(Property1UnitTest[(U128, U128)](_RandomnessProperty[U128, _RandomCaseU128]("U128")))
++    test(Property1UnitTest[(I128, I128)](_RandomnessProperty[I128, _RandomCaseI128]("I128")))
++    test(Property1UnitTest[(ISize, ISize)](_RandomnessProperty[ISize, _RandomCaseISize]("ISize")))
++    test(Property1UnitTest[(ILong, ILong)](_RandomnessProperty[ILong, _RandomCaseILong]("ILong")))
++
++
++class \nodoc\ iso _StringifyTest is UnitTest
++  fun name(): String => "stringify"
++
++  fun apply(h: TestHelper) =>
++    (let _, var s) = _Stringify.apply[(U8, U8)]((0, 1))
++    h.assert_eq[String](s, "(0, 1)")
++    (let _, s) = _Stringify.apply[(U8, U32, U128)]((0, 1, 2))
++    h.assert_eq[String](s, "(0, 1, 2)")
++    (let _, s) = _Stringify.apply[(U8, (U32, U128))]((0, (1, 2)))
++    h.assert_eq[String](s, "(0, (1, 2))")
++    (let _, s) = _Stringify.apply[((U8, U32), U128)](((0, 1), 2))
++    h.assert_eq[String](s, "((0, 1), 2)")
++    let a: Array[U8] = [ U8(0); U8(42) ]
++    (let _, s) = _Stringify.apply[Array[U8]](a)
++    h.assert_eq[String](s, "[0 42]")
++
++class \nodoc\ iso _SuccessfulProperty is Property1[U8]
++  fun name(): String => "as_unit_test/successful/property"
++
++  fun gen(): Generator[U8] => Generators.u8(0, 10)
++
++  fun ref property(arg1: U8, h: PropertyHelper) =>
++    h.assert_true(arg1 <= U8(10))
++
++class \nodoc\ iso _SuccessfulPropertyTest is UnitTest
++  fun name(): String => "as_unit_test/successful"
++
++  fun apply(h: TestHelper) =>
++    let property = recover iso _SuccessfulProperty end
++    let property_notify = _UnitTestPropertyNotify(h, true)
++    let property_logger = _UnitTestPropertyLogger(h)
++    let params = property.params()
++    h.long_test(params.timeout)
++    let runner = PropertyRunner[U8](
++      consume property,
++      params,
++      property_notify,
++      property_logger,
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _FailingProperty is Property1[U8]
++  fun name(): String => "as_unit_test/failing/property"
++
++  fun gen(): Generator[U8] => Generators.u8(0, 10)
++
++  fun ref property(arg1: U8, h: PropertyHelper) =>
++    h.assert_true(arg1 <= U8(5))
++
++class \nodoc\ iso _FailingPropertyTest is UnitTest
++  fun name(): String => "as_unit_test/failing"
++
++  fun apply(h: TestHelper) =>
++    let property = recover iso _FailingProperty end
++    let property_notify = _UnitTestPropertyNotify(h, false)
++    let property_logger = _UnitTestPropertyLogger(h)
++    let params = property.params()
++    h.long_test(params.timeout)
++    let runner = PropertyRunner[U8](
++      consume property,
++      params,
++      property_notify,
++      property_logger,
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _ErroringProperty is Property1[U8]
++  fun name(): String => "as_unit_test/erroring/property"
++
++  fun gen(): Generator[U8] => Generators.u8(0, 1)
++
++  fun ref property(arg1: U8, h: PropertyHelper) ? =>
++    if arg1 < 2 then
++      error
++    end
++
++class \nodoc\ iso _ErroringPropertyTest is UnitTest
++  fun name(): String => "as_unit_test/erroring"
++
++  fun apply(h: TestHelper) =>
++    h.long_test(20_000_000_000)
++    let property = recover iso _ErroringProperty end
++    let property_notify = _UnitTestPropertyNotify(h, false)
++    let property_logger = _UnitTestPropertyLogger(h)
++    let params = property.params()
++    let runner = PropertyRunner[U8](
++      consume property,
++      params,
++      property_notify,
++      property_logger,
++      h.env)
++    runner.run()
++
++
++class \nodoc\ iso _SuccessfulProperty2 is Property2[U8, U8]
++  fun name(): String => "as_unit_test/successful2/property"
++  fun gen1(): Generator[U8] => Generators.u8(0, 1)
++  fun gen2(): Generator[U8] => Generators.u8(2, 3)
++
++  fun ref property2(arg1: U8, arg2: U8, h: PropertyHelper) =>
++    h.assert_ne[U8](arg1, arg2)
++
++class \nodoc\ iso _SuccessfulProperty2Test is UnitTest
++  fun name(): String => "as_unit_test/successful2"
++
++  fun apply(h: TestHelper) =>
++    let property2 = recover iso _SuccessfulProperty2 end
++    let property2_notify = _UnitTestPropertyNotify(h, true)
++    let property2_logger = _UnitTestPropertyLogger(h)
++    let params = property2.params()
++    h.long_test(params.timeout)
++    let runner = PropertyRunner[(U8, U8)](
++      consume property2,
++      params,
++      property2_notify,
++      property2_logger,
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _SuccessfulProperty3 is Property3[U8, U8, U8]
++  fun name(): String => "as_unit_test/successful3/property"
++  fun gen1(): Generator[U8] => Generators.u8(0, 1)
++  fun gen2(): Generator[U8] => Generators.u8(2, 3)
++  fun gen3(): Generator[U8] => Generators.u8(4, 5)
++
++  fun ref property3(arg1: U8, arg2: U8, arg3: U8, h: PropertyHelper) =>
++    h.assert_ne[U8](arg1, arg2)
++    h.assert_ne[U8](arg2, arg3)
++    h.assert_ne[U8](arg1, arg3)
++
++class \nodoc\ iso _SuccessfulProperty3Test is UnitTest
++
++  fun name(): String => "as_unit_test/successful3"
++
++  fun apply(h: TestHelper) =>
++    let property3 = recover iso _SuccessfulProperty3 end
++    let property3_notify = _UnitTestPropertyNotify(h, true)
++    let property3_logger = _UnitTestPropertyLogger(h)
++    let params = property3.params()
++    h.long_test(params.timeout)
++    let runner = PropertyRunner[(U8, U8, U8)](
++      consume property3,
++      params,
++      property3_notify,
++      property3_logger,
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _SuccessfulProperty4 is Property4[U8, U8, U8, U8]
++  fun name(): String => "as_unit_test/successful4/property"
++  fun gen1(): Generator[U8] => Generators.u8(0, 1)
++  fun gen2(): Generator[U8] => Generators.u8(2, 3)
++  fun gen3(): Generator[U8] => Generators.u8(4, 5)
++  fun gen4(): Generator[U8] => Generators.u8(6, 7)
++
++  fun ref property4(arg1: U8, arg2: U8, arg3: U8, arg4: U8, h: PropertyHelper) =>
++    h.assert_ne[U8](arg1, arg2)
++    h.assert_ne[U8](arg1, arg3)
++    h.assert_ne[U8](arg1, arg4)
++    h.assert_ne[U8](arg2, arg3)
++    h.assert_ne[U8](arg2, arg4)
++    h.assert_ne[U8](arg3, arg4)
++
++class \nodoc\ iso _SuccessfulProperty4Test is UnitTest
++
++  fun name(): String => "as_unit_test/successful4"
++
++  fun apply(h: TestHelper) =>
++    let property4 = recover iso _SuccessfulProperty4 end
++    let property4_notify = _UnitTestPropertyNotify(h, true)
++    let property4_logger = _UnitTestPropertyLogger(h)
++    let params = property4.params()
++    h.long_test(params.timeout)
++    let runner = PropertyRunner[(U8, U8, U8, U8)](
++      consume property4,
++      params,
++      property4_notify,
++      property4_logger,
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _RunnerAsyncPropertyCompleteTest is UnitTest
++
++  fun name(): String => "property_runner/async/complete"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(h, {(ph) => ph.complete(true) }, true)
++
++class \nodoc\ iso _RunnerAsyncPropertyCompleteFalseTest is UnitTest
++
++  fun name(): String => "property_runner/async/complete-false"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(h,{(ph) => ph.complete(false) }, false)
++
++class \nodoc\ iso _RunnerAsyncFailTest is UnitTest
++
++  fun name(): String => "property_runner/async/fail"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(h, {(ph) => ph.fail("Oh noes!") }, false)
++
++class \nodoc\ iso _RunnerAsyncMultiCompleteSucceedTest is UnitTest
++
++  fun name(): String => "property_runner/async/multi_succeed"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(
++      h,
++      {(ph) =>
++        ph.complete(true)
++        ph.complete(false)
++      }, true)
++
++class \nodoc\ iso _RunnerAsyncMultiCompleteFailTest is UnitTest
++  fun name(): String => "property_runner/async/multi_fail"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(
++      h,
++      {(ph) =>
++        ph.complete(false)
++        ph.complete(true)
++      }, false)
++
++class \nodoc\ iso _RunnerAsyncCompleteActionTest is UnitTest
++
++  fun name(): String => "property_runner/async/complete_action"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(
++      h,
++      {(ph) =>
++        let action = "blaaaa"
++        ph.expect_action(action)
++        ph.complete_action(action)
++      },
++      true)
++
++class \nodoc\ iso _RunnerAsyncCompleteFalseActionTest is UnitTest
++
++  fun name(): String => "property_runner/async/complete_action"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(
++      h,
++      {(ph) =>
++        let action = "blaaaa"
++        ph.expect_action(action)
++        ph.fail_action(action)
++      }, false)
++
++class \nodoc\ iso _RunnerAsyncCompleteMultiActionTest is UnitTest
++
++  fun name(): String => "property_runner/async/complete_multi_action"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(
++      h,
++      {(ph) =>
++        let action = "only-once"
++        ph.expect_action(action)
++        ph.fail_action(action)
++        ph.complete_action(action)
++      },
++      false)
++
++class \nodoc\ iso _RunnerAsyncCompleteMultiSucceedActionTest is UnitTest
++
++  fun name(): String => "property_runner/async/complete_multi_fail_action"
++
++  fun apply(h: TestHelper) =>
++    _Async.run_async_test(
++      h,
++      {(ph) =>
++        let action = "succeed-once"
++        ph.expect_action(action)
++        ph.complete_action(action)
++        ph.fail_action(action)
++      },
++      true)
++
++class \nodoc\ iso _ForAllTest is UnitTest
++  fun name(): String => "ponycheck/for_all"
++
++  fun apply(h: TestHelper) ? =>
++    Ponycheck.for_all[U8](recover Generators.unit[U8](0) end, h)(
++      {(u, h) => h.assert_eq[U8](u, 0, u.string() + " == 0") })?
++
++class \nodoc\ iso _MultipleForAllTest is UnitTest
++  fun name(): String => "ponycheck/multiple_for_all"
++
++  fun apply(h: TestHelper) ? =>
++    Ponycheck.for_all[U8](recover Generators.unit[U8](0) end, h)(
++      {(u, h) => h.assert_eq[U8](u, 0, u.string() + " == 0") })?
++
++    Ponycheck.for_all[U8](recover Generators.unit[U8](1) end, h)(
++      {(u, h) => h.assert_eq[U8](u, 1, u.string() + " == 1") })?
++
++class \nodoc\ iso _ForAll2Test is UnitTest
++  fun name(): String => "ponycheck/for_all2"
++
++  fun apply(h: TestHelper) ? =>
++    Ponycheck.for_all2[U8, String](
++      recover Generators.unit[U8](0) end,
++      recover Generators.ascii() end,
++      h)(
++        {(arg1, arg2, h) =>
++          h.assert_false(arg2.contains(String.from_array([as U8: arg1])))
++        })?
++
++class \nodoc\ iso _ForAll3Test is UnitTest
++  fun name(): String => "ponycheck/for_all3"
++
++  fun apply(h: TestHelper) ? =>
++    Ponycheck.for_all3[U8, U8, String](
++      recover Generators.unit[U8](0) end,
++      recover Generators.unit[U8](255) end,
++      recover Generators.ascii() end,
++      h)(
++        {(b1, b2, str, h) =>
++          h.assert_false(str.contains(String.from_array([b1])))
++          h.assert_false(str.contains(String.from_array([b2])))
++        })?
++
++class \nodoc\ iso _ForAll4Test is UnitTest
++  fun name(): String => "ponycheck/for_all4"
++
++  fun apply(h: TestHelper) ? =>
++    Ponycheck.for_all4[U8, U8, U8, String](
++      recover Generators.unit[U8](0) end,
++      recover Generators.u8() end,
++      recover Generators.u8() end,
++      recover Generators.ascii() end,
++      h)(
++        {(b1, b2, b3, str, h) =>
++          let cmp = String.from_array([b1; b2; b3])
++          h.assert_false(str.contains(cmp))
++        })?
++
++class \nodoc\ iso _GenRndTest is UnitTest
++  fun name(): String => "Gen/random_behaviour"
++
++  fun apply(h: TestHelper) ? =>
++    let gen = Generators.u32()
++    let rnd1 = Randomness(0)
++    let rnd2 = Randomness(0)
++    let rnd3 = Randomness(1)
++    var same: U32 = 0
++    for x in Range(0, 100) do
++      let g1 = gen.generate_value(rnd1)?
++      let g2 = gen.generate_value(rnd2)?
++      let g3 = gen.generate_value(rnd3)?
++      h.assert_eq[U32](g1, g2)
++      if g1 == g3 then
++        same = same + 1
++      end
++    end
++    h.assert_ne[U32](same, 100)
++
++
++class \nodoc\ iso _GenFilterTest is UnitTest
++  fun name(): String => "Gen/filter"
++
++  fun apply(h: TestHelper) ? =>
++    let gen = Generators.u32().filter({
++      (u: U32^): (U32^, Bool) =>
++        (u, (u%2) == 0)
++    })
++    let rnd = Randomness(Time.millis())
++    for x in Range(0, 100) do
++      let v = gen.generate_value(rnd)?
++      h.assert_true((v%2) == 0)
++    end
++
++class \nodoc\ iso _GenUnionTest is UnitTest
++  fun name(): String => "Gen/union"
++
++  fun apply(h: TestHelper) ? =>
++    let gen = Generators.ascii().union[U8](Generators.u8())
++    let rnd = Randomness(Time.millis())
++    for x in Range(0, 100) do
++      let gs = gen.generate(rnd)?
++      match gs
++      | (let vs: String, let shrink_iter: Iterator[String^]) =>
++        h.assert_true(true)
++      | (let vs: U8, let shrink_iter: Iterator[U8^]) =>
++        h.assert_true(true)
++      | (let vs: U8, let shrink_iter: Iterator[String^]) =>
++        h.fail("u8 value, string shrink iter")
++      | (let vs: String, let shrink_iter: Iterator[U8^]) =>
++        h.fail("string value, u8 shrink iter")
++      else
++        h.fail("invalid type generated")
++      end
++    end
++
++class \nodoc\ iso _GenFrequencyTest is UnitTest
++  fun name(): String => "Gen/frequency"
++
++  fun apply(h: TestHelper) ? =>
++    let gen = Generators.frequency[U8]([
++      as WeightedGenerator[U8]:
++      (1, Generators.unit[U8](0))
++      (0, Generators.unit[U8](42))
++      (2, Generators.unit[U8](1))
++    ])
++    let rnd: Randomness ref = Randomness(Time.millis())
++
++    let generated = Array[U8](100)
++    for i in Range(0, 100) do
++      generated.push(gen.generate_value(rnd)?)
++    end
++    h.assert_false(generated.contains(U8(42)), "frequency generated value with 0 weight")
++    h.assert_true(generated.contains(U8(0)), "frequency did not generate value with weight of 1")
++    h.assert_true(generated.contains(U8(1)), "frequency did not generate value with weight of 2")
++
++    let empty_gen = Generators.frequency[U8](Array[WeightedGenerator[U8]](0))
++
++    h.assert_error({() ? =>
++      empty_gen.generate_value(Randomness(Time.millis()))?
++    })
++
++class \nodoc\ iso _GenFrequencySafeTest is UnitTest
++  fun name(): String => "Gen/frequency_safe"
++
++  fun apply(h: TestHelper) =>
++    h.assert_error({() ? =>
++      Generators.frequency_safe[U8](Array[WeightedGenerator[U8]](0))?
++    })
++
++class \nodoc\ iso _GenOneOfTest is UnitTest
++  fun name(): String => "Gen/one_of"
++
++  fun apply(h: TestHelper) =>
++    let gen = Generators.one_of[U8]([as U8: 0; 1])
++    let rnd = Randomness(Time.millis())
++    h.assert_true(
++      Iter[U8^](gen.value_iter(rnd))
++        .take(100)
++        .all({(u: U8): Bool => (u == 0) or (u == 1) }),
++      "one_of generator generated illegal values")
++    let empty_gen = Generators.one_of[U8](Array[U8](0))
++
++    h.assert_error({() ? =>
++      empty_gen.generate_value(Randomness(Time.millis()))?
++    })
++
++class \nodoc\ iso _GenOneOfSafeTest is UnitTest
++  fun name(): String => "Gen/one_of_safe"
++
++  fun apply(h: TestHelper) =>
++    h.assert_error({() ? =>
++      Generators.one_of_safe[U8](Array[U8](0))?
++    })
++
++class \nodoc\ iso _SeqOfTest is UnitTest
++  fun name(): String => "Gen/seq_of"
++
++  fun apply(h: TestHelper) ? =>
++    let seq_gen =
++      Generators.seq_of[U8, Array[U8]](
++        Generators.u8(),
++        0,
++        10)
++    let rnd = Randomness(Time.millis())
++    h.assert_true(
++      Iter[Array[U8]^](seq_gen.value_iter(rnd))
++        .take(100)
++        .all({
++          (a: Array[U8]): Bool =>
++            (a.size() >= 0) and (a.size() <= 10) }),
++      "Seqs generated with Generators.seq_of are out of bounds")
++
++    match seq_gen.generate(rnd)?
++    | (let gen_sample: Array[U8], let shrinks: Iter[Array[U8]^]) =>
++      let max_size = gen_sample.size()
++      h.assert_true(
++        Iter[Array[U8]^](shrinks)
++          .all({(a: Array[U8]): Bool =>
++            if not (a.size() < max_size) then
++              h.log(a.size().string() + " >= " + max_size.string())
++              false
++            else
++              true
++            end
++          }),
++        "shrinking of Generators.seq_of produces too big Seqs")
++    else
++      h.fail("Generators.seq_of did not produce any shrinks")
++    end
++
++class \nodoc\ iso _IsoSeqOfTest is UnitTest
++  let min: USize = 0
++  let max: USize = 200
++  fun name(): String => "Gen/iso_seq_of"
++
++  fun apply(h: TestHelper) ? =>
++    let seq_gen = Generators.iso_seq_of[String, Array[String] iso](
++      Generators.ascii(),
++      min,
++      max
++    )
++    let rnd = Randomness(Time.millis())
++    h.assert_true(
++      Iter[Array[String] iso^](seq_gen.value_iter(rnd))
++        .take(100)
++        .all({
++          (a: Array[String] iso): Bool =>
++            (a.size() >= min) and (a.size() <= max) }),
++      "Seqs generated with Generators.iso_seq_of are out of bounds")
++
++    match seq_gen.generate(rnd)?
++    | (let gen_sample: Array[String] iso, let shrinks: Iter[Array[String] iso^]) =>
++      let max_size = gen_sample.size()
++      h.assert_true(
++        Iter[Array[String] iso^](shrinks)
++          .all({(a: Array[String] iso): Bool =>
++            if not (a.size() < max_size) then
++              h.log(a.size().string() + " >= " + max_size.string())
++              false
++            else
++              true
++            end
++          }),
++        "shrinking of Generators.iso_seq_of produces too big Seqs")
++    else
++      h.fail("Generators.iso_seq_of did not produce any shrinks")
++    end
++
++class \nodoc\ iso _SetOfTest is UnitTest
++  fun name(): String => "Gen/set_of"
++
++  fun apply(h: TestHelper) ? =>
++    let set_gen =
++      Generators.set_of[U8](
++        Generators.u8(),
++        1024)
++    let rnd = Randomness(Time.millis())
++    for i in Range(0, 100) do
++      let sample: Set[U8] = set_gen.generate_value(rnd)?
++      h.assert_true(sample.size() <= 256, "something about U8 is not right")
++    end
++
++class \nodoc\ iso _SetOfMaxTest is UnitTest
++  fun name(): String => "Gen/set_of_max"
++
++  fun apply(h: TestHelper) ? =>
++    let rnd = Randomness(Time.millis())
++    for size in Range[USize](1, U8.max_value().usize()) do
++      let set_gen =
++        Generators.set_of[U8](
++          Generators.u8(),
++          size)
++      let sample: Set[U8] = set_gen.generate_value(rnd)?
++      h.assert_true(sample.size() <= size, "generated set is too big.")
++    end
++
++
++class \nodoc\ iso _SetOfEmptyTest is UnitTest
++  fun name(): String => "Gen/set_of_empty"
++
++  fun apply(h: TestHelper) ? =>
++    let set_gen =
++      Generators.set_of[U8](
++        Generators.u8(),
++        0)
++    let rnd = Randomness(Time.millis())
++    for i in Range(0, 100) do
++      let sample: Set[U8] = set_gen.generate_value(rnd)?
++      h.assert_true(sample.size() == 0, "non-empty set created.")
++    end
++
++class \nodoc\ iso _SetIsOfIdentityTest is UnitTest
++  fun name(): String => "Gen/set_is_of_identity"
++  fun apply(h: TestHelper) ? =>
++    let set_is_gen_same =
++      Generators.set_is_of[String](
++        Generators.unit[String]("the highlander"),
++        100)
++    let rnd = Randomness(Time.millis())
++    let sample: SetIs[String] = set_is_gen_same.generate_value(rnd)?
++    h.assert_true(sample.size() <= 1,
++        "invalid SetIs instances generated: size " + sample.size().string())
++
++class \nodoc\ iso _MapOfEmptyTest is UnitTest
++  fun name(): String => "Gen/map_of_empty"
++
++  fun apply(h: TestHelper) ? =>
++    let map_gen =
++      Generators.map_of[String, I64](
++        Generators.zip2[String, I64](
++          Generators.u8().map[String]({(u: U8): String^ =>
++            let s = u.string()
++            consume s }),
++          Generators.i64(-10, 10)
++          ),
++        0)
++    let rnd = Randomness(Time.millis())
++    let sample = map_gen.generate_value(rnd)?
++    h.assert_eq[USize](sample.size(), 0, "non-empty map created")
++
++class \nodoc\ iso _MapOfMaxTest is UnitTest
++  fun name(): String => "Gen/map_of_max"
++
++  fun apply(h: TestHelper) ? =>
++    let rnd = Randomness(Time.millis())
++
++    for size in Range(1, U8.max_value().usize()) do
++      let map_gen =
++        Generators.map_of[String, I64](
++          Generators.zip2[String, I64](
++            Generators.u16().map[String^]({(u: U16): String^ =>
++              u.string()
++            }),
++            Generators.i64(-10, 10)
++            ),
++        size)
++      let sample = map_gen.generate_value(rnd)?
++      h.assert_true(sample.size() <= size, "generated map is too big.")
++    end
++
++class \nodoc\ iso _MapOfIdentityTest is UnitTest
++  fun name(): String => "Gen/map_of_identity"
++
++  fun apply(h: TestHelper) ? =>
++    let rnd = Randomness(Time.millis())
++    let map_gen =
++      Generators.map_of[String, I64](
++        Generators.zip2[String, I64](
++          Generators.repeatedly[String]({(): String^ =>
++            let s = recover String.create(14) end
++            s.add("the highlander")
++            consume s }),
++          Generators.i64(-10, 10)
++          ),
++      100)
++    let sample = map_gen.generate_value(rnd)?
++    h.assert_true(sample.size() <= 1)
++
++class \nodoc\ iso _MapIsOfEmptyTest is UnitTest
++  fun name(): String => "Gen/map_is_of_empty"
++
++  fun apply(h: TestHelper) ? =>
++    let map_is_gen =
++      Generators.map_is_of[String, I64](
++        Generators.zip2[String, I64](
++          Generators.u8().map[String]({(u: U8): String^ =>
++            let s = u.string()
++            consume s }),
++          Generators.i64(-10, 10)
++          ),
++        0)
++    let rnd = Randomness(Time.millis())
++    let sample = map_is_gen.generate_value(rnd)?
++    h.assert_eq[USize](sample.size(), 0, "non-empty map created")
++
++class \nodoc\ iso _MapIsOfMaxTest is UnitTest
++  fun name(): String => "Gen/map_is_of_max"
++
++  fun apply(h: TestHelper) ? =>
++    let rnd = Randomness(Time.millis())
++
++    for size in Range(1, U8.max_value().usize()) do
++      let map_is_gen =
++        Generators.map_is_of[String, I64](
++          Generators.zip2[String, I64](
++            Generators.u16().map[String]({(u: U16): String^ =>
++              let s = u.string()
++              consume s }),
++            Generators.i64(-10, 10)
++            ),
++        size)
++      let sample = map_is_gen.generate_value(rnd)?
++      h.assert_true(sample.size() <= size, "generated map is too big.")
++    end
++
++class \nodoc\ iso _MapIsOfIdentityTest is UnitTest
++  fun name(): String => "Gen/map_is_of_identity"
++
++  fun apply(h: TestHelper) ? =>
++    let rnd = Randomness(Time.millis())
++    let map_gen =
++      Generators.map_is_of[String, I64](
++        Generators.zip2[String, I64](
++          Generators.unit[String]("the highlander"),
++          Generators.i64(-10, 10)
++          ),
++      100)
++    let sample = map_gen.generate_value(rnd)?
++    h.assert_true(sample.size() <= 1)
++
++class \nodoc\ iso _ASCIIRangeTest is UnitTest
++  fun name(): String => "Gen/ascii_range"
++  fun apply(h: TestHelper) ? =>
++    let rnd = Randomness(Time.millis())
++    let ascii_gen = Generators.ascii( where min=1, max=1, range=ASCIIAll)
++
++    for i in Range[USize](0, 100) do
++      let sample = ascii_gen.generate_value(rnd)?
++      h.assert_true(ASCIIAll().contains(sample), "\"" + sample + "\" not valid ascii")
++    end
++
++class \nodoc\ iso _UTF32CodePointStringTest is UnitTest
++  fun name(): String => "Gen/utf32_codepoint_string"
++  fun apply(h: TestHelper) ? =>
++    let rnd = Randomness(Time.millis())
++    let string_gen = Generators.utf32_codepoint_string(
++      Generators.u32(),
++      50,
++      100)
++
++    for i in Range[USize](0, 100) do
++      let sample = string_gen.generate_value(rnd)?
++      for cp in sample.runes() do
++        h.assert_true((cp <= 0xD7FF ) or (cp >= 0xE000), "\"" + sample + "\" invalid utf32")
++      end
++    end
++
++class \nodoc\ iso _SuccessfulIntProperty is IntProperty
++  fun name(): String  => "property/int/property"
++
++  fun ref int_property[T: (Int & Integer[T] val)](x: T, h: PropertyHelper) =>
++    h.assert_eq[T](x.min(T.max_value()), x)
++    h.assert_eq[T](x.max(T.min_value()), x)
++
++class \nodoc\ iso _SuccessfulIntPropertyTest is UnitTest
++  fun name(): String => "property/int"
++
++  fun apply(h: TestHelper) =>
++    let property = recover iso _SuccessfulIntProperty end
++    let property_notify = _UnitTestPropertyNotify(h, true)
++    let property_logger = _UnitTestPropertyLogger(h)
++    let params = property.params()
++    h.long_test(params.timeout)
++    let runner = PropertyRunner[IntPropertySample](
++      consume property,
++      params,
++      property_notify,
++      property_logger,
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _SuccessfulIntPairProperty is IntPairProperty
++  fun name(): String => "property/intpair/property"
++
++  fun int_property[T: (Int & Integer[T] val)](x: T, y: T, h: PropertyHelper) =>
++    h.assert_eq[T](x * y, y * x)
++
++class \nodoc\ iso _SuccessfulIntPairPropertyTest is UnitTest
++  fun name(): String => "property/intpair"
++
++  fun apply(h: TestHelper) =>
++    let property = recover iso _SuccessfulIntPairProperty end
++    let property_notify = _UnitTestPropertyNotify(h, true)
++    let property_logger = _UnitTestPropertyLogger(h)
++    let params = property.params()
++    h.long_test(params.timeout)
++    let runner = PropertyRunner[IntPairPropertySample](
++      consume property,
++      params,
++      property_notify,
++      property_logger,
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _InfiniteShrinkProperty is Property1[String]
++  fun name(): String => "property_runner/inifinite_shrink/property"
++
++  fun gen(): Generator[String] =>
++    Generator[String](
++      object is GenObj[String]
++        fun generate(r: Randomness): String^ =>
++          "decided by fair dice roll, totally random"
++
++        fun shrink(t: String): ValueAndShrink[String] =>
++          (t, Iter[String^].repeat_value(t))
++      end)
++
++  fun ref property(arg1: String, ph: PropertyHelper) =>
++    ph.assert_true(arg1.size() >  100)
++
++
++class \nodoc\ iso _RunnerInfiniteShrinkTest is UnitTest
++  fun name(): String => "property_runner/infinite_shrink"
++
++  fun apply(h: TestHelper) =>
++
++    let property = recover iso _InfiniteShrinkProperty end
++    let params = property.params()
++
++    h.long_test(params.timeout)
++
++    let runner = PropertyRunner[String](
++      consume property,
++      params,
++      _UnitTestPropertyNotify(h, false),
++      _UnitTestPropertyLogger(h),
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _ErroringGeneratorProperty is Property1[String]
++  fun name(): String => "property_runner/erroring_generator/property"
++
++  fun gen(): Generator[String] =>
++    Generator[String](
++      object is GenObj[String]
++        fun generate(r: Randomness): String^ ? =>
++          error
++      end)
++
++  fun ref property(sample: String, h: PropertyHelper) =>
++    None
++
++class \nodoc\ iso _RunnerErroringGeneratorTest is UnitTest
++  fun name(): String => "property_runner/erroring_generator"
++
++  fun apply(h: TestHelper) =>
++    let property = recover iso _ErroringGeneratorProperty end
++    let params = property.params()
++
++    h.long_test(params.timeout)
++
++    let runner = PropertyRunner[String](
++      consume property,
++      params,
++      _UnitTestPropertyNotify(h, false),
++      _UnitTestPropertyLogger(h),
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _SometimesErroringGeneratorProperty is Property1[String]
++  fun name(): String => "property_runner/sometimes_erroring_generator"
++  fun params(): PropertyParams =>
++    PropertyParams(where
++      num_samples' = 3,
++      seed' = 6,
++      max_generator_retries' = 1
++    )
++  fun gen(): Generator[String] =>
++    Generator[String](
++      object is GenObj[String]
++        fun generate(r: Randomness): String^ ? =>
++          match (r.u64() % 2)
++          | 0 => "foo"
++          else
++            error
++          end
++      end
++    )
++
++  fun ref property(sample: String, h: PropertyHelper) =>
++    None
++
++
++class \nodoc\ iso _RunnerSometimesErroringGeneratorTest is UnitTest
++  fun name(): String => "property_runner/sometimes_erroring_generator"
++
++  fun apply(h: TestHelper) =>
++    let property = recover iso _SometimesErroringGeneratorProperty end
++    let params = property.params()
++
++    h.long_test(params.timeout)
++
++    let runner = PropertyRunner[String](
++      consume property,
++      params,
++      _UnitTestPropertyNotify(h, true),
++      _UnitTestPropertyLogger(h),
++      h.env)
++    runner.run()
++
++class \nodoc\ iso _ReportFailedSampleProperty is Property1[U8]
++  fun name(): String => "property_runner/sample_reporting/property"
++  fun gen(): Generator[U8] => Generators.u8(0, 1)
++  fun ref property(sample: U8, h: PropertyHelper) =>
++    h.assert_eq[U8](sample, U8(0))
++
++class \nodoc\ iso _RunnerReportFailedSampleTest is UnitTest
++  fun name(): String => "property_runner/sample_reporting"
++  fun apply(h: TestHelper) =>
++    let property = recover iso _ReportFailedSampleProperty end
++    let params = property.params()
++
++    h.long_test(params.timeout)
++
++    let logger =
++      object val is PropertyLogger
++        fun log(msg: String, verbose: Bool) =>
++          if msg.contains("Property failed for sample 1 ") then
++            h.complete(true)
++          elseif msg.contains("Propety failed for sample 0 ") then
++            h.fail("wrong sample reported.")
++            h.complete(false)
++          end
++      end
++    let notify =
++      object val is PropertyResultNotify
++        fun fail(msg: String) =>
++          h.log("FAIL: " + msg)
++        fun complete(success: Bool) =>
++          h.assert_false(success, "property did not fail")
++      end
++
++    let runner = PropertyRunner[U8](
++      consume property,
++      params,
++      _UnitTestPropertyNotify(h, false),
++      logger,
++      h.env)
++    runner.run()
++
++trait \nodoc\ _ShrinkTest is UnitTest
++  fun shrink[T](gen: Generator[T], shrink_elem: T): Iterator[T^] =>
++    (_, let shrinks': Iterator[T^]) = gen.shrink(consume shrink_elem)
++    shrinks'
++
++  fun _collect_shrinks[T](gen: Generator[T], shrink_elem: T): Array[T] =>
++    Iter[T^](shrink[T](gen, consume shrink_elem)).collect[Array[T]](Array[T])
++
++  fun _size(shrinks: Iterator[Any^]): USize =>
++    Iter[Any^](shrinks).count()
++
++  fun _test_int_constraints[T: (Int & Integer[T] val)](
++    h: TestHelper,
++    gen: Generator[T],
++    x: T,
++    min: T = T.min_value()
++  ) ?
++    =>
++    let shrinks = shrink[T](gen, min)
++    h.assert_false(shrinks.has_next(), "non-empty shrinks for minimal value " + min.string())
++
++    let shrinks1 = _collect_shrinks[T](gen, min + 1)
++    h.assert_array_eq[T]([min], shrinks1, "didn't include min in shrunken list of samples")
++
++    let shrinks2 = shrink[T](gen, x)
++    h.assert_true(
++      Iter[T^](shrinks2)
++        .all(
++          {(u: T): Bool =>
++            match x.compare(min)
++            | Less =>
++              (u <= min) and (u > x)
++            | Equal => true
++            | Greater =>
++              (u >= min) and (u < x)
++            end
++          }),
++      "generated shrinks from " + x.string() + " that violate minimum or maximum")
++
++    let count_shrinks = shrink[T](gen, x)
++    let max_count =
++      if (x - min) < 0 then
++        -(x - min)
++      else
++        x - min
++      end
++    let actual_count = T.from[USize](Iter[T^](count_shrinks).count())
++    h.assert_true(
++      actual_count <= max_count,
++      "generated too much values from " + x.string() + " : " + actual_count.string() + " > " + max_count.string())
++
++class \nodoc\ iso _UnsignedShrinkTest is _ShrinkTest
++  fun name(): String => "shrink/unsigned_generators"
++
++  fun apply(h: TestHelper)? =>
++    let gen = Generators.u8()
++    _test_int_constraints[U8](h, gen, U8(42))?
++    _test_int_constraints[U8](h, gen, U8.max_value())?
++
++    let min = U64(10)
++    let gen_min = Generators.u64(where min=min)
++    _test_int_constraints[U64](h, gen_min, 42, min)?
++
++class \nodoc\ iso _SignedShrinkTest is _ShrinkTest
++  fun name(): String => "shrink/signed_generators"
++
++  fun apply(h: TestHelper) ? =>
++    let gen = Generators.i64()
++    _test_int_constraints[I64](h, gen, (I64.min_value() + 100))?
++
++    let gen2 = Generators.i64(-10, 20)
++    _test_int_constraints[I64](h, gen2, 20, -10)?
++    _test_int_constraints[I64](h, gen2, 30, -10)?
++    _test_int_constraints[I64](h, gen2, -12, -10)?
++
++
++class \nodoc\ iso _ASCIIStringShrinkTest is _ShrinkTest
++  fun name(): String => "shrink/ascii_string_generators"
++
++  fun apply(h: TestHelper) =>
++    let gen = Generators.ascii(where min=0)
++
++    let shrinks_min = shrink[String](gen, "")
++    h.assert_false(shrinks_min.has_next(), "non-empty shrinks for minimal value")
++
++    let sample = "ABCDEF"
++    let shrinks = _collect_shrinks[String](gen, sample)
++    h.assert_array_eq[String](
++      ["ABCDE"; "ABCD"; "ABC"; "AB"; "A"; ""],
++      shrinks)
++
++    let short_sample = "A"
++    let short_shrinks = _collect_shrinks[String](gen, short_sample)
++    h.assert_array_eq[String]([""], short_shrinks, "shrinking 'A' returns wrong results")
++
++class \nodoc\ iso _MinASCIIStringShrinkTest is _ShrinkTest
++  fun name(): String => "shrink/min_ascii_string_generators"
++
++  fun apply(h: TestHelper) =>
++    let min: USize = 10
++    let gen = Generators.ascii(where min=min)
++
++    let shrinks_min = shrink[String](gen, "abcdefghi")
++    h.assert_false(shrinks_min.has_next(), "generated non-empty shrinks for string smaller than minimum")
++
++    let shrinks = shrink[String](gen, "abcdefghijlkmnop")
++    h.assert_true(
++      Iter[String](shrinks)
++        .all({(s: String): Bool => s.size() >= min}), "generated shrinks that violate minimum string length")
++
++class \nodoc\ iso _UnicodeStringShrinkTest is _ShrinkTest
++  fun name(): String => "shrink/unicode_string_generators"
++
++  fun apply(h: TestHelper) =>
++    let gen = Generators.unicode()
++
++    let shrinks_min = shrink[String](gen, "")
++    h.assert_false(shrinks_min.has_next(), "non-empty shrinks for minimal value")
++
++    let sample2 = "ΣΦΩ"
++    let shrinks2 = _collect_shrinks[String](gen, sample2)
++    h.assert_false(shrinks2.contains(sample2))
++    h.assert_true(shrinks2.size() > 0, "empty shrinks for non-minimal unicode string")
++
++    let sample3 = "Σ"
++    let shrinks3 = _collect_shrinks[String](gen, sample3)
++    h.assert_array_eq[String]([""], shrinks3, "minimal non-empty string not properly shrunk")
++
++class \nodoc\ iso _MinUnicodeStringShrinkTest is _ShrinkTest
++  fun name(): String => "shrink/min_unicode_string_generators"
++
++  fun apply(h: TestHelper) =>
++    let min = USize(5)
++    let gen = Generators.unicode(where min=min)
++
++    let min_sample = "ΣΦΩ"
++    let shrinks_min = shrink[String](gen, min_sample)
++    h.assert_false(shrinks_min.has_next(), "non-empty shrinks for minimal value")
++
++    let sample = "ΣΦΩΣΦΩ"
++    let shrinks = _collect_shrinks[String](gen, sample)
++    h.assert_true(
++      Iter[String](shrinks.values())
++        .all({(s: String): Bool => s.codepoints() >= min}),
++      "generated shrinks that violate minimum string length")
++    h.assert_false(
++      shrinks.contains(sample),
++      "shrinks contain sample value")
++
++class \nodoc\ iso _FilterMapShrinkTest is _ShrinkTest
++  fun name(): String => "shrink/filter_map"
++
++  fun apply(h: TestHelper) =>
++    let gen: Generator[U64] =
++      Generators.u8()
++        .filter({(byte) => (byte, byte > 10) })
++        .map[U64]({(byte) => (byte * 2).u64() })
++    let shrink_iter = shrink[U64](gen, U64(100))
++    h.assert_true(
++      Iter[U64](shrink_iter)
++        .all({(u) =>
++          (u > 20) and ((u % 2) == 0) }),
++      "shrinking does not maintain filter invariants")
++
++primitive \nodoc\ _Async
++  fun run_async_test(
++    h: TestHelper,
++    action: {(PropertyHelper): None} val,
++    should_succeed: Bool = true)
++  =>
++    let property = _AsyncProperty(action)
++    let params = property.params()
++    h.long_test(params.timeout)
++
++    let runner = PropertyRunner[String](
++      consume property,
++      params,
++      _UnitTestPropertyNotify(h, should_succeed),
++      _UnitTestPropertyLogger(h),
++      h.env)
++    runner.run()
++
++class \nodoc\ val _UnitTestPropertyLogger is PropertyLogger
++  let _th: TestHelper
++
++  new val create(th: TestHelper) =>
++    _th = th
++
++  fun log(msg: String, verbose: Bool) =>
++    _th.log("[PROPERTY] " + msg, verbose)
++
++class \nodoc\ val _UnitTestPropertyNotify is PropertyResultNotify
++  let _th: TestHelper
++  let _should_succeed: Bool
++
++  new val create(th: TestHelper, should_succeed: Bool = true) =>
++    _should_succeed = should_succeed
++    _th = th
++
++  fun fail(msg: String) =>
++    _th.log("FAIL: " + msg)
++
++  fun complete(success: Bool) =>
++    _th.log("COMPLETE: " + success.string())
++    let result = (success and _should_succeed) or ((not success) and (not _should_succeed))
++    _th.complete(result)
++
++
++actor \nodoc\ _AsyncDelayingActor
++  let _ph: PropertyHelper
++  let _action: {(PropertyHelper): None} val
++
++  new create(ph: PropertyHelper, action: {(PropertyHelper): None} val) =>
++    _ph = ph
++    _action = action
++
++  be do_it() =>
++    _action.apply(_ph)
++
++class \nodoc\ iso _AsyncProperty is Property1[String]
++  let _action: {(PropertyHelper): None} val
++  new iso create(action: {(PropertyHelper): None } val) =>
++    _action = action
++
++  fun name(): String => "property_runner/async/property"
++
++  fun params(): PropertyParams =>
++    PropertyParams(where async' = true)
++
++  fun gen(): Generator[String] =>
++    Generators.ascii_printable()
++
++  fun ref property(arg1: String, ph: PropertyHelper) =>
++    _AsyncDelayingActor(ph, _action).do_it()
++
++interface \nodoc\ val _RandomCase[A: Comparable[A] #read]
++  new val create()
++
++  fun test(min: A, max: A): A
++
++  fun generator(): Generator[A]
++
++primitive \nodoc\ _RandomCaseU8 is _RandomCase[U8]
++  fun test(min: U8, max: U8): U8 =>
++    let rnd = Randomness(Time.millis())
++    rnd.u8(min, max)
++
++  fun generator(): Generator[U8] =>
++    Generators.u8()
++
++primitive \nodoc\ _RandomCaseU16 is _RandomCase[U16]
++  fun test(min: U16, max: U16): U16 =>
++    let rnd = Randomness(Time.millis())
++    rnd.u16(min, max)
++
++  fun generator(): Generator[U16] =>
++    Generators.u16()
++
++primitive \nodoc\ _RandomCaseU32 is _RandomCase[U32]
++  fun test(min: U32, max: U32): U32 =>
++    let rnd = Randomness(Time.millis())
++    rnd.u32(min, max)
++
++  fun generator(): Generator[U32] =>
++    Generators.u32()
++
++primitive \nodoc\ _RandomCaseU64 is _RandomCase[U64]
++  fun test(min: U64, max: U64): U64 =>
++    let rnd = Randomness(Time.millis())
++    rnd.u64(min, max)
++
++  fun generator(): Generator[U64] =>
++    Generators.u64()
++
++primitive \nodoc\ _RandomCaseU128 is _RandomCase[U128]
++  fun test(min: U128, max: U128): U128 =>
++    let rnd = Randomness(Time.millis())
++    rnd.u128(min, max)
++
++  fun generator(): Generator[U128] =>
++    Generators.u128()
++
++primitive \nodoc\ _RandomCaseI8 is _RandomCase[I8]
++  fun test(min: I8, max: I8): I8 =>
++    let rnd = Randomness(Time.millis())
++    rnd.i8(min, max)
++
++  fun generator(): Generator[I8] =>
++    Generators.i8()
++
++primitive \nodoc\ _RandomCaseI16 is _RandomCase[I16]
++  fun test(min: I16, max: I16): I16 =>
++    let rnd = Randomness(Time.millis())
++    rnd.i16(min, max)
++
++  fun generator(): Generator[I16] =>
++    Generators.i16()
++
++primitive \nodoc\ _RandomCaseI32 is _RandomCase[I32]
++  fun test(min: I32, max: I32): I32 =>
++    let rnd = Randomness(Time.millis())
++    rnd.i32(min, max)
++
++  fun generator(): Generator[I32] =>
++    Generators.i32()
++
++primitive \nodoc\ _RandomCaseI64 is _RandomCase[I64]
++  fun test(min: I64, max: I64): I64 =>
++    let rnd = Randomness(Time.millis())
++    rnd.i64(min, max)
++
++  fun generator(): Generator[I64] =>
++    Generators.i64()
++
++primitive \nodoc\ _RandomCaseI128 is _RandomCase[I128]
++  fun test(min: I128, max: I128): I128 =>
++    let rnd = Randomness(Time.millis())
++    rnd.i128(min, max)
++
++  fun generator(): Generator[I128] =>
++    Generators.i128()
++
++primitive \nodoc\ _RandomCaseISize is _RandomCase[ISize]
++  fun test(min: ISize, max: ISize): ISize =>
++    let rnd = Randomness(Time.millis())
++    rnd.isize(min, max)
++
++  fun generator(): Generator[ISize] =>
++    Generators.isize()
++
++primitive \nodoc\ _RandomCaseILong is _RandomCase[ILong]
++  fun test(min: ILong, max: ILong): ILong =>
++    let rnd = Randomness(Time.millis())
++    rnd.ilong(min, max)
++
++  fun generator(): Generator[ILong] =>
++    Generators.ilong()
++
++class \nodoc\ iso _RandomnessProperty[A: Comparable[A] #read, R: _RandomCase[A] val] is Property1[(A, A)]
++  let _type_name: String
++
++  new iso create(type_name: String) =>
++    _type_name = type_name
++
++  fun name(): String => "randomness/" + _type_name
++
++  fun gen(): Generator[(A, A)] =>
++    let min = R.generator()
++    let max = R.generator()
++    Generators.zip2[A, A](min, max)
++      .filter(
++        { (pair) => (pair, (pair._1 <= pair._2)) }
++      )
++
++  fun property(arg1: (A, A), ph: PropertyHelper) =>
++    (let min, let max) = arg1
++
++    let value = R.test(min, max)
++    ph.assert_true(value >= min)
++    ph.assert_true(value <= max)
+diff --git a/packages/ponycheck/ascii_range.pony b/packages/ponycheck/ascii_range.pony
+new file mode 100644
+index 00000000..52ffe83b
+--- /dev/null
++++ b/packages/ponycheck/ascii_range.pony
+@@ -0,0 +1,60 @@
++primitive ASCIINUL
++  fun apply(): String => "\x00"
++
++primitive ASCIIDigits
++  fun apply(): String => "0123456789"
++
++primitive ASCIIWhiteSpace
++  fun apply(): String => " \t\n\r\x0b\x0c"
++
++primitive ASCIIPunctuation
++  fun apply(): String => "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
++
++primitive ASCIILettersLower
++  fun apply(): String => "abcdefghijklmnopqrstuvwxyz"
++
++primitive ASCIILettersUpper
++  fun apply(): String => "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
++
++primitive ASCIILetters
++  fun apply(): String => ASCIILettersLower() + ASCIILettersUpper()
++
++primitive ASCIIPrintable
++  fun apply(): String =>
++    ASCIIDigits()
++      + ASCIILetters()
++      + ASCIIPunctuation()
++      + ASCIIWhiteSpace()
++
++primitive ASCIINonPrintable
++  fun apply(): String =>
++    "\x01\x02\x03\x04\x05\x06\x07\x08\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
++
++primitive ASCIIAll
++  """
++  represents all ASCII characters
++  excluding the NUL (\x00) character for its special treatment in C strings
++  """
++  fun apply(): String =>
++    ASCIIPrintable() + ASCIINonPrintable()
++
++primitive ASCIIAllWithNUL
++  """
++  represents all ASCII characters
++  including the NUL (\x00) character for its special treatment in C strings
++  """
++  fun apply(): String =>
++    ASCIIAll() + ASCIINUL()
++
++type ASCIIRange is
++    ( ASCIINUL
++    | ASCIIDigits
++    | ASCIIWhiteSpace
++    | ASCIIPunctuation
++    | ASCIILettersLower
++    | ASCIILettersUpper
++    | ASCIILetters
++    | ASCIIPrintable
++    | ASCIINonPrintable
++    | ASCIIAll
++    | ASCIIAllWithNUL)
+diff --git a/packages/ponycheck/for_all.pony b/packages/ponycheck/for_all.pony
+new file mode 100644
+index 00000000..7e8caf15
+--- /dev/null
++++ b/packages/ponycheck/for_all.pony
+@@ -0,0 +1,108 @@
++use "ponytest"
++
++class ForAll[T]
++  let _gen: Generator[T] val
++  let _helper: TestHelper
++
++  new create(gen': Generator[T] val, testHelper: TestHelper) =>
++    _gen = gen'
++    _helper = testHelper
++
++  fun ref apply(prop: {(T, PropertyHelper) ?} val) ? =>
++    Property1UnitTest[T](
++      object iso is Property1[T]
++        fun name(): String => ""
++
++        fun gen(): Generator[T] => _gen
++
++        fun ref property(arg1: T, h: PropertyHelper) ? =>
++          prop(consume arg1, h)?
++      end
++    ).apply(_helper)?
++
++class ForAll2[T1, T2]
++  let _gen1: Generator[T1] val
++  let _gen2: Generator[T2] val
++  let _helper: TestHelper
++
++  new create(
++    gen1': Generator[T1] val,
++    gen2': Generator[T2] val,
++    h: TestHelper)
++  =>
++    _gen1 = gen1'
++    _gen2 = gen2'
++    _helper = h
++
++  fun ref apply(prop: {(T1, T2, PropertyHelper) ?} val) ? =>
++    Property2UnitTest[T1, T2](
++      object iso is Property2[T1, T2]
++        fun name(): String => ""
++        fun gen1(): Generator[T1] => _gen1
++        fun gen2(): Generator[T2] => _gen2
++        fun ref property2(arg1: T1, arg2: T2, h: PropertyHelper) ? =>
++          prop(consume arg1, consume arg2, h)?
++      end
++    ).apply(_helper)?
++
++class ForAll3[T1, T2, T3]
++  let _gen1: Generator[T1] val
++  let _gen2: Generator[T2] val
++  let _gen3: Generator[T3] val
++  let _helper: TestHelper
++
++  new create(
++    gen1': Generator[T1] val,
++    gen2': Generator[T2] val,
++    gen3': Generator[T3] val,
++    h: TestHelper)
++  =>
++    _gen1 = gen1'
++    _gen2 = gen2'
++    _gen3 = gen3'
++    _helper = h
++
++  fun ref apply(prop: {(T1, T2, T3, PropertyHelper) ?} val) ? =>
++    Property3UnitTest[T1, T2, T3](
++      object iso is Property3[T1, T2, T3]
++        fun name(): String => ""
++        fun gen1(): Generator[T1] => _gen1
++        fun gen2(): Generator[T2] => _gen2
++        fun gen3(): Generator[T3] => _gen3
++        fun ref property3(arg1: T1, arg2: T2, arg3: T3, h: PropertyHelper) ? =>
++          prop(consume arg1, consume arg2, consume arg3, h)?
++      end
++    ).apply(_helper)?
++
++class ForAll4[T1, T2, T3, T4]
++  let _gen1: Generator[T1] val
++  let _gen2: Generator[T2] val
++  let _gen3: Generator[T3] val
++  let _gen4: Generator[T4] val
++  let _helper: TestHelper
++
++  new create(
++    gen1': Generator[T1] val,
++    gen2': Generator[T2] val,
++    gen3': Generator[T3] val,
++    gen4': Generator[T4] val,
++    h: TestHelper)
++  =>
++    _gen1 = gen1'
++    _gen2 = gen2'
++    _gen3 = gen3'
++    _gen4 = gen4'
++    _helper = h
++
++  fun ref apply(prop: {(T1, T2, T3, T4, PropertyHelper) ?} val) ? =>
++    Property4UnitTest[T1, T2, T3, T4](
++      object iso is Property4[T1, T2, T3, T4]
++        fun name(): String => ""
++        fun gen1(): Generator[T1] => _gen1
++        fun gen2(): Generator[T2] => _gen2
++        fun gen3(): Generator[T3] => _gen3
++        fun gen4(): Generator[T4] => _gen4
++        fun ref property4(arg1: T1, arg2: T2, arg3: T3, arg4: T4, h: PropertyHelper) ? =>
++          prop(consume arg1, consume arg2, consume arg3, consume arg4, h)?
++      end
++    ).apply(_helper)?
+diff --git a/packages/ponycheck/generator.pony b/packages/ponycheck/generator.pony
+new file mode 100644
+index 00000000..7f1274a6
+--- /dev/null
++++ b/packages/ponycheck/generator.pony
+@@ -0,0 +1,1058 @@
++use "collections"
++use "assert"
++use "itertools"
++use "debug"
++
++type ValueAndShrink[T1] is (T1^, Iterator[T1^])
++  """
++  Possible return type for [`Generator.generate`](ponycheck-Generator.md#generate).
++  Represents a generated value and an Iterator of shrunken values.
++  """
++
++type GenerateResult[T2] is (T2^ | ValueAndShrink[T2])
++  """
++  Return type for [`Generator.generate`](ponycheck-Generator.md#generate).
++
++  Either a single value only or a Tuple of a value and an Iterator
++  of shrunken values based upon this value.
++  """
++
++class CountdownIter[T: (Int & Integer[T] val) = USize] is Iterator[T]
++  """
++  `from` is exclusive, `to` is inclusive
++  """
++  var _cur: T
++  let _to: T
++
++  new create(from: T, to: T = T.min_value()) =>
++    _cur = from
++    _to = to
++
++  fun ref has_next(): Bool =>
++    _cur > _to
++
++  fun ref next(): T =>
++    let res = _cur - 1
++    _cur = res
++    res
++
++trait box GenObj[T]
++  fun generate(rnd: Randomness): GenerateResult[T] ?
++
++  fun shrink(t: T): ValueAndShrink[T] =>
++    (consume t, Poperator[T].empty())
++
++  fun generate_value(rnd: Randomness): T^ ? =>
++    let g = this
++    match g.generate(rnd)?
++    | let t: T => consume t
++    | (let t: T, _) => consume t
++    end
++
++  fun generate_and_shrink(rnd: Randomness): ValueAndShrink[T] ? =>
++    let g = this
++    match g.generate(rnd)?
++    | let t: T => g.shrink(consume t)
++    | (let t: T, let shrinks: Iterator[T^])=> (consume t, shrinks)
++    end
++
++  fun iter(rnd: Randomness): Iterator[GenerateResult[T]]^ =>
++    let that: GenObj[T] = this
++
++    object is Iterator[GenerateResult[T]]
++      fun ref has_next(): Bool => true
++      fun ref next(): GenerateResult[T] ? => that.generate(rnd)?
++    end
++
++  fun value_iter(rnd: Randomness): Iterator[T^] =>
++    let that: GenObj[T] = this
++
++    object is Iterator[T^]
++      fun ref has_next(): Bool => true
++      fun ref next(): T^ ? =>
++        match that.generate(rnd)?
++        | let value_only: T => consume value_only
++        | (let v: T, _) => consume v
++        end
++    end
++
++  fun value_and_shrink_iter(rnd: Randomness): Iterator[ValueAndShrink[T]] =>
++    let that: GenObj[T] = this
++
++    object is Iterator[ValueAndShrink[T]]
++      fun ref has_next(): Bool => true
++      fun ref next(): ValueAndShrink[T] ? =>
++        match that.generate(rnd)?
++        | let value_only: T => that.shrink(consume value_only)
++        | (let v: T, let shrinks: Iterator[T^]) => (consume v, consume shrinks)
++        end
++    end
++
++
++class box Generator[T] is GenObj[T]
++  """
++  A Generator is capable of generating random values of a certain type `T`
++  given a source of `Randomness`
++  and knows how to shrink or simplify values of that type.
++  """
++  let _gen: GenObj[T]
++
++  new create(gen: GenObj[T]) =>
++    _gen = gen
++
++  fun generate(rnd: Randomness): GenerateResult[T] ? =>
++    _gen.generate(rnd)?
++
++  fun shrink(t: T): ValueAndShrink[T] =>
++    _gen.shrink(consume t)
++
++  fun generate_value(rnd: Randomness): T^ ? =>
++    _gen.generate_value(rnd)?
++
++  fun generate_and_shrink(rnd: Randomness): ValueAndShrink[T] ? =>
++    _gen.generate_and_shrink(rnd)?
++
++  fun filter(predicate: {(T): (T^, Bool)} box): Generator[T] =>
++    Generator[T](
++      object is GenObj[T]
++        fun generate(rnd: Randomness): GenerateResult[T] ? =>
++          (let t: T, let shrunken: Iterator[T^]) = _gen.generate_and_shrink(rnd)?
++          (let t1, let matches) = predicate(consume t)
++          if not matches then
++            generate(rnd)?
++          else
++            (consume t1, _filter_shrunken(shrunken))
++          end
++
++        fun shrink(t: T): ValueAndShrink[T] =>
++          (let s, let shrunken: Iterator[T^]) = _gen.shrink(consume t)
++          (consume s, _filter_shrunken(shrunken))
++
++        fun _filter_shrunken(shrunken: Iterator[T^]): Iterator[T^] =>
++          Iter[T^](shrunken)
++            .filter_map[T^]({
++              (t: T): (T^| None) =>
++                match predicate(consume t)
++                | (let matching: T, true) => consume matching
++                end
++            })
++      end)
++
++  fun map[U](fn: {(T): U^} box)
++    : Generator[U]
++  =>
++    Generator[U](
++      object is GenObj[U]
++        fun generate(rnd: Randomness): GenerateResult[U] ? =>
++          (let generated: T, let shrunken: Iterator[T^]) =
++            _gen.generate_and_shrink(rnd)?
++
++          (fn(consume generated), _map_shrunken(shrunken))
++
++        fun shrink(u: U): ValueAndShrink[U] =>
++          match u
++          | let ut: T =>
++            (let uts: T, let shrunken: Iterator[T^]) = _gen.shrink(consume ut)
++            (fn(consume uts), _map_shrunken(shrunken))
++          else
++            (consume u, Poperator[U].empty())
++          end
++
++        fun _map_shrunken(shrunken: Iterator[T^]): Iterator[U^] =>
++          Iter[T^](shrunken)
++            .map[U^]({(t) => fn(consume t) })
++
++      end)
++
++  fun flat_map[U](fn: {(T): Generator[U]} box): Generator[U] =>
++    Generator[U](
++      object is GenObj[U]
++        fun generate(rnd: Randomness): GenerateResult[U] ? =>
++          let value: T = _gen.generate_value(rnd)?
++          fn(consume value).generate_and_shrink(rnd)?
++
++      end)
++
++  fun union[U](other: Generator[U]): Generator[(T | U)] =>
++    Generator[(T | U)](
++      object is GenObj[(T | U)]
++        fun generate(rnd: Randomness): GenerateResult[(T | U)] ? =>
++          if rnd.bool() then
++            _gen.generate_and_shrink(rnd)?
++          else
++            other.generate_and_shrink(rnd)?
++          end
++
++        fun shrink(t: (T | U)): ValueAndShrink[(T | U)] =>
++          match consume t
++          | let tt: T => _gen.shrink(consume tt)
++          | let tu: U => other.shrink(consume tu)
++          end
++      end
++    )
++
++type WeightedGenerator[T] is (USize, Generator[T] box)
++
++primitive Generators
++  """
++  Convenience combinators and factories for common types and kind of Generators.
++  """
++
++  fun unit[T](t: T, do_shrink: Bool = false): Generator[box->T] =>
++    Generator[box->T](
++      object is GenObj[box->T]
++        let _t: T = consume t
++        fun generate(rnd: Randomness): GenerateResult[box->T] =>
++          if do_shrink then
++            (_t, Iter[box->T].repeat_value(_t))
++          else
++            _t
++          end
++      end)
++
++  fun none[T: None](): Generator[(T | None)] => Generators.unit[(T | None)](None)
++
++  fun repeatedly[T](f: {(): T^ ?} box): Generator[T] =>
++    Generator[T](
++      object is GenObj[T]
++        fun generate(rnd: Randomness): GenerateResult[T] ? =>
++          f()?
++      end)
++
++
++  fun seq_of[T, S: Seq[T] ref](
++    gen: Generator[T],
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[S]
++  =>
++    Generator[S](
++      object is GenObj[S]
++        let _gen: GenObj[T] = gen
++        fun generate(rnd: Randomness): GenerateResult[S] =>
++          let size = rnd.usize(min, max)
++
++          let result: S =
++            Iter[T^](_gen.value_iter(rnd))
++              .take(size)
++              .collect[S](S.create(size))
++
++          let shrink_iter =
++            Iter[USize](CountdownIter(size, min))
++              .map_stateful[S^]({
++                (s: USize): S^ =>
++                  Iter[T^](_gen.value_iter(rnd))
++                    .take(s)
++                    .collect[S](S.create(s))
++              })
++          (consume result, shrink_iter)
++      end)
++
++  fun iso_seq_of[T: Any #send, S: Seq[T] iso](
++    gen: Generator[T],
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[S]
++  =>
++    Generator[S](
++      object is GenObj[S]
++        let _gen: GenObj[T] = gen
++        fun generate(rnd: Randomness): GenerateResult[S] =>
++          let size = rnd.usize(min, max)
++
++          let result: S = recover iso S.create(size) end
++          let iter = _gen.value_iter(rnd)
++          var i = USize(0)
++
++          for elem in iter do
++            if i >= size then break end
++
++            result.push(consume elem)
++            i = i + 1
++          end
++          let shrink_iter =
++            Iter[USize](CountdownIter(size, min))
++              .map_stateful[S^]({
++                (s: USize): S^ =>
++                  let res = recover iso S.create(s) end
++                  let s_iter = _gen.value_iter(rnd)
++                  var j = USize(0)
++
++                  for s_elem in s_iter do
++                    if j >= s then break end
++                    res.push(consume s_elem)
++                    j = j + 1
++                  end
++                  consume res
++              })
++          (consume result, shrink_iter)
++      end
++    )
++
++  fun array_of[T](
++    gen: Generator[T],
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[Array[T]]
++  =>
++    Generators.seq_of[T, Array[T]](gen, min, max)
++
++  fun shuffled_array_gen[T](
++    gen: Generator[Array[T]])
++    : Generator[Array[T]]
++  =>
++    Generator[Array[T]](
++      object is GenObj[Array[T]]
++        let _gen: GenObj[Array[T]] = gen
++        fun generate(rnd: Randomness): GenerateResult[Array[T]] ? =>
++          (let arr, let source_shrink_iter) = _gen.generate_and_shrink(rnd)?
++            rnd.shuffle[T](arr)
++            let shrink_iter =
++              Iter[Array[T]](source_shrink_iter)
++                .map_stateful[Array[T]^]({
++                  (shrink_arr: Array[T]): Array[T]^ =>
++                     rnd.shuffle[T](shrink_arr)
++                     consume shrink_arr
++                })
++            (consume arr, shrink_iter)
++      end
++    )
++
++  fun shuffled_iter[T](array: Array[T]): Generator[Iterator[this->T!]] =>
++    Generator[Iterator[this->T!]](
++      object is GenObj[Iterator[this->T!]]
++        fun generate(rnd: Randomness): GenerateResult[Iterator[this->T!]] =>
++          let cloned = array.clone()
++          rnd.shuffle[this->T!](cloned)
++          cloned.values()
++      end
++    )
++
++  fun list_of[T](
++    gen: Generator[T],
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[List[T]]
++  =>
++    Generators.seq_of[T, List[T]](gen, min, max)
++
++  fun set_of[T: (Hashable #read & Equatable[T] #read)](
++    gen: Generator[T],
++    max: USize = 100)
++    : Generator[Set[T]]
++  =>
++    Generator[Set[T]](
++      object is GenObj[Set[T]]
++        let _gen: GenObj[T] = gen
++        fun generate(rnd: Randomness): GenerateResult[Set[T]] =>
++          let size = rnd.usize(0, max)
++          let result: Set[T] =
++            Set[T].create(size).>union(
++              Iter[T^](_gen.value_iter(rnd))
++              .take(size)
++            )
++          let shrink_iter: Iterator[Set[T]^] =
++            Iter[USize](CountdownIter(size, 0))
++              .map_stateful[Set[T]^]({
++                (s: USize): Set[T]^ =>
++                  Set[T].create(s).>union(
++                    Iter[T^](_gen.value_iter(rnd)).take(s)
++                  )
++                })
++          (consume result, shrink_iter)
++      end)
++
++  fun set_is_of[T](
++    gen: Generator[T],
++    max: USize = 100)
++    : Generator[SetIs[T]]
++  =>
++    Generator[SetIs[T]](
++      object is GenObj[SetIs[T]]
++        fun generate(rnd: Randomness): GenerateResult[SetIs[T]] =>
++          let size = rnd.usize(0, max)
++
++          let result: SetIs[T] =
++            SetIs[T].create(size).>union(
++              Iter[T^](gen.value_iter(rnd))
++                .take(size)
++            )
++          let shrink_iter: Iterator[SetIs[T]^] =
++            Iter[USize](CountdownIter(size, 0))
++              .map_stateful[SetIs[T]^]({
++                (s: USize): SetIs[T]^ =>
++                  SetIs[T].create(s).>union(
++                    Iter[T^](gen.value_iter(rnd)).take(s)
++                  )
++                })
++          (consume result, shrink_iter)
++      end)
++
++  fun map_of[K: (Hashable #read & Equatable[K] #read), V](
++    gen: Generator[(K, V)],
++    max: USize = 100)
++    : Generator[Map[K, V]]
++  =>
++    Generator[Map[K, V]](
++      object is GenObj[Map[K, V]]
++        fun generate(rnd: Randomness): GenerateResult[Map[K, V]] =>
++          let size = rnd.usize(0, max)
++
++          let result: Map[K, V] =
++            Map[K, V].create(size).>concat(
++              Iter[(K^, V^)](gen.value_iter(rnd))
++                .take(size)
++            )
++          let shrink_iter: Iterator[Map[K, V]^] =
++            Iter[USize](CountdownIter(size, 0))
++              .map_stateful[Map[K, V]^]({
++                (s: USize): Map[K, V]^ =>
++                  Map[K, V].create(s).>concat(
++                    Iter[(K^, V^)](gen.value_iter(rnd)).take(s)
++                  )
++                })
++          (consume result, shrink_iter)
++
++      end)
++
++  fun map_is_of[K, V](
++    gen: Generator[(K, V)],
++    max: USize = 100)
++    : Generator[MapIs[K, V]]
++  =>
++    Generator[MapIs[K, V]](
++      object is GenObj[MapIs[K, V]]
++        fun generate(rnd: Randomness): GenerateResult[MapIs[K, V]] =>
++          let size = rnd.usize(0, max)
++
++          let result: MapIs[K, V] =
++            MapIs[K, V].create(size).>concat(
++              Iter[(K^, V^)](gen.value_iter(rnd))
++                .take(size)
++            )
++          let shrink_iter: Iterator[MapIs[K, V]^] =
++            Iter[USize](CountdownIter(size, 0))
++              .map_stateful[MapIs[K, V]^]({
++                (s: USize): MapIs[K, V]^ =>
++                  MapIs[K, V].create(s).>concat(
++                    Iter[(K^, V^)](gen.value_iter(rnd)).take(s)
++                  )
++                })
++          (consume result, shrink_iter)
++      end)
++
++
++  fun one_of[T](xs: ReadSeq[T], do_shrink: Bool = false): Generator[box->T] =>
++    Generator[box->T](
++      object is GenObj[box->T]
++        fun generate(rnd: Randomness): GenerateResult[box->T] ? =>
++          let idx = rnd.usize(0, xs.size() - 1)
++          let res = xs(idx)?
++          if do_shrink then
++            (res, Iter[box->T].repeat_value(res))
++          else
++            res
++          end
++      end)
++
++  fun one_of_safe[T](xs: ReadSeq[T], do_shrink: Bool = false): Generator[box->T] ? =>
++    Fact(xs.size() > 0, "cannot use one_of_safe on empty ReadSeq")?
++    Generators.one_of[T](xs, do_shrink)
++
++  fun frequency[T](
++    weighted_generators: ReadSeq[WeightedGenerator[T]])
++    : Generator[T]
++  =>
++    Generator[T](
++      object is GenObj[T]
++        fun generate(rnd: Randomness): GenerateResult[T] ? =>
++          let weight_sum: USize =
++            Iter[WeightedGenerator[T]](weighted_generators.values())
++              .fold[USize](
++                0,
++                {(acc: USize, weighted_gen: WeightedGenerator[T]): USize^ =>
++                  weighted_gen._1 + acc
++                })
++          let desired_sum = rnd.usize(0, weight_sum)
++          var running_sum: USize = 0
++          var chosen: (Generator[T] | None) = None
++          for weighted_gen in weighted_generators.values() do
++            let new_sum = running_sum + weighted_gen._1
++            if ((desired_sum == 0) or ((running_sum < desired_sum) and (desired_sum <= new_sum))) then
++              chosen = weighted_gen._2
++              break
++            else
++              running_sum = new_sum
++            end
++          end
++          match chosen
++          | let x: Generator[T] box => x.generate(rnd)?
++          | None =>
++            Debug("chosen is None, desired_sum: " + desired_sum.string() +
++              "running_sum: " + running_sum.string())
++            error
++          end
++      end)
++
++  fun frequency_safe[T](
++    weighted_generators: ReadSeq[WeightedGenerator[T]])
++    : Generator[T] ?
++  =>
++    Fact(weighted_generators.size() > 0,
++     "cannot use frequency_safe on empty ReadSeq[WeightedGenerator]")?
++    Generators.frequency[T](weighted_generators)
++
++  fun zip2[T1, T2](
++    gen1: Generator[T1],
++    gen2: Generator[T2])
++    : Generator[(T1, T2)]
++  =>
++    Generator[(T1, T2)](
++      object is GenObj[(T1, T2)]
++        fun generate(rnd: Randomness): GenerateResult[(T1, T2)] ? =>
++          (let v1: T1, let shrinks1: Iterator[T1^]) =
++            gen1.generate_and_shrink(rnd)?
++          (let v2: T2, let shrinks2: Iterator[T2^]) =
++            gen2.generate_and_shrink(rnd)?
++          ((consume v1, consume v2), Iter[T1^](shrinks1).zip[T2^](shrinks2))
++
++        fun shrink(t: (T1, T2)): ValueAndShrink[(T1, T2)] =>
++          (let t1, let t2) = consume t
++          (let t11, let t1_shrunken: Iterator[T1^]) = gen1.shrink(consume t1)
++          (let t21, let t2_shrunken: Iterator[T2^]) = gen2.shrink(consume t2)
++
++          let shrunken = Iter[T1^](t1_shrunken).zip[T2^](t2_shrunken)
++          ((consume t11, consume t21), shrunken)
++      end)
++
++  fun zip3[T1, T2, T3](
++    gen1: Generator[T1],
++    gen2: Generator[T2],
++    gen3: Generator[T3])
++    : Generator[(T1, T2, T3)]
++  =>
++    Generator[(T1, T2, T3)](
++      object is GenObj[(T1, T2, T3)]
++        fun generate(rnd: Randomness): GenerateResult[(T1, T2, T3)] ? =>
++          (let v1: T1, let shrinks1: Iterator[T1^]) =
++            gen1.generate_and_shrink(rnd)?
++          (let v2: T2, let shrinks2: Iterator[T2^]) =
++            gen2.generate_and_shrink(rnd)?
++          (let v3: T3, let shrinks3: Iterator[T3^]) =
++            gen3.generate_and_shrink(rnd)?
++          ((consume v1, consume v2, consume v3),
++              Iter[T1^](shrinks1).zip2[T2^, T3^](shrinks2, shrinks3))
++
++        fun shrink(t: (T1, T2, T3)): ValueAndShrink[(T1, T2, T3)] =>
++          (let t1, let t2, let t3) = consume t
++          (let t11, let t1_shrunken: Iterator[T1^]) = gen1.shrink(consume t1)
++          (let t21, let t2_shrunken: Iterator[T2^]) = gen2.shrink(consume t2)
++          (let t31, let t3_shrunken: Iterator[T3^]) = gen3.shrink(consume t3)
++
++          let shrunken = Iter[T1^](t1_shrunken).zip2[T2^, T3^](t2_shrunken, t3_shrunken)
++          ((consume t11, consume t21, consume t31), shrunken)
++        end)
++
++  fun zip4[T1, T2, T3, T4](
++    gen1: Generator[T1],
++    gen2: Generator[T2],
++    gen3: Generator[T3],
++    gen4: Generator[T4])
++    : Generator[(T1, T2, T3, T4)]
++  =>
++    Generator[(T1, T2, T3, T4)](
++      object is GenObj[(T1, T2, T3, T4)]
++        fun generate(rnd: Randomness): GenerateResult[(T1, T2, T3, T4)] ? =>
++          (let v1: T1, let shrinks1: Iterator[T1^]) =
++            gen1.generate_and_shrink(rnd)?
++          (let v2: T2, let shrinks2: Iterator[T2^]) =
++            gen2.generate_and_shrink(rnd)?
++          (let v3: T3, let shrinks3: Iterator[T3^]) =
++            gen3.generate_and_shrink(rnd)?
++          (let v4: T4, let shrinks4: Iterator[T4^]) =
++            gen4.generate_and_shrink(rnd)?
++          ((consume v1, consume v2, consume v3, consume v4),
++              Iter[T1^](shrinks1).zip3[T2^, T3^, T4^](shrinks2, shrinks3, shrinks4))
++
++        fun shrink(t: (T1, T2, T3, T4)): ValueAndShrink[(T1, T2, T3, T4)] =>
++          (let t1, let t2, let t3, let t4) = consume t
++          (let t11, let t1_shrunken) = gen1.shrink(consume t1)
++          (let t21, let t2_shrunken) = gen2.shrink(consume t2)
++          (let t31, let t3_shrunken) = gen3.shrink(consume t3)
++          (let t41, let t4_shrunken) = gen4.shrink(consume t4)
++
++          let shrunken = Iter[T1^](t1_shrunken)
++            .zip3[T2^, T3^, T4^](t2_shrunken, t3_shrunken, t4_shrunken)
++          ((consume t11, consume t21, consume t31, consume t41), shrunken)
++        end)
++
++  fun map2[T1, T2, T3](
++    gen1: Generator[T1],
++    gen2: Generator[T2],
++    fn: {(T1, T2): T3^})
++    : Generator[T3]
++  =>
++    Generators.zip2[T1, T2](gen1, gen2)
++      .map[T3]({(arg) =>
++        (let arg1, let arg2) = consume arg
++        fn(consume arg1, consume arg2)
++      })
++
++  fun map3[T1, T2, T3, T4](
++    gen1: Generator[T1],
++    gen2: Generator[T2],
++    gen3: Generator[T3],
++    fn: {(T1, T2, T3): T4^})
++    : Generator[T4]
++  =>
++    Generators.zip3[T1, T2, T3](gen1, gen2, gen3)
++      .map[T4]({(arg) =>
++        (let arg1, let arg2, let arg3) = consume arg
++        fn(consume arg1, consume arg2, consume arg3)
++      })
++
++  fun map4[T1, T2, T3, T4, T5](
++    gen1: Generator[T1],
++    gen2: Generator[T2],
++    gen3: Generator[T3],
++    gen4: Generator[T4],
++    fn: {(T1, T2, T3, T4): T5^})
++    : Generator[T5]
++  =>
++    Generators.zip4[T1, T2, T3, T4](gen1, gen2, gen3, gen4)
++      .map[T5]({(arg) =>
++        (let arg1, let arg2, let arg3, let arg4) = consume arg
++        fn(consume arg1, consume arg2, consume arg3, consume arg4)
++      })
++
++  fun bool(): Generator[Bool] =>
++    Generator[Bool](
++      object is GenObj[Bool]
++        fun generate(rnd: Randomness): Bool =>
++          rnd.bool()
++        end)
++
++  fun _int_shrink[T: (Int & Integer[T] val)](t: T^, min: T): ValueAndShrink[T] =>
++    let relation = t.compare(min)
++    let t_copy: T = T.create(t)
++    let sub_iter =
++      object is Iterator[T^]
++        var _cur: T = t_copy
++        var _subtract: F64 = 1.0
++        var _overflow: Bool = false
++
++        fun ref _next_minuend(): T =>
++          T.from[F64](_subtract = _subtract + (0.03125 * _subtract * _subtract))
++
++        fun ref has_next(): Bool =>
++          match relation
++          | Less => (_cur < min) and not _overflow
++          | Equal => false
++          | Greater => (_cur > min) and not _overflow
++          end
++
++        fun ref next(): T^ ? =>
++          match relation
++          | Less =>
++            let minuend: T = _next_minuend()
++            let old = _cur
++            _cur = _cur + minuend
++            if old > _cur then
++              _overflow = true
++            end
++            old
++          | Equal => error
++          | Greater =>
++            let minuend: T = _next_minuend()
++            let old = _cur
++            _cur = _cur - minuend
++            if old < _cur then
++              _overflow = true
++            end
++            old
++          end
++      end
++
++    let min_iter =
++      match relation
++      | let _: (Less | Greater) => Poperator[T]([min])
++      | Equal => Poperator[T].empty()
++      end
++
++    let shrunken_iter = Iter[T].chain(
++      [
++        Iter[T^](sub_iter).skip(1)
++        min_iter
++      ].values())
++    (consume t, shrunken_iter)
++
++  fun u8(
++    min: U8 = U8.min_value(),
++    max: U8 = U8.max_value())
++    : Generator[U8]
++  =>
++    let that = this
++    Generator[U8](
++      object is GenObj[U8]
++        fun generate(rnd: Randomness): U8^ =>
++          rnd.u8(min, max)
++
++        fun shrink(u: U8): ValueAndShrink[U8] =>
++          that._int_shrink[U8](consume u, min)
++        end)
++
++  fun u16(
++    min: U16 = U16.min_value(),
++    max: U16 = U16.max_value())
++    : Generator[U16]
++  =>
++    let that = this
++    Generator[U16](
++      object is GenObj[U16]
++        fun generate(rnd: Randomness): U16^ =>
++          rnd.u16(min, max)
++
++        fun shrink(u: U16): ValueAndShrink[U16] =>
++          that._int_shrink[U16](consume u, min)
++      end)
++
++  fun u32(
++    min: U32 = U32.min_value(),
++    max: U32 = U32.max_value())
++    : Generator[U32]
++  =>
++    let that = this
++    Generator[U32](
++      object is GenObj[U32]
++        fun generate(rnd: Randomness): U32^ =>
++          rnd.u32(min, max)
++
++        fun shrink(u: U32): ValueAndShrink[U32] =>
++          that._int_shrink[U32](consume u, min)
++      end)
++
++  fun u64(
++    min: U64 = U64.min_value(),
++    max: U64 = U64.max_value())
++    : Generator[U64]
++  =>
++    let that = this
++    Generator[U64](
++      object is GenObj[U64]
++        fun generate(rnd: Randomness): U64^ =>
++          rnd.u64(min, max)
++
++        fun shrink(u: U64): ValueAndShrink[U64] =>
++          that._int_shrink[U64](consume u, min)
++      end)
++
++  fun u128(
++    min: U128 = U128.min_value(),
++    max: U128 = U128.max_value())
++    : Generator[U128]
++  =>
++    let that = this
++    Generator[U128](
++      object is GenObj[U128]
++        fun generate(rnd: Randomness): U128^ =>
++          rnd.u128(min, max)
++
++        fun shrink(u: U128): ValueAndShrink[U128] =>
++          that._int_shrink[U128](consume u, min)
++      end)
++
++  fun usize(
++    min: USize = USize.min_value(),
++    max: USize = USize.max_value())
++    : Generator[USize]
++  =>
++    let that = this
++    Generator[USize](
++      object is GenObj[USize]
++        fun generate(rnd: Randomness): GenerateResult[USize] =>
++          rnd.usize(min, max)
++
++        fun shrink(u: USize): ValueAndShrink[USize] =>
++          that._int_shrink[USize](consume u, min)
++      end)
++
++  fun ulong(
++    min: ULong = ULong.min_value(),
++    max: ULong = ULong.max_value())
++    : Generator[ULong]
++  =>
++    let that = this
++    Generator[ULong](
++      object is GenObj[ULong]
++        fun generate(rnd: Randomness): ULong^ =>
++          rnd.ulong(min, max)
++
++        fun shrink(u: ULong): ValueAndShrink[ULong] =>
++          that._int_shrink[ULong](consume u, min)
++      end)
++
++  fun i8(
++    min: I8 = I8.min_value(),
++    max: I8 = I8.max_value())
++    : Generator[I8]
++  =>
++    let that = this
++    Generator[I8](
++      object is GenObj[I8]
++        fun generate(rnd: Randomness): I8^ =>
++          rnd.i8(min, max)
++
++        fun shrink(i: I8): ValueAndShrink[I8] =>
++          that._int_shrink[I8](consume i, min)
++      end)
++
++  fun i16(
++    min: I16 = I16.min_value(),
++    max: I16 = I16.max_value())
++    : Generator[I16]
++  =>
++    let that = this
++    Generator[I16](
++      object is GenObj[I16]
++        fun generate(rnd: Randomness): I16^ =>
++          rnd.i16(min, max)
++
++        fun shrink(i: I16): ValueAndShrink[I16] =>
++          that._int_shrink[I16](consume i, min)
++      end)
++
++  fun i32(
++    min: I32 = I32.min_value(),
++    max: I32 = I32.max_value())
++    : Generator[I32]
++  =>
++    let that = this
++    Generator[I32](
++      object is GenObj[I32]
++        fun generate(rnd: Randomness): I32^ =>
++          rnd.i32(min, max)
++
++        fun shrink(i: I32): ValueAndShrink[I32] =>
++          that._int_shrink[I32](consume i, min)
++      end)
++
++  fun i64(
++    min: I64 = I64.min_value(),
++    max: I64 = I64.max_value())
++    : Generator[I64]
++  =>
++    let that = this
++    Generator[I64](
++      object is GenObj[I64]
++        fun generate(rnd: Randomness): I64^ =>
++          rnd.i64(min, max)
++
++        fun shrink(i: I64): ValueAndShrink[I64] =>
++          that._int_shrink[I64](consume i, min)
++      end)
++
++  fun i128(
++    min: I128 = I128.min_value(),
++    max: I128 = I128.max_value())
++    : Generator[I128]
++  =>
++    let that = this
++    Generator[I128](
++      object is GenObj[I128]
++        fun generate(rnd: Randomness): I128^ =>
++          rnd.i128(min, max)
++
++        fun shrink(i: I128): ValueAndShrink[I128] =>
++          that._int_shrink[I128](consume i, min)
++      end)
++
++  fun ilong(
++    min: ILong = ILong.min_value(),
++    max: ILong = ILong.max_value())
++    : Generator[ILong]
++    =>
++    let that = this
++    Generator[ILong](
++      object is GenObj[ILong]
++        fun generate(rnd: Randomness): ILong^ =>
++          rnd.ilong(min, max)
++
++        fun shrink(i: ILong): ValueAndShrink[ILong] =>
++          that._int_shrink[ILong](consume i, min)
++      end)
++
++  fun isize(
++    min: ISize = ISize.min_value(),
++    max: ISize = ISize.max_value())
++    : Generator[ISize]
++  =>
++    let that = this
++    Generator[ISize](
++      object is GenObj[ISize]
++        fun generate(rnd: Randomness): ISize^ =>
++          rnd.isize(min, max)
++
++        fun shrink(i: ISize): ValueAndShrink[ISize] =>
++          that._int_shrink[ISize](consume i, min)
++      end)
++
++
++  fun byte_string(
++    gen: Generator[U8],
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[String]
++  =>
++    Generator[String](
++      object is GenObj[String]
++        fun generate(rnd: Randomness): GenerateResult[String] =>
++          let size = rnd.usize(min, max)
++          let gen_iter = Iter[U8^](gen.value_iter(rnd))
++            .take(size)
++          let arr: Array[U8] iso = recover Array[U8](size) end
++          for b in gen_iter do
++            arr.push(b)
++          end
++          String.from_iso_array(consume arr)
++
++        fun shrink(s: String): ValueAndShrink[String] =>
++          var str: String = s.trim(0, s.size()-1)
++          let shorten_iter: Iterator[String^] =
++            object is Iterator[String^]
++              fun ref has_next(): Bool => str.size() > min
++              fun ref next(): String^ =>
++                str = str.trim(0, str.size()-1)
++            end
++          let min_iter =
++            if s.size() > min then
++              Poperator[String]([s.trim(0, min)])
++            else
++              Poperator[String].empty()
++            end
++          let shrink_iter =
++            Iter[String^].chain([
++              shorten_iter
++              min_iter
++            ].values())
++          (consume s, shrink_iter)
++      end)
++
++  fun ascii(
++    min: USize = 0,
++    max: USize = 100,
++    range: ASCIIRange = ASCIIAll)
++    : Generator[String]
++  =>
++    let range_bytes = range.apply()
++    let fallback = U8(0)
++    let range_bytes_gen = usize(0, range_bytes.size()-1)
++      .map[U8]({(size) =>
++        try
++          range_bytes(size)?
++        else
++          fallback
++        end })
++    byte_string(range_bytes_gen, min, max)
++
++  fun ascii_printable(
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[String]
++  =>
++    ascii(min, max, ASCIIPrintable)
++
++  fun ascii_numeric(
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[String]
++  =>
++    ascii(min, max, ASCIIDigits)
++
++  fun ascii_letters(
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[String]
++  =>
++    ascii(min, max, ASCIILetters)
++
++  fun utf32_codepoint_string(
++    gen: Generator[U32],
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[String]
++  =>
++    Generator[String](
++      object is GenObj[String]
++        fun generate(rnd: Randomness): GenerateResult[String] =>
++          let size = rnd.usize(min, max)
++          let gen_iter = Iter[U32^](gen.value_iter(rnd))
++            .filter({(cp) =>
++              (cp <= 0xD7FF) or (cp >= 0xE000) })
++            .take(size)
++          let s: String iso = recover String(size) end
++          for code_point in gen_iter do
++            s.push_utf32(code_point)
++          end
++          s
++
++        fun shrink(s: String): ValueAndShrink[String] =>
++          var shrink_base = s
++          let s_len = s.codepoints()
++          let shrink_iter: Iterator[String^] =
++            if s_len > min then
++              Iter[String^].repeat_value(consume shrink_base)
++                .map_stateful[String^](
++                  object
++                    var len: USize = s_len - 1
++                    fun ref apply(str: String): String =>
++                      Generators._trim_codepoints(str, len = len - 1)
++                  end
++                ).take(s_len - min)
++            else
++              Poperator[String].empty()
++            end
++          (consume s, shrink_iter)
++      end)
++
++  fun _trim_codepoints(s: String, trim_to: USize): String =>
++    recover val
++      Iter[U32](s.runes())
++        .take(trim_to)
++        .fold[String ref](
++          String.create(trim_to),
++          {(acc, cp) => acc.>push_utf32(cp) })
++    end
++
++  fun unicode(
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[String]
++  =>
++    let range_1 = u32(0x0, 0xD7FF)
++    let range_1_size: USize = 0xD7FF
++    let range_2 = u32(0xE000, 0x10FFFF)
++    let range_2_size = U32(0x10FFFF - 0xE000).usize()
++
++    let code_point_gen =
++      frequency[U32]([
++        (range_1_size, range_1)
++        (range_2_size, range_2)
++      ])
++    utf32_codepoint_string(code_point_gen, min, max)
++
++  fun unicode_bmp(
++    min: USize = 0,
++    max: USize = 100)
++    : Generator[String]
++  =>
++    let range_1 = u32(0x0, 0xD7FF)
++    let range_1_size: USize = 0xD7FF
++    let range_2 = u32(0xE000, 0xFFFF)
++    let range_2_size = U32(0xFFFF - 0xE000).usize()
++
++    let code_point_gen =
++      frequency[U32]([
++        (range_1_size, range_1)
++        (range_2_size, range_2)
++      ])
++    utf32_codepoint_string(code_point_gen, min, max)
+diff --git a/packages/ponycheck/int_properties.pony b/packages/ponycheck/int_properties.pony
+new file mode 100644
+index 00000000..c3dc25a6
+--- /dev/null
++++ b/packages/ponycheck/int_properties.pony
+@@ -0,0 +1,125 @@
++primitive _StringifyIntArg
++  fun apply(choice: U8, int: U128): String iso ^ =>
++   let num =
++     match choice % 14
++     | 0 => "U8(" + int.u8().string() + ")"
++     | 1 => "U16(" + int.u16().string() + ")"
++     | 2 => "U32(" + int.u32().string() + ")"
++     | 3 => "U64(" + int.u64().string() + ")"
++     | 4 => "ULong(" + int.ulong().string() + ")"
++     | 5 => "USize(" + int.usize().string() + ")"
++     | 6 => "U128(" + int.string() + ")"
++     | 7 => "I8(" + int.i8().string() + ")"
++     | 8 => "I16(" + int.i16().string() + ")"
++     | 9 => "I32(" + int.i32().string() + ")"
++     | 10 => "I64(" + int.i64().string() + ")"
++     | 11 => "ILong(" + int.ilong().string() + ")"
++     | 12 => "ISize(" + int.isize().string() + ")"
++     | 13 => "I128(" + int.i128().string() + ")"
++     else
++       ""
++     end
++   num.clone()
++
++class IntPropertySample is Stringable
++  let choice: U8
++  let int: U128
++
++  new create(choice': U8, int': U128) =>
++    choice = choice'
++    int = int'
++
++  fun string(): String iso^ =>
++    _StringifyIntArg(choice, int)
++
++type IntUnitTest is Property1UnitTest[IntPropertySample]
++
++trait IntProperty is Property1[IntPropertySample]
++  """
++  A property implementation for conveniently evaluating properties
++  for all Pony Integer types at once.
++  """
++  fun gen(): Generator[IntPropertySample] =>
++    Generators.map2[U8, U128, IntPropertySample](
++      Generators.u8(),
++      Generators.u128(),
++      {(choice, int) => IntPropertySample(choice, int) })
++
++  fun ref property(sample: IntPropertySample, h: PropertyHelper) ? =>
++    let x = sample.int
++    match sample.choice % 14
++    | 0 => int_property[U8](x.u8(), h)?
++    | 1 => int_property[U16](x.u16(), h)?
++    | 2 => int_property[U32](x.u32(), h)?
++    | 3 => int_property[U64](x.u64(), h)?
++    | 4 => int_property[ULong](x.ulong(), h)?
++    | 5 => int_property[USize](x.usize(), h)?
++    | 6 => int_property[U128](x, h)?
++    | 7 => int_property[I8](x.i8(), h)?
++    | 8 => int_property[I16](x.i16(), h)?
++    | 9 => int_property[I32](x.i32(), h)?
++    | 10 => int_property[I64](x.i64(), h)?
++    | 11 => int_property[ILong](x.ilong(), h)?
++    | 12 => int_property[ISize](x.isize(), h)?
++    | 13 => int_property[I128](x.i128(), h)?
++    else
++      h.log("rem is broken")
++      error
++    end
++
++  fun ref int_property[T: (Int & Integer[T] val)](x: T, h: PropertyHelper)?
++
++class IntPairPropertySample is Stringable
++  let choice: U8
++  let int1: U128
++  let int2: U128
++
++  new create(choice': U8, int1': U128, int2': U128) =>
++    choice = choice'
++    int1 = int1'
++    int2 = int2'
++
++  fun string(): String iso^ =>
++    let num1: String val = _StringifyIntArg(choice, int1)
++    let num2: String val = _StringifyIntArg(choice, int2)
++    "".join(["("; num1; ", "; num2; ")"].values())
++
++
++type IntPairUnitTest is Property1UnitTest[IntPairPropertySample]
++
++trait IntPairProperty is Property1[IntPairPropertySample]
++  """
++  A property implementation for conveniently evaluating properties
++  for pairs of integers of all Pony integer types at once.
++  """
++  fun gen(): Generator[IntPairPropertySample] =>
++    Generators.map3[U8, U128, U128, IntPairPropertySample](
++      Generators.u8(),
++      Generators.u128(),
++      Generators.u128(),
++      {(choice, int1, int2) => IntPairPropertySample(choice, int1, int2) })
++
++  fun ref property(sample: IntPairPropertySample, h: PropertyHelper) ? =>
++    let x = sample.int1
++    let y = sample.int2
++    match sample.choice % 14
++    | 0 => int_property[U8](x.u8(), y.u8(), h)?
++    | 1 => int_property[U16](x.u16(), y.u16(), h)?
++    | 2 => int_property[U32](x.u32(), y.u32(), h)?
++    | 3 => int_property[U64](x.u64(), y.u64(), h)?
++    | 4 => int_property[ULong](x.ulong(), y.ulong(), h)?
++    | 5 => int_property[USize](x.usize(), y.usize(), h)?
++    | 6 => int_property[U128](x, y, h)?
++    | 7 => int_property[I8](x.i8(), y.i8(), h)?
++    | 8 => int_property[I16](x.i16(), y.i16(), h)?
++    | 9 => int_property[I32](x.i32(), y.i32(), h)?
++    | 10 => int_property[I64](x.i64(), y.i64(), h)?
++    | 11 => int_property[ILong](x.ilong(), y.ilong(), h)?
++    | 12 => int_property[ISize](x.isize(), y.isize(), h)?
++    | 13 => int_property[I128](x.i128(), y.i128(), h)?
++    else
++      h.log("rem is broken")
++      error
++    end
++
++  fun ref int_property[T: (Int & Integer[T] val)](x: T, y: T, h: PropertyHelper)?
+diff --git a/packages/ponycheck/ponycheck.pony b/packages/ponycheck/ponycheck.pony
+new file mode 100644
+index 00000000..1e8d776c
+--- /dev/null
++++ b/packages/ponycheck/ponycheck.pony
+@@ -0,0 +1,131 @@
++"""
++Ponycheck is a library for property based testing
++with tight integration into ponytest.
++
++## Property Based Testing
++
++In _traditional_ unit testing the developer specifies one or more input
++examples manually for the class or system under test and assert on certain
++output conditions. The difficulty here is to find enough examples to cover
++all branches and cases of the class or system under test.
++
++In property based testing the developer defines a property, a kind of predicate
++for the class or system under test that should hold for all kinds or just a
++subset of possible input values. The property based testing engine then
++generates a big number of random input values and checks if the property holds
++for all of them. The developer only needs to specify the possible set of input values
++using a Generator.
++
++This testing technique is great for finding edge cases that would easily go unnoticed
++with manually constructed test samples. In general it can lead to much higher
++coverage than traditional unit-testing, with much less code to write.
++
++## How Ponycheck implements Property Based Testing
++
++A property based test in ponycheck consists of the following:
++
++* A name (for integration into ponytest mostly)
++* One or more generators, depending on how your property is layed out.
++  There are tons of them defined on primitive
++  [Generators](ponycheck-Generators.md).
++* A `property` method that asserts a certain property for each sample
++  generated by the [Generator(s)](ponycheck-Generator.md) with the help of
++  [PropertyHelper](ponycheck-PropertyHelper.md) which tries to expose a similar API
++  as [TestHelper](ponytest-TestHelper.md).
++* Optionally, the method ``params()`` can be used to configure how ponycheck executes
++  the property by specifying a custom [PropertyParams](ponycheck-PropertyParams.md) object.
++
++The classical list-reverse example:
++
++```pony
++use "collections"
++use "ponycheck"
++
++class ListReverseProperty is Property1[List[USize]]
++  fun name(): String => "list/reverse"
++
++  fun gen(): Generator[List[USize]] =>
++    Generators.list_of[USize](Generators.usize())
++
++  fun property(arg1: List[USize], ph: PropertyHelper) =>
++    ph.array_eq[USize](arg1, arg1.reverse().reverse())
++```
++
++## Integration into Ponytest
++
++There are two ways of integrating a [Property](ponycheck-Property1.md) into
++[ponytest](ponytest--index.md):
++
++1. In order to pass your Property to the ponytest engine, you need to wrap it inside a [Property1UnitTest](ponycheck-Property1UnitTest.md).
++
++```pony
++   actor Main is TestList
++     new create(env: Env) => PonyTest(env, this)
++
++     fun tag tests(test: PonyTest) =>
++       test(Property1UnitTest[String](MyStringProperty))
++```
++
++2. Run as many [Properties](ponycheck-Property1.md) as you wish inside one ponytest
++   [UnitTest](ponytest-UnitTest.md) using the convenience function
++   [Ponycheck.for_all](ponycheck-Ponycheck.md#for_all) providing a
++   [Generator](ponycheck-Generator), the [TestHelper](ponytest-TestHelper.md) and the
++   actual property function. (Note that the property function is supplied in a
++   second application of the result to `for_all`.)
++
++```pony
++   class ListReversePropertyWithinAUnitTest is UnitTest
++     fun name(): String => "list/reverse/forall"
++
++     fun apply(h: TestHelper) =>
++       let gen = recover val Generators.list_of[USize](Generators.usize()) end
++       Ponycheck.for_all[List[USize]](gen, h)(
++         {(sample, ph) =>
++           ph.array_eq[Usize](arg1, arg1.reverse().reverse())
++         })
++       // ... possibly more properties, using ``Ponycheck.for_all``
++```
++
++Independent of how you integrate with [ponytest](ponytest--index.md),
++the ponycheck machinery will instantiate the provided Generator, and will
++execute it for a configurable number of samples.
++
++If the property fails using an assertion method of
++[PropertyHelper](ponycheck-PropertyHelper.md),
++the failed example will be shrunken by the generator
++to obtain a smaller and more informative, still failing, sample
++for reporting.
++
++"""
++use "ponytest"
++
++primitive Ponycheck
++  fun for_all[T](gen: Generator[T] val, h: TestHelper): ForAll[T] =>
++    ForAll[T](gen, h)
++
++  fun for_all2[T1, T2](
++    gen1: Generator[T1] val,
++    gen2: Generator[T2] val,
++    h: TestHelper)
++    : ForAll2[T1, T2]
++  =>
++    ForAll2[T1, T2](gen1, gen2, h)
++
++  fun for_all3[T1, T2, T3](
++    gen1: Generator[T1] val,
++    gen2: Generator[T2] val,
++    gen3: Generator[T3] val,
++    h: TestHelper)
++    : ForAll3[T1, T2, T3]
++  =>
++    ForAll3[T1, T2, T3](gen1, gen2, gen3, h)
++
++  fun for_all4[T1, T2, T3, T4](
++    gen1: Generator[T1] val,
++    gen2: Generator[T2] val,
++    gen3: Generator[T3] val,
++    gen4: Generator[T4] val,
++    h: TestHelper)
++    : ForAll4[T1, T2, T3, T4]
++  =>
++    ForAll4[T1, T2, T3, T4](gen1, gen2, gen3, gen4, h)
+diff --git a/packages/ponycheck/poperator.pony b/packages/ponycheck/poperator.pony
+new file mode 100644
+index 00000000..36b7ca32
+--- /dev/null
++++ b/packages/ponycheck/poperator.pony
+@@ -0,0 +1,22 @@
++class ref Poperator[T] is Iterator[T^]
++  """
++  iterate over a [Seq](builtin-Seq.md) descructively by `pop`ing its elements
++
++  once `has_next()` returns `false`, the [Seq](builtin-Seq.md) is empty.
++
++  Nominee for the annual pony class-naming awards.
++  """
++
++  let _seq: Seq[T]
++
++  new create(seq: Seq[T]) =>
++    _seq = seq
++
++  new empty() =>
++    _seq = Array[T](0)
++
++  fun ref has_next(): Bool =>
++    _seq.size() > 0
++
++  fun ref next(): T^ ? =>
++    _seq.pop()?
+diff --git a/packages/ponycheck/property.pony b/packages/ponycheck/property.pony
+new file mode 100644
+index 00000000..8059fbec
+--- /dev/null
++++ b/packages/ponycheck/property.pony
+@@ -0,0 +1,108 @@
++use "time"
++
++class val PropertyParams is Stringable
++  """
++  Parameters to control Property Execution
++  """
++  let seed: U64
++  let num_samples: USize
++  let max_shrink_rounds: USize
++  let max_generator_retries: USize
++  let timeout: U64
++  let async: Bool
++
++  new val create(
++    num_samples': USize = 100,
++    seed': U64 = Time.millis(),
++    max_shrink_rounds': USize = 10,
++    max_generator_retries': USize = 5,
++    timeout': U64 = 60_000_000_000,
++    async': Bool = false)
++  =>
++    num_samples = num_samples'
++    seed = seed'
++    max_shrink_rounds = max_shrink_rounds'
++    max_generator_retries = max_generator_retries'
++    timeout = timeout'
++    async = async'
++
++  fun string(): String iso^ =>
++    recover
++      String()
++        .>append("Params(seed=")
++        .>append(seed.string())
++        .>append(")")
++    end
++
++trait Property1[T]
++  """
++  A property that consumes 1 argument of type `T`.
++  """
++  fun name(): String
++
++  fun params(): PropertyParams =>
++    PropertyParams
++
++  fun gen(): Generator[T]
++
++  fun ref property(arg1: T, h: PropertyHelper) ?
++
++trait Property2[T1, T2] is Property1[(T1, T2)]
++
++  fun gen1(): Generator[T1]
++
++  fun gen2(): Generator[T2]
++
++  fun gen(): Generator[(T1, T2)] =>
++    Generators.zip2[T1, T2](
++      gen1(),
++      gen2())
++
++  fun ref property(arg1: (T1, T2), h: PropertyHelper) ? =>
++    (let x, let y) = consume arg1
++    property2(consume x, consume y, h)?
++
++  fun ref property2(arg1: T1, arg2: T2, h: PropertyHelper) ?
++
++trait Property3[T1, T2, T3] is Property1[(T1, T2, T3)]
++
++  fun gen1(): Generator[T1]
++
++  fun gen2(): Generator[T2]
++
++  fun gen3(): Generator[T3]
++
++  fun gen(): Generator[(T1, T2, T3)] =>
++    Generators.zip3[T1, T2, T3](
++      gen1(),
++      gen2(),
++      gen3())
++
++  fun ref property(arg1: (T1, T2, T3), h: PropertyHelper) ? =>
++    (let x, let y, let z) = consume arg1
++    property3(consume x, consume y, consume z, h)?
++
++  fun ref property3(arg1: T1, arg2: T2, arg3: T3, h: PropertyHelper) ?
++
++trait Property4[T1, T2, T3, T4] is Property1[(T1, T2, T3, T4)]
++
++  fun gen1(): Generator[T1]
++
++  fun gen2(): Generator[T2]
++
++  fun gen3(): Generator[T3]
++
++  fun gen4(): Generator[T4]
++
++  fun gen(): Generator[(T1, T2, T3, T4)] =>
++    Generators.zip4[T1, T2, T3, T4](
++      gen1(),
++      gen2(),
++      gen3(),
++      gen4())
++
++  fun ref property(arg1: (T1, T2, T3, T4), h: PropertyHelper) ? =>
++    (let x1, let x2, let x3, let x4) = consume arg1
++    property4(consume x1, consume x2, consume x3, consume x4, h)?
++
++  fun ref property4(arg1: T1, arg2: T2, arg3: T3, arg4: T4, h: PropertyHelper) ?
+diff --git a/packages/ponycheck/property_helper.pony b/packages/ponycheck/property_helper.pony
+new file mode 100644
+index 00000000..c3f40a71
+--- /dev/null
++++ b/packages/ponycheck/property_helper.pony
+@@ -0,0 +1,310 @@
++interface val _PropertyRunNotify
++  fun apply(success: Bool)
++
++interface tag _IPropertyRunner
++  be expect_action(name: String)
++
++  be complete_action(name: String, ph: PropertyHelper)
++
++  be fail_action(name: String, ph: PropertyHelper)
++
++  be dispose_when_done(disposable: DisposableActor)
++
++  be log(msg: String, verbose: Bool = false)
++
++
++class val PropertyHelper
++  """
++  Helper for ponycheck properties.
++  """
++  let _runner: _IPropertyRunner
++  let _run_notify: _PropertyRunNotify
++  let _run_context: String
++
++  let env: Env
++
++  new val create(env': Env,
++                 runner: _IPropertyRunner,
++                 run_notify: _PropertyRunNotify,
++                 run_context: String) =>
++    env = env'
++    _runner = runner
++    _run_notify = run_notify
++    _run_context = run_context
++
++  fun log(msg: String, verbose: Bool = false) =>
++    _runner.log(msg, verbose)
++
++  fun fail(msg: String = "Test failed") =>
++    _fail(msg)
++
++  fun assert_false(
++    predicate: Bool,
++    msg: String val = "",
++    loc: SourceLoc val = __loc)
++    : Bool val
++  =>
++    if predicate then
++      _fail(_fmt_msg(loc, "Assert false failed. " + msg))
++      return false
++    end
++    _runner.log(_fmt_msg(loc, "Assert false passed. " + msg))
++    true
++
++  fun assert_true(
++    predicate: Bool,
++    msg: String val = "",
++    loc: SourceLoc val = __loc)
++    : Bool val
++  =>
++    if not predicate then
++      _fail(_fmt_msg(loc, "Assert true failed. " + msg))
++      return false
++    end
++    _runner.log(_fmt_msg(loc, "Assert true passed. " + msg))
++    true
++
++  fun assert_error(
++    test: {(): None ?} box,
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    try
++      test()?
++      _fail(_fmt_msg(loc, "Assert error failed. " + msg))
++      false
++    else
++      _runner.log(_fmt_msg(loc, "Assert error passed. " + msg), true)
++      true
++    end
++
++  fun assert_no_error(
++    test: {(): None ?} box,
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    try
++      test()?
++      _runner.log(_fmt_msg(loc, "Assert no error passed. " + msg), true)
++      true
++    else
++      _fail(_fmt_msg(loc, "Assert no error failed. " + msg))
++      false
++    end
++
++  fun assert_is[A](
++    expect: A,
++    actual: A,
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    if expect isnt actual then
++      _fail(_fmt_msg(loc, "Assert is failed. " + msg
++        + " Expected (" + (digestof expect).string() + ") is ("
++        + (digestof actual).string() + ")"))
++      return false
++    end
++
++    _runner.log(
++      _fmt_msg(loc, "Assert is passed. " + msg
++        + " Got (" + (digestof expect).string() + ") is ("
++        + (digestof actual).string() + ")"),
++      true)
++    true
++
++  fun assert_isnt[A](
++    not_expect: A,
++    actual: A,
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    if not_expect is actual then
++      _fail(_fmt_msg(loc, "Assert isn't failed. " + msg
++        + " Expected (" + (digestof not_expect).string() + ") isnt ("
++        + (digestof actual).string() + ")"))
++      return false
++    end
++
++    _runner.log(
++      _fmt_msg(loc, "Assert isn't passed. " + msg
++        + " Got (" + (digestof not_expect).string() + ") isnt ("
++        + (digestof actual).string() + ")"),
++      true)
++    true
++
++  fun assert_eq[A: (Equatable[A] #read & Stringable #read)](
++    expect: A,
++    actual: A,
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    if expect != actual then
++      _fail(_fmt_msg(loc,  "Assert eq failed. " + msg
++        + " Expected (" + expect.string() + ") == (" + actual.string() + ")"))
++      return false
++    end
++
++    _runner.log(_fmt_msg(loc, "Assert eq passed. " + msg
++      + " Got (" + expect.string() + ") == (" + actual.string() + ")"),
++      true)
++    true
++
++  fun assert_ne[A: (Equatable[A] #read & Stringable #read)](
++    not_expect: A,
++    actual: A,
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    if not_expect == actual then
++      _fail(_fmt_msg(loc, "Assert ne failed. " + msg
++        + " Expected (" + not_expect.string() + ") != (" + actual.string()
++        + ")"))
++      return false
++    end
++
++    _runner.log(
++      _fmt_msg(loc, "Assert ne passed. " + msg
++        + " Got (" + not_expect.string() + ") != (" + actual.string() + ")"),
++      true)
++    true
++
++  fun assert_array_eq[A: (Equatable[A] #read & Stringable #read)](
++    expect: ReadSeq[A],
++    actual: ReadSeq[A],
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    var ok = true
++
++    if expect.size() != actual.size() then
++      ok = false
++    else
++      try
++        var i: USize = 0
++        while i < expect.size() do
++          if expect(i)? != actual(i)? then
++            ok = false
++            break
++          end
++
++          i = i + 1
++        end
++      else
++        ok = false
++      end
++    end
++
++    if not ok then
++      _fail(_fmt_msg(loc, "Assert EQ failed. " + msg + " Expected ("
++        + _print_array[A](expect) + ") == (" + _print_array[A](actual) + ")"))
++      return false
++    end
++
++    _runner.log(
++      _fmt_msg(loc, "Assert EQ passed. " + msg + " Got ("
++        + _print_array[A](expect) + ") == (" + _print_array[A](actual) + ")"),
++      true)
++    true
++
++  fun assert_array_eq_unordered[A: (Equatable[A] #read & Stringable #read)](
++    expect: ReadSeq[A],
++    actual: ReadSeq[A],
++    msg: String = "",
++    loc: SourceLoc = __loc)
++    : Bool
++  =>
++    try
++      let missing = Array[box->A]
++      let consumed = Array[Bool].init(false, actual.size())
++      for e in expect.values() do
++        var found = false
++        var i: USize = -1
++        for a in actual.values() do
++          i = i + 1
++          if consumed(i)? then continue end
++          if e == a then
++            consumed.update(i, true)?
++            found = true
++            break
++          end
++        end
++        if not found then
++          missing.push(e)
++        end
++      end
++
++      let extra = Array[box->A]
++      for (i, c) in consumed.pairs() do
++        if not c then extra.push(actual(i)?) end
++      end
++
++      if (extra.size() != 0) or (missing.size() != 0) then
++        _fail(
++          _fmt_msg(loc, "Assert EQ_UNORDERED failed. " + msg
++            + " Expected (" + _print_array[A](expect) + ") == ("
++            + _print_array[A](actual) + "):"
++            + "\nMissing: " + _print_array[box->A](missing)
++            + "\nExtra: " + _print_array[box->A](extra)
++          )
++        )
++        return false
++      end
++      _runner.log(
++        _fmt_msg(
++          loc,
++          "Assert EQ_UNORDERED passed. "
++          + msg
++          + " Got ("
++          + _print_array[A](expect)
++          + ") == ("
++          + _print_array[A](actual)
++          + ")"
++        ),
++        true
++      )
++      true
++    else
++      _fail("Assert EQ_UNORDERED failed from an internal error.")
++      false
++    end
++
++  fun _print_array[A: Stringable #read](array: ReadSeq[A]): String =>
++    "[len=" + array.size().string() + ": " + ", ".join(array.values()) + "]"
++
++
++  fun expect_action(name: String) =>
++    _runner.expect_action(name)
++
++  fun val complete_action(name: String) =>
++    _runner.complete_action(name, this)
++
++  fun val fail_action(name: String) =>
++    _runner.fail_action(name, this)
++
++  fun complete(success: Bool) =>
++    _run_notify.apply(success)
++
++  fun dispose_when_done(disposable: DisposableActor) =>
++    _runner.dispose_when_done(disposable)
++
++  fun _fail(msg: String) =>
++    _runner.log(msg)
++    _run_notify.apply(false)
++
++  fun _fmt_msg(loc: SourceLoc, msg: String): String =>
++    let msg_prefix = _run_context + " " + _format_loc(loc)
++    if msg.size() > 0 then
++      msg_prefix + ": " + msg
++    else
++      msg_prefix
++    end
++
++  fun _format_loc(loc: SourceLoc): String =>
++    loc.file() + ":" + loc.line().string()
+diff --git a/packages/ponycheck/property_runner.pony b/packages/ponycheck/property_runner.pony
+new file mode 100644
+index 00000000..1533aa5b
+--- /dev/null
++++ b/packages/ponycheck/property_runner.pony
+@@ -0,0 +1,288 @@
++use "debug"
++use "collections"
++
++interface val PropertyLogger
++  fun log(msg: String, verbose: Bool = false)
++
++interface val PropertyResultNotify
++  fun fail(msg: String)
++
++  fun complete(success: Bool)
++
++actor PropertyRunner[T]
++  """
++  Actor executing a Property1 implementation
++  in a way that allows garbage collection between single
++  property executions, because it uses recursive behaviours
++  for looping.
++  """
++  let _prop1: Property1[T]
++  let _params: PropertyParams
++  let _rnd: Randomness
++  let _notify: PropertyResultNotify
++  let _gen: Generator[T]
++  let _logger: PropertyLogger
++  let _env: Env
++
++  let _expected_actions: Set[String] = Set[String]
++  let _disposables: Array[DisposableActor] = Array[DisposableActor]
++  var _shrinker: Iterator[T^] = _EmptyIterator[T^]
++  var _sample_repr: String = ""
++  var _pass: Bool = true
++
++  var _expected_round: USize = 0
++
++  new create(
++    p1: Property1[T] iso,
++    params: PropertyParams,
++    notify: PropertyResultNotify,
++    logger: PropertyLogger,
++    env: Env
++  ) =>
++    _env = env
++    _prop1 = consume p1
++    _params = params
++    _logger = logger
++    _notify = notify
++    _rnd = Randomness(_params.seed)
++    _gen = _prop1.gen()
++
++
++  be complete_run(round: USize, success: Bool) =>
++    if _expected_round != round then
++      _logger.log("unexpected complete msg for run " + round.string() +
++        ". expecting run " + _expected_round.string(), true)
++      return
++    else
++      _expected_round = round + 1
++    end
++
++    _pass = success
++
++    if not success then
++      if not _shrinker.has_next() then
++        _logger.log("no shrinks available")
++        fail(_sample_repr, 0)
++      else
++        _expected_round = 0
++        do_shrink(_sample_repr)
++      end
++    else
++      run(round + 1)
++    end
++
++  fun ref _generate_with_retry(max_retries: USize): ValueAndShrink[T] ? =>
++    var tries: USize = 0
++    repeat
++      try
++        return _gen.generate_and_shrink(_rnd)?
++      else
++        tries = tries + 1
++      end
++    until (tries > max_retries) end
++
++    error
++
++  be run(round: USize = 0) =>
++    if round >= _params.num_samples then
++      complete()
++      return
++    end
++
++    (var sample, _shrinker) =
++      try
++        _generate_with_retry(_params.max_generator_retries)?
++      else
++        _notify.fail(
++          "Unable to generate samples from the given iterator, tried " +
++          _params.max_generator_retries.string() + " times." +
++          " (round: " + round.string() + ")")
++        _notify.complete(false)
++        return
++      end
++
++
++    (sample, _sample_repr) = _Stringify.apply[T](consume sample)
++    let run_notify = recover val this~complete_run(round) end
++    let helper = PropertyHelper(_env, this, run_notify, _params.string() + " Run(" +
++    round.string() + ")")
++    _pass = true
++
++    try
++      _prop1.property(consume sample, helper)?
++    else
++      fail(_sample_repr, 0 where err=true)
++      return
++    end
++    _run_finished(round)
++
++  be _run_finished(round: USize) =>
++    if not _params.async and _pass then
++      complete_run(round, true)
++    end
++
++  be complete_shrink(failed_repr: String, last_repr: String, shrink_round: USize, success: Bool) =>
++
++    if _expected_round != shrink_round then
++      _logger.log("unexpected complete msg for shrink run " + shrink_round.string() +
++        ". expecting run " + _expected_round.string(), true)
++      return
++    else
++      _expected_round = shrink_round + 1
++    end
++
++    _pass = success
++
++    if success then
++      fail(failed_repr, shrink_round)
++
++    else
++      do_shrink(last_repr, shrink_round + 1)
++    end
++
++  be do_shrink(failed_repr: String, shrink_round: USize = 0) =>
++
++    if shrink_round == _params.max_shrink_rounds then
++      fail(failed_repr, shrink_round)
++      return
++    end
++
++    (let shrink, let current_repr) =
++      try
++        _Stringify.apply[T](_shrinker.next()?)
++      else
++        fail(failed_repr, shrink_round)
++        return
++      end
++    let run_notify =
++      recover val
++        this~complete_shrink(failed_repr, current_repr, shrink_round)
++      end
++    let helper = PropertyHelper(
++      _env,
++      this,
++      run_notify,
++      _params.string() + " Shrink(" + shrink_round.string() + ")")
++    _pass = true
++
++    try
++      _prop1.property(consume shrink, helper)?
++    else
++      fail(current_repr, shrink_round where err=true)
++      return
++    end
++    _shrink_finished(failed_repr, current_repr, shrink_round)
++
++  be _shrink_finished(
++    failed_repr: String,
++    current_repr: String,
++    shrink_round: USize)
++  =>
++    if not _params.async and _pass then
++      complete_shrink(failed_repr, current_repr, shrink_round, true)
++    end
++
++  be expect_action(name: String) =>
++    _logger.log("Action expected: " + name)
++    _expected_actions.set(name)
++
++  be complete_action(name: String, ph: PropertyHelper) =>
++    _logger.log("Action completed: " + name)
++    _finish_action(name, true, ph)
++
++  be fail_action(name: String, ph: PropertyHelper) =>
++    _logger.log("Action failed: " + name)
++    _finish_action(name, false, ph)
++
++  fun ref _finish_action(name: String, success: Bool, ph: PropertyHelper) =>
++    try
++      _expected_actions.extract(name)?
++
++      if not success then
++        ph.complete(false)
++      elseif _expected_actions.size() == 0 then
++        ph.complete(true)
++      end
++    else
++      _logger.log("action '" + name + "' finished unexpectedly. ignoring.")
++    end
++
++  be dispose_when_done(disposable: DisposableActor) =>
++    _disposables.push(disposable)
++
++  be dispose() =>
++    _dispose()
++
++  fun ref _dispose() =>
++    for disposable in Poperator[DisposableActor](_disposables) do
++      disposable.dispose()
++    end
++
++  be log(msg: String, verbose: Bool = false) =>
++    _logger.log(msg, verbose)
++
++  fun ref complete() =>
++    _notify.complete(true)
++
++  fun ref fail(repr: String, rounds: USize = 0, err: Bool = false) =>
++    if err then
++      _report_error(repr, rounds)
++    else
++      _report_failed(repr, rounds)
++    end
++    _notify.complete(false)
++
++  fun _report_error(sample_repr: String,
++    shrink_rounds: USize = 0,
++    loc: SourceLoc = __loc) =>
++    _notify.fail(
++      "Property errored for sample "
++        + sample_repr
++        + " (after "
++        + shrink_rounds.string()
++        + " shrinks)"
++    )
++
++  fun _report_failed(sample_repr: String,
++    shrink_rounds: USize = 0,
++    loc: SourceLoc = __loc) =>
++    _notify.fail(
++      "Property failed for sample "
++        + sample_repr
++        + " (after "
++        + shrink_rounds.string()
++        + " shrinks)"
++    )
++
++
++class _EmptyIterator[T]
++  fun ref has_next(): Bool => false
++  fun ref next(): T^ ? => error
++
++primitive _Stringify
++  fun apply[T](t: T): (T^, String) =>
++    let digest = (digestof t)
++    let s =
++      match t
++      | let str: Stringable =>
++        str.string()
++      | let rs: ReadSeq[Stringable] =>
++        "[" + " ".join(rs.values()) + "]"
++      | (let s1: Stringable, let s2: Stringable) =>
++        "(" + s1.string() + ", " + s2.string() + ")"
++      | (let s1: Stringable, let s2: ReadSeq[Stringable]) =>
++        "(" + s1.string() + ", [" + " ".join(s2.values()) + "])"
++      | (let s1: ReadSeq[Stringable], let s2: Stringable) =>
++        "([" + " ".join(s1.values()) + "], " + s2.string() + ")"
++      | (let s1: ReadSeq[Stringable], let s2: ReadSeq[Stringable]) =>
++        "([" + " ".join(s1.values()) + "], [" + " ".join(s2.values()) + "])"
++      | (let s1: Stringable, let s2: Stringable, let s3: Stringable) =>
++        "(" + s1.string() + ", " + s2.string() + ", " + s3.string() + ")"
++      | ((let s1: Stringable, let s2: Stringable), let s3: Stringable) =>
++        "((" + s1.string() + ", " + s2.string() + "), " + s3.string() + ")"
++      | (let s1: Stringable, (let s2: Stringable, let s3: Stringable)) =>
++        "(" + s1.string() + ", (" + s2.string() + ", " + s3.string() + "))"
++      else
++        "<identity:" + digest.string() + ">"
++      end
++    (consume t, consume s)
+diff --git a/packages/ponycheck/property_unit_test.pony b/packages/ponycheck/property_unit_test.pony
+new file mode 100644
+index 00000000..6e85706d
+--- /dev/null
++++ b/packages/ponycheck/property_unit_test.pony
+@@ -0,0 +1,126 @@
++use "ponytest"
++
++class iso Property1UnitTest[T] is UnitTest
++  """
++  provides plumbing for integration of ponycheck
++  Properties into ponytest.
++  """
++
++  var _prop1: ( Property1[T] iso | None )
++  let _name: String
++
++  new iso create(p1: Property1[T] iso, name': (String | None) = None) =>
++    _name =
++      match name'
++      | None => p1.name()
++      | let s: String => s
++      end
++    _prop1 = consume p1
++
++
++  fun name(): String => _name
++
++  fun ref apply(h: TestHelper) ? =>
++    let prop = ((_prop1 = None) as Property1[T] iso^)
++    let params = prop.params()
++    h.long_test(params.timeout)
++    let property_runner =
++      PropertyRunner[T](
++        consume prop,
++        params,
++        h,
++        h,
++        h.env
++      )
++    h.dispose_when_done(property_runner)
++    property_runner.run()
++
++class iso Property2UnitTest[T1, T2] is UnitTest
++
++  var _prop2: ( Property2[T1, T2] iso | None )
++  let _name: String
++
++  new iso create(p2: Property2[T1, T2] iso, name': (String | None) = None) =>
++    _name =
++      match name'
++      | None => p2.name()
++      | let s: String => s
++      end
++    _prop2 = consume p2
++
++  fun name(): String => _name
++
++  fun ref apply(h: TestHelper) ? =>
++    let prop = ((_prop2 = None) as Property2[T1, T2] iso^)
++    let params = prop.params()
++    h.long_test(params.timeout)
++    let property_runner =
++      PropertyRunner[(T1, T2)](
++        consume prop,
++        params,
++        h,
++        h,
++        h.env
++      )
++    h.dispose_when_done(property_runner)
++    property_runner.run()
++
++class iso Property3UnitTest[T1, T2, T3] is UnitTest
++
++  var _prop3: ( Property3[T1, T2, T3] iso | None )
++  let _name: String
++
++  new iso create(p3: Property3[T1, T2, T3] iso, name': (String | None) = None) =>
++    _name =
++      match name'
++      | None => p3.name()
++      | let s: String => s
++      end
++    _prop3 = consume p3
++
++  fun name(): String => _name
++
++  fun ref apply(h: TestHelper) ? =>
++    let prop = ((_prop3 = None) as Property3[T1, T2, T3] iso^)
++    let params = prop.params()
++    h.long_test(params.timeout)
++    let property_runner =
++      PropertyRunner[(T1, T2, T3)](
++        consume prop,
++        params,
++        h,
++        h,
++        h.env
++      )
++    h.dispose_when_done(property_runner)
++    property_runner.run()
++
++class iso Property4UnitTest[T1, T2, T3, T4] is UnitTest
++
++  var _prop4: ( Property4[T1, T2, T3, T4] iso | None )
++  let _name: String
++
++  new iso create(p4: Property4[T1, T2, T3, T4] iso, name': (String | None) = None) =>
++    _name =
++      match name'
++      | None => p4.name()
++      | let s: String => s
++      end
++    _prop4 = consume p4
++
++  fun name(): String => _name
++
++  fun ref apply(h: TestHelper) ? =>
++    let prop = ((_prop4 = None) as Property4[T1, T2, T3, T4] iso^)
++    let params = prop.params()
++    h.long_test(params.timeout)
++    let property_runner =
++      PropertyRunner[(T1, T2, T3, T4)](
++        consume prop,
++        params,
++        h,
++        h,
++        h.env
++      )
++    h.dispose_when_done(property_runner)
++    property_runner.run()
+diff --git a/packages/ponycheck/randomness.pony b/packages/ponycheck/randomness.pony
+new file mode 100644
+index 00000000..8d53ee0a
+--- /dev/null
++++ b/packages/ponycheck/randomness.pony
+@@ -0,0 +1,139 @@
++use "random"
++
++class ref Randomness
++  """
++  Source of randomness, providing methods for generatic uniformly distributed
++  values from a given closed interval: [min, max]
++  in order for the user to be able to generate every possible value for a given
++  primitive numeric type.
++
++  All primitive number method create numbers in range [min, max)
++  """
++  let _random: Random
++
++  new ref create(seed1: U64 = 42, seed2: U64 = 0) =>
++    _random = Rand(seed1, seed2)
++
++  fun ref u8(min: U8 = U8.min_value(), max: U8 = U8.max_value()): U8 =>
++    if (min == U8.min_value()) and (max == U8.max_value()) then
++      _random.u8()
++    else
++      min + _random.int((max - min).u64() + 1).u8()
++    end
++
++  fun ref u16(min: U16 = U16.min_value(), max: U16 = U16.max_value()): U16 =>
++    if (min == U16.min_value()) and (max == U16.max_value()) then
++      _random.u16()
++    else
++      min + _random.int((max - min).u64() + 1).u16()
++    end
++
++  fun ref u32(min: U32 = U32.min_value(), max: U32 = U32.max_value()): U32 =>
++    if (min == U32.min_value()) and (max == U32.max_value()) then
++      _random.u32()
++    else
++      min + _random.int((max - min).u64() + 1).u32()
++    end
++
++  fun ref u64(min: U64 = U64.min_value(), max: U64 = U64.max_value()): U64 =>
++    if (min == U64.min_value()) and (max == U64.max_value()) then
++      _random.u64()
++    elseif min > U32.max_value().u64() then
++      (u32((min >> 32).u32(), (max >> 32).u32()).u64() << 32) or _random.u32().u64()
++    elseif max > U32.max_value().u64() then
++      let high = (u32((min >> 32).u32(), (max >> 32).u32()).u64() << 32).u64()
++      let low =
++        if high > 0 then
++          _random.u32().u64()
++        else
++          u32(min.u32(), U32.max_value()).u64()
++        end
++      high or low
++    else
++      u32(min.u32(), max.u32()).u64()
++    end
++
++  fun ref u128(
++    min: U128 = U128.min_value(),
++    max: U128 = U128.max_value())
++    : U128
++  =>
++    if (min == U128.min_value()) and (max == U128.max_value()) then
++      _random.u128()
++    elseif min > U64.max_value().u128() then
++      (u64((min >> 64).u64(), (max >> 64).u64()).u128() << 64) or u64().u128()
++    elseif max > U64.max_value().u128() then
++      let high = (u64((min >> 64).u64(), (max >> 64).u64()).u128() << 64)
++      let low =
++        if high > 0 then
++          u64().u128()
++        else
++          u64(min.u64(), U64.max_value()).u128()
++        end
++      high or low
++    else
++      u64(min.u64(), max.u64()).u128()
++    end
++
++  fun ref ulong(
++    min: ULong = ULong.min_value(),
++    max: ULong = ULong.max_value())
++    : ULong
++  =>
++    u64(min.u64(), max.u64()).ulong()
++
++  fun ref usize(
++    min: USize = USize.min_value(),
++    max: USize = USize.max_value())
++    : USize
++  =>
++    u64(min.u64(), max.u64()).usize()
++
++  fun ref i8(min: I8 = I8.min_value(), max: I8 = I8.max_value()): I8 =>
++    min + u8(0, (max - min).u8()).i8()
++
++  fun ref i16(min: I16 = I16.min_value(), max: I16 = I16.max_value()): I16 =>
++    min + u16(0, (max - min).u16()).i16()
++
++  fun ref i32(min: I32 = I32.min_value(), max: I32 = I32.max_value()): I32 =>
++    min + u32(0, (max - min).u32()).i32()
++
++  fun ref i64(min: I64 = I64.min_value(), max: I64 = I64.max_value()): I64 =>
++    min + u64(0, (max - min).u64()).i64()
++
++
++  fun ref i128(
++    min: I128 = I128.min_value(),
++    max: I128 = I128.max_value())
++    : I128
++  =>
++    min + u128(0, (max - min).u128()).i128()
++
++
++  fun ref ilong(
++    min: ILong = ILong.min_value(),
++    max: ILong = ILong.max_value())
++    : ILong
++  =>
++    min + ulong(0, (max - min).ulong()).ilong()
++
++  fun ref isize(
++    min: ISize = ISize.min_value(),
++    max: ISize = ISize.max_value())
++    : ISize
++  =>
++    min + usize(0, (max - min).usize()).isize()
++
++
++  fun ref f32(min: F32 = 0.0, max: F32 = 1.0): F32 =>
++    (_random.real().f32() * (max-min)) + min
++
++
++  fun ref f64(min: F64 = 0.0, max: F64 = 1.0): F64 =>
++    (_random.real() * (max-min)) + min
++
++  fun ref bool(): Bool =>
++    (_random.next() % 2) == 0
++
++  fun ref shuffle[T](array: Array[T] ref) =>
++    _random.shuffle[T](array)

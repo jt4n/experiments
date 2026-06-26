@@ -1,0 +1,526 @@
+diff --git a/src/libponyc/expr/array.c b/src/libponyc/expr/array.c
+index 9063340..545bd04 100644
+--- a/src/libponyc/expr/array.c
++++ b/src/libponyc/expr/array.c
+@@ -11,6 +11,167 @@
+ #include "../type/alias.h"
+ #include "../type/assemble.h"
+ #include "../type/subtype.h"
++#include "../type/viewpoint.h"
++#include "ponyassert.h"
++
++
++static ast_t* find_array_antecedent(ast_t* ast)
++{
++  ast_t* parent = ast_parent(ast);
++
++  while(parent != NULL)
++  {
++    switch(ast_id(parent))
++    {
++      case TK_ASSIGN:
++      {
++        AST_GET_CHILDREN(parent, right, left);
++        ast_t* l_type = ast_type(left);
++
++        if(l_type != NULL && ast_id(l_type) != TK_INFERTYPE &&
++          ast_id(l_type) != TK_DONTCARETYPE)
++          return l_type;
++
++        return NULL;
++      }
++
++      case TK_POSITIONALARGS:
++      {
++        ast_t* call = ast_parent(parent);
++        if(ast_id(call) != TK_CALL)
++          return NULL;
++
++        AST_GET_CHILDREN(call, positional, namedargs, question, lhs);
++        ast_t* fun_type = ast_type(lhs);
++
++        if(fun_type == NULL || ast_id(fun_type) != TK_FUNTYPE)
++          return NULL;
++
++        AST_GET_CHILDREN(fun_type, cap, typeparams, params, result);
++        size_t index = 0;
++
++        for(ast_t* arg = ast_child(positional); arg != NULL;
++          arg = ast_sibling(arg))
++        {
++          if(arg == ast)
++          {
++            ast_t* param = ast_childidx(params, index);
++
++            if(param != NULL)
++              return ast_childidx(param, 1);
++
++            return NULL;
++          }
++
++          index++;
++        }
++
++        return NULL;
++      }
++
++      case TK_SEQ:
++      {
++        ast_t* seq_parent = ast_parent(parent);
++
++        if(ast_id(seq_parent) == TK_SEQ)
++        {
++          parent = seq_parent;
++          break;
++        }
++
++        if(ast_id(seq_parent) == TK_POSITIONALARGS)
++        {
++          parent = seq_parent;
++          break;
++        }
++
++        return NULL;
++      }
++
++      case TK_RECOVER:
++      {
++        ast_t* rec_parent = ast_parent(parent);
++
++        if(ast_id(rec_parent) == TK_ASSIGN ||
++          ast_id(rec_parent) == TK_SEQ)
++        {
++          parent = rec_parent;
++          break;
++        }
++
++        return NULL;
++      }
++
++      default:
++        return NULL;
++    }
++  }
++
++  return NULL;
++}
++
++
++static ast_t* get_array_element_type(ast_t* type)
++{
++  if(type == NULL)
++    return NULL;
++
++  switch(ast_id(type))
++  {
++    case TK_NOMINAL:
++    {
++      if(!is_literal(type, "Array"))
++        return NULL;
++
++      ast_t* typeargs = ast_childidx(type, 2);
++
++      if(ast_id(typeargs) != TK_TYPEARGS)
++        return NULL;
++
++      return ast_child(typeargs);
++    }
++
++    case TK_ARROW:
++      return get_array_element_type(ast_childidx(type, 1));
++
++    case TK_TYPEPARAMREF:
++    {
++      ast_t* def = (ast_t*)ast_data(type);
++
++      if(def == NULL)
++        return NULL;
++
++      ast_t* constraint = ast_childidx(def, 1);
++      return get_array_element_type(constraint);
++    }
++
++    case TK_UNIONTYPE:
++    case TK_ISECTTYPE:
++    {
++      ast_t* elem_type = NULL;
++
++      for(ast_t* child = ast_child(type); child != NULL;
++        child = ast_sibling(child))
++      {
++        ast_t* child_elem = get_array_element_type(child);
++
++        if(child_elem == NULL)
++          continue;
++
++        if(elem_type == NULL)
++          elem_type = child_elem;
++        else
++          elem_type = ast_dup(elem_type);
++      }
++
++      return elem_type;
++    }
++
++    default:
++      return NULL;
++  }
++}
++
+ 
+ bool expr_array(pass_opt_t* opt, ast_t** astp)
+ {
+@@ -26,6 +187,20 @@ bool expr_array(pass_opt_t* opt, ast_t** astp)
+     type = type_spec;
+     told_type = true;
+   }
++  else
++  {
++    ast_t* antecedent = find_array_antecedent(ast);
++    ast_t* elem_type = NULL;
++
++    if(antecedent != NULL)
++      elem_type = get_array_element_type(antecedent);
++
++    if(elem_type != NULL)
++    {
++      type = ast_dup(elem_type);
++      told_type = true;
++    }
++  }
+ 
+   for(ast_t* ele = ast_child(elements); ele != NULL; ele = ast_sibling(ele))
+   {
+diff --git a/src/libponyc/pass/sugar.c b/src/libponyc/pass/sugar.c
+index 76cb6c6..a281bcd 100644
+--- a/src/libponyc/pass/sugar.c
++++ b/src/libponyc/pass/sugar.c
+@@ -8,6 +8,7 @@
+ #include "../pkg/package.h"
+ #include "../type/alias.h"
+ #include "../type/assemble.h"
++#include "../type/reify.h"
+ #include "../type/sanitise.h"
+ #include "../type/subtype.h"
+ #include "../ast/stringtab.h"
+@@ -1104,6 +1105,295 @@ static ast_result_t sugar_barelambda(pass_opt_t* opt, ast_t* ast)
+ }
+ 
+ 
++static ast_t* find_antecedent_type(ast_t* ast)
++{
++  ast_t* parent = ast_parent(ast);
++
++  while(parent != NULL)
++  {
++    switch(ast_id(parent))
++    {
++      case TK_ASSIGN:
++      {
++        AST_GET_CHILDREN(parent, right, left);
++
++        if(ast_id(left) == TK_LET || ast_id(left) == TK_VAR)
++        {
++          ast_t* l_type = ast_childidx(left, 1);
++
++          if(l_type != NULL && ast_id(l_type) != TK_NONE &&
++            ast_id(l_type) != TK_INFERTYPE && ast_id(l_type) != TK_DONTCARETYPE)
++            return l_type;
++        }
++        else
++        {
++          ast_t* l_type = ast_type(left);
++
++          if(l_type != NULL && ast_id(l_type) != TK_INFERTYPE &&
++            ast_id(l_type) != TK_DONTCARETYPE)
++            return l_type;
++        }
++
++        return NULL;
++      }
++
++      case TK_POSITIONALARGS:
++      {
++        ast_t* call = ast_parent(parent);
++        if(ast_id(call) != TK_CALL)
++          return NULL;
++
++        AST_GET_CHILDREN(call, positional, namedargs, question, lhs);
++        ast_t* fun_type = ast_type(lhs);
++
++        if(fun_type == NULL || ast_id(fun_type) != TK_FUNTYPE)
++          return NULL;
++
++        AST_GET_CHILDREN(fun_type, cap, typeparams, params, result);
++        size_t index = 0;
++
++        for(ast_t* arg = ast_child(positional); arg != NULL;
++          arg = ast_sibling(arg))
++        {
++          if(arg == ast)
++          {
++            ast_t* param = ast_childidx(params, index);
++
++            if(param != NULL)
++              return ast_childidx(param, 1);
++
++            return NULL;
++          }
++
++          index++;
++        }
++
++        return NULL;
++      }
++
++      case TK_SEQ:
++      {
++        ast_t* seq_parent = ast_parent(parent);
++
++        if(ast_id(seq_parent) == TK_SEQ)
++        {
++          parent = seq_parent;
++          break;
++        }
++
++        if(ast_id(seq_parent) == TK_POSITIONALARGS)
++        {
++          parent = seq_parent;
++          break;
++        }
++
++        return NULL;
++      }
++
++      default:
++        return NULL;
++    }
++  }
++
++  return NULL;
++}
++
++
++static ast_t* lookup_apply_method(pass_opt_t* opt, ast_t* type)
++{
++  if(type == NULL)
++    return NULL;
++
++  switch(ast_id(type))
++  {
++    case TK_NOMINAL:
++    {
++      ast_t* def = (ast_t*)ast_data(type);
++
++      if(def == NULL)
++        return NULL;
++
++      ast_t* find = ast_get(def, stringtab("apply"), NULL);
++
++      if(find == NULL)
++        return NULL;
++
++      if(ast_id(find) != TK_FUN)
++      {
++        ast_free_unattached(find);
++        return NULL;
++      }
++
++      ast_t* typeargs = ast_childidx(type, 2);
++      ast_t* typeparams = ast_childidx(def, 1);
++      ast_t* r_find = reify(find, typeparams, typeargs, opt, false);
++
++      ast_free_unattached(find);
++      return r_find;
++    }
++
++    case TK_ARROW:
++      return lookup_apply_method(opt, ast_childidx(type, 1));
++
++    case TK_TYPEPARAMREF:
++    {
++      ast_t* def = (ast_t*)ast_data(type);
++
++      if(def == NULL)
++        return NULL;
++
++      ast_t* constraint = ast_childidx(def, 1);
++      return lookup_apply_method(opt, constraint);
++    }
++
++    default:
++      return NULL;
++  }
++}
++
++
++static bool apply_lambda_antecedent(pass_opt_t* opt, ast_t* ast,
++  ast_t* antecedent)
++{
++  AST_GET_CHILDREN(ast, receiver_cap, name, t_params, params, captures,
++    ret_type, raises, body, reference_cap);
++
++  bool bare = ast_id(ast) == TK_BARELAMBDA;
++
++  if(ast_id(antecedent) == TK_LAMBDATYPE ||
++    ast_id(antecedent) == TK_BARELAMBDATYPE)
++  {
++    AST_GET_CHILDREN(antecedent, a_cap, a_name, a_tparams, a_params,
++      a_ret_type, a_error, a_interface_cap, a_ephemeral);
++
++    if(ast_id(reference_cap) == TK_NONE && !bare)
++    {
++      if(ast_id(a_interface_cap) != TK_NONE)
++        ast_setid(reference_cap, ast_id(a_interface_cap));
++    }
++
++    if(ast_id(receiver_cap) == TK_NONE && !bare)
++    {
++      if(ast_id(a_cap) != TK_NONE && ast_id(a_cap) != TK_AT)
++        ast_setid(receiver_cap, ast_id(a_cap));
++    }
++
++    if(ast_id(ret_type) == TK_NONE)
++    {
++      if(ast_id(a_ret_type) != TK_NONE)
++        ast_replace(&ret_type, ast_dup(a_ret_type));
++    }
++
++    ast_t* lambda_param = ast_child(params);
++    ast_t* ante_param = ast_child(a_params);
++
++    while(lambda_param != NULL && ante_param != NULL)
++    {
++      ast_t* lp_type = ast_childidx(lambda_param, 1);
++
++      if(lp_type == NULL || ast_id(lp_type) == TK_NONE)
++      {
++        ast_t* new_type = ast_dup(ante_param);
++
++        if(lp_type == NULL)
++          ast_append(lambda_param, new_type);
++        else
++          ast_replace(&lp_type, new_type);
++      }
++
++      lambda_param = ast_sibling(lambda_param);
++      ante_param = ast_sibling(ante_param);
++    }
++
++    return true;
++  }
++
++  ast_t* apply_method = lookup_apply_method(opt, antecedent);
++
++  if(apply_method == NULL)
++    return false;
++
++  AST_GET_CHILDREN(apply_method, a_cap, a_name, a_tparams, a_params,
++    a_ret_type, a_raises);
++
++  if(ast_id(reference_cap) == TK_NONE && !bare)
++  {
++    ast_t* ante_cap = ast_childidx(antecedent, 3);
++
++    if(ast_id(ante_cap) != TK_NONE)
++      ast_setid(reference_cap, ast_id(ante_cap));
++  }
++
++  if(ast_id(receiver_cap) == TK_NONE && !bare)
++  {
++    if(ast_id(a_cap) != TK_NONE && ast_id(a_cap) != TK_AT)
++      ast_setid(receiver_cap, ast_id(a_cap));
++  }
++
++  if(ast_id(ret_type) == TK_NONE)
++  {
++    if(ast_id(a_ret_type) != TK_NONE)
++      ast_replace(&ret_type, ast_dup(a_ret_type));
++  }
++
++  ast_t* lambda_param = ast_child(params);
++  ast_t* ante_param = ast_child(a_params);
++
++  while(lambda_param != NULL && ante_param != NULL)
++  {
++    ast_t* lp_type = ast_childidx(lambda_param, 1);
++
++    if(lp_type == NULL || ast_id(lp_type) == TK_NONE)
++    {
++      ast_t* ap_type = ast_childidx(ante_param, 1);
++      ast_t* new_type = ast_dup(ap_type);
++
++      if(lp_type == NULL)
++        ast_append(lambda_param, new_type);
++      else
++        ast_replace(&lp_type, new_type);
++    }
++
++    lambda_param = ast_sibling(lambda_param);
++    ante_param = ast_sibling(ante_param);
++  }
++
++  ast_free_unattached(apply_method);
++  return true;
++}
++
++
++static ast_result_t sugar_lambda(pass_opt_t* opt, ast_t* ast)
++{
++  pony_assert(ast != NULL);
++
++  AST_GET_CHILDREN(ast, receiver_cap, name, t_params, params, captures,
++    ret_type, raises, body, reference_cap);
++
++  ast_t* antecedent = find_antecedent_type(ast);
++
++  if(antecedent != NULL)
++    apply_lambda_antecedent(opt, ast, antecedent);
++
++  bool r = true;
++  ast_t* param = ast_child(params);
++
++  while(param != NULL)
++  {
++    if(ast_id(ast_childidx(param, 1)) == TK_NONE)
++    {
++      ast_error(opt->check.errors, param,
++        "a lambda parameter must specify a type");
++      r = false;
++    }
++
++    param = ast_sibling(param);
++  }
++
++  return r ? AST_OK : AST_ERROR;
++}
++
++
+ ast_t* expand_location(ast_t* location)
+ {
+   pony_assert(location != NULL);
+@@ -1250,6 +1540,7 @@ ast_result_t pass_sugar(ast_t** astp, pass_opt_t* options)
+     case TK_SEMI:             return sugar_semi(options, astp);
+     case TK_LAMBDATYPE:
+     case TK_BARELAMBDATYPE:   return sugar_lambdatype(options, astp);
++    case TK_LAMBDA:           return sugar_lambda(options, ast);
+     case TK_BARELAMBDA:       return sugar_barelambda(options, ast);
+     case TK_LOCATION:         return sugar_location(options, astp);
+     default:                  return AST_OK;
+diff --git a/src/libponyc/pass/syntax.c b/src/libponyc/pass/syntax.c
+index 0ecedf1..c1a1ab9 100644
+--- a/src/libponyc/pass/syntax.c
++++ b/src/libponyc/pass/syntax.c
+@@ -1127,12 +1127,6 @@ static ast_result_t syntax_lambda(pass_opt_t* opt, ast_t* ast)
+   ast_t* param = ast_child(params);
+   while(param != NULL)
+   {
+-    if(ast_id(ast_childidx(param, 1)) == TK_NONE)
+-    {
+-      ast_error(opt->check.errors, param,
+-        "a lambda parameter must specify a type");
+-      r = false;
+-    }
+     param = ast_sibling(param);
+   }
+ 

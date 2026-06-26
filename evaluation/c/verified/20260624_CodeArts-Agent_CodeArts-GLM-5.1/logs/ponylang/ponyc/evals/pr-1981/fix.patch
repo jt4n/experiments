@@ -1,0 +1,82 @@
+diff --git a/src/libponyc/type/matchtype.c b/src/libponyc/type/matchtype.c
+index ac6077f..5f10f88 100644
+--- a/src/libponyc/type/matchtype.c
++++ b/src/libponyc/type/matchtype.c
+@@ -230,6 +230,24 @@ static matchtype_t is_nominal_match_entity(ast_t* operand, ast_t* pattern,
+   if(!is_cap_match_cap(ast_id(o_cap), ast_id(o_eph), tcap, teph))
+     return MATCHTYPE_DENY;
+ 
++  // If the pattern has an aliased ephemeral (from the `as` operator sugar),
++  // the match body will consume the capture, undoing the alias. We must also
++  // check that the operand's capability, ignoring aliasing, is a subtype of
++  // the pattern's capability, ignoring aliasing. Without this check, a val
++  // operand would be able to match an aliased iso pattern (which is tag after
++  // aliasing), allowing an unsafe cast from val to iso.
++  if(teph == TK_ALIASED)
++  {
++    token_id o_cap_unaliased = ast_id(o_cap);
++    token_id o_eph_unaliased = ast_id(o_eph);
++
++    if(o_eph_unaliased == TK_ALIASED)
++      o_eph_unaliased = TK_NONE;
++
++    if(!is_cap_sub_cap(o_cap_unaliased, o_eph_unaliased, tcap, TK_NONE))
++      return MATCHTYPE_DENY;
++  }
++
+   // Otherwise, accept the match.
+   return MATCHTYPE_ACCEPT;
+ }
+@@ -273,6 +291,21 @@ static matchtype_t is_entity_match_trait(ast_t* operand, ast_t* pattern,
+   if(!is_cap_match_cap(ast_id(o_cap), ast_id(o_eph), tcap, teph))
+     return MATCHTYPE_DENY;
+ 
++  // If the pattern has an aliased ephemeral, also check that the operand's
++  // capability, ignoring aliasing, is a subtype of the pattern's capability,
++  // ignoring aliasing.
++  if(teph == TK_ALIASED)
++  {
++    token_id o_cap_unaliased = ast_id(o_cap);
++    token_id o_eph_unaliased = ast_id(o_eph);
++
++    if(o_eph_unaliased == TK_ALIASED)
++      o_eph_unaliased = TK_NONE;
++
++    if(!is_cap_sub_cap(o_cap_unaliased, o_eph_unaliased, tcap, TK_NONE))
++      return MATCHTYPE_DENY;
++  }
++
+   // Otherwise, accept the match.
+   return MATCHTYPE_ACCEPT;
+ }
+@@ -284,11 +317,28 @@ static matchtype_t is_trait_match_trait(ast_t* operand, ast_t* pattern,
+   AST_GET_CHILDREN(operand, o_pkg, o_id, o_typeargs, o_cap, o_eph);
+   AST_GET_CHILDREN(pattern, p_pkg, p_id, p_typeargs, p_cap, p_eph);
+ 
++  token_id tcap = ast_id(p_cap);
++  token_id teph = ast_id(p_eph);
++
+   // If the operand refcap can't match the pattern refcap, deny the match.
+-  if(!is_cap_match_cap(ast_id(o_cap), ast_id(o_eph),
+-    ast_id(p_cap), ast_id(p_eph)))
++  if(!is_cap_match_cap(ast_id(o_cap), ast_id(o_eph), tcap, teph))
+     return MATCHTYPE_DENY;
+ 
++  // If the pattern has an aliased ephemeral, also check that the operand's
++  // capability, ignoring aliasing, is a subtype of the pattern's capability,
++  // ignoring aliasing.
++  if(teph == TK_ALIASED)
++  {
++    token_id o_cap_unaliased = ast_id(o_cap);
++    token_id o_eph_unaliased = ast_id(o_eph);
++
++    if(o_eph_unaliased == TK_ALIASED)
++      o_eph_unaliased = TK_NONE;
++
++    if(!is_cap_sub_cap(o_cap_unaliased, o_eph_unaliased, tcap, TK_NONE))
++      return MATCHTYPE_DENY;
++  }
++
+   // Otherwise, accept the match.
+   return MATCHTYPE_ACCEPT;
+ }

@@ -1,0 +1,385 @@
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index b9e0ec44..664b63ca 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -2085,6 +2085,19 @@ size_t ZSTD_compressBegin_internal(ZSTD_CCtx* cctx,
+     assert(!((dict) && (cdict)));  /* either dict or cdict, not both */
+ 
+     if (cdict && cdict->dictContentSize>0) {
++        ZSTD_compressionParameters const cdictCParams = cdict->refContext->appliedParams.cParams;
++        /* If the computed cParams have a larger windowLog than the CDict's,
++         * the source data is larger than the CDict's window. In this case,
++         * don't copy the CDict's context (which has small tables), but
++         * instead allocate properly sized tables and load the dictionary
++         * content from the CDict. */
++        if (params.cParams.windowLog > cdictCParams.windowLog) {
++            DEBUGLOG(4, "ZSTD_compressBegin_internal: windowLog=%u > cdict windowLog=%u, reloading dict",
++                        params.cParams.windowLog, cdictCParams.windowLog);
++            CHECK_F( ZSTD_resetCCtx_internal(cctx, params, pledgedSrcSize,
++                                             ZSTDcrp_continue, zbuff) );
++            return ZSTD_compress_insertDictionary(cctx, cdict->dictContent, cdict->dictContentSize, ZSTD_dm_auto);
++        }
+         cctx->requestedParams = params;
+         return ZSTD_copyCCtx_internal(cctx, cdict->refContext,
+                                       params.cParams.windowLog, params.fParams, pledgedSrcSize,
+@@ -2454,6 +2467,24 @@ size_t ZSTD_compressBegin_usingCDict_advanced(
+     {   ZSTD_CCtx_params params = cctx->requestedParams;
+         params.cParams = ZSTD_getCParamsFromCDict(cdict);
+         params.fParams = fParams;
++        /* When pledgedSrcSize is known and larger than the CDict's window,
++         * the CDict's compression parameters may be too small for the source
++         * data. This happens when the CDict was created with unknown source
++         * size, causing windowLog to be shrunk based on dictSize alone.
++         * In this case, recompute cParams based on pledgedSrcSize and
++         * reload the dictionary content into properly sized tables. */
++        if (pledgedSrcSize > (size_t)((U64)1 << params.cParams.windowLog)) {
++            ZSTD_compressionParameters const cParams =
++                ZSTD_getCParamsFromCCtxParams(cctx->requestedParams, pledgedSrcSize, cdict->dictContentSize);
++            if (cParams.windowLog > params.cParams.windowLog) {
++                params.cParams = cParams;
++                return ZSTD_compressBegin_internal(cctx,
++                                                   cdict->dictContent, cdict->dictContentSize, ZSTD_dm_auto,
++                                                   NULL,
++                                                   params, pledgedSrcSize,
++                                                   ZSTDb_not_buffered);
++            }
++        }
+         return ZSTD_compressBegin_internal(cctx,
+                                            NULL, 0, ZSTD_dm_auto,
+                                            cdict,
+@@ -2622,6 +2653,16 @@ size_t ZSTD_initCStream_usingCDict_advanced(ZSTD_CStream* zcs,
+     {   ZSTD_CCtx_params params = zcs->requestedParams;
+         params.cParams = ZSTD_getCParamsFromCDict(cdict);
+         params.fParams = fParams;
++        if (pledgedSrcSize > (size_t)((U64)1 << params.cParams.windowLog)) {
++            ZSTD_compressionParameters const cParams =
++                ZSTD_getCParamsFromCCtxParams(zcs->requestedParams, pledgedSrcSize, cdict->dictContentSize);
++            if (cParams.windowLog > params.cParams.windowLog) {
++                params.cParams = cParams;
++                return ZSTD_initCStream_internal(zcs,
++                                        cdict->dictContent, cdict->dictContentSize, NULL,
++                                        params, pledgedSrcSize);
++            }
++        }
+         return ZSTD_initCStream_internal(zcs,
+                                 NULL, 0, cdict,
+                                 params, pledgedSrcSize);
+diff --git a/test_cparams.c b/test_cparams.c
+new file mode 100644
+index 00000000..ddb75c85
+--- /dev/null
++++ b/test_cparams.c
+@@ -0,0 +1,34 @@
++#define ZSTD_STATIC_LINKING_ONLY
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "zstd.h"
++
++int main(void) {
++    int level = 3;
++    size_t dictSize = 954;
++    
++    printf("ZSTD_getCParams for level %d:\n", level);
++    
++    ZSTD_compressionParameters cp1 = ZSTD_getCParams(level, 0, dictSize);
++    printf("  srcSize=0, dictSize=%zu: wLog=%u hLog=%u chainLog=%u searchLog=%u searchLength=%u targetLength=%u strategy=%u\n",
++           dictSize, cp1.windowLog, cp1.hashLog, cp1.chainLog,
++           cp1.searchLog, cp1.searchLength, cp1.targetLength, cp1.strategy);
++    
++    ZSTD_compressionParameters cp2 = ZSTD_getCParams(level, 262144, dictSize);
++    printf("  srcSize=262144, dictSize=%zu: wLog=%u hLog=%u chainLog=%u searchLog=%u searchLength=%u targetLength=%u strategy=%u\n",
++           dictSize, cp2.windowLog, cp2.hashLog, cp2.chainLog,
++           cp2.searchLog, cp2.searchLength, cp2.targetLength, cp2.strategy);
++    
++    ZSTD_compressionParameters cp3 = ZSTD_getCParams(level, 32768, dictSize);
++    printf("  srcSize=32768, dictSize=%zu: wLog=%u hLog=%u chainLog=%u searchLog=%u searchLength=%u targetLength=%u strategy=%u\n",
++           dictSize, cp3.windowLog, cp3.hashLog, cp3.chainLog,
++           cp3.searchLog, cp3.searchLength, cp3.targetLength, cp3.strategy);
++
++    ZSTD_compressionParameters cp4 = ZSTD_getCParams(level, 4096, dictSize);
++    printf("  srcSize=4096, dictSize=%zu: wLog=%u hLog=%u chainLog=%u searchLog=%u searchLength=%u targetLength=%u strategy=%u\n",
++           dictSize, cp4.windowLog, cp4.hashLog, cp4.chainLog,
++           cp4.searchLog, cp4.searchLength, cp4.targetLength, cp4.strategy);
++
++    return 0;
++}
+diff --git a/test_dict_regression.c b/test_dict_regression.c
+new file mode 100644
+index 00000000..1fe58b20
+--- /dev/null
++++ b/test_dict_regression.c
+@@ -0,0 +1,153 @@
++#define ZSTD_STATIC_LINKING_ONLY
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "zstd.h"
++#include "zdict.h"
++
++#define DICT_SIZE (100 << 10)
++#define BLOCK_SIZE (256 << 10)
++
++int main(void) {
++    ZSTD_CCtx* cctx = ZSTD_createCCtx();
++    ZSTD_DCtx* dctx = ZSTD_createDCtx();
++    void* dictBuffer = malloc(DICT_SIZE);
++    size_t dictSize;
++    ZSTD_CDict* cdict;
++    int i;
++
++    /* Train a small dictionary */
++    {
++        size_t const sampleUnitSize = 256;
++        char* samples = malloc(sampleUnitSize * 100);
++        size_t* sampleSizes = malloc(100 * sizeof(size_t));
++        for (i = 0; i < 100; i++) {
++            memset(samples + i * sampleUnitSize, 'a' + (i % 5), sampleUnitSize);
++            sampleSizes[i] = sampleUnitSize;
++        }
++        dictSize = ZDICT_trainFromBuffer(dictBuffer, DICT_SIZE,
++                                          samples, sampleSizes, 100);
++        if (ZDICT_isError(dictSize)) {
++            printf("Dictionary training error: %s\n", ZDICT_getErrorName(dictSize));
++            return 1;
++        }
++        printf("Trained dictionary size: %zu bytes\n", dictSize);
++        free(samples);
++        free(sampleSizes);
++    }
++
++    /* Test with CDict */
++    printf("\n--- ZSTD_compress_usingCDict ---\n");
++    cdict = ZSTD_createCDict(dictBuffer, dictSize, 3);
++    {
++        size_t blocksizes[] = {1024, 4096, 32768, 262144};
++        int nbBlocksizes = 4;
++        for (i = 0; i < nbBlocksizes; i++) {
++            size_t bsize = blocksizes[i];
++            char* bsrc = malloc(bsize);
++            char* bdst = malloc(ZSTD_compressBound(bsize));
++            char* bdec = malloc(bsize);
++            size_t cSize, dSize;
++            memset(bsrc, 'a' + (i % 5), bsize);
++
++            cSize = ZSTD_compress_usingCDict(cctx, bdst, ZSTD_compressBound(bsize),
++                                              bsrc, bsize, cdict);
++            printf("Blocksize %6zu: compressed %zu -> %zu (%.1fx)\n",
++                   bsize, bsize, cSize, (double)bsize / cSize);
++
++            dSize = ZSTD_decompress_usingDict(dctx, bdec, bsize,
++                                               bdst, cSize, dictBuffer, dictSize);
++            if (dSize != bsize || memcmp(bsrc, bdec, bsize) != 0) {
++                printf("Decompression error!\n");
++                return 1;
++            }
++
++            free(bsrc);
++            free(bdst);
++            free(bdec);
++        }
++    }
++
++    /* Test with loadDictionary + compress_generic */
++    printf("\n--- ZSTD_CCtx_loadDictionary + ZSTD_compress_generic ---\n");
++    {
++        size_t blocksizes[] = {1024, 4096, 32768, 262144};
++        int nbBlocksizes = 4;
++        for (i = 0; i < nbBlocksizes; i++) {
++            size_t bsize = blocksizes[i];
++            char* bsrc = malloc(bsize);
++            char* bdst = malloc(ZSTD_compressBound(bsize));
++            char* bdec = malloc(bsize);
++            ZSTD_outBuffer out = {bdst, ZSTD_compressBound(bsize), 0};
++            ZSTD_inBuffer in = {bsrc, bsize, 0};
++            size_t cSize, dSize;
++            memset(bsrc, 'a' + (i % 5), bsize);
++
++            ZSTD_CCtx_reset(cctx);
++            ZSTD_CCtx_loadDictionary(cctx, dictBuffer, dictSize);
++            ZSTD_CCtx_setPledgedSrcSize(cctx, bsize);
++            ZSTD_compress_generic(cctx, &out, &in, ZSTD_e_end);
++
++            cSize = out.pos;
++            printf("Blocksize %6zu: compressed %zu -> %zu (%.1fx)\n",
++                   bsize, bsize, cSize, (double)bsize / cSize);
++
++            dSize = ZSTD_decompress_usingDict(dctx, bdec, bsize,
++                                               bdst, cSize, dictBuffer, dictSize);
++            if (dSize != bsize || memcmp(bsrc, bdec, bsize) != 0) {
++                printf("Decompression error!\n");
++                return 1;
++            }
++
++            free(bsrc);
++            free(bdst);
++            free(bdec);
++        }
++    }
++
++    /* Test streaming with CDict */
++    printf("\n--- ZSTD_initCStream_usingCDict + streaming ---\n");
++    {
++        size_t blocksizes[] = {1024, 4096, 32768, 262144};
++        int nbBlocksizes = 4;
++        for (i = 0; i < nbBlocksizes; i++) {
++            size_t bsize = blocksizes[i];
++            char* bsrc = malloc(bsize);
++            char* bdst = malloc(ZSTD_compressBound(bsize));
++            char* bdec = malloc(bsize);
++            size_t cSize, dSize;
++            ZSTD_outBuffer out = {bdst, ZSTD_compressBound(bsize), 0};
++            ZSTD_inBuffer in = {bsrc, bsize, 0};
++            memset(bsrc, 'a' + (i % 5), bsize);
++
++            ZSTD_CCtx_reset(cctx);
++            ZSTD_initCStream_usingCDict_advanced(cctx, cdict,
++                (ZSTD_frameParameters){1, 0, 0}, bsize);
++            ZSTD_compressStream(cctx, &out, &in);
++            ZSTD_endStream(cctx, &out);
++
++            cSize = out.pos;
++            printf("Blocksize %6zu: compressed %zu -> %zu (%.1fx)\n",
++                   bsize, bsize, cSize, (double)bsize / cSize);
++
++            dSize = ZSTD_decompress_usingDict(dctx, bdec, bsize,
++                                               bdst, cSize, dictBuffer, dictSize);
++            if (dSize != bsize || memcmp(bsrc, bdec, bsize) != 0) {
++                printf("Decompression error!\n");
++                return 1;
++            }
++
++            free(bsrc);
++            free(bdst);
++            free(bdec);
++        }
++    }
++
++    ZSTD_freeCDict(cdict);
++    ZSTD_freeCCtx(cctx);
++    ZSTD_freeDCtx(dctx);
++    free(dictBuffer);
++
++    printf("\nAll tests passed!\n");
++    return 0;
++}
+diff --git a/test_streaming.c b/test_streaming.c
+new file mode 100644
+index 00000000..6994fd8a
+--- /dev/null
++++ b/test_streaming.c
+@@ -0,0 +1,114 @@
++#define ZSTD_STATIC_LINKING_ONLY
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "zstd.h"
++#include "zdict.h"
++
++int main(void) {
++    ZSTD_CCtx* cctx = ZSTD_createCCtx();
++    ZSTD_DCtx* dctx = ZSTD_createDCtx();
++    void* dictBuffer = malloc(100 << 10);
++    size_t dictSize;
++    int i;
++
++    /* Train a small dictionary */
++    {
++        size_t const sampleUnitSize = 256;
++        char* samples = malloc(sampleUnitSize * 100);
++        size_t* sampleSizes = malloc(100 * sizeof(size_t));
++        for (i = 0; i < 100; i++) {
++            memset(samples + i * sampleUnitSize, 'a' + (i % 5), sampleUnitSize);
++            sampleSizes[i] = sampleUnitSize;
++        }
++        dictSize = ZDICT_trainFromBuffer(dictBuffer, 100 << 10,
++                                          samples, sampleSizes, 100);
++        if (ZDICT_isError(dictSize)) {
++            printf("Dictionary training error: %s\n", ZDICT_getErrorName(dictSize));
++            return 1;
++        }
++        printf("Trained dictionary size: %zu bytes\n", dictSize);
++        free(samples);
++        free(sampleSizes);
++    }
++
++    /* Test streaming with CDict */
++    printf("\n--- ZSTD_initCStream_usingCDict + streaming ---\n");
++    {
++        ZSTD_CDict* cdict = ZSTD_createCDict(dictBuffer, dictSize, 3);
++
++        size_t bsize = 262144;
++        char* bsrc = malloc(bsize);
++        char* bdst = malloc(ZSTD_compressBound(bsize));
++        char* bdec = malloc(bsize);
++        size_t cSize, dSize;
++        ZSTD_outBuffer out = {bdst, ZSTD_compressBound(bsize), 0};
++        ZSTD_inBuffer in = {bsrc, bsize, 0};
++        memset(bsrc, 'a', bsize);
++
++        ZSTD_CCtx_reset(cctx);
++        ZSTD_initCStream_usingCDict_advanced(cctx, cdict,
++            (ZSTD_frameParameters){1, 0, 0}, bsize);
++        ZSTD_compressStream(cctx, &out, &in);
++        ZSTD_endStream(cctx, &out);
++
++        cSize = out.pos;
++        printf("Blocksize %6zu: compressed %zu -> %zu (%.1fx)\n",
++               bsize, bsize, cSize, (double)bsize / cSize);
++
++        dSize = ZSTD_decompress_usingDict(dctx, bdec, bsize,
++                                           bdst, cSize, dictBuffer, dictSize);
++        if (dSize != bsize || memcmp(bsrc, bdec, bsize) != 0) {
++            printf("Decompression error!\n");
++            return 1;
++        }
++
++        free(bsrc);
++        free(bdst);
++        free(bdec);
++        ZSTD_freeCDict(cdict);
++    }
++
++    /* Also test ZSTD_initCStream_usingCDict (without advanced) */
++    printf("\n--- ZSTD_initCStream_usingCDict (no srcSize) ---\n");
++    {
++        ZSTD_CDict* cdict = ZSTD_createCDict(dictBuffer, dictSize, 3);
++
++        size_t bsize = 262144;
++        char* bsrc = malloc(bsize);
++        char* bdst = malloc(ZSTD_compressBound(bsize));
++        char* bdec = malloc(bsize);
++        size_t cSize, dSize;
++        ZSTD_outBuffer out = {bdst, ZSTD_compressBound(bsize), 0};
++        ZSTD_inBuffer in = {bsrc, bsize, 0};
++        memset(bsrc, 'a', bsize);
++
++        ZSTD_CCtx_reset(cctx);
++        ZSTD_initCStream_usingCDict(cctx, cdict);
++        ZSTD_compressStream(cctx, &out, &in);
++        ZSTD_endStream(cctx, &out);
++
++        cSize = out.pos;
++        printf("Blocksize %6zu: compressed %zu -> %zu (%.1fx)\n",
++               bsize, bsize, cSize, (double)bsize / cSize);
++
++        dSize = ZSTD_decompress_usingDict(dctx, bdec, bsize,
++                                           bdst, cSize, dictBuffer, dictSize);
++        if (dSize != bsize || memcmp(bsrc, bdec, bsize) != 0) {
++            printf("Decompression error!\n");
++            return 1;
++        }
++
++        free(bsrc);
++        free(bdst);
++        free(bdec);
++        ZSTD_freeCDict(cdict);
++    }
++
++    ZSTD_freeCCtx(cctx);
++    ZSTD_freeDCtx(dctx);
++    free(dictBuffer);
++
++    printf("\nAll tests passed!\n");
++    return 0;
++}

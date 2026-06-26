@@ -1,0 +1,14 @@
+diff --git a/src/libponyc/expr/match.c b/src/libponyc/expr/match.c
+index 19e389d..6ddb03e 100644
+--- a/src/libponyc/expr/match.c
++++ b/src/libponyc/expr/match.c
+@@ -334,7 +334,8 @@ bool expr_case(pass_opt_t* opt, ast_t* ast)
+     case MATCHTYPE_DENY:
+     {
+       ast_error(opt->check.errors, pattern,
+-        "this capture violates capabilities");
++        "this capture could match at runtime, but would violate "
++        "capability safety");
+       ast_error_continue(opt->check.errors, match_type, "match type: %s",
+         ast_print_type(operand_type));
+       ast_error_continue(opt->check.errors, pattern, "pattern type: %s",

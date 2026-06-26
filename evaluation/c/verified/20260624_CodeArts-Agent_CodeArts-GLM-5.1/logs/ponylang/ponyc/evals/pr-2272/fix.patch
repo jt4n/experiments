@@ -1,0 +1,84 @@
+diff --git a/packages/serialise/serialise.pony b/packages/serialise/serialise.pony
+index 0a1542a..ee9d15f 100644
+--- a/packages/serialise/serialise.pony
++++ b/packages/serialise/serialise.pony
+@@ -20,6 +20,12 @@ possibly including recompilation of the same code. This is due to the use of
+ type identifiers rather than a heavy-weight self-describing serialisation
+ schema. This also means it isn't safe to deserialise something serialised by
+ the same program compiled for a different platform.
++
++The Serialise.signature method is provided for the purposes of comparing
++communicating Pony binaries to determine if they are the same. Confirming this
++before deserializing data can help mitigate the risk of accidental serialisation
++across different Pony binaries, but does not on its own address the security
++issues of accepting data from untrusted sources.
+ """
+ 
+ primitive SerialiseAuth
+@@ -115,3 +121,21 @@ class val Serialised
+     for example, a file or socket.
+     """
+     _data
++
++primitive Serialise
++  """
++  Provides a signature that is unique to this compiled Pony binary, for the
++  purposes of comparing before deserialising any data from that source.
++  """
++  fun signature(): Array[U8] val =>
++    """
++    Returns a byte array that is unique to this compiled Pony binary, for the
++    purposes of comparing before deserialising any data from that source.
++    It is statistically impossible for two serialisation-incompatible Pony
++    binaries to have the same serialise signature.
++    """
++    recover
++      let arr = Array[U8].init(U8(0), 16)
++      @pony_serialise_signature[None](arr.cpointer())
++      arr
++    end
+diff --git a/src/libponyrt/gc/serialise.c b/src/libponyrt/gc/serialise.c
+index 1fb04ef..1d1266e 100644
+--- a/src/libponyrt/gc/serialise.c
++++ b/src/libponyrt/gc/serialise.c
+@@ -5,6 +5,7 @@
+ #include "serialise.h"
+ #include "../sched/scheduler.h"
+ #include "../lang/lang.h"
++#include "../ds/fun.h"
+ #include "ponyassert.h"
+ #include <string.h>
+ 
+@@ -408,3 +409,19 @@ PONY_API void* pony_deserialise(pony_ctx_t* ctx, pony_type_t* t, void* in,
+   serialise_cleanup(ctx);
+   return object;
+ }
++
++PONY_API void pony_serialise_signature(char* out)
++{
++  if(desc_table != NULL)
++  {
++    uint64_t h = ponyint_hash_block(desc_table,
++      desc_table_size * sizeof(pony_type_t*));
++
++    memcpy(out, &h, sizeof(uint64_t));
++
++    h = ponyint_hash_int64(h);
++    memcpy(out + sizeof(uint64_t), &h, sizeof(uint64_t));
++  } else {
++    memset(out, 0, 16);
++  }
++}
+diff --git a/src/libponyrt/gc/serialise.h b/src/libponyrt/gc/serialise.h
+index 37527c8..6bb6430 100644
+--- a/src/libponyrt/gc/serialise.h
++++ b/src/libponyrt/gc/serialise.h
+@@ -37,6 +37,8 @@ PONY_API void* pony_deserialise_offset(pony_ctx_t* ctx, pony_type_t* t,
+ PONY_API void* pony_deserialise_raw(pony_ctx_t* ctx, uintptr_t offset,
+   deserialise_raw_fn ds_fn);
+ 
++PONY_API void pony_serialise_signature(char* out);
++
+ PONY_EXTERN_C_END
+ 
+ #endif

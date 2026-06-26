@@ -1,0 +1,21 @@
+diff --git a/src/execute.c b/src/execute.c
+index ae92c37..c60dcdd 100644
+--- a/src/execute.c
++++ b/src/execute.c
+@@ -698,8 +698,15 @@ jv jq_next(jq_state *jq) {
+       if (jv_get_kind(k) == JV_KIND_NUMBER && jv_get_kind(t) == JV_KIND_ARRAY) {
+         int idx = jv_number_value(k);
+         if (idx < 0) {
++          int len = jv_array_length(jv_copy(t));
+           jv_free(k);
+-          k = jv_number(jv_array_length(jv_copy(t)) + idx);
++          idx = len + idx;
++          if (idx < 0) {
++            jv_free(t);
++            stack_push(jq, jv_null());
++            break;
++          }
++          k = jv_number(idx);
+         }
+       }
+       jv v = jv_get(t, jv_copy(k));

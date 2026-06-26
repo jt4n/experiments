@@ -1,0 +1,191 @@
+diff --git a/src/libponyc/expr/control.c b/src/libponyc/expr/control.c
+index 2936691..35d188e 100644
+--- a/src/libponyc/expr/control.c
++++ b/src/libponyc/expr/control.c
+@@ -10,6 +10,7 @@
+ #include "../type/assemble.h"
+ #include "../type/subtype.h"
+ #include "../type/alias.h"
++#include "../../libponyrt/mem/pool.h"
+ #include <assert.h>
+ 
+ bool expr_seq(pass_opt_t* opt, ast_t* ast)
+@@ -337,6 +338,163 @@ bool expr_try(pass_opt_t* opt, ast_t* ast)
+   return true;
+ }
+ 
++static ast_t* find_tuple_in_expr(ast_t* expr)
++{
++  if(ast_id(expr) == TK_TUPLE)
++    return expr;
++
++  if(ast_id(expr) == TK_SEQ)
++  {
++    ast_t* last = ast_childlast(expr);
++
++    if(ast_id(last) == TK_TUPLE)
++      return last;
++  }
++
++  return NULL;
++}
++
++static ast_t* find_local_def(ast_t* ast)
++{
++  switch(ast_id(ast))
++  {
++    case TK_LETREF:
++    case TK_VARREF:
++    {
++      const char* name = ast_name(ast_child(ast));
++      sym_status_t status;
++      return ast_get(ast, name, &status);
++    }
++
++    default:
++      return NULL;
++  }
++}
++
++static bool collect_local_defs(ast_t* ast, ast_t** defs, ast_t** nodes,
++  size_t* count, size_t max_count)
++{
++  switch(ast_id(ast))
++  {
++    case TK_SEQ:
++    {
++      ast_t* last = ast_childlast(ast);
++      return collect_local_defs(last, defs, nodes, count, max_count);
++    }
++
++    case TK_TUPLE:
++    {
++      ast_t* child = ast_child(ast);
++
++      while(child != NULL)
++      {
++        if(!collect_local_defs(child, defs, nodes, count, max_count))
++          return false;
++
++        child = ast_sibling(child);
++      }
++
++      return true;
++    }
++
++    case TK_LETREF:
++    case TK_VARREF:
++    {
++      ast_t* def = find_local_def(ast);
++      ast_t* type = ast_type(ast);
++
++      if((def != NULL) && (type != NULL) && !sendable(type))
++      {
++        if(*count >= max_count)
++          return false;
++
++        defs[*count] = def;
++        nodes[*count] = ast;
++        (*count)++;
++      }
++
++      return true;
++    }
++
++    default:
++      return true;
++  }
++}
++
++static size_t count_non_sendable_refs(ast_t* ast)
++{
++  switch(ast_id(ast))
++  {
++    case TK_SEQ:
++      return count_non_sendable_refs(ast_childlast(ast));
++
++    case TK_TUPLE:
++    {
++      size_t count = 0;
++      ast_t* child = ast_child(ast);
++
++      while(child != NULL)
++      {
++        count += count_non_sendable_refs(child);
++        child = ast_sibling(child);
++      }
++
++      return count;
++    }
++
++    case TK_LETREF:
++    case TK_VARREF:
++    {
++      ast_t* type = ast_type(ast);
++      return ((type != NULL) && !sendable(type)) ? 1 : 0;
++    }
++
++    default:
++      return 0;
++  }
++}
++
++static bool check_tuple_aliases(pass_opt_t* opt, ast_t* tuple)
++{
++  size_t max_count = count_non_sendable_refs(tuple);
++
++  if(max_count < 2)
++    return true;
++
++  ast_t** defs = (ast_t**)ponyint_pool_alloc_size(max_count * sizeof(ast_t*));
++  ast_t** nodes = (ast_t**)ponyint_pool_alloc_size(max_count * sizeof(ast_t*));
++  size_t count = 0;
++
++  bool ok = collect_local_defs(tuple, defs, nodes, &count, max_count);
++
++  if(ok)
++  {
++    for(size_t i = 0; i < count; i++)
++    {
++      for(size_t j = i + 1; j < count; j++)
++      {
++        if(defs[i] == defs[j])
++        {
++          ast_error(opt->check.errors, nodes[j],
++            "can't access a non-sendable local more than once in a "
++            "recover expression");
++          ast_error_continue(opt->check.errors, nodes[i],
++            "this is the previous access");
++          ok = false;
++          break;
++        }
++      }
++
++      if(!ok)
++        break;
++    }
++  }
++
++  ponyint_pool_free_size(max_count * sizeof(ast_t*), defs);
++  ponyint_pool_free_size(max_count * sizeof(ast_t*), nodes);
++  return ok;
++}
++
+ bool expr_recover(pass_opt_t* opt, ast_t* ast)
+ {
+   AST_GET_CHILDREN(ast, cap, expr);
+@@ -363,6 +521,14 @@ bool expr_recover(pass_opt_t* opt, ast_t* ast)
+ 
+   ast_settype(ast, r_type);
+ 
++  ast_t* tuple = find_tuple_in_expr(expr);
++
++  if(tuple != NULL)
++  {
++    if(!check_tuple_aliases(opt, tuple))
++      return false;
++  }
++
+   // Push our symbol status to our parent scope.
+   ast_inheritstatus(ast_parent(ast), expr);
+   return true;

@@ -1,0 +1,52 @@
+diff --git a/src/libponyc/ast/ast.h b/src/libponyc/ast/ast.h
+index 429ea8ac..4d63f47f 100644
+--- a/src/libponyc/ast/ast.h
++++ b/src/libponyc/ast/ast.h
+@@ -49,6 +49,7 @@ enum
+   AST_FLAG_MAY_BREAK    = 0x800000, // This loop has seen a break statement in it.
+   AST_FLAG_CNSM_REASGN  = 0x1000000, // A variable is reassigned after a consume in the same expression
+   AST_FLAG_FCNSM_REASGN = 0x2000000, // A field is reassigned after a consume in the same expression
++  AST_FLAG_NO_ELSE_TYPE = 0x4000000, // The else clause should not contribute to the type
+ };
+ 
+ DECLARE_LIST(astlist, astlist_t, ast_t);
+diff --git a/src/libponyc/expr/control.c b/src/libponyc/expr/control.c
+index ea89cbbe..bedfaad1 100644
+--- a/src/libponyc/expr/control.c
++++ b/src/libponyc/expr/control.c
+@@ -270,7 +270,8 @@ bool expr_try(pass_opt_t* opt, ast_t* ast)
+     type = control_type_add_branch(opt, type, body);
+   }
+ 
+-  if(!ast_checkflag(else_clause, AST_FLAG_JUMPS_AWAY))
++  if(!ast_checkflag(else_clause, AST_FLAG_JUMPS_AWAY) &&
++    !ast_checkflag(ast, AST_FLAG_NO_ELSE_TYPE))
+   {
+     if(is_typecheck_error(ast_type(else_clause)))
+       return false;
+diff --git a/src/libponyc/pass/sugar.c b/src/libponyc/pass/sugar.c
+index 38c62094..3c05af94 100644
+--- a/src/libponyc/pass/sugar.c
++++ b/src/libponyc/pass/sugar.c
+@@ -556,8 +556,9 @@ static ast_result_t sugar_with(pass_opt_t* opt, ast_t** astp)
+   ast_t* main_annotation = ast_consumeannotation(*astp);
+   ast_t* else_annotation = ast_consumeannotation(else_clause);
+   token_id try_token;
++  bool no_else = ast_id(else_clause) == TK_NONE;
+ 
+-  if(ast_id(else_clause) == TK_NONE)
++  if(no_else)
+     try_token = TK_TRY_NO_CHECK;
+   else
+     try_token = TK_TRY;
+@@ -577,6 +578,10 @@ static ast_result_t sugar_with(pass_opt_t* opt, ast_t** astp)
+         NODE(TK_SEQ, AST_SCOPE))));
+ 
+   ast_t* tryexpr = ast_child(replace);
++
++  if(no_else)
++    ast_setflag(tryexpr, AST_FLAG_NO_ELSE_TYPE);
++
+   AST_GET_CHILDREN(tryexpr, try_body, try_else, try_then);
+ 
+   // Add the "with" variables from each with element

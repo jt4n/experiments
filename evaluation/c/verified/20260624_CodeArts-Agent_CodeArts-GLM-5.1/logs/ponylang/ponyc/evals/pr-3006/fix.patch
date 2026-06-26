@@ -1,0 +1,15 @@
+diff --git a/src/libponyc/codegen/gentype.c b/src/libponyc/codegen/gentype.c
+index ee05f62..7183391 100644
+--- a/src/libponyc/codegen/gentype.c
++++ b/src/libponyc/codegen/gentype.c
+@@ -628,7 +628,9 @@ static bool make_struct(compile_t* c, reach_type_t* t)
+ 
+     if(elements[i + extra] == NULL)
+     {
+-      pony_assert(0);
++      ast_error(c->opt->check.errors, t->fields[i].ast,
++        "Cannot embed a type that has no structure, such as Pointer or "
++        "MaybePointer");
+       return false;
+     }
+   }

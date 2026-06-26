@@ -1,0 +1,122 @@
+diff --git a/src/libponyc/pass/refer.c b/src/libponyc/pass/refer.c
+index 05fdc6b2..50dd9b4b 100644
+--- a/src/libponyc/pass/refer.c
++++ b/src/libponyc/pass/refer.c
+@@ -83,6 +83,23 @@ static bool is_this_incomplete(pass_opt_t* opt, ast_t* ast)
+ // is used to get the definition for the type based on the `ast_data` to ensure
+ // at some point the field is tied to a real type even if we haven't quite fully
+ // determined the type of each field/subfield reference yet.
++
++static bool dot_chain_has_typeref(ast_t* ast)
++{
++  pony_assert(ast_id(ast) == TK_DOT);
++  ast_t* temp_ast = ast;
++
++  while(ast_id(temp_ast) == TK_DOT)
++  {
++    AST_GET_CHILDREN(temp_ast, left, right);
++    if(ast_id(left) == TK_TYPEREF)
++      return true;
++    temp_ast = left;
++  }
++
++  return false;
++}
++
+ static const char* generate_multi_dot_name(ast_t* ast, ast_t** def_found) {
+   pony_assert(ast_id(ast) == TK_DOT);
+ 
+@@ -112,6 +129,11 @@ static const char* generate_multi_dot_name(ast_t* ast, ast_t** def_found) {
+         temp_ast = right;
+         len += strlen(ast_name(temp_ast));
+       }
++      else if(ast_id(left) == TK_TYPEREF)
++      {
++        temp_ast = ast_childidx(left, 1);
++        len += strlen(ast_name(temp_ast));
++      }
+       else
+         pony_assert(0);
+       break;
+@@ -137,6 +159,13 @@ static const char* generate_multi_dot_name(ast_t* ast, ast_t** def_found) {
+       break;
+     }
+ 
++    case TK_TYPEREF:
++    {
++      temp_ast = ast_childidx(temp_ast, 1);
++      len += strlen(ast_name(temp_ast));
++      break;
++    }
++
+     default:
+     {
+       if (def == NULL)
+@@ -1171,6 +1200,12 @@ static bool refer_consume(pass_opt_t* opt, ast_t* ast)
+           return false;
+         }
+       }
++      else if(dot_chain_has_typeref(term))
++      {
++        ast_error(opt->check.errors, ast,
++          "consume must take 'this', a local, or a parameter");
++        return false;
++      }
+       else
+       {
+         // get fully qualified string identifier without `this`
+diff --git a/src/libponyc/pass/verify.c b/src/libponyc/pass/verify.c
+index c4412484..9524ab74 100644
+--- a/src/libponyc/pass/verify.c
++++ b/src/libponyc/pass/verify.c
+@@ -147,6 +147,11 @@ static const char* get_multi_ref_name(ast_t* ast)
+         temp_ast = right;
+         len += strlen(ast_name(temp_ast));
+       }
++      else if(ast_id(left) == TK_TYPEREF)
++      {
++        temp_ast = ast_childidx(left, 1);
++        len += strlen(ast_name(temp_ast));
++      }
+       else
+         pony_assert(0);
+       break;
+@@ -181,6 +186,13 @@ static const char* get_multi_ref_name(ast_t* ast)
+       break;
+     }
+ 
++    case TK_TYPEREF:
++    {
++      temp_ast = ast_childidx(temp_ast, 1);
++      len += strlen(ast_name(temp_ast));
++      break;
++    }
++
+     default:
+     {
+       pony_assert(0);
+diff --git a/test/libponyc/refer.cc b/test/libponyc/refer.cc
+index 89581d40..eb089d99 100644
+--- a/test/libponyc/refer.cc
++++ b/test/libponyc/refer.cc
+@@ -900,3 +900,20 @@ TEST_F(ReferTest, MemberAccessWithConsumeLhs)
+ 
+   TEST_COMPILE(src);
+ }
++
++TEST_F(ReferTest, ConsumeTypeRefField)
++{
++  const char* src =
++    "struct FFIBytes\n"
++      "var ptr: Pointer[U8 val] = Pointer[U8].create()\n"
++      "var length: USize = 0\n"
++      "fun iso string(): String val =>\n"
++        "recover String.from_cpointer(consume FFIBytes.ptr, "
++        "consume FFIBytes.length) end\n"
++    "actor Main\n"
++      "new create(env: Env) =>\n"
++        "env.out.print(\"nothing to see here\")";
++
++  TEST_ERRORS_1(src,
++    "consume must take 'this', a local, or a parameter");
++}

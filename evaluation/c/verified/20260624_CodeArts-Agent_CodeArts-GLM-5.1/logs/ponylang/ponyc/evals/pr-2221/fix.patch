@@ -1,0 +1,217 @@
+diff --git a/src/libponyc/ast/lexer.c b/src/libponyc/ast/lexer.c
+index e5d84e6..88d8aa2 100644
+--- a/src/libponyc/ast/lexer.c
++++ b/src/libponyc/ast/lexer.c
+@@ -537,74 +537,6 @@ static void normalise_string(lexer_t* lexer)
+     lexer->buflen--;
+     memmove(&buf[0], &buf[1], lexer->buflen);
+   }
+-
+-  // Calculate leading whitespace.
+-  size_t ws = lexer->buflen;
+-  size_t ws_this_line = 0;
+-  bool in_leading_ws = true;
+-  bool has_non_ws = false;
+-
+-  for(size_t i = 0; i < lexer->buflen; i++)
+-  {
+-    char c = lexer->buffer[i];
+-
+-    if(in_leading_ws)
+-    {
+-      if(c == ' ' || c == '\t')
+-      {
+-        ws_this_line++;
+-      }
+-      else
+-      {
+-        if(!isspace(c))
+-          has_non_ws = true;
+-
+-        if(has_non_ws && (ws_this_line < ws))
+-          ws = ws_this_line;
+-
+-        in_leading_ws = false;
+-      }
+-    }
+-
+-    if(c == '\n')
+-    {
+-      ws_this_line = 0;
+-      has_non_ws = false;
+-      in_leading_ws = true;
+-    }
+-  }
+-
+-  // Trim leading whitespace on each line.
+-  if(ws > 0)
+-  {
+-    char* line_start = lexer->buffer;
+-    char* compacted = lexer->buffer;
+-    size_t rem = lexer->buflen;
+-
+-    while(rem > 0)
+-    {
+-      char* line_end = (char*)memchr(line_start, '\n', rem);
+-      size_t line_len =
+-        (line_end == NULL) ? rem : (size_t)(line_end - line_start + 1);
+-
+-      if(line_start != line_end)
+-      {
+-        size_t trim = (line_len < ws) ? line_len : ws;
+-        memmove(compacted, line_start + trim, line_len - trim);
+-        compacted += line_len - trim;
+-      }
+-      else
+-      {
+-        memmove(compacted, line_start, line_len);
+-        compacted += line_len;
+-      }
+-
+-      line_start += line_len;
+-      rem -= line_len;
+-    }
+-
+-    lexer->buflen = compacted - lexer->buffer;
+-  }
+ }
+ 
+ 
+diff --git a/src/libponyc/pass/docgen.c b/src/libponyc/pass/docgen.c
+index ddee40f..dc98c72 100644
+--- a/src/libponyc/pass/docgen.c
++++ b/src/libponyc/pass/docgen.c
+@@ -4,6 +4,7 @@
+ #include "../pkg/package.h"
+ #include "../../libponyrt/mem/pool.h"
+ #include "ponyassert.h"
++#include <ctype.h>
+ #include <stdio.h>
+ #include <string.h>
+ 
+@@ -111,6 +112,96 @@ static void doc_list_add(ast_list_t* list, ast_t* ast, const char* name,
+ }
+ 
+ 
++static void strip_common_leading_whitespace(const char* str, FILE* fp)
++{
++  pony_assert(str != NULL);
++  pony_assert(fp != NULL);
++
++  size_t len = strlen(str);
++  if(len == 0)
++  {
++    fprintf(fp, "%s", str);
++    return;
++  }
++
++  // Calculate the minimum leading whitespace across all lines with
++  // non-whitespace content.
++  size_t ws = len;
++  size_t ws_this_line = 0;
++  bool in_leading_ws = true;
++  bool has_non_ws = false;
++
++  for(size_t i = 0; i < len; i++)
++  {
++    char c = str[i];
++
++    if(in_leading_ws)
++    {
++      if(c == ' ' || c == '\t')
++      {
++        ws_this_line++;
++      }
++      else
++      {
++        if(!isspace((unsigned char)c))
++          has_non_ws = true;
++
++        if(has_non_ws && (ws_this_line < ws))
++          ws = ws_this_line;
++
++        in_leading_ws = false;
++      }
++    }
++
++    if(c == '\n')
++    {
++      ws_this_line = 0;
++      has_non_ws = false;
++      in_leading_ws = true;
++    }
++  }
++
++  // Print each line with the common leading whitespace stripped.
++  if(ws == 0)
++  {
++    fprintf(fp, "%s", str);
++    return;
++  }
++
++  const char* line_start = str;
++  const char* end = str + len;
++
++  while(line_start < end)
++  {
++    const char* line_end = strchr(line_start, '\n');
++    size_t line_len;
++
++    if(line_end == NULL)
++    {
++      line_len = end - line_start;
++    }
++    else
++    {
++      line_len = line_end - line_start + 1;
++    }
++
++    // Empty lines (just a newline) are preserved as-is.
++    // Lines with content have ws characters stripped from the beginning.
++    if(line_len > 1 || line_start[0] != '\n')
++    {
++      size_t trim = (line_len < ws) ? line_len : ws;
++      fwrite(line_start + trim, 1, line_len - trim, fp);
++    }
++    else
++    {
++      fwrite(line_start, 1, line_len, fp);
++    }
++
++    line_start += line_len;
++  }
++}
++
++
+ static bool is_for_testing(const char* name, ast_t* list)
+ {
+   pony_assert(name != NULL);
+@@ -685,7 +776,8 @@ static void doc_method(docgen_t* docgen, docgen_opt_t* docgen_opt,
+ 
+   // The docstring, if any
+   if(ast_id(doc) != TK_NONE)
+-    fprintf(docgen->type_file, "%s\n\n", ast_name(doc));
++    strip_common_leading_whitespace(ast_name(doc), docgen->type_file);
++    fprintf(docgen->type_file, "\n\n");
+ 
+   // SYLVAN'S FULL CODE BLOCK HERE
+   fprintf(docgen->type_file, "```pony\n");
+@@ -800,7 +892,8 @@ static void doc_entity(docgen_t* docgen, docgen_opt_t* docgen_opt, ast_t* ast)
+   fprintf(docgen->type_file, "\n\n");
+ 
+   if(ast_id(doc) != TK_NONE)
+-    fprintf(docgen->type_file, "%s\n\n", ast_name(doc));
++    strip_common_leading_whitespace(ast_name(doc), docgen->type_file);
++  fprintf(docgen->type_file, "\n\n");
+ 
+   // code block
+   fprintf(docgen->type_file, "```pony\n");
+@@ -922,7 +1015,7 @@ static void doc_package_home(docgen_t* docgen,
+   if(doc_string != NULL)
+   {
+     pony_assert(ast_id(doc_string) == TK_STRING);
+-    fprintf(docgen->type_file, "%s", ast_name(doc_string));
++    strip_common_leading_whitespace(ast_name(doc_string), docgen->type_file);
+   }
+   else
+   {

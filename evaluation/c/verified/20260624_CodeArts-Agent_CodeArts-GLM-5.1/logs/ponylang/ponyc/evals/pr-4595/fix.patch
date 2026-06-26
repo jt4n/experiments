@@ -1,0 +1,19 @@
+diff --git a/src/libponyc/codegen/genmatch.c b/src/libponyc/codegen/genmatch.c
+index 6d7a6f24..96df0512 100644
+--- a/src/libponyc/codegen/genmatch.c
++++ b/src/libponyc/codegen/genmatch.c
+@@ -673,9 +673,11 @@ static bool static_match(compile_t* c, LLVMValueRef value, ast_t* type,
+ 
+     case TK_TUPLE:
+     {
+-      // Tuples must have multiple elements, or they aren't tuples.
+-      pony_assert(ast_child(pattern) != NULL);
+-      pony_assert(ast_sibling(ast_child(pattern)) != NULL);
++      // Treat a one element tuple as its component expression.
++      ast_t* child = ast_child(pattern);
++
++      if(ast_sibling(child) == NULL)
++        return static_match(c, value, type, child, next_block);
+ 
+       // Destructure the match expression (or element thereof).
+       return static_tuple(c, value, type, pattern, next_block);

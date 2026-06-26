@@ -1,0 +1,36 @@
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index 307478e0..a854a9b6 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -1108,6 +1108,16 @@ static size_t ZSTD_resetCCtx_usingCDict(ZSTD_CCtx* cctx,
+         /* Copy only compression parameters related to tables. */
+         params.cParams = cdict->cParams;
+         if (windowLog) params.cParams.windowLog = windowLog;
++        /* When searchLength <= 3, hashLog3 = MIN(ZSTD_HASHLOG3_MAX, windowLog).
++         * Increasing windowLog beyond cdict's windowLog would increase hashLog3,
++         * causing the table copy to read past cdict's allocated tables.
++         * Therefore, cap windowLog to not exceed cdict's hashLog3. */
++        if (params.cParams.searchLength <= 3) {
++            U32 const hashLog3 = MIN(ZSTD_HASHLOG3_MAX, params.cParams.windowLog);
++            U32 const cdict_hashLog3 = cdict->matchState.hashLog3;
++            if (hashLog3 > cdict_hashLog3) {
++                params.cParams.windowLog = cdict_hashLog3;
++        }   }
+         params.fParams = fParams;
+         ZSTD_resetCCtx_internal(cctx, params, pledgedSrcSize,
+                                 ZSTDcrp_noMemset, zbuff);
+@@ -1168,6 +1178,14 @@ static size_t ZSTD_copyCCtx_internal(ZSTD_CCtx* dstCCtx,
+         /* Copy only compression parameters related to tables. */
+         params.cParams = srcCCtx->appliedParams.cParams;
+         if (windowLog) params.cParams.windowLog = windowLog;
++        /* cap windowLog to not exceed srcCCtx's hashLog3,
++         * to avoid reading/writing beyond table bounds */
++        if (params.cParams.searchLength <= 3) {
++            U32 const hashLog3 = MIN(ZSTD_HASHLOG3_MAX, params.cParams.windowLog);
++            U32 const src_hashLog3 = srcCCtx->blockState.matchState.hashLog3;
++            if (hashLog3 > src_hashLog3) {
++                params.cParams.windowLog = src_hashLog3;
++        }   }
+         params.fParams = fParams;
+         ZSTD_resetCCtx_internal(dstCCtx, params, pledgedSrcSize,
+                                 ZSTDcrp_noMemset, zbuff);

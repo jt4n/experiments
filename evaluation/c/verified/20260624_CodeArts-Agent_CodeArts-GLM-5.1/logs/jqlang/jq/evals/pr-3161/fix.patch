@@ -1,0 +1,90 @@
+diff --git a/src/builtin.c b/src/builtin.c
+index e39975b..4c503c6 100644
+--- a/src/builtin.c
++++ b/src/builtin.c
+@@ -657,6 +657,85 @@ static jv f_format(jq_state *jq, jv input, jv fmt) {
+     }
+     jv_free(input);
+     return line;
++  } else if (!strcmp(fmt_s, "urid")) {
++    jv_free(fmt);
++    input = f_tostring(jq, input);
++
++    jv line = jv_string("");
++    const char* s = jv_string_value(input);
++    int len = jv_string_length_bytes(jv_copy(input));
++    for (int i = 0; i < len; ) {
++      if (s[i] == '%') {
++        if (i + 2 >= len) {
++          jv_free(line);
++          return type_error(input, "is not valid uri data");
++        }
++        char hex[3] = {s[i+1], s[i+2], 0};
++        char *end;
++        unsigned long ch = strtoul(hex, &end, 16);
++        if (*end != '\0') {
++          jv_free(line);
++          return type_error(input, "is not valid uri data");
++        }
++        char buf[4];
++        int n = 1;
++        if (ch >= 0xC0 && ch < 0xE0 && i + 5 < len && s[i+3] == '%') {
++          char hex2[3] = {s[i+4], s[i+5], 0};
++          unsigned long ch2 = strtoul(hex2, &end, 16);
++          if (*end == '\0' && (ch2 & 0xC0) == 0x80) {
++            buf[0] = ch;
++            buf[1] = ch2;
++            n = 2;
++            i += 6;
++          } else {
++            buf[0] = ch;
++            i += 3;
++          }
++        } else if (ch >= 0xE0 && ch < 0xF0 && i + 8 < len && s[i+3] == '%' && s[i+6] == '%') {
++          char hex2[3] = {s[i+4], s[i+5], 0};
++          char hex3[3] = {s[i+7], s[i+8], 0};
++          unsigned long ch2 = strtoul(hex2, &end, 16);
++          unsigned long ch3 = *end == '\0' ? strtoul(hex3, &end, 16) : 0;
++          if (*end == '\0' && (ch2 & 0xC0) == 0x80 && (ch3 & 0xC0) == 0x80) {
++            buf[0] = ch;
++            buf[1] = ch2;
++            buf[2] = ch3;
++            n = 3;
++            i += 9;
++          } else {
++            buf[0] = ch;
++            i += 3;
++          }
++        } else if (ch >= 0xF0 && i + 11 < len && s[i+3] == '%' && s[i+6] == '%' && s[i+9] == '%') {
++          char hex2[3] = {s[i+4], s[i+5], 0};
++          char hex3[3] = {s[i+7], s[i+8], 0};
++          char hex4[3] = {s[i+10], s[i+11], 0};
++          unsigned long ch2 = strtoul(hex2, &end, 16);
++          unsigned long ch3 = *end == '\0' ? strtoul(hex3, &end, 16) : 0;
++          unsigned long ch4 = *end == '\0' ? strtoul(hex4, &end, 16) : 0;
++          if (*end == '\0' && (ch2 & 0xC0) == 0x80 && (ch3 & 0xC0) == 0x80 && (ch4 & 0xC0) == 0x80) {
++            buf[0] = ch;
++            buf[1] = ch2;
++            buf[2] = ch3;
++            buf[3] = ch4;
++            n = 4;
++            i += 12;
++          } else {
++            buf[0] = ch;
++            i += 3;
++          }
++        } else {
++          buf[0] = ch;
++          i += 3;
++        }
++        line = jv_string_append_buf(line, buf, n);
++      } else {
++        line = jv_string_append_buf(line, s + i, 1);
++        i++;
++      }
++    }
++    jv_free(input);
++    return line;
+   } else if (!strcmp(fmt_s, "sh")) {
+     jv_free(fmt);
+     if (jv_get_kind(input) != JV_KIND_ARRAY)

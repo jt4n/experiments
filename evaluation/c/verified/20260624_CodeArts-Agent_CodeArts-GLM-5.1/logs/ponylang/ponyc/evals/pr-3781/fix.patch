@@ -1,0 +1,221 @@
+diff --git a/src/libponyrt/gc/actormap.c b/src/libponyrt/gc/actormap.c
+index 24be653a..c6c4398c 100644
+--- a/src/libponyrt/gc/actormap.c
++++ b/src/libponyrt/gc/actormap.c
+@@ -36,9 +36,9 @@ object_t* ponyint_actorref_getobject(actorref_t* aref, void* address)
+ }
+ 
+ object_t* ponyint_actorref_getorput(actorref_t* aref, void* address,
+-  uint32_t mark)
++  pony_type_t* type, uint32_t mark)
+ {
+-  return ponyint_objectmap_getorput(&aref->map, address, mark);
++  return ponyint_objectmap_getorput(&aref->map, address, type, mark);
+ }
+ 
+ void ponyint_actorref_free(actorref_t* aref)
+diff --git a/src/libponyrt/gc/actormap.h b/src/libponyrt/gc/actormap.h
+index 8ded5119..33605c76 100644
+--- a/src/libponyrt/gc/actormap.h
++++ b/src/libponyrt/gc/actormap.h
+@@ -20,7 +20,7 @@ typedef struct actorref_t
+ object_t* ponyint_actorref_getobject(actorref_t* aref, void* address);
+ 
+ object_t* ponyint_actorref_getorput(actorref_t* aref, void* address,
+-  uint32_t mark);
++  pony_type_t* type, uint32_t mark);
+ 
+ void ponyint_actorref_free(actorref_t* aref);
+ 
+diff --git a/src/libponyrt/gc/gc.c b/src/libponyrt/gc/gc.c
+index 680c04af..1a435074 100644
+--- a/src/libponyrt/gc/gc.c
++++ b/src/libponyrt/gc/gc.c
+@@ -17,10 +17,10 @@ static void acquire_actor(pony_ctx_t* ctx, pony_actor_t* actor)
+ }
+ 
+ static void acquire_object(pony_ctx_t* ctx, pony_actor_t* actor, void* address,
+-  bool immutable)
++  pony_type_t* type, bool immutable)
+ {
+   actorref_t* aref = ponyint_actormap_getorput(&ctx->acquire, actor, 0);
+-  object_t* obj = ponyint_actorref_getorput(aref, address, 0);
++  object_t* obj = ponyint_actorref_getorput(aref, address, type, 0);
+ 
+   obj->rc += GC_INC_MORE;
+   obj->immutable = immutable;
+@@ -139,7 +139,7 @@ static void send_local_object(pony_ctx_t* ctx, void* p, pony_type_t* t,
+   int mutability)
+ {
+   gc_t* gc = ponyint_actor_gc(ctx->current);
+-  object_t* obj = ponyint_objectmap_getorput(&gc->local, p, gc->mark);
++  object_t* obj = ponyint_objectmap_getorput(&gc->local, p, t, gc->mark);
+ 
+   if(obj->mark == gc->mark)
+     return;
+@@ -209,7 +209,7 @@ static void acquire_local_object(pony_ctx_t* ctx, void* p, pony_type_t* t,
+   int mutability)
+ {
+   gc_t* gc = ponyint_actor_gc(ctx->current);
+-  object_t* obj = ponyint_objectmap_getorput(&gc->local, p, gc->mark);
++  object_t* obj = ponyint_objectmap_getorput(&gc->local, p, t, gc->mark);
+ 
+   if(obj->mark == gc->mark)
+     return;
+@@ -267,7 +267,7 @@ static void send_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+   size_t mem_allocated_before = ponyint_objectmap_total_alloc_size(&aref->map);
+ #endif
+ 
+-  object_t* obj = ponyint_actorref_getorput(aref, p, gc->mark);
++  object_t* obj = ponyint_actorref_getorput(aref, p, t, gc->mark);
+ 
+ #ifdef USE_MEMTRACK
+   size_t mem_used_after = ponyint_objectmap_total_mem_size(&aref->map);
+@@ -295,7 +295,7 @@ static void send_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+     // has received the acquire messages.
+     obj->rc += (GC_INC_MORE - 1);
+     obj->immutable = true;
+-    acquire_object(ctx, actor, p, true);
++    acquire_object(ctx, actor, p, t, true);
+ 
+     // Set the to PONY_TRACE_MUTABLE to force recursion.
+     mutability = PONY_TRACE_MUTABLE;
+@@ -309,7 +309,7 @@ static void send_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+ 
+     // Add to the acquire message and decrement.
+     obj->rc += (GC_INC_MORE - 1);
+-    acquire_object(ctx, actor, p, obj->immutable);
++    acquire_object(ctx, actor, p, t, obj->immutable);
+   } else {
+     // Decrement.
+     obj->rc--;
+@@ -329,7 +329,7 @@ static void recv_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+   size_t mem_allocated_before = ponyint_objectmap_total_alloc_size(&aref->map);
+ #endif
+ 
+-  object_t* obj = ponyint_actorref_getorput(aref, p, gc->mark);
++  object_t* obj = ponyint_actorref_getorput(aref, p, t, gc->mark);
+ 
+ #ifdef USE_MEMTRACK
+   size_t mem_used_after = ponyint_objectmap_total_mem_size(&aref->map);
+@@ -381,7 +381,7 @@ static void mark_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+   size_t mem_allocated_before = ponyint_objectmap_total_alloc_size(&aref->map);
+ #endif
+ 
+-  object_t* obj = ponyint_actorref_getorput(aref, p, gc->mark);
++  object_t* obj = ponyint_actorref_getorput(aref, p, t, gc->mark);
+ 
+ #ifdef USE_MEMTRACK
+   size_t mem_used_after = ponyint_objectmap_total_mem_size(&aref->map);
+@@ -418,7 +418,7 @@ static void mark_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+     // has received the acquire messages.
+     obj->rc += GC_INC_MORE;
+     obj->immutable = true;
+-    acquire_object(ctx, actor, p, true);
++    acquire_object(ctx, actor, p, t, true);
+ 
+     // Set the to PONY_TRACE_MUTABLE to force recursion.
+     mutability = PONY_TRACE_MUTABLE;
+@@ -431,7 +431,7 @@ static void mark_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+       obj->immutable = true;
+ 
+     obj->rc += GC_INC_MORE;
+-    acquire_object(ctx, actor, p, obj->immutable);
++    acquire_object(ctx, actor, p, t, obj->immutable);
+   }
+ 
+   if(mutability == PONY_TRACE_MUTABLE)
+@@ -443,7 +443,7 @@ static void acq_or_rel_remote_object(pony_ctx_t* ctx, pony_actor_t* actor,
+ {
+   gc_t* gc = ponyint_actor_gc(ctx->current);
+   actorref_t* aref = ponyint_actormap_getorput(&ctx->acquire, actor, 0);
+-  object_t* obj = ponyint_actorref_getorput(aref, p, gc->mark);
++  object_t* obj = ponyint_actorref_getorput(aref, p, t, gc->mark);
+ 
+   if(obj->mark == gc->mark)
+     return;
+@@ -651,8 +651,7 @@ void ponyint_gc_markimmutable(pony_ctx_t* ctx, gc_t* gc)
+       // Mark in our heap and recurse if it wasn't already marked.
+       void* p = obj->address;
+       chunk_t* chunk = ponyint_pagemap_get(p);
+-      pony_type_t* type = *(pony_type_t**)p;
+-      mark_local_object(ctx, chunk, p, type, PONY_TRACE_IMMUTABLE);
++      mark_local_object(ctx, chunk, p, obj->type, PONY_TRACE_IMMUTABLE);
+     }
+   }
+ }
+@@ -726,7 +725,7 @@ bool ponyint_gc_acquire(gc_t* gc, actorref_t* aref)
+     // Add to our RC. The object may not be in our object map, if it was
+     // reached through another immutable reference.
+     object_t* obj_local = ponyint_objectmap_getorput(&gc->local, obj->address,
+-      gc->mark);
++      obj->type, gc->mark);
+     obj_local->rc += obj->rc;
+ 
+     // Mark as immutable if necessary.
+diff --git a/src/libponyrt/gc/objectmap.c b/src/libponyrt/gc/objectmap.c
+index dbfe4248..23f55bfc 100644
+--- a/src/libponyrt/gc/objectmap.c
++++ b/src/libponyrt/gc/objectmap.c
+@@ -16,12 +16,13 @@ static bool object_cmp(object_t* a, object_t* b)
+   return a->address == b->address;
+ }
+ 
+-static object_t* object_alloc(void* address, uint32_t mark)
++static object_t* object_alloc(void* address, pony_type_t* type, uint32_t mark)
+ {
+   object_t* obj = (object_t*)POOL_ALLOC(object_t);
+   obj->address = address;
+   obj->rc = 0;
+   obj->immutable = false;
++  obj->type = type;
+ 
+   // a new object is unmarked
+   obj->mark = mark - 1;
+@@ -45,7 +46,7 @@ object_t* ponyint_objectmap_getobject(objectmap_t* map, void* address, size_t* i
+ }
+ 
+ object_t* ponyint_objectmap_getorput(objectmap_t* map, void* address,
+-  uint32_t mark)
++  pony_type_t* type, uint32_t mark)
+ {
+   size_t index = HASHMAP_UNKNOWN;
+   object_t* obj = ponyint_objectmap_getobject(map, address, &index);
+@@ -53,7 +54,7 @@ object_t* ponyint_objectmap_getorput(objectmap_t* map, void* address,
+   if(obj != NULL)
+     return obj;
+ 
+-  obj = object_alloc(address, mark);
++  obj = object_alloc(address, type, mark);
+   ponyint_objectmap_putindex(map, obj, index);
+   return obj;
+ }
+diff --git a/src/libponyrt/gc/objectmap.h b/src/libponyrt/gc/objectmap.h
+index 6d636abe..1237df48 100644
+--- a/src/libponyrt/gc/objectmap.h
++++ b/src/libponyrt/gc/objectmap.h
+@@ -2,6 +2,7 @@
+ #define gc_objectmap_h
+ 
+ #include "../ds/hash.h"
++#include "../pony.h"
+ #include <platform.h>
+ 
+ PONY_EXTERN_C_BEGIN
+@@ -12,6 +13,7 @@ typedef struct object_t
+   size_t rc;
+   uint32_t mark;
+   bool immutable;
++  pony_type_t* type;
+ } object_t;
+ 
+ DECLARE_HASHMAP(ponyint_objectmap, objectmap_t, object_t);
+@@ -19,7 +21,7 @@ DECLARE_HASHMAP(ponyint_objectmap, objectmap_t, object_t);
+ object_t* ponyint_objectmap_getobject(objectmap_t* map, void* address, size_t* index);
+ 
+ object_t* ponyint_objectmap_getorput(objectmap_t* map, void* address,
+-  uint32_t mark);
++  pony_type_t* type, uint32_t mark);
+ 
+ void ponyint_objectmap_sweep(objectmap_t* map);
+ 

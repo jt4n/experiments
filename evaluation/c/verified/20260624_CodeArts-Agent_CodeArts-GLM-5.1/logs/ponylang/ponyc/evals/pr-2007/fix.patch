@@ -1,0 +1,50 @@
+diff --git a/src/libponyc/type/typeparam.c b/src/libponyc/type/typeparam.c
+index 3e104dc..9257abf 100644
+--- a/src/libponyc/type/typeparam.c
++++ b/src/libponyc/type/typeparam.c
+@@ -577,7 +577,44 @@ static ast_t* typeparam_current_inner(ast_t* type, ast_t* scope)
+       return typeparamref_current(type, scope);
+ 
+     case TK_NOMINAL:
+-      return ast_dup(type);
++    {
++      ast_t* new_type = ast_from(type, TK_NOMINAL);
++      ast_t* child = ast_child(type);
++
++      while(child != NULL)
++      {
++        ast_t* new_child;
++
++        if(ast_childidx(type, 2) == child)
++        {
++          ast_t* typearg = ast_child(child);
++
++          if(typearg != NULL)
++          {
++            ast_t* new_typeargs = ast_from(child, ast_id(child));
++
++            while(typearg != NULL)
++            {
++              ast_t* new_typearg = typeparam_current_inner(typearg, scope);
++              ast_append(new_typeargs, new_typearg);
++              typearg = ast_sibling(typearg);
++            }
++
++            new_child = new_typeargs;
++          } else {
++            new_child = ast_dup(child);
++          }
++        } else {
++          new_child = ast_dup(child);
++        }
++
++        ast_append(new_type, new_child);
++        child = ast_sibling(child);
++      }
++
++      ast_setdata(new_type, ast_data(type));
++      return new_type;
++    }
+ 
+     case TK_UNIONTYPE:
+     case TK_ISECTTYPE:

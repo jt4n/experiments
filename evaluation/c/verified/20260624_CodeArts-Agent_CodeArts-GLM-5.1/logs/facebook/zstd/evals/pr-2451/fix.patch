@@ -1,0 +1,31 @@
+diff --git a/lib/compress/zstd_compress.c b/lib/compress/zstd_compress.c
+index 3cebbe17..e87c86d6 100644
+--- a/lib/compress/zstd_compress.c
++++ b/lib/compress/zstd_compress.c
+@@ -1189,15 +1189,13 @@ ZSTD_adjustCParams_internal(ZSTD_compressionParameters cPar,
+     assert(ZSTD_checkCParams(cPar)==0);
+ 
+     if (dictSize && srcSize == ZSTD_CONTENTSIZE_UNKNOWN)
+-        srcSize = minSrcSize;
++        srcSize = (U64)dictSize * 100;
+ 
+     switch (mode) {
+     case ZSTD_cpm_noAttachDict:
+     case ZSTD_cpm_unknown:
+     case ZSTD_cpm_createCDict:
+-        break;
+     case ZSTD_cpm_attachDict:
+-        dictSize = 0;
+         break;
+     default:
+         assert(0);
+@@ -5152,9 +5150,7 @@ static U64 ZSTD_getCParamRowSize(U64 srcSizeHint, size_t dictSize, ZSTD_cParamMo
+     case ZSTD_cpm_unknown:
+     case ZSTD_cpm_noAttachDict:
+     case ZSTD_cpm_createCDict:
+-        break;
+     case ZSTD_cpm_attachDict:
+-        dictSize = 0;
+         break;
+     default:
+         assert(0);

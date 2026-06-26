@@ -1,0 +1,116 @@
+diff --git a/packages/cli/command_parser.pony b/packages/cli/command_parser.pony
+index a5acce8e..8a5f9e79 100644
+--- a/packages/cli/command_parser.pony
++++ b/packages/cli/command_parser.pony
+@@ -144,37 +144,13 @@ class CommandParser
+     end
+ 
+     // Fill in option values from env or from coded defaults.
+-    for os in _spec.options().values() do
+-      if not options.contains(os.name()) then
+-        // Lookup and use env vars before code defaults
+-        if envsmap.contains(os.name()) then
+-          let vs =
+-            try
+-              envsmap(os.name())?
+-            else  // TODO(cq) why is else needed? we just checked
+-              ""
+-            end
+-          let v: _Value =
+-            match _ValueParser.parse(os._typ_p(), vs)
+-            | let v: _Value => v
+-            | let se: SyntaxError => return se
+-            end
+-          options.update(os.name(), Option(os, v))
+-        else
+-          if not os.required() then
+-            options.update(os.name(), Option(os, os._default_p()))
+-          end
+-        end
+-      end
++    match _fill_defaults(options, envsmap)
++    | let se: SyntaxError => return se
+     end
+ 
+     // Check for missing options and error if any exist.
+-    for os in _spec.options().values() do
+-      if not options.contains(os.name()) then
+-        if os.required() then
+-          return SyntaxError(os.name(), "missing value for required option")
+-        end
+-      end
++    match _check_required(options)
++    | let se: SyntaxError => return se
+     end
+ 
+     // Check for missing args and error if found.
+@@ -276,6 +252,69 @@ class CommandParser
+       return SyntaxError(token, "too many positional arguments")
+     end
+ 
++  fun _fill_defaults(
++    options: Map[String, Option] ref,
++    envsmap: Map[String, String] box)
++    : (None | SyntaxError)
++  =>
++    """
++    Fill in option values from env vars or coded defaults for this spec and
++    all parent specs. Parent defaults are filled first so that child defaults
++    can override them when there is a name collision.
++    """
++    // Fill parent defaults first so child defaults take precedence
++    match _parent
++    | let p: CommandParser box =>
++      match p._fill_defaults(options, envsmap)
++      | let se: SyntaxError => return se
++      end
++    end
++    for os in _spec.options().values() do
++      if not options.contains(os.name()) then
++        if envsmap.contains(os.name()) then
++          let vs =
++            try
++              envsmap(os.name())?
++            else
++              ""
++            end
++          let v: _Value =
++            match _ValueParser.parse(os._typ_p(), vs)
++            | let v: _Value => v
++            | let se: SyntaxError => return se
++            end
++          options.update(os.name(), Option(os, v))
++        else
++          if not os.required() then
++            options.update(os.name(), Option(os, os._default_p()))
++          end
++        end
++      end
++    end
++    None
++
++  fun _check_required(
++    options: Map[String, Option] box)
++    : (None | SyntaxError)
++  =>
++    """
++    Check for missing required options in this spec and all parent specs.
++    """
++    match _parent
++    | let p: CommandParser box =>
++      match p._check_required(options)
++      | let se: SyntaxError => return se
++      end
++    end
++    for os in _spec.options().values() do
++      if not options.contains(os.name()) then
++        if os.required() then
++          return SyntaxError(os.name(), "missing value for required option")
++        end
++      end
++    end
++    None
++
+   fun _option_with_name(name: String): (OptionSpec | None) =>
+     try
+       return _spec.options()(name)?

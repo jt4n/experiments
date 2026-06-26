@@ -1,0 +1,41 @@
+diff --git a/packages/builtin/string.pony b/packages/builtin/string.pony
+index 020d4025..df1394da 100644
+--- a/packages/builtin/string.pony
++++ b/packages/builtin/string.pony
+@@ -1,8 +1,8 @@
+ use @memcmp[I32](dst: Pointer[None] tag, src: Pointer[None] tag, len: USize)
+ use @memset[Pointer[None]](dst: Pointer[None], set: U32, len: USize)
+ use @memmove[Pointer[None]](dst: Pointer[None], src: Pointer[None], len: USize)
+-use @strtof[F32](nptr: Pointer[U8] box, endptr: Pointer[Pointer[U8] box] ref)
+-use @strtod[F64](nptr: Pointer[U8] box, endptr: Pointer[Pointer[U8] box] ref)
++use @strtof[F32](nptr: Pointer[U8] tag, endptr: Pointer[Pointer[U8] box] ref)
++use @strtod[F64](nptr: Pointer[U8] tag, endptr: Pointer[Pointer[U8] box] ref)
+ use @pony_os_clear_errno[None]()
+ use @pony_os_errno[I32]()
+ 
+@@ -1609,9 +1609,10 @@ actor Main
+     if index < _size then
+       @pony_os_clear_errno()
+       var endp: Pointer[U8] box = Pointer[U8]
+-      let res = @strtof(_ptr._offset(index), addressof endp)
++      let cstr = cstring()
++      let res = @strtof(cstr._offset(index), addressof endp)
+       let errno: I32 = @pony_os_errno()
+-      if (errno != 0) or (endp != _ptr._offset(_size)) then
++      if (errno != 0) or (endp != cstr._offset(_size)) then
+         error
+       else
+         res
+@@ -1642,9 +1643,10 @@ actor Main
+     if index < _size then
+       @pony_os_clear_errno()
+       var endp: Pointer[U8] box = Pointer[U8]
+-      let res = @strtod(_ptr._offset(index), addressof endp)
++      let cstr = cstring()
++      let res = @strtod(cstr._offset(index), addressof endp)
+       let errno: I32 = @pony_os_errno()
+-      if (errno != 0) or (endp != _ptr._offset(_size)) then
++      if (errno != 0) or (endp != cstr._offset(_size)) then
+         error
+       else
+         res
